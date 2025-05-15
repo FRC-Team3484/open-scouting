@@ -9,6 +9,11 @@ This document describes the roadmap for Open Scouting, and roughly when each fea
 - [ ] [#70](https://github.com/FRC-Team3484/open-scouting/issues/70) - Charts in the advanced data view don't update when the filters do
 - [ ] [#73](https://github.com/FRC-Team3484/open-scouting/issues/73) - Reimplement the ability to sort data in the advanced data view
 
+### `v0.1.6-alpha`
+- [ ] [#47](https://github.com/FRC-Team3484/open-scouting/issues/47) - Be able to edit user profiles
+- [  ] [#48](https://github.com/FRC-Team3484/open-scouting/issues/48) - Forgot password in authentication
+- [ ] [#86](https://github.com/FRC-Team3484/open-scouting/issues/86) - Scroll to the opened section when expanding sections in the menu
+
 ---
 ## Completed
 ### `v0.1.4-alpha`

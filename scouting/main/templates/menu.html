@@ -108,13 +108,13 @@
         </div>
 
         <div class="grid-cols-2 grid gap-x-2 gap-y-2 pt-6">
-            <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-105 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md"
+            <button class="dark:text-black text-white dark:bg-slate-200/80 bg-slate-700/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:text-white active:text-black dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-600 dark:hover:bg-slate-100 text-center text-md duration-300"
                     @click="toggle_dark_mode()">
                 <i class="ph-bold ph-moon" x-show="dark_mode" x-transition></i> <i class="ph-bold ph-sun" x-show="!dark_mode" x-transition></i>
                 <p x-show="dark_mode">Light Mode</p>
                 <p x-show="!dark_mode">Dark Mode</p>
             </button>
-            <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-105 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md"
+            <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"
                     @click="toggle_offline_manual()">
                 <i class="ph-bold ph-wifi-slash" x-show="offline_manual" x-transition></i> <i class="ph-bold ph-wifi-high" x-show="!offline_manual" x-transition></i>
                 <p x-show="offline_manual">Go Online</p>
@@ -124,14 +124,14 @@
 
         <div class="grid-cols-2 grid gap-x-2 gap-y-2 pt-6">
             <a href="{{ SERVER_IP }}"
-               class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-105 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md"><i class="ph-bold ph-house"></i> Home</a>
+               class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"><i class="ph-bold ph-house"></i> Home</a>
             <!-- TODO: Update these links when repo moves -->
             <a href="https://github.com/FRC-Team3484/open-scouting"
-               class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-105 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md"><i class="ph-bold ph-github-logo"></i> Source Code</a>
+               class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"><i class="ph-bold ph-github-logo"></i> Source Code</a>
             <a href="https://github.com/FRC-Team3484/open-scouting/releases"
-               class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-105 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md"><i class="ph-bold ph-notebook"></i> Changelog</a>
+               class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"><i class="ph-bold ph-notebook"></i> Changelog</a>
             <a href="https://github.com/FRC-Team3484/open-scouting/issues"
-               class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-105 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md"><i class="ph-bold ph-bug"></i> Report a Bug</a>
+               class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"><i class="ph-bold ph-bug"></i> Report a Bug</a>
         </div>
 
         <div x-show="offline_reports"
@@ -171,7 +171,7 @@
         </div>
 
         <div class="flex flex-col pt-6 w-full">
-            <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-105 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md"
+            <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"
                     @click="mrbc_open = true">
                 <i class="ph-bold ph-seal-check"></i> Check Backed Up Scouting Reports
             </button>
@@ -179,7 +179,7 @@
 
         <div class="flex flex-col pt-6 w-full">
             <button @click="credits_open = !credits_open"
-                    class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-105 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md w-full">
+                    class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md w-full duration-300">
                 <i x-show="!credits_open" class="ph-bold ph-heart"></i> <i x-show="credits_open" class="ph-bold ph-x"></i> Credits
             </button>
 
@@ -197,32 +197,32 @@
 
         <div class="flex flex-col pt-6 w-full">
             <button @click="developer_open = !developer_open"
-                    class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-105 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md w-full">
+                    class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md w-full duration-300">
                 <i x-show="!developer_open" class="ph-bold ph-bug"></i> <i x-show="developer_open" class="ph-bold ph-x"></i> Developer Settings
             </button>
 
             <div x-show="developer_open"
                  x-collapse
                  class="grid=cols-2 grid gap-x-2 gap-y-2 pt-6 mx-6">
-                <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-105 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md"
+                <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"
                         @click="logs_open = true">
                     <i class="ph-bold ph-notebook"></i> View logs
                 </button>
-                <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-105 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md"
+                <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"
                         @click="clear_database()">
                     <i class="ph-bold ph-trash"></i> Clear saved match reports, pit scouting data, and backups
                 </button>
-                <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-105 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md"
+                <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"
                         @click="toggle_service_worker_mode()"
                         x-show="service_worker_cache_first">
                     <i class="ph-bold ph-network"></i> Network-first service worker
                 </button>
-                <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-105 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md"
+                <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"
                         @click="toggle_service_worker_mode()"
                         x-show="!service_worker_cache_first">
                     <i class="ph-bold ph-database"></i> Cache-first service worker
                 </button>
-                <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-105 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md"
+                <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"
                         @click="clear_service_worker_cache()">
                     <i class="ph-bold ph-trash"></i> Clear service worker cache
                 </button>

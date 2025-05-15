@@ -198,6 +198,8 @@ document.addEventListener("alpine:init", () => {
 				}
 			}
 
+			// console.log("Sortable fields:", sort_fields);
+
 			// Convert to array
 			this.sort_fields = Object.values(sort_fields);
 		},
@@ -216,31 +218,22 @@ document.addEventListener("alpine:init", () => {
 			const field = this.$refs.sort_field.value;
 			const order = this.$refs.sort_order.value;
 
-			// Collect all team numbers (keys of the data object)
-			const teamList = Object.keys(data);
+			const sortedTeams = Object.keys(data)
+				.map((teamNumber) => ({
+					teamNumber,
+					data: data[teamNumber],
+					sortValue: this.get_team_field_value(teamNumber, field, data),
+				}))
+				.sort((a, b) =>
+					order === "ascending"
+						? a.sortValue - b.sortValue
+						: b.sortValue - a.sortValue,
+				)
+				.map(({ teamNumber, data }) => ({ teamNumber, data }));
 
-			// Sort teams based on the selected field
-			teamList.sort((teamA, teamB) => {
-				let valueA = this.get_team_field_value(teamA, field);
-				let valueB = this.get_team_field_value(teamB, field);
+			// console.log(sortedTeams);
 
-				// Handle undefined or null values by defaulting to 0
-				valueA = valueA || 0;
-				valueB = valueB || 0;
-
-				// Determine order of sorting
-				return order === "ascending" ? valueA - valueB : valueB - valueA;
-			});
-
-			// Create a new sorted array of objects
-			const sortedData = teamList.map((team) => ({
-				teamNumber: team,
-				data: data[team],
-			}));
-
-			// console.log(sortedData);
-
-			return sortedData;
+			return sortedTeams;
 		},
 
 		/**
@@ -251,32 +244,39 @@ document.addEventListener("alpine:init", () => {
 		 *
 		 * @returns {Array}
 		 */
-		get_team_field_value(team, field) {
-			const values = [];
+		get_team_field_value(teamNumber, field, data) {
+			const team = data[teamNumber];
+			if (!team) return 0;
 
-			// Loop through 'auton' and 'teleop' sections
+			// Look through auton and teleop
 			for (const section of ["auton", "teleop"]) {
-				if (this.data[section]?.[team]) {
-					for (const game_piece of Object.keys(this.data[section][team])) {
-						// Loop through 'score' and 'miss' types
-						for (const type of ["score", "miss"]) {
-							const fieldData =
-								this.data[section][team][game_piece]?.[type]?.[field];
-							if (fieldData?.average !== undefined) {
-								values.push(fieldData.average);
-							}
+				const sectionData = team[section];
+				if (!sectionData) continue;
+
+				for (const piece of Object.values(sectionData)) {
+					for (const type of ["score", "miss"]) {
+						const typeData = piece[type];
+						if (!typeData) continue;
+
+						if (
+							field in typeData &&
+							typeof typeData[field]?.average === "number"
+						) {
+							return typeData[field].average;
 						}
 					}
 				}
 			}
 
-			// Handle capabilities section
-			if (this.data.capabilities?.[team]?.[field]) {
-				// If field is in capabilities, grab the first value or default to 0
-				values.push(Object.values(this.data.capabilities[team][field])[0] || 0);
+			// Check capabilities
+			if (team.capabilities?.[field]) {
+				const values = Object.values(team.capabilities[field]);
+				if (values.length > 0 && typeof values[0] === "number") {
+					return values[0];
+				}
 			}
 
-			return values;
+			return 0;
 		},
 
 		/**
@@ -486,8 +486,8 @@ document.addEventListener("alpine:init", () => {
 
 			if (response.ok) {
 				this.data = this.parse_server_data(await response.json());
-				// this.data_sorted = this.sort_teams_by_field(this.data);
-				this.data_sorted = this.data;
+				this.data_sorted = this.sort_teams_by_field(this.data);
+				// this.data_sorted = this.data;
 				window.dispatchEvent(
 					new CustomEvent("data", {
 						detail: { data: this.data_sorted },
@@ -565,7 +565,7 @@ document.addEventListener("alpine:init", () => {
 			const csvString = csvRows.join("\n");
 
 			// Done! You can now download or log it
-			console.log(csvString);
+			// console.log(csvString);
 
 			const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
 			const link = document.createElement("a");

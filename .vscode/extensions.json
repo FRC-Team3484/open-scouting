@@ -5,7 +5,9 @@
 	// List of extensions which should be recommended for users of this workspace.
 	"recommendations": [
 		"charliermarsh.ruff",
-		"biomejs.biome"
+		"biomejs.biome",
+		"bradlc.vscode-tailwindcss",
+		"monosans.djlint"
 	],
 	// List of extensions recommended by VSCodium that should not be recommended for users of this workspace.
 	"unwantedRecommendations": [

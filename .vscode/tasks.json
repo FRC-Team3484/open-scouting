@@ -12,7 +12,10 @@
         "runOptions": {
           "runOn": "folderOpen"
         },
-        "problemMatcher": []
+        "problemMatcher": [],
+        "windows": {
+          "command": ".venv\\Scripts\\activate && cd scouting && python manage.py runserver"
+        },
       },
       {
         "label": "Start server (external)",
@@ -22,7 +25,10 @@
           "reveal": "always",
           "panel": "new"
         },
-        "problemMatcher": []
+        "problemMatcher": [],
+        "windows": {
+          "command": ".venv\\Scripts\\activate && cd scouting && python manage.py runserver 192.168.1.103:1111"
+        },
       },
       {
         "label": "Migrate models",
@@ -32,7 +38,10 @@
           "reveal": "always",
           "panel": "new"
         },
-        "problemMatcher": []
+        "problemMatcher": [],
+        "windows": {
+          "command": ".venv\\Scripts\\activate && cd scouting && python manage.py makemigrations && python manage.py migrate"
+        },
       },
       {
         "label": "Collect static files",
@@ -42,13 +51,19 @@
           "reveal": "always",
           "panel": "new"
         },
-        "problemMatcher": []
+        "problemMatcher": [],
+        "windows": {
+          "command": ".venv\\Scripts\\activate && cd scouting && python manage.py collectstatic --noinput"
+        },
       },
       // Thanks to https://github.com/pypa/pip/issues/4318#issuecomment-284272355
       {
         "label": "Pip freeze",
         "type": "shell",
         "command": "source .venv/bin/activate && pip freeze | sed s/=.*// > requirements.txt",
+        "windows": {
+          "command": ".venv\\Scripts\\activate && pip freeze | sed s/=.*// > requirements.txt"
+        },
         "presentation": {
           "reveal": "always",
           "panel": "new"
@@ -72,6 +87,9 @@
         "label": "Run Tests",
         "type": "shell",
         "command": "source .venv/bin/activate && cd scouting && python manage.py test",
+        "windows": {
+          "command": ".venv\\Scripts\\activate && cd scouting && python manage.py test"
+        },
         "presentation": {
           "reveal": "always",
           "panel": "new"

@@ -172,8 +172,7 @@
                 </div>
             </div>
 
-            <!-- TODO: Fix this later -->
-            <div class="flex flex-col hidden!">
+            <div class="flex flex-col">
                 <p class="dark:text-white text-black text-sans text-2xl ml-4 mt-4">
                     <i class="ph-bold ph-funnel-simple"></i> Sort By
                 </p>
@@ -204,8 +203,8 @@
         <div class="flex flex-col w-full md:w-1/2 lg:w-2/3"
              x-data="advanced_data"
              x-init="init()">
-            <template x-for="(teamData, teamNumber) in data" :key="teamNumber">
-                <template x-if="Object.keys(teamData).length > 0">
+            <template x-for="teamEntry in data" :key="teamEntry.teamNumber">
+                <template x-if="Object.keys(teamEntry.data).length > 0">
                     <div class="flex flex-col px-4 py-2 dark:bg-slate-800 border-2 dark:border-slate-700 bg-slate-200 border-slate-300 rounded-lg mb-4 items-left"
                          x-data="{ open: false }">
                         <!-- Team Number -->
@@ -213,12 +212,12 @@
                              @click="open = !open">
                             <div class="flex flex-row items-center">
                                 <div class="rounded-md w-10 h-10 mr-4 bg-slate-200/80 dark:bg-slate-700/80 border-2 dark:border-slate-600 border-slate-300">
-                                    <img :src="'https://www.thebluealliance.com/avatar/'+ year+ '/frc' + teamNumber + '.png'"
+                                    <img :src="'https://www.thebluealliance.com/avatar/'+ year+ '/frc' + teamEntry.teamNumber + '.png'"
                                          onerror="this.onerror=null;this.src='';this.style.display='none';"
                                          class="w-full h-full rounded-md">
                                 </div>
                                 <p class="dark:text-white text-black text-sans text-2xl"
-                                   x-text="teamNumber"></p>
+                                   x-text="teamEntry.teamNumber"></p>
                             </div>
 
                             <i class="ph-bold ph-caret-down dark:text-white text-black"
@@ -245,8 +244,9 @@
                                         <p class="text-md dark:text-white text-black font-semibold mb-2">Score & Miss Averages</p>
                                         <ul class="ml-4 list-disc list-inside">
                                             <template x-for="phase in ['auton']" :key="phase">
-                                                <template x-if="teamData[phase]">
-                                                    <template x-for="(pieceData, pieceName) in teamData[phase]" :key="pieceName">
+                                                <template x-if="teamEntry.data[phase]">
+                                                    <template x-for="(pieceData, pieceName) in teamEntry.data[phase]"
+                                                              :key="pieceName">
                                                         <template x-for="(categoryData, categoryName) in pieceData" :key="categoryName">
                                                             <template x-for="(fieldData, fieldName) in categoryData" :key="fieldName">
                                                                 <li class="dark:text-white text-black">
@@ -265,8 +265,9 @@
 
                                         <ul class="ml-4 list-disc list-inside mt-2">
                                             <template x-for="phase in ['teleop']" :key="phase">
-                                                <template x-if="teamData[phase]">
-                                                    <template x-for="(pieceData, pieceName) in teamData[phase]" :key="pieceName">
+                                                <template x-if="teamEntry.data[phase]">
+                                                    <template x-for="(pieceData, pieceName) in teamEntry.data[phase]"
+                                                              :key="pieceName">
                                                         <template x-for="(categoryData, categoryName) in pieceData" :key="categoryName">
                                                             <template x-for="(fieldData, fieldName) in categoryData" :key="fieldName">
                                                                 <li class="dark:text-white text-black">
@@ -288,7 +289,7 @@
                                     <div>
                                         <p class="text-md dark:text-white text-black font-semibold mb-2">Capabilities</p>
                                         <ul class="ml-4 list-disc list-inside">
-                                            <template x-for="(capabilityValue, capabilityName) in teamData.capabilities"
+                                            <template x-for="(capabilityValue, capabilityName) in teamEntry.data.capabilities"
                                                       :key="capabilityName">
                                                 <li class="dark:text-white text-black">
                                                     <span class="font-medium"
@@ -306,7 +307,7 @@
                             </div>
 
                             <!-- Sections: Auton, Teleop, Capabilities, Other -->
-                            <template x-for="(section, sectionName) in teamData" :key="sectionName">
+                            <template x-for="(section, sectionName) in teamEntry.data" :key="sectionName">
                                 <div class="mt-4 px-4 py-2 border-l-2 dark:border-slate-600 border-slate-200"
                                      x-data="{ open: false }">
                                     <div class="flex flex-row justify-between items-center cursor-pointer"
