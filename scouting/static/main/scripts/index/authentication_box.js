@@ -14,6 +14,7 @@ document.addEventListener("alpine:init", () => {
 		username: "",
 		display_name: "",
 		team_number: "",
+		profile_menu_open: false,
 
 		/**
 		 * Checks if the username and team number are filled in

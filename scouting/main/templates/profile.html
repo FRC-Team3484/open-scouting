@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head_title %}
+    Open Scouting
+{% endblock head_title %}
+
+{% block head_scripts %}
+{% endblock head_scripts %}
+
+{% block stylesheets %}
+{% endblock stylesheets %}
+
+{% block body %}
+    <script>
+        const SERVER_IP = `{{ SERVER_IP }}`;
+        const CSRF_TOKEN = `{{ csrf_token }}`;
+        const TBA_API_KEY = `{{ TBA_API_KEY }}`;
+        const EMAIL_ENABLED = `{{ EMAIL_ENABLED }}`;
+        const USER = `{{ user }}`;
+
+        const USER_ID = `{{ user.id }}`;
+        const DISPLAY_NAME = `{{ user.profile.display_name }}`;
+        const TEAM_NUMBER = `{{ user.profile.team_number }}`;
+    </script>
+
+    <script src="{% static 'main/scripts/profile/profile.js' %}"></script>
+
+    <div class="flex flex-col md:flex-row min-h-screen w-screen items-center justify-center gap-4"
+         x-data="profile"
+         x-init="user_id = USER_ID; display_name = DISPLAY_NAME; team_number = TEAM_NUMBER; init();">
+        <div class="flex flex-col gap-2">
+            <!-- <div class="border-2 border-slate-600/80 rounded-full w-32 h-32 aspect-square"></div> -->
+
+            <button class="ui_button_small !w-full" @click="window.location.href = '/'">
+                <i class="ph-bold ph-arrow-left"></i> Back to home
+            </button>
+            <button class="ui_button_small !w-full" @click="sign_out_check()">
+                <i class="ph-bold ph-sign-out"></i> Sign Out
+            </button>
+        </div>
+
+        <div class="border-2 border-slate-600/80 rounded-full md:w-2 md:h-64 w-64 h-2"></div>
+
+        <div class="flex flex-col gap-2">
+            <div class="flex flex-col gap-2"
+                 x-show="!editing"
+                 x-transition:enter.delay.300ms>
+                <p class="dark:text-white text-black font-sans text-2xl text-left">
+                    <i class="ph-bold ph-user-circle"></i> Profile
+                </p>
+
+                <p class="dark:text-white text-black font-sans text-md text-left">
+                    <span class="opacity-50 mr-2">Email:</span><span class="opacity-100">{{ user.email }}</span>
+                </p>
+
+                <p class="dark:text-white text-black font-sans text-md text-left">
+                    <span class="opacity-50 mr-2">Display Name:</span><span class="opacity-100" x-text="display_name"></span>
+                </p>
+
+                <p class="dark:text-white text-black font-sans text-md text-left">
+                    <span class="opacity-50 mr-2">Team Number:</span><span class="opacity-100" x-text="team_number"></span>
+                </p>
+
+                <div class="flex flex-row gap-2">
+                    <button class="ui_button_small" @click="editing = true">
+                        <i class="ph-bold ph-pencil"></i> Edit Profile
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-2"
+                 x-show="editing"
+                 x-transition:enter.delay.300ms>
+                <p class="dark:text-white text-black font-sans text-2xl text-left">
+                    <i class="ph-bold ph-pencil"></i> Edit Profile
+                </p>
+
+                <p class="dark:text-white text-black font-sans text-sm text-left opacity-80">Display name</p>
+                <input class="ui_input"
+                       placeholder="Display name"
+                       type="text"
+                       x-model="display_name">
+
+                <p class="dark:text-white text-black font-sans text-sm text-left opacity-80">Team number</p>
+                <input class="ui_input"
+                       placeholder="Team number"
+                       type="text"
+                       x-model="team_number">
+
+                <div class="flex flex-row gap-2">
+                    <button class="ui_button_small" @click="save_profile()">
+                        <i class="ph-bold ph-check-circle"></i> Save Changes
+                    </button>
+
+                    <button class="ui_button_small" @click="editing = false">
+                        <i class="ph-bold ph-x-circle"></i> Cancel Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock body %}
+
+{% block scripts %}
+{% endblock scripts %}

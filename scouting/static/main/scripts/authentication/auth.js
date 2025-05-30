@@ -10,6 +10,13 @@ document.addEventListener("alpine:init", () => {
 	Alpine.data("auth", () => ({
 		sign_in: true,
 		create_account_page: 1,
+		forgot_password: false,
+		forgot_password_page: 1,
+		forgot_password_error: "",
+		sending_forgot_password: false,
+		forgot_password_user: "",
+		forgot_password_code: "",
+		forgot_password_email: "",
 		user: {
 			uuid: "",
 			display_name: "",
@@ -406,6 +413,152 @@ document.addEventListener("alpine:init", () => {
 		 */
 		go_to_index() {
 			window.location.href = `${SERVER_IP}/`;
+		},
+
+		cancel_forgot_password() {
+			this.forgot_password_page = 1;
+			this.$refs.forgot_password_email.value = "";
+			this.$refs.forgot_password_email_next.disabled = true;
+			this.$refs.forgot_password_verification_code.value = "";
+			this.$refs.forgot_password_verify_next.disabled = true;
+			this.$refs.forgot_password_password.value = "";
+			this.$refs.forgot_password_password_next.disabled = true;
+
+			this.forgot_password_user = "";
+			this.sending_forgot_password = false;
+
+			this.forgot_password_error = "";
+			this.forgot_password = false;
+		},
+
+		async send_forgot_password_email() {
+			const email = this.$refs.forgot_password_email.value;
+			this.forgot_password_email = email;
+
+			this.$refs.forgot_password_email_next.disabled = true;
+			this.sending_forgot_password = true;
+
+			if (this.EMAIL_ENABLED) {
+				const response = await fetch(
+					`${SERVER_IP}/authentication/forgot_password`,
+					{
+						method: "POST",
+						headers: {
+							"X-CSRFToken": CSRF_TOKEN,
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify({
+							email: email,
+						}),
+					},
+				);
+
+				if (response.ok) {
+					response.json().then(async (json) => {
+						this.forgot_password_user = json.user_uuid;
+						this.sending_forgot_password = false;
+
+						this.forgot_password_page = 2;
+					});
+				} else {
+					response.text().then(async (text) => {
+						log("WARNING", "Unable to send verification code");
+						this.sending_forgot_password = false;
+						this.forgot_password_error = "Unable to send verification code";
+					});
+				}
+			} else {
+				this.sending_forgot_password = false;
+
+				this.forgot_password_page = 3;
+			}
+		},
+
+		async verify_forgot_password_code() {
+			const response = await fetch(
+				`${SERVER_IP}/authentication/check_verification_code`,
+				{
+					method: "POST",
+					headers: {
+						"X-CSRFToken": CSRF_TOKEN,
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						code: this.$refs.forgot_password_verification_code.value,
+						user_uuid: this.forgot_password_user,
+					}),
+				},
+			);
+
+			if (response.ok) {
+				response.json().then(async (json) => {
+					log("INFO", "Verification code is valid");
+					this.forgot_password_page = 3;
+					this.forgot_password_code =
+						this.$refs.forgot_password_verification_code.value;
+				});
+			} else {
+				response.json().then(async (json) => {
+					if (json.reason === "expired") {
+						this.forgot_password_error =
+							"The verification code has expired. Use the 'Resend Code' to send a new one.";
+					} else if (json.reason === "does_not_exist") {
+						this.forgot_password_error = "The verification code is incorrect!";
+					}
+				});
+			}
+		},
+
+		async change_password() {
+			let unsafe = false;
+			let user_uuid = this.forgot_password_user;
+
+			if (this.EMAIL_ENABLED) {
+				unsafe = false;
+				user_uuid = this.forgot_password_user;
+			} else {
+				unsafe = true;
+				user_uuid = this.forgot_password_email;
+			}
+
+			const response = await fetch(
+				`${SERVER_IP}/authentication/change_password`,
+				{
+					method: "POST",
+					headers: {
+						"X-CSRFToken": CSRF_TOKEN,
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						password: this.$refs.forgot_password_password.value,
+						user_uuid: user_uuid,
+						code: this.forgot_password_code,
+						unsafe: unsafe,
+					}),
+				},
+			);
+
+			if (response.ok) {
+				response.text().then(async (text) => {
+					log("INFO", "Password changed successfully");
+					this.forgot_password_page = 4;
+
+					setTimeout(() => {
+						this.cancel_forgot_password();
+					}, 5000);
+				});
+			} else {
+				response.text().then(async (text) => {
+					if (text.reason === "expired") {
+						this.forgot_password_error =
+							"The verification code has expired. Use the 'Resend Code' to send a new one.";
+					} else if (text.reason === "does_not_exist") {
+						this.forgot_password_error = "The verification code is incorrect!";
+					} else {
+						this.forgot_password_error = `Unable to change password: ${text}`;
+					}
+				});
+			}
 		},
 
 		init() {

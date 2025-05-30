@@ -105,9 +105,27 @@
                             <button class="ui_button_icon mx-1" @click="continue_with_account()">
                                 <i class="ph-bold ph-check-circle"></i>
                             </button>
-                            <button class="ui_button_icon mx-1" @click="sign_out_check()">
-                                <i class="ph-bold ph-sign-out"></i>
+                            <button class="ui_button_icon mx-1"
+                                    @click="profile_menu_open = !profile_menu_open"
+                                    x-ref="profile_menu">
+                                <i class="ph-bold ph-dots-three"></i>
                             </button>
+
+                            <div class="dark:bg-slate-700/60 bg-slate-200/60 border-2 dark:border-slate-600 border-slate-300 rounded-xl backdrop-blur-md flex flex-col p-4 z-10"
+                                 x-show="profile_menu_open"
+                                 x-anchor.offset.10="$refs.profile_menu"
+                                 @click.outside="profile_menu_open = false"
+                                 x-transition>
+                                <button class="ui_button_small my-1! py-1! px-2! w-full! text-left!"
+                                        @click="sign_out_check()">
+                                    <i class="ph-bold ph-sign-out"></i> Sign Out
+                                </button>
+                                <button class="ui_button_small my-1! py-1! px-2! w-full! text-left!"
+                                        @click="window.location.href = '/authentication/profile'">
+                                    <i class="ph-bold ph-pencil"></i> Edit Profile
+                                </button>
+                            </div>
+
                         </div>
                     </div>
 

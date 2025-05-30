@@ -32,8 +32,9 @@
         <script src="{% static '/main/scripts/authentication/auth.js' %}"></script>
 
         <div class="mt-4" x-data="auth">
+            <!-- Sign in -->
             <div class="flex flex-col items-center dark:bg-slate-800 dark:border-slate-700 bg-slate-200 border-slate-300 border-2 rounded-2xl py-6 px-4 mx-2"
-                 x-show="sign_in"
+                 x-show="sign_in && !forgot_password"
                  x-transition:enter.delay.300ms>
                 <p class="dark:text-white text-black text-sans text-center text-2xl mb-2">
                     <i class="ph-bold ph-user-circle-check"></i> Sign in
@@ -57,6 +58,12 @@
                            :type="sign_in_show_password ? 'text' : 'password'"
                            x-ref="sign_in_password"
                            @input="check_sign_in_fields()">
+                    <button class="ui_button"
+                            x-ref="sign_in_button"
+                            @click="check_sign_in()"
+                            disabled>
+                        <i class="ph-bold ph-check-circle"></i> Sign in
+                    </button>
 
                     <div class="flex flex-row items-center w-full justify-center mt-2 mb-1">
                         <input class="ui_checkbox ml-2"
@@ -69,15 +76,10 @@
                            @click="check_password_visibility()"
                            x-show="sign_in_show_password">Hide Password</p>
                     </div>
+                    <button class="dark:text-white text-md text-black opacity-70 hover:opacity-100 transition-opacity active:opacity-50 mb-2"
+                            @click="forgot_password = true">Reset password</button>
 
                 </div>
-
-                <button class="ui_button"
-                        x-ref="sign_in_button"
-                        @click="check_sign_in()"
-                        disabled>
-                    <i class="ph-bold ph-check-circle"></i> Sign in
-                </button>
 
                 <div class="h-1 w-16 mb-2 dark:bg-slate-700 border-1 dark:border-slate-600 bg-slate-300 border-slate-400 rounded-full"></div>
                 <p class="dark:text-white text-black text-sans text-center text-md">Or...</p>
@@ -86,6 +88,113 @@
                 </button>
             </div>
 
+            <!-- Forgot password -->
+            <div class="flex flex-col items-center dark:bg-slate-800 dark:border-slate-700 bg-slate-200 border-slate-300 border-2 rounded-2xl py-6 px-4 mx-2"
+                 x-show="sign_in && forgot_password"
+                 x-transition:enter.delay.300ms>
+                <p class="dark:text-white text-black text-sans text-center text-2xl mb-2">
+                    <i class="ph-bold ph-key"></i> Reset password
+                </p>
+
+                <div class="flex flex-row dark:bg-red-500/50 dark:border-red-400/70 border-2 rounded-lg bg-red-400/50 border-red-500/70 my-4 mx-2"
+                     x-show="forgot_password_error"
+                     x-transition>
+                    <p class="dark:text-red-400 text-red-500 text-sans text-center text-md m-2"
+                       x-text="forgot_password_error"></p>
+                </div>
+
+                <div class="flex flex-col w-full items-center my-8"
+                     x-show="forgot_password_page == 1"
+                     x-transition:enter.delay.300ms>
+                    <p class="dark:text-white text-black text-sans text-center text-md">Enter the email to the account you'd like to change</p>
+                    <input class="ui_input w-full"
+                           placeholder="Email"
+                           type="text"
+                           x-ref="forgot_password_email"
+                           @input="if ($el.value.includes('@') && $el.value.includes('.')) $refs.forgot_password_email_next.disabled = false; else $refs.forgot_password_email_next.disabled = true">
+                    <button class="ui_button"
+                            @click="send_forgot_password_email(); forgot_password_email = $refs.forgot_password_email.value"
+                            x-ref="forgot_password_email_next"
+                            disabled>
+                        <i class="ph-bold ph-arrow-circle-right"></i> Send reset email
+                    </button>
+                    <div class="flex flex-row items-center justify-center"
+                         x-show="sending_forgot_password"
+                         x-transition>
+                        <i class="ph-bold ph-circle-notch animate-spin origin-center dark:text-white text-black text-sans text-md"></i>
+                        <p class="dark:text-white text-black text-sans text-md ml-2">Sending Verification Code...</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col w-full items-center my-8"
+                     x-show="forgot_password_page == 2"
+                     x-transition:enter.delay.300ms>
+                    <p class="dark:text-white text-black text-sans text-center text-md">Verify account</p>
+                    <p class="dark:text-white text-black text-sans text-center text-sm">
+                        <p class="dark:text-white text-black text-sans text-center text-sm mx-2 max-w-2xl opacity-80"
+                           x-text="'We sent a verification code to ' + forgot_password_email + '. Please check your email for a message from {{ EMAIL_HOST_USER }} and enter the verification code below'">
+                        </p>
+                    </p>
+
+                    <input class="ui_input w-full"
+                           placeholder="Verification Code"
+                           type="text"
+                           x-ref="forgot_password_verification_code"
+                           @input="if ($el.value.length == 6) $refs.forgot_password_verify_next.disabled = false; else $refs.forgot_password_verify_next.disabled = true">
+
+                    <button class="ui_button"
+                            x-ref="forgot_password_verify_next"
+                            @click="verify_forgot_password_code()"
+                            disabled>
+                        <i class="ph-bold ph-check-circle"></i> Verify
+                    </button>
+                    <button class="ui_button"
+                            x-ref="forgot_password_verify_resend"
+                            @click="send_forgot_password_email()">
+                        <i class="ph-bold ph-arrow-clockwise"></i> Resend Code
+                    </button>
+                </div>
+
+                <div class="flex flex-col w-full items-center my-8"
+                     x-show="forgot_password_page == 3"
+                     x-transition:enter.delay.300ms>
+                    <p class="dark:text-white text-black text-sans text-center text-md">Enter new password</p>
+
+                    <input class="ui_input w-full"
+                           placeholder="Password"
+                           type="password"
+                           x-ref="forgot_password_password"
+                           @input="if ($el.value.length > 0) $refs.forgot_password_password_next.disabled = false; else $refs.forgot_password_password_next.disabled = true">
+
+                    <button x-ref="forgot_password_password_next"
+                            class="ui_button"
+                            @click="change_password()">
+                        <i class="ph-bold ph-key"></i> Change Password
+                    </button>
+                </div>
+
+                <div class="flex flex-col items-center my-8"
+                     x-show="forgot_password_page == 4"
+                     x-transition:enter.delay.300ms>
+                    <p class="dark:text-white text-black text-sans text-center text-md">Your password has been successfully changed!</p>
+                    <p class="dark:text-white text-black text-sans text-center text-6xl my-2">
+                        <i class="ph-bold ph-check-circle"></i>
+                    </p>
+                    <p class="dark:text-white text-black text-sans text-center text-sm">You will be redirected in a few moments, or you can press the button below to sign in</p>
+
+                    <div class="flex flex-row">
+                        <button class="ui_button mx-1" @click="cancel_forgot_password()">
+                            <i class="ph-bold ph-house"></i> Sign in
+                        </button>
+                    </div>
+                </div>
+
+                <button class="ui_button" @click="cancel_forgot_password()">
+                    <i class="ph-bold ph-x-circle"></i> Cancel
+                </button>
+            </div>
+
+            <!-- Create account -->
             <div class="flex flex-col items-center dark:bg-slate-800 dark:border-slate-700 bg-slate-200 border-slate-300 border-2 rounded-2xl py-6 px-4 mx-2"
                  x-show="!sign_in"
                  x-transition:enter.delay.300ms>

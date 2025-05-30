@@ -1,1 +1,2 @@
 djlint
+django-browser-reload

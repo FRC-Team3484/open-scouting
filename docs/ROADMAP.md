@@ -5,9 +5,14 @@ This document describes the roadmap for Open Scouting, and roughly when each fea
 
 ## To-Do
 ### `v0.1.7-alpha`
-- [ ] [#47](https://github.com/FRC-Team3484/open-scouting/issues/47) - Be able to edit user profiles
-- [ ] [#48](https://github.com/FRC-Team3484/open-scouting/issues/48) - Forgot password in authentication
-- [ ] [#86](https://github.com/FRC-Team3484/open-scouting/issues/86) - Scroll to the opened section when expanding sections in the menu
+- [x] [#47](https://github.com/FRC-Team3484/open-scouting/issues/47) - Be able to edit user profiles
+- [x] [#48](https://github.com/FRC-Team3484/open-scouting/issues/48) - Forgot password in authentication
+- [x] [#86](https://github.com/FRC-Team3484/open-scouting/issues/86) - Scroll to the opened section when expanding sections in the menu
+
+### `v0.1.8-alpha`
+- [ ] [#67](https://github.com/FRC-Team3484/open-scouting/issues/67) - Change the colors of true and false values in the charts in the advanced data view
+- [ ] [#84](https://github.com/FRC-Team3484/open-scouting/issues/84) - Warn the user if their device may clear any local offline data
+- [ ] [#68](https://github.com/FRC-Team3484/open-scouting/issues/68) - Be able to favorite events to pin them to the top of the event list
 
 ---
 ## Completed

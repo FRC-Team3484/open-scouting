@@ -57,7 +57,9 @@
          x-transition:enter-end="translate-y-0 opacity-100"
          x-transition:leave="transform transition ease-out duration-300"
          x-transition:leave-start="translate-y-0 opacity-100"
-         x-transition:leave-end="translate-y-full opacity-0">
+         x-transition:leave-end="translate-y-full opacity-0"
+         @developer_open.window="setTimeout(() => $el.scrollTo({ top: $el.scrollHeight, behavior: 'smooth' }), 500);">
+
         <div class="flex flex-row justify-between items-center w-full border-b-2 dark:border-slate-600 border-slate-300 px-6 py-4">
             <div class="flex flex-row">
                 <div class="flex flex-row dark:text-white text-black items-center text-xl font-bold"
@@ -196,7 +198,7 @@
         </div>
 
         <div class="flex flex-col pt-6 w-full">
-            <button @click="developer_open = !developer_open"
+            <button @click="developer_open = !developer_open; if (developer_open) $dispatch('developer_open', developer_open)"
                     class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md w-full duration-300">
                 <i x-show="!developer_open" class="ph-bold ph-bug"></i> <i x-show="developer_open" class="ph-bold ph-x"></i> Developer Settings
             </button>
