@@ -9,7 +9,7 @@ This document describes the roadmap for Open Scouting, and roughly when each fea
 - [ ] [#84](https://github.com/FRC-Team3484/open-scouting/issues/84) - Warn the user if their device may clear any local offline data
 - [ ] [#68](https://github.com/FRC-Team3484/open-scouting/issues/68) - Be able to favorite events to pin them to the top of the event list
 - [ ] [#28](https://github.com/FRC-Team3484/open-scouting/issues/28) - Add loading animation to the event selector
-- [ ] [#94](https://github.com/FRC-Team3484/open-scouting/issues/94) - Use `x-cloak` on elements that use `x-show`
+- [x] [#94](https://github.com/FRC-Team3484/open-scouting/issues/94) - Use `x-cloak` on elements that use `x-show`
 
 ---
 ## Completed

@@ -20,7 +20,8 @@
     </script>
 
     <div class="flex h-screen justify-center items-center flex-col w-screen"
-         x-data>
+         x-data
+         x-cloak>
         <img class="w-full md:w-1/2 xl:w-2/6 px-10 hidden dark:block hover:scale-[1.03] active:scale-95 transition-all"
              src="{% static '/main/images/logo_light.png' %}"
              @click="window.location.href = '{{ SERVER_IP }}'">

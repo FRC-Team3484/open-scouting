@@ -26,7 +26,8 @@
             <div x-data="header">
                 <div class="flex flex-col justify-center items-center"
                      x-show="basic"
-                     x-transition>
+                     x-transition
+                     x-cloak>
                     <img class="w-full md:w-1/2 xl:w-2/6 px-10 hidden dark:block"
                          src="{% static '/main/images/logo_light.png' %}">
                     <img class="w-full md:w-1/2 xl:w-2/6 px-10 dark:hidden block"
@@ -43,7 +44,8 @@
                 </div>
                 <div class="flex flex-row dark:bg-slate-800 dark:border-slate-700 bg-slate-200 border-slate-300 border-2 rounded-lg w-full px-6 justify-center items-center py-4 mt-6"
                      x-show="!basic"
-                     x-transition>
+                     x-transition
+                     x-cloak>
                     <img class="w-16 h-16 aspect-square m-2 hover:scale-110 transition-all ease-in-out active:scale-95"
                          src="{% static '/main/images/icon_rounded.png' %}"
                          @click="start_over()">
@@ -84,7 +86,7 @@
 
             <script src="{% static '/main/scripts/index/index.js' %}"></script>
 
-            <div x-data="index">
+            <div x-data="index" x-cloak>
                 <script src="{% static '/main/scripts/index/authentication_box.js' %}"></script>
 
                 <div class="flex flex-col"
@@ -406,7 +408,8 @@
                  x-init="init()"
                  x-show="shown"
                  @click.outside="close_dialog()"
-                 x-transition>
+                 x-transition
+                 x-cloak>
                 <div class="flex flex-row justify-between">
                     <div class="flex flex-col max-w-sm md:max-w-xl lg:max-w-3xl">
                         <p class="text-black dark:text-white text-sans text-2xl font-bold">Create Custom Event</p>
