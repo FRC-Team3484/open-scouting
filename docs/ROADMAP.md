@@ -11,6 +11,11 @@ This document describes the roadmap for Open Scouting, and roughly when each fea
 - [ ] [#28](https://github.com/FRC-Team3484/open-scouting/issues/28) - Add loading animation to the event selector
 - [x] [#94](https://github.com/FRC-Team3484/open-scouting/issues/94) - Use `x-cloak` on elements that use `x-show`
 
+### `v0.1.9-alpha`
+- [ ] [#43](https://github.com/FRC-Team3484/open-scouting/issues/43) - Admin interface
+- [ ] [#57](https://github.com/FRC-Team3484/open-scouting/issues/57) - Create a script or UI for creating `season_fields.py`
+- [ ] [#97](https://github.com/FRC-Team3484/open-scouting/issues/97) - Remove the data table page
+
 ---
 ## Completed
 ### `v0.1.7-alpha`
