@@ -183,6 +183,16 @@
         </div>
 
         <div class="flex flex-col pt-6 w-full">
+            <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"
+                    @click="storage_open = true">
+                <i class="ph-bold ph-floppy-disk"></i> Manage Storage
+            </button>
+
+            <p x-show="storage_warning"
+               class="text-orange-500 font-bold ml-auto mr-auto mt-1">Low Storage remaining</p>
+        </div>
+
+        <div class="flex flex-col pt-6 w-full">
             <button @click="credits_open = !credits_open"
                     class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md w-full duration-300">
                 <i x-show="!credits_open" class="ph-bold ph-heart"></i> <i x-show="credits_open" class="ph-bold ph-x"></i> Credits
@@ -377,6 +387,101 @@
             </template>
 
             <p class="dark:text-white text-black">Only the 100 most recent log entries are preserved on page reload</p>
+        </div>
+    </div>
+
+    <script src="{% static '/main/scripts/menu/storage.js' %}"></script>
+
+    <div x-data="menu_storage"
+         x-show="storage_open"
+         @click.outside="storage_open = false"
+         x-transition
+         class="flex flex-col fixed bottom-0 z-10 inset-x-0 mx-auto bg-slate-200/80 dark:bg-slate-700/80 border-2 dark:border-slate-600 border-slate-300 rounded-t-2xl backdrop-blur-md w-screen md:w-3/4 lg:w-1/2 h-3/4 md:min-h-1/2 overflow-y-auto p-4"
+         x-transition
+         x-cloak>
+        <div class="flex flex-row justify-between items-center w-full border-b-2 dark:border-slate-600 border-slate-300 px-6 py-4 mb-6">
+            <div class="flex flex-col">
+                <p class="text-black dark:text-white text-2xl font-bold">Client side storage</p>
+                <p class="text-black dark:text-white text-sm">View and manage the storage used by the client</p>
+            </div>
+
+            <button class="ui_button_icon" @click="storage_open = false">
+                <i class="ph-bold ph-x"></i>
+            </button>
+        </div>
+
+        <p class="text-black dark:text-white text-md mb-6">
+            An estimation of the storage used by the client and the storage that the browser has allocated for it. The total storage avaliable may fluctuate based off of the avaliable storage space on the user's device.
+        </p>
+
+        <div class="flex flex-col w-full gap-2">
+            <div class="flex flex-row gap-1">
+                <p class="text-black dark:text-white text-md"
+                   x-text="`${(used / 1024 / 1024).toFixed(2)} MB`"></p>
+                <p class="text-black dark:text-white text-md">/</p>
+                <p class="text-black dark:text-white text-md"
+                   x-text="`${(total / 1024 / 1024).toFixed(2)} MB`"></p>
+                <p class="text-black dark:text-white text-md font-bold">used</p>
+            </div>
+
+            <div class="flex flex-row gap-2 items-center justify-center">
+                <p class="text-black dark:text-white text-md"
+                   x-text="`${(used / total * 100).toFixed(2)}%`"></p>
+                <progress class="rounded-full overflow-hidden h-2 bg-slate-200 dark:bg-slate-700 border-1 dark:border-slate-600 border-slate-300 w-full"
+                          x-bind:value="used"
+                          x-bind:max="total">
+                    <div class="h-full bg-slate-500 dark:bg-slate-300 rounded-full transition-all duration-300"></div>
+                </progress>
+            </div>
+
+            <p class="text-black dark:text-white text-md my-6">
+                Clearing any of the items below is irreversible. If any items are indicated to be unsaved, those can be uploaded to the server in the main section of the menu
+            </p>
+
+            <div class="flex flex-row gap-1 flex-wrap">
+                <button class="ui_button_small" @click="clear_backups_dialog()">
+                    <i class="ph-bold ph-trash"></i> Clear
+                </button>
+                <p class="text-black dark:text-white text-md font-bold mx-2">Backed up scouting reports</p>
+                <p class="text-black dark:text-white text-md" x-text="report_backups"></p>
+                <p class="text-black dark:text-white text-md">items</p>
+            </div>
+            <div class="flex flex-row gap-1 flex-wrap">
+                <button class="ui_button_small" @click="clear_offline_reports_dialog()">
+                    <i class="ph-bold ph-trash"></i> Clear
+                </button>
+
+                <p class="text-black dark:text-white text-md font-bold mx-2">Offline scouting reports</p>
+
+                <template x-if="offline_reports > 0">
+                    <div class="flex flex-row gap-1">
+                        <p class="text-orange-500 text-md" x-text="offline_reports"></p>
+                        <p class="text-orange-500 text-md">unsaved items</p>
+                    </div>
+                </template>
+
+                <template x-if="offline_reports === 0">
+                    <div class="flex flex-row gap-1">
+                        <p class="text-black dark:text-white text-md" x-text="offline_reports"></p>
+                        <p class="text-black dark:text-white text-md">items</p>
+                    </div>
+                </template>
+            </div>
+            <div class="flex flex-row gap-1 flex-wrap">
+                <button class="ui_button_small" @click="clear_pit_scouting_dialog()">
+                    <i class="ph-bold ph-trash"></i> Clear
+                </button>
+                <p class="text-black dark:text-white text-md font-bold mx-2">Pit scouting</p>
+                <p class="text-black dark:text-white text-md" x-text="pit_scouting"></p>
+                <p class="text-black dark:text-white text-md">items</p>
+
+                <template x-if="pit_scouting_unsaved > 0">
+                    <div class="flex flex-row gap-1">
+                        <p class="text-orange-500 text-md ml-2" x-text="pit_scouting_unsaved"></p>
+                        <p class="text-orange-500 text-md">unsaved items</p>
+                    </div>
+                </template>
+            </div>
         </div>
     </div>
 </div>
