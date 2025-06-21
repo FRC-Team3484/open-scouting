@@ -18,6 +18,15 @@
         const TBA_API_KEY = `{{ TBA_API_KEY }}`;
     </script>
 
+    <script>
+        const user = new User();
+        window.user = user;
+
+        user.check_authentication_status().then(() => {
+            window.dispatchEvent(new CustomEvent("user_ready", { detail: user }));
+        });
+    </script>
+
     <div class="snap-y snap-mandatory h-screen overflow-y-scroll" id="index">
         <div class="flex h-screen justify-center items-center flex-col w-screen snap-center px-4">
 
