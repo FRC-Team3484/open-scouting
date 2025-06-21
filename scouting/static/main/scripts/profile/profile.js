@@ -93,6 +93,27 @@ document.addEventListener("alpine:init", () => {
 			}
 		},
 
-		init() {},
+		async get_settings() {
+			const response = await fetch(
+				`${SERVER_IP}/authentication/get_user_settings`,
+				{
+					method: "POST",
+					headers: {
+						"X-CSRFToken": CSRF_TOKEN,
+						"Content-Type": "application/json",
+					},
+				},
+			);
+
+			if (response.ok) {
+				const json = await response.json();
+
+				console.log(json);
+			}
+		},
+
+		init() {
+			this.get_settings();
+		},
 	}));
 });
