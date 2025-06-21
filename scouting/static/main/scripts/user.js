@@ -10,6 +10,11 @@ class User {
 		this.team_number = "";
 	}
 
+	/**
+	 * Checks with the server if the user is authenticated or not
+	 *
+	 * This is saved in local storage for offline use
+	 */
 	async check_authentication_status() {
 		if (globalThis.offline === false) {
 			// Ask server for status
@@ -82,6 +87,9 @@ class User {
 		}
 	}
 
+	/**
+	 * Signs the user out and reloads the page
+	 */
 	async sign_out() {
 		const response = await fetch(`${SERVER_IP}/authentication/sign_out`, {
 			method: "POST",
@@ -111,7 +119,10 @@ class User {
 		}
 	}
 
-	async get_settings() {
+	/**
+	 * Gets the user settings from the server
+	 */
+	async load_settings() {
 		if (globalThis.offline === false) {
 			const response = await fetch(
 				`${SERVER_IP}/authentication/get_user_settings`,
@@ -143,7 +154,10 @@ class User {
 		}
 	}
 
-	async set_settings() {
+	/**
+	 * Sets the user settings on the server
+	 */
+	async save_settings() {
 		if (globalThis.offline === false) {
 			const response = await fetch(
 				`${SERVER_IP}/authentication/set_user_settings`,
@@ -177,32 +191,41 @@ class User {
 		}
 	}
 
-	async get_setting(setting) {
+	/**
+	 * Gets the value of a setting
+	 */
+	async get_setting(key) {
 		console.log(this.settings);
 		if (!this.settings) {
-			await this.get_settings(); // Load if not present
+			await this.load_settings(); // Load if not present
 		}
-		const found = this.settings.find((item) => item.name === setting);
+		const found = this.settings.find((item) => item.name === key);
 		return found ? found.value : null;
 	}
 
+	/**
+	 * Gets all settings
+	 */
 	async get_all_settings() {
 		if (!this.settings) {
-			await this.get_settings();
+			await this.load_settings();
 		}
 		return this.settings;
 	}
 
-	async set_setting(setting, value) {
+	/**
+	 * Sets the value of a setting
+	 */
+	async set_setting(key, value) {
 		if (!this.settings) {
-			await this.get_settings();
+			await this.load_settings();
 		}
 
-		const existing = this.settings.find((item) => item.name === setting);
+		const existing = this.settings.find((item) => item.name === key);
 		if (existing) {
 			existing.value = value;
 		} else {
-			this.settings.push({ name: setting, value, type: typeof value });
+			this.settings.push({ name: key, value, type: typeof value });
 		}
 
 		localStorage.setItem("settings", JSON.stringify(this.settings));
