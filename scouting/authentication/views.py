@@ -436,3 +436,33 @@ def get_user_settings(request):
         return JsonResponse(json_data, safe=False)
     else:
         return HttpResponse("Request is not a POST request!", status=501)
+
+
+def set_user_settings(request):
+    """
+    Sets the settings for a user
+
+    Body:
+        The settings for the user
+    """
+    if request.method == "POST":
+        if not request.user.is_authenticated:
+            return HttpResponse("Not authenticated", status=401)
+
+        try:
+            body = json.loads(request.body)
+        except KeyError:
+            return HttpResponse(request, "No body found in request", status=400)
+
+        user = User.objects.filter(id=request.user.id).first()
+
+        settings = Settings.objects.filter(user=user).first()
+
+        for field in settings._meta.get_fields():
+            if field.name != "id" and field.name != "user":
+                setattr(settings, field.name, body[field.name])
+                settings.save()
+
+        return HttpResponse("success", status=200)
+    else:
+        return HttpResponse("Request is not a POST request!", status=501)
