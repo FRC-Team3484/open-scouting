@@ -183,8 +183,6 @@ document.addEventListener("alpine:init", () => {
 			window.addEventListener("user_ready", (e) => {
 				const user = e.detail;
 
-				console.log(user.authenticated);
-
 				this.authenticated = user.authenticated;
 				this.username = user.username;
 				this.display_name = user.display_name;
