@@ -360,6 +360,9 @@
   .my-4 {
     margin-block: calc(var(--spacing) * 4);
   }
+  .my-6 {
+    margin-block: calc(var(--spacing) * 6);
+  }
   .my-8 {
     margin-block: calc(var(--spacing) * 8);
   }
@@ -389,6 +392,9 @@
   }
   .mr-6 {
     margin-right: calc(var(--spacing) * 6);
+  }
+  .mr-auto {
+    margin-right: auto;
   }
   .mb-0 {
     margin-bottom: calc(var(--spacing) * 0);
@@ -863,6 +869,9 @@
   }
   .bg-slate-300 {
     background-color: var(--color-slate-300);
+  }
+  .bg-slate-500 {
+    background-color: var(--color-slate-500);
   }
   .bg-slate-700\/80 {
     background-color: color-mix(in srgb, oklch(37.2% 0.044 257.287) 80%, transparent);
@@ -1680,6 +1689,11 @@
       }
     }
   }
+  .dark\:bg-slate-300 {
+    &:where(.dark, .dark *) {
+      background-color: var(--color-slate-300);
+    }
+  }
   .dark\:bg-slate-600 {
     &:where(.dark, .dark *) {
       background-color: var(--color-slate-600);
@@ -2418,6 +2432,9 @@
   &:where(.dark, .dark *) {
     color: var(--color-white);
   }
+}
+[x-cloak] {
+  display: none !important;
 }
 @layer base {
   [type='text'],input:where(:not([type])),[type='email'],[type='url'],[type='password'],[type='number'],[type='date'],[type='datetime-local'],[type='month'],[type='search'],[type='tel'],[type='time'],[type='week'],[multiple],textarea,select {

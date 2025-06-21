@@ -32,32 +32,7 @@ document.addEventListener("alpine:init", () => {
 		 * Asks the server to sign the user out
 		 */
 		async sign_out() {
-			const response = await fetch(`${SERVER_IP}/authentication/sign_out`, {
-				method: "POST",
-				headers: {
-					"X-CSRFToken": CSRF_TOKEN,
-				},
-			});
-
-			if (response.ok) {
-				response.text().then(async (text) => {
-					const auth_json = {
-						authenticated: false,
-						username: "",
-						display_name: "",
-						team_number: "",
-					};
-
-					localStorage.setItem("authenticated", JSON.stringify(auth_json));
-
-					// Clear service worker cache
-					await caches.delete("v1");
-
-					window.location.href = "/";
-				});
-			} else {
-				log("ERROR", "Error signing out");
-			}
+			user.sign_out();
 		},
 
 		async save_profile() {

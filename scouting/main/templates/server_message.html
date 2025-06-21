@@ -1,7 +1,8 @@
 <div x-data="server_message()" x-init="init()">
     <div class="fixed top-3 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-[95vw] flex flex-col bg-slate-200/80 dark:bg-slate-700/80 border-2 dark:border-slate-600 border-slate-300 rounded-xl backdrop-blur-md p-4"
          x-show="show"
-         x-transition>
+         x-transition
+         x-cloak>
 
         <div class="flex flex-row align-middle items-center justify-between">
             <p class="text-black dark:text-white text-xl font-bold mr-4">Server Message</p>

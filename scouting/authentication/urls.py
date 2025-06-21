@@ -26,4 +26,6 @@ urlpatterns = [
         name="get_authentication_status",
     ),
     path("save_profile", views.save_profile, name="save_profile"),
+    path("get_user_settings", views.get_user_settings, name="get_user_settings"),
+    path("set_user_settings", views.set_user_settings, name="set_user_settings"),
 ]

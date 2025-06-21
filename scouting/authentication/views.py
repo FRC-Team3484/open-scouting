@@ -8,7 +8,7 @@ from django.db.utils import IntegrityError
 from django.views.decorators.csrf import csrf_exempt
 
 from . import email
-from authentication.models import Profile, VerificationCode
+from authentication.models import Profile, VerificationCode, Settings
 from main.views import index
 
 import random
@@ -403,6 +403,72 @@ def save_profile(request):
         profile.display_name = body["display_name"]
         profile.team_number = body["team_number"]
         profile.save()
+
+        return HttpResponse("success", status=200)
+    else:
+        return HttpResponse("Request is not a POST request!", status=501)
+
+
+def get_user_settings(request):
+    """
+    Gets the settings for a user
+    """
+    if request.method == "POST":
+        if not request.user.is_authenticated:
+            return HttpResponse("Not authenticated", status=401)
+
+        user = User.objects.filter(id=request.user.id).first()
+
+        settings = Settings.objects.filter(user=user).first()
+
+        json_data = [
+            {
+                "name": field.name,
+                "value": getattr(settings, field.name),
+                "type": field.get_internal_type(),
+            }
+            for field in settings._meta.get_fields()
+            if field.name != "id" and field.name != "user"
+        ]
+
+        print(json_data)
+
+        return JsonResponse(json_data, safe=False)
+    else:
+        return HttpResponse("Request is not a POST request!", status=501)
+
+
+def set_user_settings(request):
+    """
+    Sets the settings for a user
+
+    Body:
+        The settings for the user
+    """
+    if request.method == "POST":
+        if not request.user.is_authenticated:
+            return HttpResponse("Not authenticated", status=401)
+
+        try:
+            body = json.loads(request.body)
+        except KeyError:
+            return HttpResponse(request, "No body found in request", status=400)
+
+        user = User.objects.filter(id=request.user.id).first()
+
+        settings = Settings.objects.filter(user=user).first()
+
+        for field in settings._meta.get_fields():
+            if field.name != "id" and field.name != "user":
+                for obj in body:
+                    field = settings._meta.get_field(obj["name"])
+                    if field.get_internal_type() == obj["type"]:
+                        setattr(settings, obj["name"], obj["value"])
+                    else:
+                        return HttpResponse(
+                            f"Type mismatch for {obj['name']}", status=400
+                        )
+                settings.save()
 
         return HttpResponse("success", status=200)
     else:

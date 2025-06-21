@@ -23,6 +23,15 @@
         const TEAM_NUMBER = `{{ user.profile.team_number }}`;
     </script>
 
+    <script>
+        const user = new User();
+        window.user = user;
+
+        user.check_authentication_status().then(() => {
+            window.dispatchEvent(new CustomEvent("user_ready", { detail: user }));
+        });
+    </script>
+
     <script src="{% static 'main/scripts/profile/profile.js' %}"></script>
 
     <div class="flex flex-col md:flex-row min-h-screen w-screen items-center justify-center gap-4"

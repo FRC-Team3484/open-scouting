@@ -19,6 +19,8 @@ document.addEventListener("alpine:init", () => {
 		offline_reports: false,
 		offline_pit_scouting: false,
 		logs_open: false,
+		storage_open: false,
+		storage_warning: false,
 
 		/**
 		 * Check if the user is offline or not, and store it in a global variable
@@ -395,6 +397,10 @@ document.addEventListener("alpine:init", () => {
 			window.addEventListener("scouting_online", (event) => {
 				this.check_for_offline_reports();
 				this.check_for_offline_pit_scouting();
+			});
+
+			window.addEventListener("storage_warning", (event) => {
+				this.storage_warning = true;
 			});
 
 			// this.show_notification('Open Scouting', 'Welcome to Open Scouting!', 'star');
