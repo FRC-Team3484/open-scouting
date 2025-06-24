@@ -176,7 +176,7 @@
 
                 <script src="{% static '/main/scripts/index/year_select.js' %}"></script>
 
-                <div class="flex flex-col justify-center items-center"
+                <div class="flex flex-col justify-center items-center dark:bg-slate-800/50 bg-slate-200/50 rounded-2xl p-4 border-2 dark:border-slate-700 border-slate-300 my-2"
                      x-data="year_select"
                      x-show="page == 2"
                      x-transition>
@@ -208,50 +208,54 @@
 
                 <script src="{% static '/main/scripts/index/events.js' %}"></script>
 
-                <div class="flex flex-col justify-center items-center"
+                <div class="flex flex-col justify-center items-center dark:bg-slate-800/50 bg-slate-200/50 rounded-2xl p-4 border-2 dark:border-slate-700 border-slate-300 my-2"
                      x-data="events"
                      x-show="page == 3"
                      x-transition>
-                    <p class="text-center dark:text-white text-black font-sans text-2xl mt-4">
+                    <p class="text-center dark:text-white text-black font-sans text-2xl my-4">
                         <i class="ph-bold ph-calendar-blank"></i> Select event
                     </p>
-                    <div class="flex flex-row mt-2 justify-center align-middle items-center">
-                        <input class="ui_checkbox"
-                               type="checkbox"
-                               x-ref="show_past_events"
-                               @input="update_filters()">
-                        <p class="dark:text-white text-black ml-2">Show past events</p>
-                        <!-- TODO: Be able to see data from previous years -->
-                    </div>
-
-                    <input class="ui_input"
-                           placeholder="Search for an event..."
-                           x-ref="event_search"
-                           @input="update_filters()">
 
                     <div class="my-4">
-                        <button class="dark:bg-slate-700 bg-slate-200 border-2 dark:border-slate-600 border-slate-300 text-black dark:text-white rounded-t-md px-2 py-1 md:px-4 md:py-2 ml-4 disabled:opacity-50 hover:enabled:px-5 active:enabled:px-3 transition-all whitespace-nowrap"
-                                :disabled="!show_custom_events"
-                                @click="show_custom_events = false">
-                            <i class="ph-bold ph-check-circle"></i>
-                            <span class="dark:text-white text-black text-sm md:text-md">TBA Events</span>
-                            <span class="dark:text-white text-black bg-slate-200 dark:bg-slate-600 py-1 px-1 md:px-3 rounded-full border-slate-300 dark:border-slate-700 max-w-4 aspect-square my-2 text-sm border-2"
-                                  x-text="filtered_events.length"></span>
-                        </button>
+                        <div class="flex flex-row flex-wrap gap-2 mb-2">
+                            <button class="ui_button_small"
+                                    :disabled="!show_custom_events"
+                                    @click="show_custom_events = false">
+                                <i class="ph-bold ph-check-circle"></i>
+                                <span class="dark:text-white text-black text-sm md:text-md">TBA Events</span>
+                                <span class="dark:text-white text-black bg-slate-200 dark:bg-slate-600 py-1 px-2 rounded-full border-slate-300 dark:border-slate-700 max-w-4 aspect-square my-2 text-sm border-2"
+                                      x-text="filtered_events.length"></span>
+                            </button>
 
-                        <button class="dark:bg-slate-700 bg-slate-200 border-2 dark:border-slate-600 border-slate-300 text-black dark:text-white rounded-t-md px-2 py-1 md:px-4 md:py-2 disabled:opacity-50 hover:enabled:px-5 active:enabled:px-3 transition-all whitespace-nowrap"
-                                :disabled="show_custom_events"
-                                @click="show_custom_events = true">
-                            <i class="ph-bold ph-star"></i>
-                            <span class="dark:text-white text-black text-sm md:text-md">Custom Events</span>
-                            <span class="dark:text-white text-black bg-slate-200 dark:bg-slate-600 py-1 px-1 md:px-3 rounded-full border-slate-300 dark:border-slate-700 max-w-4 aspect-square my-2 text-sm border-2"
-                                  x-text="custom_filtered_events.length"></span>
-                        </button>
+                            <button class="ui_button_small"
+                                    :disabled="show_custom_events"
+                                    @click="show_custom_events = true">
+                                <i class="ph-bold ph-star"></i>
+                                <span class="dark:text-white text-black text-sm md:text-md">Custom Events</span>
+                                <span class="dark:text-white text-black bg-slate-200 dark:bg-slate-600 py-1 px-2 rounded-full border-slate-300 dark:border-slate-700 max-w-4 aspect-square my-2 text-sm border-2"
+                                      x-text="custom_filtered_events.length"></span>
+                            </button>
 
-                        <div class="h-[50vh] overflow-y-auto dark:bg-slate-700 bg-slate-200 dark:border-slate-600 border-slate-300 border-1 mx-2 p-2 rounded-md">
+                            <div class="flex flex-row mt-2 justify-center align-middle items-center">
+                                <input class="ui_checkbox"
+                                       type="checkbox"
+                                       x-ref="show_past_events"
+                                       @input="update_filters()">
+                                <p class="dark:text-white text-black ml-2">Show past events</p>
+                            </div>
+
+                        </div>
+
+                        <input class="ui_input !w-full"
+                               placeholder="Search for an event..."
+                               x-ref="event_search"
+                               @input="update_filters()">
+
+                        <div class="h-[50vh] overflow-y-auto dark:bg-slate-700 bg-slate-200 dark:border-slate-600 border-slate-300 border-1 mx-2 p-2 rounded-md mt-2">
                             <div x-show="!show_custom_events">
                                 <template x-for="(event, index) in filtered_events" :key="index">
-                                    <div class="p-2 dark:bg-slate-800 border-2 dark:border-slate-700 bg-slate-300 border-slate-400 m-1 rounded-lg flex flex-row justify-between">
+                                    <div class="p-2 dark:bg-slate-800 border-2 dark:border-slate-700 bg-slate-300 border-slate-400 m-1 rounded-lg flex flex-row justify-between hover:dark:bg-slate-900/80 hover:bg-slate-200/80 cursor-pointer transition-all"
+                                         @click="select_event(event.name, event.event_code)">
                                         <div class="flex flex-col">
                                             <p class="dark:text-white text-black font-sans" x-text="event.name"></p>
                                             <div class="flex flex-row">
@@ -271,12 +275,6 @@
                                                 <p class="dark:text-white text-black font-sans font-light"
                                                    x-text="event.end_date"></p>
                                             </div>
-                                        </div>
-                                        <div class="flex flex-col">
-                                            <button class="ui_button_icon"
-                                                    @click="select_event(event.name, event.event_code)">
-                                                <i class="ph-bold ph-check-circle"></i>
-                                            </button>
                                         </div>
                                     </div>
                                 </template>
