@@ -332,6 +332,9 @@ def create_account(request):
                 )
                 profile.save()
 
+                settings = Settings(user=user)
+                settings.save()
+
                 email.send_welcome([body["email"]], body["display_name"])
 
                 user = authenticate(
