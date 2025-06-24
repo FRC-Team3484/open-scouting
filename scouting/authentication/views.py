@@ -436,17 +436,19 @@ def get_user_settings(request):
 
         json_data = [
             {
+                "key": field.name,
+                "value": getattr(settings, field.name, None),
+                "type": get_field_type(field.get_internal_type())
+                if not field.choices
+                else "choice",
                 "name": field.verbose_name,
-                "value": getattr(settings, field.name),
-                "type": get_field_type(field.get_internal_type()),
                 "description": field.help_text,
                 "editable": field.editable,
+                "choices": field.choices if field.choices else [],
             }
             for field in settings._meta.get_fields()
             if field.name != "id" and field.name != "user"
         ]
-
-        print(json_data)
 
         return JsonResponse(json_data, safe=False)
     else:
@@ -476,12 +478,12 @@ def set_user_settings(request):
         for field in settings._meta.get_fields():
             if field.name != "id" and field.name != "user":
                 for obj in body:
-                    field = settings._meta.get_field(obj["name"])
+                    field = settings._meta.get_field(obj["key"])
                     if field.get_internal_type() == obj["type"]:
-                        setattr(settings, obj["name"], obj["value"])
+                        setattr(settings, obj["key"], obj["value"])
                     else:
                         return HttpResponse(
-                            f"Type mismatch for {obj['name']}", status=400
+                            f"Type mismatch for {obj['key']}", status=400
                         )
                 settings.save()
 
