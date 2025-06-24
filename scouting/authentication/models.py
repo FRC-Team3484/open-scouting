@@ -27,7 +27,13 @@ class VerificationCode(models.Model):
 
 class Settings(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    favorite_events = models.JSONField(default=list, blank=True)
+    favorite_events = models.JSONField(
+        default=list,
+        blank=True,
+        editable=True,
+        verbose_name="Favorite Events",
+        help_text="The user's favorite evemts, pinned to the top of their event list",
+    )
 
     def __str__(self):
         return f"Settings for {self.user.username}"

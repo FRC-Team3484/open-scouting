@@ -178,6 +178,8 @@ To use utilities from this file on a page, include the following in the `body` b
 
 Now the user utility functions can be used with `user.*`, and things on the page relying on the user utility functions should be called when the `user_ready` event is called
 
+When adding new settings, new fields should be added to the `Settings` modal in the authentication app. These fields need to at least have `editable`, `verbose_name`, and `help_text` parameters.
+
 ### `check_authentication_status`
 This function checks the authentication status with the server and stores it locally for offline use. If the user is offline, this is retrieved locally. If it's not stored locally, the user is marked as not authenticated
 

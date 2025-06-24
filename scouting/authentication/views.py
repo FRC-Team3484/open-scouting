@@ -23,6 +23,19 @@ def generate_verification_code(length=6):
     return verification_code
 
 
+def get_field_type(type):
+    if type == "JSONField":
+        return "json"
+    elif type == "BooleanField":
+        return "bool"
+    elif type == "CharField" or type == "TextField":
+        return "string"
+    elif type == "IntegerField":
+        return "number"
+    else:
+        return type
+
+
 def auth(request):
     if request.user.is_authenticated:
         response = index(request)
@@ -423,9 +436,11 @@ def get_user_settings(request):
 
         json_data = [
             {
-                "name": field.name,
+                "name": field.verbose_name,
                 "value": getattr(settings, field.name),
-                "type": field.get_internal_type(),
+                "type": get_field_type(field.get_internal_type()),
+                "description": field.help_text,
+                "editable": field.editable,
             }
             for field in settings._meta.get_fields()
             if field.name != "id" and field.name != "user"
