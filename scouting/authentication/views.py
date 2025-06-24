@@ -482,12 +482,8 @@ def set_user_settings(request):
             if field.name != "id" and field.name != "user":
                 for obj in body:
                     field = settings._meta.get_field(obj["key"])
-                    if field.get_internal_type() == obj["type"]:
-                        setattr(settings, obj["key"], obj["value"])
-                    else:
-                        return HttpResponse(
-                            f"Type mismatch for {obj['key']}", status=400
-                        )
+                    setattr(settings, obj["key"], obj["value"])
+
                 settings.save()
 
         return HttpResponse("success", status=200)

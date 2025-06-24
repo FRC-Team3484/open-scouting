@@ -1,6 +1,7 @@
 document.addEventListener("alpine:init", () => {
 	Alpine.data("profile", () => ({
 		editing: false,
+		settings: false,
 		user_id: "",
 		display_name: "",
 		team_number: "",
@@ -68,6 +69,13 @@ document.addEventListener("alpine:init", () => {
 			}
 		},
 
-		init() {},
+		init() {
+			window.addEventListener("beforeunload", (event) => {
+				if (this.settings || this.editing) {
+					event.returnValue =
+						"Are you sure you want to close the page? You have unsaved changes.";
+				}
+			});
+		},
 	}));
 });

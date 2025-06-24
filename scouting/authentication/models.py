@@ -30,9 +30,9 @@ class Settings(models.Model):
     favorite_events = models.JSONField(
         default=list,
         blank=True,
-        editable=True,
+        editable=False,
         verbose_name="Favorite Events",
-        help_text="The user's favorite evemts, pinned to the top of their event list",
+        help_text="The user's favorite events, pinned to the top of their event list",
     )
 
     def __str__(self):

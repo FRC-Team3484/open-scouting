@@ -8,6 +8,7 @@ class User {
 		this.username = "";
 		this.display_name = "";
 		this.team_number = "";
+		this.settings = [];
 	}
 
 	/**
@@ -195,11 +196,10 @@ class User {
 	 * Gets the value of a setting
 	 */
 	async get_setting(key) {
-		console.log(this.settings);
 		if (!this.settings) {
 			await this.load_settings(); // Load if not present
 		}
-		const found = this.settings.find((item) => item.name === key);
+		const found = this.settings.find((item) => item.key === key);
 		return found ? found.value : null;
 	}
 
@@ -221,11 +221,9 @@ class User {
 			await this.load_settings();
 		}
 
-		const existing = this.settings.find((item) => item.name === key);
+		const existing = this.settings.find((item) => item.key === key);
 		if (existing) {
 			existing.value = value;
-		} else {
-			this.settings.push({ name: key, value, type: typeof value });
 		}
 
 		localStorage.setItem("settings", JSON.stringify(this.settings));
