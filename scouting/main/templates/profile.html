@@ -164,7 +164,7 @@
 
                 <div class="flex flex-row gap-2" x-show="settings_loaded">
                     <button class="ui_button_small"
-                            @click="user.save_settings(); settings = false">
+                            @click="user.save_settings(true); settings = false">
                         <i class="ph-bold ph-check-circle"></i> Save Changes
                     </button>
 

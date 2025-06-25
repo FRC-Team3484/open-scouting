@@ -158,7 +158,7 @@ class User {
 	/**
 	 * Sets the user settings on the server
 	 */
-	async save_settings() {
+	async save_settings(notify = false) {
 		if (globalThis.offline === false) {
 			const response = await fetch(
 				`${SERVER_IP}/authentication/set_user_settings`,
@@ -174,15 +174,17 @@ class User {
 
 			if (response.ok) {
 				response.text().then((text) => {
-					window.dispatchEvent(
-						new CustomEvent("scouting_notification", {
-							detail: {
-								title: "Settings saved",
-								body: "Your settings have been successfully saved",
-								icon: "check-circle",
-							},
-						}),
-					);
+					if (notify) {
+						window.dispatchEvent(
+							new CustomEvent("scouting_notification", {
+								detail: {
+									title: "Settings saved",
+									body: "Your settings have been successfully saved",
+									icon: "check-circle",
+								},
+							}),
+						);
+					}
 				});
 			} else {
 				log("WARNING", "Unable to save settings to the server");

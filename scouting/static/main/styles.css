@@ -270,6 +270,9 @@
   .top-3 {
     top: calc(var(--spacing) * 3);
   }
+  .right-0 {
+    right: calc(var(--spacing) * 0);
+  }
   .right-2 {
     right: calc(var(--spacing) * 2);
   }
@@ -603,9 +606,6 @@
   .max-w-sm {
     max-width: var(--container-sm);
   }
-  .min-w-128 {
-    min-width: calc(var(--spacing) * 128);
-  }
   .flex-1 {
     flex: 1;
   }
@@ -751,10 +751,6 @@
   .rounded-t-2xl {
     border-top-left-radius: var(--radius-2xl);
     border-top-right-radius: var(--radius-2xl);
-  }
-  .rounded-t-md {
-    border-top-left-radius: var(--radius-md);
-    border-top-right-radius: var(--radius-md);
   }
   .rounded-t-xl {
     border-top-left-radius: var(--radius-xl);
@@ -1108,9 +1104,6 @@
   .break-all {
     word-break: break-all;
   }
-  .whitespace-nowrap {
-    white-space: nowrap;
-  }
   .text-black {
     color: var(--color-black);
   }
@@ -1347,13 +1340,6 @@
       }
     }
   }
-  .hover\:bg-slate-400 {
-    &:hover {
-      @media (hover: hover) {
-        background-color: var(--color-slate-400);
-      }
-    }
-  }
   .hover\:bg-slate-600 {
     &:hover {
       @media (hover: hover) {
@@ -1365,6 +1351,13 @@
     &:hover {
       @media (hover: hover) {
         color: var(--color-blue-700);
+      }
+    }
+  }
+  .hover\:opacity-80 {
+    &:hover {
+      @media (hover: hover) {
+        opacity: 80%;
       }
     }
   }
@@ -1427,33 +1420,12 @@
       opacity: 100%;
     }
   }
-  .hover\:enabled\:px-5 {
-    &:hover {
-      @media (hover: hover) {
-        &:enabled {
-          padding-inline: calc(var(--spacing) * 5);
-        }
-      }
-    }
-  }
-  .active\:enabled\:px-3 {
-    &:active {
-      &:enabled {
-        padding-inline: calc(var(--spacing) * 3);
-      }
-    }
-  }
   .disabled\:scale-95 {
     &:disabled {
       --tw-scale-x: 95%;
       --tw-scale-y: 95%;
       --tw-scale-z: 95%;
       scale: var(--tw-scale-x) var(--tw-scale-y);
-    }
-  }
-  .disabled\:opacity-50 {
-    &:disabled {
-      opacity: 50%;
     }
   }
   .disabled\:opacity-80 {
@@ -1589,21 +1561,6 @@
   .md\:p-8 {
     @media (width >= 48rem) {
       padding: calc(var(--spacing) * 8);
-    }
-  }
-  .md\:px-3 {
-    @media (width >= 48rem) {
-      padding-inline: calc(var(--spacing) * 3);
-    }
-  }
-  .md\:px-4 {
-    @media (width >= 48rem) {
-      padding-inline: calc(var(--spacing) * 4);
-    }
-  }
-  .md\:py-2 {
-    @media (width >= 48rem) {
-      padding-block: calc(var(--spacing) * 2);
     }
   }
   .md\:text-2xl {
@@ -1945,15 +1902,6 @@
           @supports (color: color-mix(in lab, red, red)) {
             background-color: color-mix(in oklab, var(--color-slate-700) 80%, transparent);
           }
-        }
-      }
-    }
-  }
-  .hover\:dark\:bg-slate-700 {
-    &:hover {
-      @media (hover: hover) {
-        &:where(.dark, .dark *) {
-          background-color: var(--color-slate-700);
         }
       }
     }
