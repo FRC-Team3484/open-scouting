@@ -209,6 +209,7 @@
                 </div>
 
                 <script src="{% static '/main/scripts/index/events.js' %}"></script>
+                <script src="{% static '/main/scripts/index/favorite_toggle.js' %}"></script>
 
                 <div class="flex flex-col justify-center items-center dark:bg-slate-800/50 bg-slate-200/50 rounded-2xl p-4 border-2 dark:border-slate-700 border-slate-300 my-2"
                      x-data="events"
@@ -221,8 +222,8 @@
                     <div class="my-4">
                         <div class="flex flex-row flex-wrap gap-2 mb-2">
                             <button class="ui_button_small"
-                                    :disabled="!show_custom_events"
-                                    @click="show_custom_events = false">
+                                    :disabled="active_tab === 'tba'"
+                                    @click="active_tab = 'tba'">
                                 <i class="ph-bold ph-check-circle"></i>
                                 <span class="dark:text-white text-black text-sm md:text-md">TBA Events</span>
                                 <span class="dark:text-white text-black bg-slate-200 dark:bg-slate-600 py-1 px-2 rounded-full border-slate-300 dark:border-slate-700 max-w-4 aspect-square my-2 text-sm border-2"
@@ -230,12 +231,21 @@
                             </button>
 
                             <button class="ui_button_small"
-                                    :disabled="show_custom_events"
-                                    @click="show_custom_events = true">
+                                    :disabled="active_tab === 'custom'"
+                                    @click="active_tab = 'custom'">
                                 <i class="ph-bold ph-star"></i>
                                 <span class="dark:text-white text-black text-sm md:text-md">Custom Events</span>
                                 <span class="dark:text-white text-black bg-slate-200 dark:bg-slate-600 py-1 px-2 rounded-full border-slate-300 dark:border-slate-700 max-w-4 aspect-square my-2 text-sm border-2"
                                       x-text="custom_filtered_events.length"></span>
+                            </button>
+
+                            <button class="ui_button_small"
+                                    :disabled="active_tab === 'favorites'"
+                                    @click="active_tab = 'favorites'">
+                                <i class="ph-bold ph-star-fill"></i>
+                                <span class="dark:text-white text-black text-sm md:text-md">Favorites</span>
+                                <span class="dark:text-white text-black bg-slate-200 dark:bg-slate-600 py-1 px-2 rounded-full border-slate-300 dark:border-slate-700 max-w-4 aspect-square my-2 text-sm border-2"
+                                      x-text="favorite_filtered_events.length"></span>
                             </button>
 
                             <div class="flex flex-row mt-2 justify-center align-middle items-center">
@@ -254,7 +264,7 @@
                                @input="update_filters()">
 
                         <div class="h-[50vh] overflow-y-auto dark:bg-slate-700 bg-slate-200 dark:border-slate-600 border-slate-300 border-1 mx-2 p-2 rounded-md mt-2">
-                            <div x-show="!show_custom_events">
+                            <div x-show="active_tab === 'tba'">
                                 <template x-for="(event, index) in filtered_events" :key="index">
                                     <div class="p-2 dark:bg-slate-800 border-2 dark:border-slate-700 bg-slate-300 border-slate-400 m-1 rounded-lg flex flex-row justify-between hover:dark:bg-slate-900/80 hover:bg-slate-200/80 cursor-pointer transition-all"
                                          @click="select_event(event.name, event.event_code)">
@@ -279,14 +289,14 @@
                                             </div>
                                         </div>
 
-                                        <div x-data="{ isFavorite: false, async init() { const favorites = await user.get_setting('favorite_events') || []; this.isFavorite = favorites.includes(event.event_code); }, async toggleFavorite() { const favorites = await user.get_setting('favorite_events') || []; if (this.isFavorite) { const updated = favorites.filter(code => code !== event.event_code); await user.set_setting('favorite_events', updated); } else { await user.set_setting('favorite_events', [...favorites, event.event_code]); } await user.save_settings(); this.isFavorite = !this.isFavorite; } }">
+                                        <div x-data="favorite_toggle" x-init="init(event.event_code)">
                                             <button class="text-lg dark:text-white text-black opacity-50 hover:opacity-80 mr-2 transition-all"
-                                                    x-show="!isFavorite"
+                                                    x-show="!loading && !isFavorite"
                                                     @click.stop="toggleFavorite">
                                                 <i class="ph-bold ph-star"></i>
                                             </button>
                                             <button class="text-lg dark:text-white text-black opacity-50 hover:opacity-80 mr-2 transition-all"
-                                                    x-show="isFavorite"
+                                                    x-show="!loading && isFavorite"
                                                     @click.stop="toggleFavorite">
                                                 <i class="ph-fill ph-star"></i>
                                             </button>
@@ -305,7 +315,7 @@
                                 </button>
                             </div>
 
-                            <div x-show="show_custom_events">
+                            <div x-show="active_tab === 'custom'">
                                 <template x-for="(event, index) in custom_filtered_events" :key="index">
                                     <div class="p-2 dark:bg-slate-800 border-2 dark:border-slate-700 bg-slate-300 border-slate-400 m-1 rounded-lg flex flex-row justify-between">
                                         <div class="flex flex-col">
@@ -344,6 +354,53 @@
                                     <i class="ph-bold ph-plus"></i> Create a custom Event
                                 </button>
                             </div>
+
+                            <div x-show="active_tab === 'favorites'">
+                                <template x-for="(event, index) in favorite_filtered_events"
+                                          :key="event.event_code">
+                                    <div class="p-2 dark:bg-slate-800 border-2 dark:border-slate-700 bg-slate-300 border-slate-400 m-1 rounded-lg flex flex-row justify-between hover:dark:bg-slate-900/80 hover:bg-slate-200/80 cursor-pointer transition-all"
+                                         @click="select_event(event.name, event.event_code)">
+                                        <div class="flex flex-col">
+                                            <p class="dark:text-white text-black font-sans" x-text="event.name"></p>
+                                            <div class="flex flex-row">
+                                                <p class="dark:text-white text-black font-sans font-bold text-sm"
+                                                   x-text="event.event_type_string || event.type || 'Custom Event'"></p>
+                                                <p class="dark:text-white text-black font-sans text-sm mx-1">-</p>
+                                                <p class="dark:text-white text-black font-sans text-sm"
+                                                   x-text="event.city || event.location"></p>
+                                            </div>
+                                            <div class="flex flex-row">
+                                                <p class="dark:text-white text-black font-sans font-light"
+                                                   x-text="event.start_date"></p>
+                                                <p class="dark:text-white text-black font-sans font-light mx-1">-</p>
+                                                <p class="dark:text-white text-black font-sans font-light"
+                                                   x-text="event.end_date"></p>
+                                            </div>
+                                        </div>
+
+                                        <div x-data="favorite_toggle" x-init="init(event.event_code)">
+                                            <button class="text-lg dark:text-white text-black opacity-50 hover:opacity-80 mr-2 transition-all"
+                                                    x-show="!loading && !isFavorite"
+                                                    @click.stop="toggleFavorite">
+                                                <i class="ph-bold ph-star"></i>
+                                            </button>
+                                            <button class="text-lg dark:text-white text-black opacity-50 hover:opacity-80 mr-2 transition-all"
+                                                    x-show="!loading && isFavorite"
+                                                    @click.stop="toggleFavorite">
+                                                <i class="ph-fill ph-star"></i>
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                </template>
+
+                                <p class="dark:text-white text-black text-center text-lg"
+                                   x-show="favorite_filtered_events.length === 0"
+                                   x-transition>
+                                    <i class="ph-bold ph-smiley-sad"></i> No favorite events
+                                </p>
+                            </div>
+
                         </div>
                     </div>
 

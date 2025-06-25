@@ -6,8 +6,9 @@ document.addEventListener("alpine:init", () => {
 		custom_filtered_events: [],
 		no_events: true,
 		no_custom_events: true,
-		show_custom_events: false,
 		year: new Date().getFullYear(),
+		favorite_filtered_events: [],
+		active_tab: "tba", // or "custom" or "favorites"
 
 		async get_events() {
 			const get_events_request = await fetch(
@@ -44,13 +45,14 @@ document.addEventListener("alpine:init", () => {
 			this.update_filters();
 		},
 
-		update_filters() {
+		async update_filters() {
 			const today = new Date();
 			today.setHours(0, 0, 0, 0); // Normalize today to midnight
 
+			// Handle TBA events
 			if (!this.$refs.show_past_events.checked) {
 				this.filtered_events = this.events.filter((event) => {
-					let eventDate = new Date(event.end_date + "T23:59:59"); // Ensure full day is considered
+					let eventDate = new Date(event.end_date + "T23:59:59");
 					return eventDate >= today;
 				});
 
@@ -63,16 +65,15 @@ document.addEventListener("alpine:init", () => {
 				this.custom_filtered_events = this.custom_events;
 			}
 
+			// Search filter
 			let search = this.$refs.event_search.value.toLowerCase();
 
-			if (search != "") {
+			if (search !== "") {
 				this.filtered_events = this.filtered_events.filter((event) => {
-					let name = event.name ? event.name.toLowerCase() : "";
-					let city = event.city ? event.city.toLowerCase() : "";
-					let country = event.country ? event.country.toLowerCase() : "";
-					let location_name = event.location_name
-						? event.location_name.toLowerCase()
-						: "";
+					let name = event.name?.toLowerCase() || "";
+					let city = event.city?.toLowerCase() || "";
+					let country = event.country?.toLowerCase() || "";
+					let location_name = event.location_name?.toLowerCase() || "";
 
 					return (
 						name.includes(search) ||
@@ -84,24 +85,44 @@ document.addEventListener("alpine:init", () => {
 
 				this.custom_filtered_events = this.custom_filtered_events.filter(
 					(event) => {
-						let name = event.name ? event.name.toLowerCase() : "";
-						let location = event.location ? event.location.toLowerCase() : "";
-
+						let name = event.name?.toLowerCase() || "";
+						let location = event.location?.toLowerCase() || "";
 						return name.includes(search) || location.includes(search);
 					},
 				);
 			}
 
-			if (this.filtered_events.length == 0) {
-				this.no_events = true;
-			} else {
-				this.no_events = false;
-			}
+			// Set no_events booleans
+			this.no_events = this.filtered_events.length === 0;
+			this.no_custom_events = this.custom_filtered_events.length === 0;
 
-			if (this.custom_filtered_events.length == 0) {
-				this.no_custom_events = true;
-			} else {
-				this.no_custom_events = false;
+			// 💛 Filter favorite events (TBA + custom)
+			const favorites = (await user.get_setting("favorite_events")) || [];
+
+			const all_events = [...this.events, ...this.custom_events];
+
+			this.favorite_filtered_events = all_events.filter((event) =>
+				favorites.includes(event.event_code),
+			);
+
+			if (search !== "") {
+				this.favorite_filtered_events = this.favorite_filtered_events.filter(
+					(event) => {
+						let name = event.name?.toLowerCase() || "";
+						let city = event.city?.toLowerCase() || "";
+						let country = event.country?.toLowerCase() || "";
+						let location_name = event.location_name?.toLowerCase() || "";
+						let location = event.location?.toLowerCase() || "";
+
+						return (
+							name.includes(search) ||
+							city.includes(search) ||
+							country.includes(search) ||
+							location_name.includes(search) ||
+							location.includes(search)
+						);
+					},
+				);
 			}
 		},
 
@@ -128,6 +149,7 @@ document.addEventListener("alpine:init", () => {
 		},
 
 		init() {
+			window.eventsComponent = this;
 			this.get_events();
 
 			window.addEventListener("refresh_event_list", (event) => {
@@ -140,6 +162,12 @@ document.addEventListener("alpine:init", () => {
 				this.year = year;
 
 				this.get_events();
+			});
+
+			window.addEventListener("storage", (event) => {
+				if (event.key === "settings") {
+					this.update_filters();
+				}
 			});
 		},
 	}));
