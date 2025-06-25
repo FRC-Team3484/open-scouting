@@ -311,10 +311,17 @@
                                 </template>
 
                                 <p class="dark:text-white text-black text-center text-lg"
-                                   x-show="no_events"
+                                   x-show="no_events && !loading"
                                    x-transition>
                                     <i class="ph-bold ph-smiley-sad"></i> No events found
                                 </p>
+
+                                <p class="dark:text-white text-black text-center text-lg"
+                                   x-show="loading"
+                                   x-transition>
+                                    <i class="ph-bold ph-circle-notch !animate-spin origin-center"></i> Loading events...
+                                </p>
+
                                 <button class="ui_button w-full" @click="create_custom_event()">
                                     <i class="ph-bold ph-plus"></i> Create a custom Event
                                 </button>
@@ -345,10 +352,17 @@
                                 </template>
 
                                 <p class="dark:text-white text-black text-center text-lg"
-                                   x-show="no_custom_events"
+                                   x-show="custom_filtered_events.length === 0 && !loading"
                                    x-transition>
                                     <i class="ph-bold ph-smiley-sad"></i> No events found
                                 </p>
+
+                                <p class="dark:text-white text-black text-center text-lg"
+                                   x-show="loading"
+                                   x-transition>
+                                    <i class="ph-bold ph-circle-notch !animate-spin origin-center"></i> Loading events...
+                                </p>
+
                                 <button class="ui_button w-full" @click="create_custom_event()">
                                     <i class="ph-bold ph-plus"></i> Create a custom Event
                                 </button>
@@ -400,9 +414,15 @@
                                 </template>
 
                                 <p class="dark:text-white text-black text-center text-lg"
-                                   x-show="favorite_filtered_events.length === 0"
+                                   x-show="favorite_filtered_events.length === 0 && !loading"
                                    x-transition>
                                     <i class="ph-bold ph-smiley-sad"></i> No favorite events
+                                </p>
+
+                                <p class="dark:text-white text-black text-center text-lg"
+                                   x-show="loading"
+                                   x-transition>
+                                    <i class="ph-bold ph-circle-notch !animate-spin origin-center"></i> Loading events...
                                 </p>
                             </div>
 

@@ -10,6 +10,7 @@ document.addEventListener("alpine:init", () => {
 		favorite_filtered_events: [],
 		active_tab: "tba", // or "custom" or "favorites"
 		authenticated: false,
+		loading: true,
 
 		async get_events() {
 			const get_events_request = await fetch(
@@ -44,6 +45,8 @@ document.addEventListener("alpine:init", () => {
 			this.custom_events = custom_data;
 
 			this.update_filters();
+
+			this.loading = false;
 		},
 
 		async update_filters() {

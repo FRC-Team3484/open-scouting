@@ -8,7 +8,7 @@ This document describes the roadmap for Open Scouting, and roughly when each fea
 - [x] [#67](https://github.com/FRC-Team3484/open-scouting/issues/67) - Change the colors of true and false values in the charts in the advanced data view
 - [x] [#84](https://github.com/FRC-Team3484/open-scouting/issues/84) - Warn the user if their device may clear any local offline data
 - [ ] [#68](https://github.com/FRC-Team3484/open-scouting/issues/68) - Be able to favorite events to pin them to the top of the event list
-- [ ] [#28](https://github.com/FRC-Team3484/open-scouting/issues/28) - Add loading animation to the event selector
+- [x] [#28](https://github.com/FRC-Team3484/open-scouting/issues/28) - Add loading animation to the event selector
 - [x] [#94](https://github.com/FRC-Team3484/open-scouting/issues/94) - Use `x-cloak` on elements that use `x-show`
 
 ### `v0.1.9-alpha`
