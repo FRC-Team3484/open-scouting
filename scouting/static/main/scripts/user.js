@@ -124,34 +124,38 @@ class User {
 	 * Gets the user settings from the server
 	 */
 	async load_settings() {
-		if (globalThis.offline === false) {
-			const response = await fetch(
-				`${SERVER_IP}/authentication/get_user_settings`,
-				{
-					method: "POST",
-					headers: {
-						"X-CSRFToken": CSRF_TOKEN,
-						"Content-Type": "application/json",
+		if (user.authenticated) {
+			if (globalThis.offline === false) {
+				const response = await fetch(
+					`${SERVER_IP}/authentication/get_user_settings`,
+					{
+						method: "POST",
+						headers: {
+							"X-CSRFToken": CSRF_TOKEN,
+							"Content-Type": "application/json",
+						},
 					},
-				},
-			);
+				);
 
-			if (response.ok) {
-				const json = await response.json();
+				if (response.ok) {
+					const json = await response.json();
 
-				this.settings = json;
-				localStorage.setItem("settings", JSON.stringify(json));
+					this.settings = json;
+					localStorage.setItem("settings", JSON.stringify(json));
+				} else {
+					this.settings = null;
+					log("WARNING", "Unable to get settings from the server");
+				}
 			} else {
-				this.settings = null;
-				log("WARNING", "Unable to get settings from the server");
+				if (localStorage.getItem("settings")) {
+					this.settings = JSON.parse(localStorage.getItem("settings"));
+				} else {
+					this.settings = null;
+					log("WARNING", "Unable to get settings offline");
+				}
 			}
 		} else {
-			if (localStorage.getItem("settings")) {
-				this.settings = JSON.parse(localStorage.getItem("settings"));
-			} else {
-				this.settings = null;
-				log("WARNING", "Unable to get settings offline");
-			}
+			this.settings = null;
 		}
 	}
 
@@ -159,38 +163,40 @@ class User {
 	 * Sets the user settings on the server
 	 */
 	async save_settings(notify = false) {
-		if (globalThis.offline === false) {
-			const response = await fetch(
-				`${SERVER_IP}/authentication/set_user_settings`,
-				{
-					method: "POST",
-					headers: {
-						"X-CSRFToken": CSRF_TOKEN,
-						"Content-Type": "application/json",
+		if (this.authenticated) {
+			if (globalThis.offline === false) {
+				const response = await fetch(
+					`${SERVER_IP}/authentication/set_user_settings`,
+					{
+						method: "POST",
+						headers: {
+							"X-CSRFToken": CSRF_TOKEN,
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify(this.settings),
 					},
-					body: JSON.stringify(this.settings),
-				},
-			);
+				);
 
-			if (response.ok) {
-				response.text().then((text) => {
-					if (notify) {
-						window.dispatchEvent(
-							new CustomEvent("scouting_notification", {
-								detail: {
-									title: "Settings saved",
-									body: "Your settings have been successfully saved",
-									icon: "check-circle",
-								},
-							}),
-						);
-					}
-				});
+				if (response.ok) {
+					response.text().then((text) => {
+						if (notify) {
+							window.dispatchEvent(
+								new CustomEvent("scouting_notification", {
+									detail: {
+										title: "Settings saved",
+										body: "Your settings have been successfully saved",
+										icon: "check-circle",
+									},
+								}),
+							);
+						}
+					});
+				} else {
+					log("WARNING", "Unable to save settings to the server");
+				}
 			} else {
-				log("WARNING", "Unable to save settings to the server");
+				log("WARNING", "Unable to save settings offline");
 			}
-		} else {
-			log("WARNING", "Unable to save settings offline");
 		}
 	}
 
@@ -200,6 +206,9 @@ class User {
 	async get_setting(key) {
 		if (!this.settings) {
 			await this.load_settings(); // Load if not present
+		}
+		if (this.settings === null) {
+			return;
 		}
 		const found = this.settings.find((item) => item.key === key);
 		return found ? found.value : null;
@@ -212,6 +221,9 @@ class User {
 		if (!this.settings) {
 			await this.load_settings();
 		}
+		if (this.settings === null) {
+			return [];
+		}
 		return this.settings;
 	}
 
@@ -221,6 +233,10 @@ class User {
 	async set_setting(key, value) {
 		if (!this.settings) {
 			await this.load_settings();
+		}
+
+		if (this.settings === null) {
+			return;
 		}
 
 		const existing = this.settings.find((item) => item.key === key);

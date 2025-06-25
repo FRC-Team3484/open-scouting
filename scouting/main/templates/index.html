@@ -233,20 +233,22 @@
                             <button class="ui_button_small"
                                     :disabled="active_tab === 'custom'"
                                     @click="active_tab = 'custom'">
-                                <i class="ph-bold ph-star"></i>
+                                <i class="ph-bold ph-pencil"></i>
                                 <span class="dark:text-white text-black text-sm md:text-md">Custom Events</span>
                                 <span class="dark:text-white text-black bg-slate-200 dark:bg-slate-600 py-1 px-2 rounded-full border-slate-300 dark:border-slate-700 max-w-4 aspect-square my-2 text-sm border-2"
                                       x-text="custom_filtered_events.length"></span>
                             </button>
 
-                            <button class="ui_button_small"
-                                    :disabled="active_tab === 'favorites'"
-                                    @click="active_tab = 'favorites'">
-                                <i class="ph-bold ph-star-fill"></i>
-                                <span class="dark:text-white text-black text-sm md:text-md">Favorites</span>
-                                <span class="dark:text-white text-black bg-slate-200 dark:bg-slate-600 py-1 px-2 rounded-full border-slate-300 dark:border-slate-700 max-w-4 aspect-square my-2 text-sm border-2"
-                                      x-text="favorite_filtered_events.length"></span>
-                            </button>
+                            <template x-if="authenticated">
+                                <button class="ui_button_small"
+                                        :disabled="active_tab === 'favorites'"
+                                        @click="active_tab = 'favorites'">
+                                    <i class="ph-bold ph-star"></i>
+                                    <span class="dark:text-white text-black text-sm md:text-md">Favorites</span>
+                                    <span class="dark:text-white text-black bg-slate-200 dark:bg-slate-600 py-1 px-2 rounded-full border-slate-300 dark:border-slate-700 max-w-4 aspect-square my-2 text-sm border-2"
+                                          x-text="favorite_filtered_events.length"></span>
+                                </button>
+                            </template>
 
                             <div class="flex flex-row mt-2 justify-center align-middle items-center">
                                 <input class="ui_checkbox"
@@ -289,21 +291,22 @@
                                             </div>
                                         </div>
 
-                                        <div x-data="favorite_toggle"
-                                             x-init="init()"
-                                             :data-event-code="event.event_code">
-                                            <button class="text-lg dark:text-white text-black opacity-50 hover:opacity-80 mr-2 transition-all"
-                                                    x-show="!loading && !isFavorite"
-                                                    @click.stop="toggleFavorite">
-                                                <i class="ph-bold ph-star"></i>
-                                            </button>
-                                            <button class="text-lg dark:text-white text-black opacity-50 hover:opacity-80 mr-2 transition-all"
-                                                    x-show="!loading && isFavorite"
-                                                    @click.stop="toggleFavorite">
-                                                <i class="ph-fill ph-star"></i>
-                                            </button>
-                                        </div>
-
+                                        <template x-if="authenticated">
+                                            <div x-data="favorite_toggle"
+                                                 x-init="init()"
+                                                 :data-event-code="event.event_code">
+                                                <button class="text-lg dark:text-white text-black opacity-50 hover:opacity-80 mr-2 transition-all"
+                                                        x-show="!loading && !isFavorite"
+                                                        @click.stop="toggleFavorite">
+                                                    <i class="ph-bold ph-star"></i>
+                                                </button>
+                                                <button class="text-lg dark:text-white text-black opacity-50 hover:opacity-80 mr-2 transition-all"
+                                                        x-show="!loading && isFavorite"
+                                                        @click.stop="toggleFavorite">
+                                                    <i class="ph-fill ph-star"></i>
+                                                </button>
+                                            </div>
+                                        </template>
                                     </div>
                                 </template>
 
@@ -375,20 +378,23 @@
                                             </div>
                                         </div>
 
-                                        <div x-data="favorite_toggle"
-                                             x-init="init()"
-                                             :data-event-code="event.event_code">
-                                            <button class="text-lg dark:text-white text-black opacity-50 hover:opacity-80 mr-2 transition-all"
-                                                    x-show="!loading && !isFavorite"
-                                                    @click.stop="toggleFavorite">
-                                                <i class="ph-bold ph-star"></i>
-                                            </button>
-                                            <button class="text-lg dark:text-white text-black opacity-50 hover:opacity-80 mr-2 transition-all"
-                                                    x-show="!loading && isFavorite"
-                                                    @click.stop="toggleFavorite">
-                                                <i class="ph-fill ph-star"></i>
-                                            </button>
-                                        </div>
+                                        <template x-if="authenticated">
+
+                                            <div x-data="favorite_toggle"
+                                                 x-init="init()"
+                                                 :data-event-code="event.event_code">
+                                                <button class="text-lg dark:text-white text-black opacity-50 hover:opacity-80 mr-2 transition-all"
+                                                        x-show="!loading && !isFavorite"
+                                                        @click.stop="toggleFavorite">
+                                                    <i class="ph-bold ph-star"></i>
+                                                </button>
+                                                <button class="text-lg dark:text-white text-black opacity-50 hover:opacity-80 mr-2 transition-all"
+                                                        x-show="!loading && isFavorite"
+                                                        @click.stop="toggleFavorite">
+                                                    <i class="ph-fill ph-star"></i>
+                                                </button>
+                                            </div>
+                                        </template>
 
                                     </div>
                                 </template>

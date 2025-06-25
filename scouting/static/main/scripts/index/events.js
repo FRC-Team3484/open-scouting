@@ -9,6 +9,7 @@ document.addEventListener("alpine:init", () => {
 		year: new Date().getFullYear(),
 		favorite_filtered_events: [],
 		active_tab: "tba", // or "custom" or "favorites"
+		authenticated: false,
 
 		async get_events() {
 			const get_events_request = await fetch(
@@ -168,6 +169,10 @@ document.addEventListener("alpine:init", () => {
 				if (event.key === "settings") {
 					this.update_filters();
 				}
+			});
+
+			window.addEventListener("user_ready", () => {
+				this.authenticated = user.authenticated;
 			});
 		},
 	}));
