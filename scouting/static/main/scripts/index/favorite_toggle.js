@@ -4,18 +4,21 @@ document.addEventListener("alpine:init", () => {
 		loading: true,
 		eventCode: "",
 
-		async init(code) {
-			this.eventCode = code;
+		init() {
+			this.eventCode = this.$el.dataset.eventCode;
+			this.updateStatus();
 
-			const favorites = (await user.get_setting("favorite_events")) || [];
-			this.isFavorite = favorites.includes(this.eventCode);
-			this.loading = false;
-
-			window.addEventListener("storage", (event) => {
-				if (event.key === "settings") {
+			window.addEventListener("favorite_updated", (event) => {
+				if (event.detail.code === this.eventCode) {
 					this.updateStatus();
 				}
 			});
+		},
+
+		async updateStatus() {
+			const favorites = (await user.get_setting("favorite_events")) || [];
+			this.isFavorite = favorites.includes(this.eventCode);
+			this.loading = false;
 		},
 
 		async toggleFavorite() {
@@ -33,10 +36,21 @@ document.addEventListener("alpine:init", () => {
 			await user.save_settings();
 
 			this.isFavorite = !this.isFavorite;
+			window.dispatchEvent(
+				new CustomEvent("favorite_updated", {
+					detail: { code: this.eventCode },
+				}),
+			);
 
 			if (window.eventsComponent?.update_filters) {
 				window.eventsComponent.update_filters();
 			}
+
+			window.dispatchEvent(
+				new CustomEvent("favorite_updated", {
+					detail: { code: this.eventCode },
+				}),
+			);
 		},
 	}));
 });
