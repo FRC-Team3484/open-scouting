@@ -16,7 +16,7 @@ import os
 import environ
 
 # Change this before publishing a new release!
-SERVER_VERSION = "v0.1.7-alpha"
+SERVER_VERSION = "v0.1.8-alpha"
 
 env = environ.Env(
     interpolate=True,
