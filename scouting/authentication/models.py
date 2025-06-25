@@ -23,3 +23,20 @@ class VerificationCode(models.Model):
             return f"[Verified] Verification code for user {self.user_uuid}"
         else:
             return f"[Unverified] Verification code for user {self.user_uuid}"
+
+
+class Settings(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    favorite_events = models.JSONField(
+        default=list,
+        blank=True,
+        editable=False,
+        verbose_name="Favorite Events",
+        help_text="The user's favorite events, pinned to the top of their event list",
+    )
+
+    def __str__(self):
+        return f"Settings for {self.user.username}"
+
+    class Meta:
+        verbose_name_plural = "Settings"

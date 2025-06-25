@@ -8,7 +8,7 @@ from django.db.utils import IntegrityError
 from django.views.decorators.csrf import csrf_exempt
 
 from . import email
-from authentication.models import Profile, VerificationCode
+from authentication.models import Profile, VerificationCode, Settings
 from main.views import index
 
 import random
@@ -21,6 +21,19 @@ def generate_verification_code(length=6):
     for i in range(length):
         verification_code += str(random.randint(0, 9))
     return verification_code
+
+
+def get_field_type(type):
+    if type == "JSONField":
+        return "json"
+    elif type == "BooleanField":
+        return "bool"
+    elif type == "CharField" or type == "TextField":
+        return "string"
+    elif type == "IntegerField":
+        return "number"
+    else:
+        return type
 
 
 def auth(request):
@@ -319,6 +332,9 @@ def create_account(request):
                 )
                 profile.save()
 
+                settings = Settings(user=user)
+                settings.save()
+
                 email.send_welcome([body["email"]], body["display_name"])
 
                 user = authenticate(
@@ -403,6 +419,72 @@ def save_profile(request):
         profile.display_name = body["display_name"]
         profile.team_number = body["team_number"]
         profile.save()
+
+        return HttpResponse("success", status=200)
+    else:
+        return HttpResponse("Request is not a POST request!", status=501)
+
+
+def get_user_settings(request):
+    """
+    Gets the settings for a user
+    """
+    if request.method == "POST":
+        if not request.user.is_authenticated:
+            return HttpResponse("Not authenticated", status=401)
+
+        user = User.objects.filter(id=request.user.id).first()
+
+        settings = Settings.objects.filter(user=user).first()
+
+        json_data = [
+            {
+                "key": field.name,
+                "value": getattr(settings, field.name, None),
+                "type": get_field_type(field.get_internal_type())
+                if not field.choices
+                else "choice",
+                "name": field.verbose_name,
+                "description": field.help_text,
+                "editable": field.editable,
+                "choices": field.choices if field.choices else [],
+            }
+            for field in settings._meta.get_fields()
+            if field.name != "id" and field.name != "user"
+        ]
+
+        return JsonResponse(json_data, safe=False)
+    else:
+        return HttpResponse("Request is not a POST request!", status=501)
+
+
+def set_user_settings(request):
+    """
+    Sets the settings for a user
+
+    Body:
+        The settings for the user
+    """
+    if request.method == "POST":
+        if not request.user.is_authenticated:
+            return HttpResponse("Not authenticated", status=401)
+
+        try:
+            body = json.loads(request.body)
+        except KeyError:
+            return HttpResponse(request, "No body found in request", status=400)
+
+        user = User.objects.filter(id=request.user.id).first()
+
+        settings = Settings.objects.filter(user=user).first()
+
+        for field in settings._meta.get_fields():
+            if field.name != "id" and field.name != "user":
+                for obj in body:
+                    field = settings._meta.get_field(obj["key"])
+                    setattr(settings, obj["key"], obj["value"])
+
+                settings.save()
 
         return HttpResponse("success", status=200)
     else:

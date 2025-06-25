@@ -12,6 +12,9 @@
         <link rel="stylesheet"
               type="text/css"
               href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold/style.css" />
+        <link rel="stylesheet"
+              type="text/css"
+              href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css" />
 
         <!-- alpine.js -->
         <script defer
@@ -33,9 +36,19 @@
         <script src="https://unpkg.com/dexie/dist/dexie.js"></script>
 
         <!-- Open Scouting -->
+        <script>
+            // Set initial offline status synchronously
+            globalThis.offline = !navigator.onLine;
+
+            // Optional: Listen for changes and update accordingly
+            window.addEventListener("online", () => globalThis.offline = false);
+            window.addEventListener("offline", () => globalThis.offline = true);
+        </script>
+
         <script src="{% static '/main/scripts/db.js' %}"></script>
         <script src="{% static '/main/scripts/log.js' %}"></script>
         <script type="module" src="{% static '/main/scripts/version.js' %}"></script>
+        <script src="{% static '/main/scripts/user.js' %}"></script>
         <script src="{% static '/main/scripts/app.js' %}"></script>
 
         <script>
@@ -58,7 +71,7 @@
             {% endblock head_title %}
         </title>
     </head>
-    <body class="bg-linear-to-br from-rose-200 to-blue-200 dark:bg-linear-to-br dark:from-slate-800 dark:to-slate-900">
+    <body class="bg-linear-to-br from-rose-200 to-blue-200 dark:bg-linear-to-br dark:from-slate-800 dark:to-slate-900 min-h-screen">
         {% block body %}
         {% endblock body %}
 

@@ -23,6 +23,17 @@
         const TEAM_NUMBER = `{{ user.profile.team_number }}`;
     </script>
 
+    <script>
+        const user = new User();
+        window.user = user;
+
+        user.check_authentication_status().then(() => {
+            window.dispatchEvent(new CustomEvent("user_ready", { detail: user }));
+        });
+
+        user.load_settings();
+    </script>
+
     <script src="{% static 'main/scripts/profile/profile.js' %}"></script>
 
     <div class="flex flex-col md:flex-row min-h-screen w-screen items-center justify-center gap-4"
@@ -41,9 +52,9 @@
 
         <div class="border-2 border-slate-600/80 rounded-full md:w-2 md:h-64 w-64 h-2"></div>
 
-        <div class="flex flex-col gap-2">
+        <div class="flex flex-col gap-2 overflow-y-scroll">
             <div class="flex flex-col gap-2"
-                 x-show="!editing"
+                 x-show="!editing && !settings"
                  x-transition:enter.delay.300ms>
                 <p class="dark:text-white text-black font-sans text-2xl text-left">
                     <i class="ph-bold ph-user-circle"></i> Profile
@@ -65,10 +76,14 @@
                     <button class="ui_button_small" @click="editing = true">
                         <i class="ph-bold ph-pencil"></i> Edit Profile
                     </button>
+
+                    <button class="ui_button_small" @click="settings = true">
+                        <i class="ph-bold ph-pencil"></i> Change Settings
+                    </button>
                 </div>
             </div>
 
-            <div class="flex flex-col gap-2"
+            <div class="flex flex-col gap-2 overflow-y-scroll"
                  x-show="editing"
                  x-transition:enter.delay.300ms>
                 <p class="dark:text-white text-black font-sans text-2xl text-left">
@@ -97,10 +112,69 @@
                     </button>
                 </div>
             </div>
+
+            <div class="flex flex-col gap-2 overflow-y-scroll"
+                 x-data="{ settings_loaded: false }"
+                 x-show="settings"
+                 x-init="user.load_settings().then(() => settings_loaded = true)"
+                 x-transition:enter.delay.300ms>
+
+                <p class="dark:text-white text-black font-sans text-2xl text-left mb-2">
+                    <i class="ph-bold ph-pencil"></i> Change Settings
+                </p>
+
+                <template x-if="settings_loaded">
+                    <template x-for="setting in user.settings" :key="setting.name">
+                        <template x-if="setting.editable">
+                            <div class="flex-col gap-1 ml-4">
+                                <p class="text-md font-bold dark:text-white text-black"
+                                   x-text="setting.name"></p>
+                                <p class="text-sm opacity-80 dark:text-white text-black"
+                                   x-text="setting.description"></p>
+                                <template x-if="setting.type === 'json'">
+                                    <textarea class="ui_input" x-model="setting.value" rows="4"></textarea>
+                                </template>
+                                <template x-if="setting.type === 'bool'">
+                                    <input class="ui_checkbox max-h-8!" type="checkbox" x-model="setting.value">
+                                </template>
+                                <template x-if="setting.type === 'string'">
+                                    <input class="ui_input" type="text" x-model="setting.value">
+                                </template>
+                                <template x-if="setting.type === 'number'">
+                                    <input class="ui_input" type="number" x-model="setting.value">
+                                </template>
+                                <template x-if="setting.type === 'choice' && setting.value && setting.choices"
+                                          x-init="console.log(setting.value)">
+                                    <select class="ui_input" x-model="setting.value">
+                                        <template x-for="[prettyName, value] in setting.choices" :key="value">
+                                            <option :value="value"
+                                                    x-text="prettyName"
+                                                    :selected="setting.value === value"></option>
+                                        </template>
+                                    </select>
+
+                                </template>
+                                <template x-else>
+                                    <input class="ui_input" type="text" x-model="setting.value">
+                                </template>
+                            </div>
+                        </template>
+                    </template>
+                </template>
+
+                <div class="flex flex-row gap-2" x-show="settings_loaded">
+                    <button class="ui_button_small"
+                            @click="user.save_settings(true); settings = false">
+                        <i class="ph-bold ph-check-circle"></i> Save Changes
+                    </button>
+
+                    <button class="ui_button_small" @click="settings = false">
+                        <i class="ph-bold ph-x-circle"></i> Cancel Changes
+                    </button>
+                </div>
+            </div>
         </div>
+    {% endblock body %}
 
-    </div>
-{% endblock body %}
-
-{% block scripts %}
-{% endblock scripts %}
+    {% block scripts %}
+    {% endblock scripts %}

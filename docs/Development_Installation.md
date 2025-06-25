@@ -39,16 +39,16 @@ You should add your TBA Read API key here, and credentials for sending emails
 
 Next, create a django superuser and make and migrate the models
 ```bash
-python manage.py migrate
-python manage.py createsuperuser # Follow the steps to create your superuser when running this command
+python3 manage.py migrate
+python3 manage.py createsuperuser # Follow the steps to create your superuser when running this command
 ```
 
 Now run the server using the following command, or run the `Start server` task in Visual Studio Code
 ```bash
-python manage.py runserver
+python3 manage.py runserver
 ```
 
-Now, navigate to the `./admin` page (usually `http://127.0.0.1:8000/admin`), add view the `User` models. Find the superuser you just created, scroll down, and fill out all the fields for the profile object to prevent any errors
+Now, navigate to the `./admin` page (usually `http://127.0.0.1:8000/admin`), and view the `User` models. Find the superuser you just created, scroll down, and fill out all the fields for the profile object to prevent any errors
 
 Additionally, you should start the Tailwind CSS builder with the following command, or use the `Build CSS` task in Visual Studio Code
 ```bash

@@ -74,6 +74,26 @@ document.addEventListener("alpine:init", () => {
 		 * @param {string} title - The title of the chart
 		 */
 		create_donut_chart(element, data, labels, title) {
+			const backgroundColors = labels.map((label) => {
+				if (label === "true") {
+					return "#4FBD4D";
+				} else if (label === "false") {
+					return "#ff4e51";
+				}
+
+				let default_colors = [
+					"#36a2eb",
+					"#ff6384",
+					"#4bc0c0",
+					"#ff9f40",
+					"#9966ff",
+					"#ffcd56",
+					"#c9cbcf",
+				];
+
+				return default_colors[labels.indexOf(label) % default_colors.length];
+			});
+
 			new Chart(element, {
 				type: "doughnut",
 				data: {
@@ -81,6 +101,7 @@ document.addEventListener("alpine:init", () => {
 					datasets: [
 						{
 							data: data,
+							backgroundColor: backgroundColors,
 						},
 					],
 				},

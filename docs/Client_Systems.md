@@ -7,6 +7,7 @@ This page documents how to use several of the systems and utilities that are bui
 - [Showing dialogs](#showing-dialogs)
 - [Client logging](#client-logging)
 - [Accessing the client database](#accessing-the-client-database)
+- [Client user management](#client-user-management)
 
 ## Sending notifications
 Notifications are shown next to the menu and can be used to provide the user with some information if an action succeeds or fails
@@ -159,3 +160,79 @@ db.open()
 ```
 
 Check the [Dexie.js documentation](https://dexie.org/docs/API-Reference#quick-reference) for more information on usage
+
+## Client user management
+Open Scouting has a [`user.js`](/scouting/static/main/scripts/user.js) file that handles the current authenticated user
+
+To use utilities from this file on a page, include the following in the `body` block, below the environment variable settings
+```html
+<script>
+    const user = new User();
+    window.user = user;
+
+    user.check_authentication_status().then(() => {
+        window.dispatchEvent(new CustomEvent("user_ready", { detail: user }));
+    });
+</script>
+```
+
+Now the user utility functions can be used with `user.*`, and things on the page relying on the user utility functions should be called when the `user_ready` event is called
+
+When adding new settings, new fields should be added to the `Settings` modal in the authentication app. These fields need to at least have `editable`, `verbose_name`, and `help_text` parameters.
+
+### `check_authentication_status`
+This function checks the authentication status with the server and stores it locally for offline use. If the user is offline, this is retrieved locally. If it's not stored locally, the user is marked as not authenticated
+
+```js
+user.check_authentication_status()
+```
+
+### `sign_out`
+Signs the user out and reloads the page. This will also clear the service worker cache, and should only be called from the index and profile pages where there's a confirmation prompt for clearing the cache
+
+```js
+user.sign_out()
+```
+
+### `load_settings`
+Fetches the user's settings from the server and stores it locally. Is called automatically in most cases
+
+```js
+user.load_settings()
+```
+
+### `save_settings`
+Uploads the changed settings to the server. Should be called once editing settings is finished, and doesn't need to be called if multiple settings are being set
+
+```js
+user.save_settings()
+```
+
+### `get_setting`
+Gets a value of a setting
+
+Parameters:
+- key - The name of the setting
+
+```js
+user.get_setting("favorite_events")
+```
+
+### `get_all_settings`
+Gets all the user's settings, as a list of objects with `name`, `value`, and `type` attributes
+Is the same as `user.settings`
+
+```js
+user.get_all_settings()
+```
+
+### `set_setting`
+Sets a value to a user's setting and stores it locally. Does not save it to the server, `save_settings` is needed to do that
+
+Parameters:
+- key - The name of the setting
+- value - The value of the setting to set
+
+```js
+user.set_setting("favorite_events", ["2025paca"])
+```
