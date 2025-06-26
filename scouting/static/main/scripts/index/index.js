@@ -25,6 +25,8 @@ document.addEventListener("alpine:init", () => {
 					} else {
 						window.location.href = `${SERVER_IP}/contribute?username=${encodeURIComponent(this.username)}&team_number=${encodeURIComponent(this.team_number)}&event_name=${encodeURIComponent(this.event_name)}&event_code=${this.event_code}&year=${this.year}&custom=true&`;
 					}
+				} else if (page == "advanced_data") {
+					window.location.href = `${SERVER_IP}/advanced_data?year=${this.year}&events=${this.event_code}`;
 				} else if (page == "pit_scouting") {
 					if (!this.custom) {
 						window.location.href = `${SERVER_IP}/pits?username=${encodeURIComponent(this.username)}&team_number=${encodeURIComponent(this.team_number)}&event_name=${encodeURIComponent(this.event_name)}&event_code=${this.event_code}&year=${this.year}&`;
@@ -37,6 +39,8 @@ document.addEventListener("alpine:init", () => {
 					console.log("This feature is coming soon");
 				} else if (page == "contribute_separately") {
 					window.location.href = `${SERVER_IP}/contribute?year=${this.year}&demo=true&`;
+				} else if (page == "advanced_data") {
+					window.location.href = `${SERVER_IP}/advanced_data?year=${this.year}&events=${this.event_code}`;
 				} else if (page == "pit_scouting") {
 					window.location.href = `${SERVER_IP}/pits?year=${this.year}&demo=true&`;
 				}
