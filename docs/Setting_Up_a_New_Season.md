@@ -15,11 +15,7 @@ These steps should be followed as early in the season as possible, preferably on
 ## 3. Update `views.py` and `models.py`
 - Navigate to `/main/views.py`
   - Add the new year to the `YEARS` array
-  - Add to the `get_demo_data_from_year` function to return the new year's data
 - Navigate to `/main/models.py`
   - Add the new year to the `YEARS` array as a tuple, just match with the years that are already in this array
-
-## 4. Create demo data
-- Follow the instructions in [Creating Demonstration Data](./Creating_Demonstration_Data.md) for how to do this
 
 Open Scouting should now be updated to the new season! You should navigate around and ensure that everything is working as expected
