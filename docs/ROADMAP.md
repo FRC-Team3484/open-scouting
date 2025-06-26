@@ -8,6 +8,16 @@ This document describes the roadmap for Open Scouting, and roughly when each fea
 - [ ] [#43](https://github.com/FRC-Team3484/open-scouting/issues/43) - Admin interface
 - [ ] [#57](https://github.com/FRC-Team3484/open-scouting/issues/57) - Create a script or UI for creating `season_fields.py`
 - [ ] [#97](https://github.com/FRC-Team3484/open-scouting/issues/97) - Remove the data table page
+- [ ] [#98](https://github.com/FRC-Team3484/open-scouting/issues/98) - Adjust scrolling or content on the index page
+
+### `v0.1.10-alpha`
+- [ ] [#34](https://github.com/FRC-Team3484/open-scouting/issues/34) - Add a notification queue
+- [ ] [#35](https://github.com/FRC-Team3484/open-scouting/issues/35) - Show indicators on the menu button if there's any important messages to the user
+- [ ] [#99](https://github.com/FRC-Team3484/open-scouting/issues/99) - Redo notification system
+
+### `v0.1.11-alpha`
+- [ ] [#100](https://github.com/FRC-Team3484/open-scouting/issues/100) - Reorganize templates
+- [ ] [#31](https://github.com/FRC-Team3484/open-scouting/issues/31) - Support multiple languages and localization
 
 ---
 ## Completed
