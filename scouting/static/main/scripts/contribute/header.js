@@ -14,15 +14,6 @@ document.addEventListener("alpine:init", () => {
 		},
 
 		/**
-		 * Navigates to the data page using the current event information
-		 */
-		go_to_data() {
-			const url = new URL(window.location.href);
-			url.pathname = url.pathname.replace(this.page_path, "/data");
-			window.location.href = url.toString();
-		},
-
-		/**
 		 * Navigates to the pit scouting page using the current event information
 		 */
 		go_to_pits() {

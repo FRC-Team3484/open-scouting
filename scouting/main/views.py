@@ -7,7 +7,6 @@ from django.db.models import Q
 
 from main.models import Data, Event, PitGroup, Pit
 from . import season_fields
-from . import demo_data
 from . import pit_scouting_questions
 
 import json
@@ -24,22 +23,6 @@ DATE_FORMAT = "%Y-%m-%d"
 
 
 # TODO: Move to respective .py files instead
-def get_demo_data_from_year(year):
-    """
-    Returns the demo data for a given year.
-
-    Args:
-        year (str): The year that you want the demo data for
-    """
-    year = str(year)
-    if year == "2024":
-        return demo_data.crescendo
-    elif year == "2025":
-        return demo_data.reefscape
-    else:
-        return None
-
-
 def get_pit_scouting_questions_from_year(year):
     """
     Returns the pit scouting questions for a given year.
@@ -215,34 +198,6 @@ def contribute(request):
     return render(request, "contribute.html", context)
 
 
-def data(request):
-    """
-    Returns the data page
-    """
-    request.session["username"] = request.GET.get("username", "unknown")
-    request.session["team_number"] = request.GET.get("team_number", "unknown")
-    request.session["event_name"] = request.GET.get("event_name", "unknown")
-    request.session["event_code"] = request.GET.get("event_code", "unknown")
-    request.session["custom"] = request.GET.get("custom", "unknown")
-    request.session["year"] = request.GET.get("year", "unknown")
-    request.session["demo"] = request.GET.get("demo", "unknown")
-
-    context = {
-        "SERVER_IP": settings.SERVER_IP,
-        "TBA_API_KEY": settings.TBA_API_KEY,
-        "SERVER_MESSAGE": settings.SERVER_MESSAGE,
-        "username": request.GET.get("username", "unknown"),
-        "team_number": request.GET.get("team_number", "unknown"),
-        "event_name": request.GET.get("event_name", "unknown"),
-        "event_code": request.GET.get("event_code", "unknown"),
-        "custom": request.GET.get("custom", "unknown"),
-        "year": request.GET.get("year", "unknown"),
-        "demo": request.GET.get("demo", "unknown"),
-    }
-
-    return render(request, "data.html", context)
-
-
 def pits(request):
     """
     Returns the pits page
@@ -367,88 +322,6 @@ def submit(request):
         return HttpResponse(request, "Success")
     else:
         return HttpResponse(request, "Request is not a POST request!", status=501)
-
-
-def get_data(request):
-    """
-    Gets the scouting data for an event from the server
-
-    Body Parameters:
-        event_name: The name of the event
-        event_code: The event code of the event
-        year: The year of the event
-        custom: Whether or not the event is a custom event
-    """
-    if request.method == "POST":
-        try:
-            body = json.loads(request.body)
-        except KeyError:
-            return HttpResponse(request, "No body found in request", status=400)
-
-        if body["demo"] == "true":
-            data = get_demo_data_from_year(body["year"])
-
-            data_json = []
-            for item in data:
-                item_data = {"created": "unknown", "data": item}
-                data_json.append(item_data)
-
-            all_names = []
-            for entry in data:
-                for item in entry:
-                    if item["name"] not in all_names:
-                        all_names.append(item["name"])
-
-            return JsonResponse(
-                {"data": data_json, "data_headers": list(all_names), "demo": True},
-                safe=False,
-            )
-
-        else:
-            event = check_if_event_exists(
-                request,
-                body["event_name"],
-                body["event_code"],
-                body["year"],
-                body["custom"],
-            )
-
-            data = Data.objects.filter(
-                year=body["year"],
-                event=unquote(body["event_name"]),
-                event_code=body["event_code"],
-                event_model=event,
-            )
-
-            data_json = []
-            for item in data:
-                item_data = {}
-                for key in item.data:
-                    try:
-                        item_data[key["name"]] = key["value"]
-                    except KeyError:
-                        break
-
-                item_data["created"] = item.created
-                item_data["username_created"] = item.username_created
-                item_data["team_number_created"] = item.team_number_created
-                item_data["account"] = item.account
-
-                data_json.append(item_data)
-
-            all_names = season_fields.create_tabulator_headers(
-                season_fields.collect_field_names(
-                    season_fields.get_season_fields(body["year"])
-                )
-            )
-
-            return JsonResponse(
-                {"data": data_json, "data_headers": list(all_names), "demo": False},
-                safe=False,
-            )
-
-    else:
-        return HttpResponse("Request is not a POST request!", status=501)
 
 
 def get_custom_events(request):

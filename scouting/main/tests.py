@@ -47,26 +47,6 @@ class ContributePageTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class DataPageTest(TestCase):
-    def setUp(self):
-        self.client = Client()
-
-        user = User.objects.create_user("test", "test", "test")
-        user.save()
-
-        profile = Profile(user=user, display_name="test", team_number="1234")
-        profile.save()
-
-    def test_data_anonymous(self):
-        response = self.client.get("/data")
-        self.assertEqual(response.status_code, 200)
-
-    def test_data_authenticated(self):
-        self.client.login(username="test", password="test")
-        response = self.client.get("/data")
-        self.assertEqual(response.status_code, 200)
-
-
 class PitsPageTest(TestCase):
     def setUp(self):
         self.client = Client()
@@ -221,61 +201,6 @@ class SubmitTest(TestCase):
         self.assertEqual(data.data, {})
         self.assertEqual(data.event_model.custom, False)
         self.assertEqual(data.user_created, self.user)
-
-
-class GetDataTest(TestCase):
-    def setUp(self):
-        self.client = Client()
-
-        self.user = User.objects.create_user("test", "test", "test")
-        self.user.save()
-
-        profile = Profile(user=self.user, display_name="test", team_number="1234")
-        profile.save()
-
-    def test_get_data_demo(self):
-        data = {
-            "event_name": "test",
-            "event_code": "test",
-            "custom": "false",
-            "year": 2024,
-            "demo": "true",
-        }
-
-        response = self.client.post("/get_data", data, content_type="application/json")
-        self.assertEqual(response.status_code, 200)
-
-        self.assertEqual(response["Content-Type"], "application/json")
-        response_json = json.loads(response.content)
-        self.assertIn("demo", response_json)
-
-    def test_get_data_custom(self):
-        data = {
-            "event_name": "test",
-            "event_code": "test",
-            "custom": "true",
-            "year": 2024,
-            "demo": "false",
-        }
-
-        response = self.client.post("/get_data", data, content_type="application/json")
-        self.assertEqual(response.status_code, 200)
-
-        self.assertEqual(response["Content-Type"], "application/json")
-
-    def test_get_data_normal(self):
-        data = {
-            "event_name": "test",
-            "event_code": "test",
-            "custom": "false",
-            "year": 2024,
-            "demo": "false",
-        }
-
-        response = self.client.post("/get_data", data, content_type="application/json")
-        self.assertEqual(response.status_code, 200)
-
-        self.assertEqual(response["Content-Type"], "application/json")
 
 
 class GetCustomEventsTest(TestCase):
