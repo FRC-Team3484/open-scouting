@@ -1075,77 +1075,91 @@ def get_admin_data(request):
 
             if not body.get("type", []) or "data" in body.get("type", []):
                 for item in Data.objects.all():
-                    data["data"].append(
-                        {
-                            "uuid": item.uuid,
-                            "year": item.year,
-                            "event_name": item.event,
-                            "event_code": item.event_code,
-                            "team_number": item.team_number,
-                            "created": item.created,
-                            "user": {
-                                "uuid": item.user_created.uuid
-                                if item.account
-                                else None,
-                                "username": item.user_created.username
-                                if item.account
-                                else item.username_created,
-                                "team_number": item.user_created.team_number
-                                if item.account
-                                else item.team_number_created,
-                            },
-                        }
-                    )
+                    try:
+                        data["data"].append(
+                            {
+                                "uuid": item.uuid,
+                                "year": item.year,
+                                "event_name": item.event,
+                                "event_code": item.event_code,
+                                "team_number": item.team_number,
+                                "created": item.created,
+                                "user": {
+                                    "uuid": item.user_created.uuid
+                                    if item.account
+                                    else None,
+                                    "username": item.user_created.username
+                                    if item.account
+                                    else item.username_created,
+                                    "team_number": item.user_created.team_number
+                                    if item.account
+                                    else item.team_number_created,
+                                },
+                            }
+                        )
+                    except AttributeError:
+                        pass
 
             if not body.get("type", []) or "events" in body.get("type", []):
                 for item in Event.objects.all():
-                    data["events"].append(
-                        {
-                            "year": item.year,
-                            "name": item.name,
-                            "event_code": item.event_code,
-                            "created": item.created,
-                            "custom": item.custom,
-                            "custom_data": item.custom_data,
-                            "user": {
-                                "uuid": item.user_created.uuid
-                                if item.user_created
-                                else None,
-                                "username": item.user_created.username
-                                if item.user_created
-                                else None,
-                                "team_number": item.user_created.team_number
-                                if item.user_created
-                                else None,
-                            },
-                        }
-                    )
+                    try:
+                        data["events"].append(
+                            {
+                                "year": item.year,
+                                "name": item.name,
+                                "event_code": item.event_code,
+                                "created": item.created,
+                                "custom": item.custom,
+                                "custom_data": item.custom_data,
+                                "user": {
+                                    "uuid": item.user_created.uuid
+                                    if item.user_created
+                                    else None,
+                                    "username": item.user_created.username
+                                    if item.user_created
+                                    else None,
+                                    "team_number": item.user_created.team_number
+                                    if item.user_created
+                                    else None,
+                                },
+                            }
+                        )
+                    except AttributeError:
+                        pass
 
             if not body.get("type", []) or "users" in body.get("type", []):
                 for item in User.objects.all():
-                    data["users"].append(
-                        {
-                            "uuid": item.uuid,
-                            "username": item.username,
-                            "display_name": item.profile.display_name,
-                            "team_number": item.profile.team_number,
-                            "created": item.created,
-                        }
-                    )
+                    try:
+                        data["users"].append(
+                            {
+                                "uuid": item.id,
+                                "username": item.username,
+                                "display_name": item.profile.display_name,
+                                "team_number": item.profile.team_number,
+                                "created": item.date_joined,
+                                "is_superuser": item.is_superuser,
+                                "is_staff": item.is_staff,
+                            }
+                        )
+                    except AttributeError:
+                        pass
 
             if not body.get("type", []) or "pits" in body.get("type", []):
                 for item in Pit.objects.all():
-                    data["pits"].append(
-                        {
-                            "uuid": item.uuid,
-                            "team_number": item.team_number,
-                            "nickname": item.nickname,
-                            "event_name": item.pit_group.event.name,
-                            "event_code": item.pit_group.event.event_code,
-                            "year": item.pit_group.event.year,
-                            "created": item.created,
-                        }
-                    )
+                    try:
+                        data["pits"].append(
+                            {
+                                "uuid": item.uuid,
+                                "team_number": item.team_number,
+                                "nickname": item.nickname,
+                                "event_name": item.pit_group.event.name,
+                                "event_code": item.pit_group.event.event_code,
+                                "year": item.pit_group.event.year,
+                                "created": item.created,
+                            }
+                        )
+                    except AttributeError:
+                        pass
 
             return JsonResponse(data, safe=False, status=200)
         else:
