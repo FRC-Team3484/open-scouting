@@ -27,8 +27,9 @@
         user.load_settings();
     </script>
 
-    <div class="flex flex-col min-h-screen w-screen items-center" x-data>
-        <div class="flex flex-col w-full md:w-3/4 lg:w-2/3 mx-8 my-4 py-2 dark:bg-slate-800 border-2 dark:border-slate-700 bg-slate-200 border-slate-300 rounded-lg mb-4 items-center justify-center">
+    <div class="flex flex-col min-h-screen w-screen items-center">
+        <div class="flex flex-col w-full md:w-3/4 lg:w-2/3 mx-8 my-4 py-2 dark:bg-slate-800 border-2 dark:border-slate-700 bg-slate-200 border-slate-300 rounded-lg mb-4 items-center justify-center"
+             x-data>
             <div class="flex flex-row items-center justify-center">
                 <img class="w-16 h-16 aspect-square m-2 hover:scale-110 transition-all ease-in-out active:scale-95"
                      src="{% static '/main/images/icon_rounded.png' %}"
@@ -45,8 +46,31 @@
                     @click="window.location.href = window.location.href.replace(/\/ui\/?$/, '')">Django Admin</button>
 
         </div>
+
+        <script src="{% static '/main/scripts/admin/filters.js' %}"></script>
+
+        <div class="flex flex-col w-full md:w-3/4 lg:w-2/3 mx-8 my-4 py-2 dark:bg-slate-800 border-2 dark:border-slate-700 bg-slate-200 border-slate-300 rounded-lg mb-4 pl-4"
+             x-data="filters">
+            <div class="flex flex-row items-center mb-6">
+                <i class="ph-bold ph-gear dark:text-white text-black text-2xl"></i>
+                <p class="dark:text-white text-black text-sans text-2xl ml-2">Filters</p>
+            </div>
+
+            <select class="ui_input !max-w-64" x-model="type" @change="get_data()">
+                <option value="">Select a type...</option>
+                <option value="data">Data</option>
+                <option value="event">Event</option>
+                <option value="user">User</option>
+                <option value="pit">Pit</option>
+            </select>
+            <p class="dark:text-white text-black text-sans text-sm mt-2">
+                <span class="font-bold">Type</span> <span class="opacity-80">What type of data to view or edit</span>
+            </p>
+
+        </div>
     </div>
 {% endblock body %}
 
 {% block scripts %}
 {% endblock scripts %}
+opacity-80

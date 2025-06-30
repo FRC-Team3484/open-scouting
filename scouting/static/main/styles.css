@@ -567,6 +567,9 @@
   .w-screen {
     width: 100vw;
   }
+  .\!max-w-64 {
+    max-width: calc(var(--spacing) * 64) !important;
+  }
   .max-w-2xl {
     max-width: var(--container-2xl);
   }
@@ -952,6 +955,9 @@
   }
   .pl-2 {
     padding-left: calc(var(--spacing) * 2);
+  }
+  .pl-4 {
+    padding-left: calc(var(--spacing) * 4);
   }
   .text-center {
     text-align: center;
