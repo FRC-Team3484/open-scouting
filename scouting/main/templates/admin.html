@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head_title %}Open Scouting | Admin{% endblock %}
+
+{% block head_scripts %}
+{% endblock head_scripts %}
+
+{% block stylesheets %}
+{% endblock stylesheets %}
+
+{% block body %}
+    <script>
+        const SERVER_IP = "{{ SERVER_IP }}";
+        const CSRF_TOKEN = "{{ csrf_token }}";
+        const TBA_API_KEY = "{{ TBA_API_KEY }}";
+        const YEARS = '{{ YEARS | safe }}';
+    </script>
+
+{% endblock body %}
+
+{% block scripts %}
+{% endblock scripts %}

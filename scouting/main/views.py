@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponse, redirect
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseForbidden
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
@@ -251,6 +251,23 @@ def service_worker(request):
     """
     sw_path = settings.BASE_DIR / "frontend" / "sw.js"
     return HttpResponse(open(sw_path).read(), content_type="application/javascript")
+
+
+def admin_ui(request):
+    """
+    Returns the custom admin page, if the user is a superuser
+    """
+
+    context = {
+        "SERVER_IP": settings.SERVER_IP,
+        "TBA_API_KEY": settings.TBA_API_KEY,
+        "SERVER_MESSAGE": settings.SERVER_MESSAGE,
+    }
+
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+
+    return render(request, "admin.html", context)
 
 
 def submit(request):
