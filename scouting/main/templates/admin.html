@@ -63,9 +63,64 @@
                 <option value="user">User</option>
                 <option value="pit">Pit</option>
             </select>
-            <p class="dark:text-white text-black text-sans text-sm mt-2">
+            <p class="dark:text-white text-black text-sans text-sm mt-2 mb-6">
                 <span class="font-bold">Type</span> <span class="opacity-80">What type of data to view or edit</span>
             </p>
+
+            <div x-show="type == 'data'" x-transition>
+                <div class="flex flex-row gap-2 flex-wrap" x-ref="data_filters_event">
+                    <template x-for="(event, index) in data_filters.event.items" :key="index">
+                        <button class="ui_button_small flex items-center"
+                                @click="data_filters.event.items = data_filters.event.items.filter(e => e !== event)">
+                            <i class="ph-bold ph-x mr-1"></i>
+                            <p x-text="event.name" class="inline-block"></p>
+                        </button>
+                    </template>
+
+                    <button class="ui_button_small"
+                            @click="data_filters.event.open = !data_filters.event.open">
+                        <i class="ph-bold ph-plus"></i> Add
+                    </button>
+                </div>
+                <div class="flex flex-col gap-2 bg-slate-200 dark:bg-slate-700 border-2 dark:border-slate-600 border-slate-300 rounded-lg p-4 overflow-y-scroll max-h-72 max-w-72 items-start"
+                     x-anchor="$refs.data_filters_event"
+                     x-show="data_filters.event.open"
+                     x-click.outside="data_filters.event.open = false"
+                     x-transition>
+                    <div class="flex flex-row gap-2">
+                        <input class="ui_input w-full! grow"
+                               type="text"
+                               placeholder="Search for an event..."
+                               x-ref="events_search"
+                               @input="data.events_filtered = data.events.filter(e => e.name.toLowerCase().includes($refs.events_search.value.toLowerCase()))">
+                        <button class="ui_button_small wrap-break-word aspect-square"
+                                @click="data_filters.event.open = false; this.$refs.events_search.value = ''">
+                            <i class="ph-bold ph-x"></i>
+                        </button>
+                    </div>
+                    <template x-for="(event, index) in data.events_filtered" :key="index">
+                        <button class="dark:text-white text-black text-sans text-md mb-2 opacity-70 hover:opacity-100 hover:dark:bg-slate-600/50 hover:bg-slate-300/50 rounded-full p-1 transition-all w-full text-left px-1"
+                                @click="data_filters.event.items.push(event); data_filters.event.open = false">
+                            <p x-text="event.name"></p>
+                        </button>
+                    </template>
+                </div>
+                <p class="dark:text-white text-black text-sans text-sm mt-2">
+                    <span class="font-bold">Event</span> <span class="opacity-80">Filter data by event</span>
+                </p>
+            </div>
+
+            <template x-if="type == 'event'">
+                <div class="flex flex-col gap-2"></div>
+            </template>
+
+            <template x-if="type == 'user'">
+                <div class="flex flex-col gap-2"></div>
+            </template>
+
+            <template x-if="type == 'pit'">
+                <div class="flex flex-col gap-2"></div>
+            </template>
 
         </div>
     </div>
@@ -73,4 +128,3 @@
 
 {% block scripts %}
 {% endblock scripts %}
-opacity-80
