@@ -105,8 +105,49 @@
                         </button>
                     </template>
                 </div>
-                <p class="dark:text-white text-black text-sans text-sm mt-2">
+                <p class="dark:text-white text-black text-sans text-sm my-2">
                     <span class="font-bold">Event</span> <span class="opacity-80">Filter data by event</span>
+                </p>
+
+                <div class="flex flex-row gap-2 flex-wrap" x-ref="data_filters_user">
+                    <template x-for="(user, index) in data_filters.user.items" :key="index">
+                        <button class="ui_button_small flex items-center"
+                                @click="data_filters.user.items = data_filters.user.items.filter(e => e !== user)">
+                            <i class="ph-bold ph-x mr-1"></i>
+                            <p x-text="user.username" class="inline-block"></p>
+                        </button>
+                    </template>
+
+                    <button class="ui_button_small"
+                            @click="data_filters.user.open = !data_filters.user.open">
+                        <i class="ph-bold ph-plus"></i> Add
+                    </button>
+                </div>
+                <div class="flex flex-col gap-2 bg-slate-200 dark:bg-slate-700 border-2 dark:border-slate-600 border-slate-300 rounded-lg p-4 overflow-y-scroll max-h-72 max-w-72 items-start"
+                     x-anchor="$refs.data_filters_user"
+                     x-show="data_filters.user.open"
+                     x-click.outside="data_filters.user.open = false"
+                     x-transition>
+                    <div class="flex flex-row gap-2">
+                        <input class="ui_input w-full! grow"
+                               type="text"
+                               placeholder="Search for a user..."
+                               x-ref="user_search"
+                               @input="data.users_filtered = data.user.filter(e => e.name.toLowerCase().includes($refs.events_search.value.toLowerCase()))">
+                        <button class="ui_button_small wrap-break-word aspect-square"
+                                @click="data_filters.user.open = false; this.$refs.user_search.value = ''">
+                            <i class="ph-bold ph-x"></i>
+                        </button>
+                    </div>
+                    <template x-for="(user, index) in data.users_filtered" :key="index">
+                        <button class="dark:text-white text-black text-sans text-md mb-2 opacity-70 hover:opacity-100 hover:dark:bg-slate-600/50 hover:bg-slate-300/50 rounded-full p-1 transition-all w-full text-left px-1"
+                                @click="data_filters.user.items.push(user); data_filters.user.open = false">
+                            <p x-text="user.username"></p>
+                        </button>
+                    </template>
+                </div>
+                <p class="dark:text-white text-black text-sans text-sm my-2">
+                    <span class="font-bold">User</span> <span class="opacity-80">Filter data by user</span>
                 </p>
             </div>
 

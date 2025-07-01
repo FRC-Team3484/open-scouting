@@ -16,10 +16,6 @@ document.addEventListener("alpine:init", () => {
 				open: false,
 				items: [],
 			},
-			username: {
-				open: false,
-				items: [],
-			},
 		},
 		event_filters: {
 			open: false,
@@ -74,6 +70,7 @@ document.addEventListener("alpine:init", () => {
 					this.data = data;
 					
 					this.data.events_filtered = this.data.events;
+					this.data.users_filtered = this.data.users;
 				});
 		},
 
