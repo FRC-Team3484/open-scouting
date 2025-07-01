@@ -1085,13 +1085,13 @@ def get_admin_data(request):
                                 "team_number": item.team_number,
                                 "created": item.created,
                                 "user": {
-                                    "uuid": item.user_created.uuid
+                                    "uuid": item.user_created.id
                                     if item.account
                                     else None,
-                                    "username": item.user_created.username
+                                    "username": item.user_created.profile.display_name
                                     if item.account
                                     else item.username_created,
-                                    "team_number": item.user_created.team_number
+                                    "team_number": item.user_created.profile.team_number
                                     if item.account
                                     else item.team_number_created,
                                 },
@@ -1112,13 +1112,13 @@ def get_admin_data(request):
                                 "custom": item.custom,
                                 "custom_data": item.custom_data,
                                 "user": {
-                                    "uuid": item.user_created.uuid
+                                    "uuid": item.user_created.id
                                     if item.user_created
                                     else None,
-                                    "username": item.user_created.username
+                                    "username": item.user_created.profile.display_name
                                     if item.user_created
                                     else None,
-                                    "team_number": item.user_created.team_number
+                                    "team_number": item.user_created.profile.team_number
                                     if item.user_created
                                     else None,
                                 },
