@@ -68,12 +68,14 @@ document.addEventListener("alpine:init", () => {
 
 					this.data.events_filtered = this.data.events;
 					this.data.users_filtered = this.data.users;
+					this.data.pits_filtered = this.data.pits;
 				});
 		},
 
 		init() {
 			this.data.events_filtered = [];
 			this.data.users_filtered = [];
+			this.data.pits_filtered = [];
 
 			this.get_data();
 		},
