@@ -4,7 +4,7 @@ document.addEventListener("alpine:init", () => {
 			data: [],
 			events: [],
 			users: [],
-			pits: []
+			pits: [],
 		},
 		type: "",
 		data_filters: {
@@ -18,14 +18,13 @@ document.addEventListener("alpine:init", () => {
 			},
 		},
 		event_filters: {
-			open: false,
 			year: {
 				open: false,
 				items: [],
 			},
 			name: {
 				open: false,
-				items: [],
+				value: "",
 			},
 			event_code: {
 				open: false,
@@ -33,7 +32,6 @@ document.addEventListener("alpine:init", () => {
 			},
 		},
 		user_filters: {
-			open: false,
 			username: {
 				open: false,
 				items: [],
@@ -44,7 +42,6 @@ document.addEventListener("alpine:init", () => {
 			},
 		},
 		pit_filters: {
-			open: false,
 			event: {
 				open: false,
 				items: [],
@@ -68,13 +65,15 @@ document.addEventListener("alpine:init", () => {
 				.then((response) => response.json())
 				.then((data) => {
 					this.data = data;
-					
+
 					this.data.events_filtered = this.data.events;
 					this.data.users_filtered = this.data.users;
 				});
 		},
 
 		init() {
+			this.data.events_filtered = [];
+
 			this.get_data();
 		},
 	}));
