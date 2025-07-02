@@ -63,9 +63,13 @@
                 <option value="user">User</option>
                 <option value="pit">Pit</option>
             </select>
-            <p class="dark:text-white text-black text-sans text-sm mt-2 mb-6">
+            <p class="dark:text-white text-black text-sans text-sm mt-2 mb-4">
                 <span class="font-bold">Type</span> <span class="opacity-80">What type of data to view or edit</span>
             </p>
+
+            <button class="ui_button_small mb-8" @click="clear_filters()">
+                <i class="ph-bold ph-trash"></i> Clear Filters
+            </button>
 
             <div x-show="type == 'data'" x-transition>
                 <div class="flex flex-row gap-2 flex-wrap" x-ref="data_filters_event">

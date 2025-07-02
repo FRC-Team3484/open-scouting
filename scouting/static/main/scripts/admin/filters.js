@@ -72,6 +72,21 @@ document.addEventListener("alpine:init", () => {
 				});
 		},
 
+		clear_filters() {
+			this.data_filters.event.items = [];
+			this.data_filters.user.items = [];
+
+			this.event_filters.year.items = [];
+			this.event_filters.name.value = "";
+			this.event_filters.event_code.items = [];
+
+			this.user_filters.username.items = [];
+			this.user_filters.team_number.items = [];
+
+			this.pit_filters.event.items = [];
+			this.pit_filters.year.items = [];
+		},
+
 		init() {
 			this.data.events_filtered = [];
 			this.data.users_filtered = [];
