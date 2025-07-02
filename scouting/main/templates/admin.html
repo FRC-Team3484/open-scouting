@@ -243,7 +243,101 @@
                 </p>
             </div>
 
-            <div x-show="type == 'user'" x-transition></div>
+            <div x-show="type == 'user'" x-transition>
+                <!-- Username Filter Pills -->
+                <div class="flex flex-row gap-2 flex-wrap" x-ref="user_filters_username">
+                    <template x-for="(username, index) in user_filters.username.items"
+                              :key="username">
+                        <button class="ui_button_small flex items-center"
+                                @click="user_filters.username.items = user_filters.username.items.filter(u => u !== username)">
+                            <i class="ph-bold ph-x mr-1"></i>
+                            <p x-text="username" class="inline-block"></p>
+                        </button>
+                    </template>
+
+                    <button class="ui_button_small"
+                            @click="user_filters.username.open = !user_filters.username.open">
+                        <i class="ph-bold ph-plus"></i> Add
+                    </button>
+                </div>
+
+                <!-- Username Dropdown -->
+                <div class="flex flex-col gap-2 bg-slate-200 dark:bg-slate-700 border-2 dark:border-slate-600 border-slate-300 rounded-lg p-4 overflow-y-scroll max-h-72 max-w-72 items-start z-5"
+                     x-anchor="$refs.user_filters_username"
+                     x-show="user_filters.username.open"
+                     x-click.outside="user_filters.username.open = false"
+                     x-transition>
+                    <div class="flex flex-row gap-2">
+                        <input class="ui_input w-full! grow"
+                               type="text"
+                               placeholder="Search usernames..."
+                               x-ref="username_search"
+                               @input="data.users_filtered = data.users.filter(u => u.username.toLowerCase().includes($refs.username_search.value.toLowerCase()))">
+                        <button class="ui_button_small wrap-break-word aspect-square"
+                                @click="user_filters.username.open = false; $refs.username_search.value = ''">
+                            <i class="ph-bold ph-x"></i>
+                        </button>
+                    </div>
+                    <template x-for="(username, index) in [...new Set(data.users_filtered.map(u => u.username))]"
+                              :key="username">
+                        <button class="dark:text-white text-black text-sans text-md mb-2 opacity-70 hover:opacity-100 hover:dark:bg-slate-600/50 hover:bg-slate-300/50 rounded-full p-1 transition-all w-full text-left px-1"
+                                @click="user_filters.username.items.push(username); user_filters.username.open = false">
+                            <p x-text="username"></p>
+                        </button>
+                    </template>
+                </div>
+
+                <p class="dark:text-white text-black text-sans text-sm my-2">
+                    <span class="font-bold">Username</span> <span class="opacity-80">Filter users by username</span>
+                </p>
+
+                <!-- Team Number Filter Pills -->
+                <div class="flex flex-row gap-2 flex-wrap"
+                     x-ref="user_filters_team_number">
+                    <template x-for="(team, index) in user_filters.team_number.items" :key="team">
+                        <button class="ui_button_small flex items-center"
+                                @click="user_filters.team_number.items = user_filters.team_number.items.filter(t => t !== team)">
+                            <i class="ph-bold ph-x mr-1"></i>
+                            <p x-text="team" class="inline-block"></p>
+                        </button>
+                    </template>
+
+                    <button class="ui_button_small"
+                            @click="user_filters.team_number.open = !user_filters.team_number.open">
+                        <i class="ph-bold ph-plus"></i> Add
+                    </button>
+                </div>
+
+                <!-- Team Number Dropdown -->
+                <div class="flex flex-col gap-2 bg-slate-200 dark:bg-slate-700 border-2 dark:border-slate-600 border-slate-300 rounded-lg p-4 overflow-y-scroll max-h-72 max-w-72 items-start z-5"
+                     x-anchor="$refs.user_filters_team_number"
+                     x-show="user_filters.team_number.open"
+                     x-click.outside="user_filters.team_number.open = false"
+                     x-transition>
+                    <div class="flex flex-row gap-2">
+                        <input class="ui_input w-full! grow"
+                               type="text"
+                               placeholder="Search team numbers..."
+                               x-ref="team_number_search"
+                               @input="data.users_filtered = data.users.filter(u => u.team_number?.toString().includes($refs.team_number_search.value))">
+                        <button class="ui_button_small wrap-break-word aspect-square"
+                                @click="user_filters.team_number.open = false; $refs.team_number_search.value = ''">
+                            <i class="ph-bold ph-x"></i>
+                        </button>
+                    </div>
+                    <template x-for="(team, index) in [...new Set(data.users_filtered.map(u => u.team_number))]"
+                              :key="team">
+                        <button class="dark:text-white text-black text-sans text-md mb-2 opacity-70 hover:opacity-100 hover:dark:bg-slate-600/50 hover:bg-slate-300/50 rounded-full p-1 transition-all w-full text-left px-1"
+                                @click="user_filters.team_number.items.push(team); user_filters.team_number.open = false">
+                            <p x-text="team"></p>
+                        </button>
+                    </template>
+                </div>
+
+                <p class="dark:text-white text-black text-sans text-sm my-2">
+                    <span class="font-bold">Team Number</span> <span class="opacity-80">Filter users by team</span>
+                </p>
+            </div>
 
             <div x-show="type == 'pit'" x-transition></div>
         </div>

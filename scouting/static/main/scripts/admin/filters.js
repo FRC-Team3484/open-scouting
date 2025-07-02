@@ -73,6 +73,7 @@ document.addEventListener("alpine:init", () => {
 
 		init() {
 			this.data.events_filtered = [];
+			this.data.users_filtered = [];
 
 			this.get_data();
 		},
