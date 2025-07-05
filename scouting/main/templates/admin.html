@@ -27,7 +27,10 @@
         user.load_settings();
     </script>
 
-    <div class="flex flex-col min-h-screen w-screen items-center">
+    <script src="{% static '/main/scripts/admin/filters.js' %}"></script>
+
+    <div class="flex flex-col min-h-screen w-screen items-center"
+         x-data="filters">
         <div class="flex flex-col w-full md:w-3/4 lg:w-2/3 mx-8 my-4 py-2 dark:bg-slate-800 border-2 dark:border-slate-700 bg-slate-200 border-slate-300 rounded-lg mb-4 items-center justify-center"
              x-data>
             <div class="flex flex-row items-center justify-center">
@@ -47,10 +50,7 @@
 
         </div>
 
-        <script src="{% static '/main/scripts/admin/filters.js' %}"></script>
-
-        <div class="flex flex-col w-full md:w-3/4 lg:w-2/3 mx-8 my-4 py-2 dark:bg-slate-800 border-2 dark:border-slate-700 bg-slate-200 border-slate-300 rounded-lg mb-4 pl-4"
-             x-data="filters">
+        <div class="flex flex-col w-full md:w-3/4 lg:w-2/3 mx-8 my-4 py-2 dark:bg-slate-800 border-2 dark:border-slate-700 bg-slate-200 border-slate-300 rounded-lg mb-4 pl-4">
             <div class="flex flex-row items-center mb-6">
                 <i class="ph-bold ph-gear dark:text-white text-black text-2xl"></i>
                 <p class="dark:text-white text-black text-sans text-2xl ml-2">Filters</p>
@@ -437,6 +437,72 @@
                 </p>
             </div>
 
+        </div>
+
+        <div class="flex flex-col w-full md:w-3/4 lg:w-2/3 mx-8 my-4 py-2 mb-4">
+            <div x-show="type === 'data'">
+                <div class="flex flex-col">
+                    <template x-for="(item, index) in data.data" :key="index">
+                        <div class="flex flex-row w-full dark:bg-slate-800 border-2 dark:border-slate-700 bg-slate-200 border-slate-300 rounded-lg p-4 my-2 gap-2 overflow-x-scroll"
+                             x-data="{ open: false, data: false, deleted: false }"
+                             x-show="!deleted">
+                            <button class="ui_button_icon !max-w-10 !max-h-10" @click="open = !open">
+                                <i class="ph-bold ph-dots-three" x-show="!open"></i>
+                                <i class="ph-bold ph-x" x-show="open"></i>
+                            </button>
+
+                            <div class="flex flex-col">
+                                <div class="flex flex-row items-center flex-wrap">
+                                    <p class="dark:text-white text-black text-sans text-md"
+                                       x-text="item.team_number"></p>
+                                    <p class="dark:text-white text-black text-sans text-md opacity-50">'s data from</p>
+
+                                    <p class="dark:text-white text-black text-sans text-md mx-1"
+                                       x-text="item.event_name"></p>
+                                    <p class="dark:text-white text-black text-sans text-sm mx-1 opacity-50 font-mono"
+                                       x-text="item.event_code"></p>
+                                </div>
+
+                                <div class="flex flex-row items-center gap-1 flex-wrap">
+                                    <p class="dark:text-white text-black text-sans text-sm opacity-50"
+                                       x-show="item.created">Created on</p>
+                                    <p class="dark:text-white text-black text-sans text-sm"
+                                       x-text="new Intl.DateTimeFormat('en-US', {year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'}).format(new Date(item.created))"
+                                       x-show="item.created"></p>
+                                    <p class="dark:text-white text-black text-sans text-sm opacity-50"
+                                       x-show="item.user.username">by</p>
+                                    <p class="dark:text-white text-black text-sans text-sm"
+                                       x-text="item.user.username"
+                                       x-show="item.user.username"></p>
+                                    <p class="dark:text-white text-black text-sans text-sm opacity-50"
+                                       x-show="item.user.team_number">from</p>
+                                    <p class="dark:text-white text-black text-sans text-sm"
+                                       x-text="item.user.team_number"
+                                       x-show="item.user.team_number"></p>
+                                </div>
+
+                                <div class="flex flex-row items-center gap-1 flex-wrap mt-2"
+                                     x-show="open"
+                                     x-collapse>
+                                    <button class="ui_button_small" @click="data = true" x-show="!data">View data</button>
+                                    <button class="ui_button_small" @click="data = false" x-show="data">Hide data</button>
+                                    <button class="ui_button_small" @click="download_json(item.data, item.uuid)">Download data</button>
+                                    <button class="ui_button_small"
+                                            @click="do_admin_operation('data', 'delete', { uuid: item.uuid }); deleted = true;"
+                                            x-show="item.uuid">Delete</button>
+                                </div>
+
+                                <div class="flex flex-row items-center gap-1 flex-wrap mt-2 dark:bg-slate-600 border-2 dark:border-slate-700 bg-slate-300 border-slate-400 rounded-lg p-4"
+                                     x-show="data"
+                                     x-collapse>
+                                    <pre class="dark:text-white text-black text-sans text-sm font-mono"><code x-text="JSON.stringify(item.data, null, 4)"></code></pre>
+                                </div>
+                            </div>
+
+                        </div>
+                    </template>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock body %}

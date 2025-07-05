@@ -87,6 +87,34 @@ document.addEventListener("alpine:init", () => {
 			this.pit_filters.year.items = [];
 		},
 
+		download_json(data, file_name) {
+			const blob = new Blob([JSON.stringify(data)], {
+				type: "application/json",
+			});
+			const link = document.createElement("a");
+			link.href = window.URL.createObjectURL(blob);
+			link.download = file_name;
+			link.click();
+		},
+
+		do_admin_operation(type, operation, data) {
+			fetch(`${SERVER_IP}/do_admin_operation`, {
+				method: "POST",
+				headers: {
+					"X-CSRFToken": CSRF_TOKEN,
+				},
+				body: JSON.stringify({
+					type: type,
+					operation: operation,
+					data: data,
+				}),
+			})
+				.then((response) => response.text())
+				.then((data) => {
+					this.get_data();
+				});
+		},
+
 		init() {
 			this.data.events_filtered = [];
 			this.data.users_filtered = [];
