@@ -1095,6 +1095,7 @@ def get_admin_data(request):
                                     if item.account
                                     else item.team_number_created,
                                 },
+                                "data": item.data,
                             }
                         )
                     except AttributeError:
