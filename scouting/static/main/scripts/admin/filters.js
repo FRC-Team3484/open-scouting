@@ -112,6 +112,16 @@ document.addEventListener("alpine:init", () => {
 				.then((response) => response.text())
 				.then((data) => {
 					this.get_data();
+
+					window.dispatchEvent(
+						new CustomEvent("scouting_notification", {
+							detail: {
+								title: "Success",
+								body: "The admin operation was successful",
+								icon: "check-circle",
+							},
+						}),
+					);
 				});
 		},
 
