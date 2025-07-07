@@ -1123,6 +1123,12 @@ def get_admin_data(request):
                                     if item.user_created
                                     else None,
                                 },
+                                "data_count": Data.objects.filter(
+                                    event_model=item
+                                ).count(),
+                                "pit_count": Pit.objects.filter(
+                                    pit_group__event=item
+                                ).count(),
                             }
                         )
                     except AttributeError:
@@ -1223,7 +1229,7 @@ def do_admin_operation(request):
                 elif body["operation"] == "delete_all_pits":
                     Pit.objects.filter(pit_group__event=event).delete()
                 elif body["operation"] == "delete_all_data":
-                    Data.objects.filter(event=event).delete()
+                    Data.objects.filter(event_model=event).delete()
 
             elif body["type"] == "user":
                 if body["operation"] == "delete":
