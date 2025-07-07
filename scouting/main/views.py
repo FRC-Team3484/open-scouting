@@ -149,6 +149,7 @@ def index(request):
             "TBA_API_KEY": settings.TBA_API_KEY,
             "YEARS": json.dumps(YEARS),
             "SERVER_MESSAGE": settings.SERVER_MESSAGE,
+            "ADMIN_PATH": settings.ADMIN_PATH,
             "authenticated": json.dumps(True),
             "username": request.user.username,
             "display_name": request.user.profile.display_name,
@@ -163,6 +164,7 @@ def index(request):
             "TBA_API_KEY": settings.TBA_API_KEY,
             "YEARS": json.dumps(YEARS),
             "SERVER_MESSAGE": settings.SERVER_MESSAGE,
+            "ADMIN_PATH": "",
             "authenticated": json.dumps(False),
         }
 

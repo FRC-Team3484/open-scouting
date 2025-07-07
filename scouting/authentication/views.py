@@ -371,6 +371,8 @@ def get_authentication_status(request):
         username: The username of the user
         display_name: The display name of the user
         team_number: The team number of the user
+        is_staff: Whether or not the user is a staff member
+        is_superuser: Whether or not the user is a superuser
     """
     if request.method == "POST":
         if request.user.is_authenticated:
@@ -380,6 +382,8 @@ def get_authentication_status(request):
                     "username": request.user.username,
                     "display_name": request.user.profile.display_name,
                     "team_number": request.user.profile.team_number,
+                    "is_staff": request.user.is_staff,
+                    "is_superuser": request.user.is_superuser,
                 },
                 safe=False,
             )
@@ -390,6 +394,8 @@ def get_authentication_status(request):
                     "username": "",
                     "display_name": "",
                     "team_number": "",
+                    "is_staff": False,
+                    "is_superuser": False,
                 },
                 safe=False,
             )

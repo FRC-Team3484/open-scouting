@@ -14,6 +14,8 @@ document.addEventListener("alpine:init", () => {
 		username: "",
 		display_name: "",
 		team_number: "",
+		is_staff: false,
+		is_superuser: false,
 		profile_menu_open: false,
 
 		/**
@@ -187,6 +189,8 @@ document.addEventListener("alpine:init", () => {
 				this.username = user.username;
 				this.display_name = user.display_name;
 				this.team_number = user.team_number;
+				this.is_staff = user.is_staff;
+				this.is_superuser = user.is_superuser;
 			});
 
 			window.addEventListener("dialog_confirm", (event) => {
