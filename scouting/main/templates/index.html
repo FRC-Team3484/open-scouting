@@ -16,6 +16,7 @@
         const SERVER_IP = `{{ SERVER_IP }}`;
         const CSRF_TOKEN = `{{ csrf_token }}`;
         const TBA_API_KEY = `{{ TBA_API_KEY }}`;
+        const ADMIN_PATH = `{{ ADMIN_IP }}`;
     </script>
 
     <script>
@@ -119,6 +120,7 @@
                                 <i class="ph-bold ph-check-circle"></i>
                             </button>
                             <button class="ui_button_icon mx-1"
+                                    :class="{ '!bg-green-500/50 !dark:bg-green-700/50 !hover:bg-green-500/80 !dark:hover:bg-green-700/80': is_staff || is_superuser }"
                                     @click="profile_menu_open = !profile_menu_open"
                                     x-ref="profile_menu">
                                 <i class="ph-bold ph-dots-three"></i>
@@ -136,6 +138,16 @@
                                 <button class="ui_button_small my-1! py-1! px-2! w-full! text-left!"
                                         @click="window.location.href = '/authentication/profile'">
                                     <i class="ph-bold ph-pencil"></i> Edit Profile
+                                </button>
+                                <button class="ui_button_small my-1! py-1! px-2! w-full! text-left! !bg-green-500/50 !dark:bg-green-700/50 !hover:bg-green-500/80 !dark:hover:bg-green-700/80"
+                                        @click="window.location.href = (`{{ ADMIN_PATH }}/ui`).replace(/\/\/+/g, '/')"
+                                        x-show="is_staff || is_superuser">
+                                    <i class="ph-bold ph-key"></i> Admin Dashboard
+                                </button>
+                                <button class="ui_button_small my-1! py-1! px-2! w-full! text-left! !bg-green-500/50 !dark:bg-green-700/50 !hover:bg-green-500/80 !dark:hover:bg-green-700/80"
+                                        @click="window.location.href = (`{{ ADMIN_PATH }}`).replace(/\/\/+/g, '/')"
+                                        x-show="is_staff || is_superuser">
+                                    <i class="ph-bold ph-key"></i> Django Admin
                                 </button>
                             </div>
 

@@ -37,4 +37,6 @@ urlpatterns = [
     ),
     path("get_data_from_query", views.get_data_from_query, name="get_data_from_query"),
     path("get_version", views.get_version, name="get_version"),
+    path("get_admin_data", views.get_admin_data, name="get_admin_data"),
+    path("do_admin_operation", views.do_admin_operation, name="do_admin_operation"),
 ]

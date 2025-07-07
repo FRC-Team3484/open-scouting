@@ -8,6 +8,8 @@ class User {
 		this.username = "";
 		this.display_name = "";
 		this.team_number = "";
+		this.is_staff = false;
+		this.is_superuser = false;
 		this.settings = [];
 	}
 
@@ -38,11 +40,15 @@ class User {
 						username: json.username,
 						display_name: json.display_name,
 						team_number: json.team_number,
+						is_staff: json.is_staff,
+						is_superuser: json.is_superuser,
 					};
 
 					this.username = json.username;
 					this.display_name = json.display_name;
 					this.team_number = json.team_number;
+					this.is_staff = json.is_staff;
+					this.is_superuser = json.is_superuser;
 					localStorage.setItem("authenticated", JSON.stringify(auth_json));
 				} else {
 					this.authenticated = false;
@@ -51,11 +57,15 @@ class User {
 						username: json.username,
 						display_name: json.display_name,
 						team_number: json.team_number,
+						is_staff: json.is_staff,
+						is_superuser: json.is_superuser,
 					};
 
 					this.username = json.username;
 					this.display_name = json.display_name;
 					this.team_number = json.team_number;
+					this.is_staff = json.is_staff;
+					this.is_superuser = json.is_superuser;
 					localStorage.setItem("authenticated", JSON.stringify(auth_json));
 				}
 			} else {
@@ -66,6 +76,8 @@ class User {
 					username: "",
 					display_name: "",
 					team_number: "",
+					is_staff: false,
+					is_superuser: false,
 				};
 				localStorage.setItem("authenticated", JSON.stringify(auth_json));
 			}
@@ -82,6 +94,12 @@ class User {
 				this.team_number = JSON.parse(
 					localStorage.getItem("authenticated"),
 				).team_number;
+				this.is_staff = JSON.parse(
+					localStorage.getItem("authenticated"),
+				).is_staff;
+				this.is_superuser = JSON.parse(
+					localStorage.getItem("authenticated"),
+				).is_superuser;
 			} else {
 				this.authenticated = false;
 			}

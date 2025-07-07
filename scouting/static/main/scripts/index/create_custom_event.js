@@ -57,7 +57,7 @@ document.addEventListener("alpine:init", () => {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
-					"X-CSRFToken": "{{ csrf_token }}",
+					"X-CSRFToken": CSRF_TOKEN,
 				},
 				body: JSON.stringify({
 					name: this.$refs.name.value,

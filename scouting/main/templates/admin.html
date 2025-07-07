@@ -1,0 +1,706 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head_title %}Open Scouting | Admin{% endblock %}
+
+{% block head_scripts %}
+{% endblock head_scripts %}
+
+{% block stylesheets %}
+{% endblock stylesheets %}
+
+{% block body %}
+    <script>
+        const SERVER_IP = "{{ SERVER_IP }}";
+        const CSRF_TOKEN = "{{ csrf_token }}";
+        const TBA_API_KEY = "{{ TBA_API_KEY }}";
+        const YEARS = '{{ YEARS | safe }}';
+    </script>
+
+    <script>
+        const user = new User();
+        window.user = user;
+
+        user.check_authentication_status().then(() => {
+            window.dispatchEvent(new CustomEvent("user_ready", { detail: user }));
+        });
+
+        user.load_settings();
+    </script>
+
+    <script src="{% static '/main/scripts/admin/filters.js' %}"></script>
+
+    <div class="flex flex-col min-h-screen w-screen items-center"
+         x-data="filters">
+        <div class="flex flex-col w-full md:w-3/4 lg:w-2/3 mx-8 my-4 py-2 dark:bg-slate-800 border-2 dark:border-slate-700 bg-slate-200 border-slate-300 rounded-lg mb-4 items-center justify-center"
+             x-data>
+            <div class="flex flex-row items-center justify-center">
+                <img class="w-16 h-16 aspect-square m-2 hover:scale-110 transition-all ease-in-out active:scale-95"
+                     src="{% static '/main/images/icon_rounded.png' %}"
+                     @click="window.location.href = '{{ SERVER_IP }}'">
+                <div class="flex flex-col">
+                    <p class="dark:text-white text-black text-sans text-2xl">Admin Dashboard</p>
+                    <p class="dark:text-white text-black text-sans text-md">
+                        Viewing as <span class="font-bold">{{ user.profile.display_name }}</span> <span class="opacity-50">({{ user.email }})</span>
+                    </p>
+                </div>
+            </div>
+
+            <button class="ui_button_small"
+                    @click="window.location.href = window.location.href.replace(/\/ui\/?$/, '')">Django Admin</button>
+
+        </div>
+
+        <div class="flex flex-col w-full md:w-3/4 lg:w-2/3 mx-8 my-4 py-2 dark:bg-slate-800 border-2 dark:border-slate-700 bg-slate-200 border-slate-300 rounded-lg mb-4 pl-4">
+            <div class="flex flex-row items-center mb-6">
+                <i class="ph-bold ph-gear dark:text-white text-black text-2xl"></i>
+                <p class="dark:text-white text-black text-sans text-2xl ml-2">Filters</p>
+            </div>
+
+            <select class="ui_input !max-w-64" x-model="type" @change="get_data()">
+                <option value="">Select a type...</option>
+                <option value="data">Data</option>
+                <option value="event">Event</option>
+                <option value="user">User</option>
+                <option value="pit">Pit</option>
+            </select>
+            <p class="dark:text-white text-black text-sans text-sm mt-2 mb-4">
+                <span class="font-bold">Type</span> <span class="opacity-80">What type of data to view or edit</span>
+            </p>
+
+            <button class="ui_button_small mb-8" @click="clear_filters()">
+                <i class="ph-bold ph-trash"></i> Clear Filters
+            </button>
+
+            <div x-show="type == 'data'" x-transition>
+                <div class="flex flex-row gap-2 flex-wrap" x-ref="data_filters_event">
+                    <template x-for="(event, index) in data_filters.event.items" :key="index">
+                        <button class="ui_button_small flex items-center"
+                                @click="data_filters.event.items = data_filters.event.items.filter(e => e !== event); update_display()">
+                            <i class="ph-bold ph-x mr-1"></i>
+                            <p x-text="event.name" class="inline-block"></p>
+                        </button>
+                    </template>
+
+                    <button class="ui_button_small"
+                            @click="data_filters.event.open = !data_filters.event.open">
+                        <i class="ph-bold ph-plus"></i> Add
+                    </button>
+                </div>
+                <div class="flex flex-col gap-2 bg-slate-200 dark:bg-slate-700 border-2 dark:border-slate-600 border-slate-300 rounded-lg p-4 overflow-y-scroll max-h-72 max-w-72 items-start z-5"
+                     x-anchor="$refs.data_filters_event"
+                     x-show="data_filters.event.open"
+                     x-click.outside="data_filters.event.open = false"
+                     x-transition>
+                    <div class="flex flex-row gap-2">
+                        <input class="ui_input w-full! grow"
+                               type="text"
+                               placeholder="Search for an event..."
+                               x-ref="events_search"
+                               @input="data.events_filtered = data.events.filter(e => e.name.toLowerCase().includes($refs.events_search.value.toLowerCase()))">
+                        <button class="ui_button_small wrap-break-word aspect-square"
+                                @click="data_filters.event.open = false; $refs.events_search.value = ''">
+                            <i class="ph-bold ph-x"></i>
+                        </button>
+                    </div>
+                    <template x-for="(event, index) in data.events_filtered" :key="index">
+                        <button class="dark:text-white text-black text-sans text-md mb-2 opacity-70 hover:opacity-100 hover:dark:bg-slate-600/50 hover:bg-slate-300/50 rounded-full p-1 transition-all w-full text-left px-1"
+                                @click="data_filters.event.items.push(event); data_filters.event.open = false; update_display()">
+                            <p x-text="event.name"></p>
+                        </button>
+                    </template>
+                </div>
+                <p class="dark:text-white text-black text-sans text-sm my-2">
+                    <span class="font-bold">Event</span> <span class="opacity-80">Filter data by event</span>
+                </p>
+
+                <div class="flex flex-row gap-2 flex-wrap" x-ref="data_filters_user">
+                    <template x-for="(user, index) in data_filters.user.items" :key="index">
+                        <button class="ui_button_small flex items-center"
+                                @click="data_filters.user.items = data_filters.user.items.filter(e => e !== user); update_display()">
+                            <i class="ph-bold ph-x mr-1"></i>
+                            <p x-text="user.username" class="inline-block"></p>
+                        </button>
+                    </template>
+
+                    <button class="ui_button_small"
+                            @click="data_filters.user.open = !data_filters.user.open">
+                        <i class="ph-bold ph-plus"></i> Add
+                    </button>
+                </div>
+                <div class="flex flex-col gap-2 bg-slate-200 dark:bg-slate-700 border-2 dark:border-slate-600 border-slate-300 rounded-lg p-4 overflow-y-scroll max-h-72 max-w-72 items-start z-5"
+                     x-anchor="$refs.data_filters_user"
+                     x-show="data_filters.user.open"
+                     x-click.outside="data_filters.user.open = false"
+                     x-transition>
+                    <div class="flex flex-row gap-2">
+                        <input class="ui_input w-full! grow"
+                               type="text"
+                               placeholder="Search for a user..."
+                               x-ref="user_search"
+                               @input="data.users_filtered = data.users.filter(e => e.username.toLowerCase().includes($refs.user_search.value.toLowerCase()))">
+                        <button class="ui_button_small wrap-break-word aspect-square"
+                                @click="data_filters.user.open = false; $refs.user_search.value = ''">
+                            <i class="ph-bold ph-x"></i>
+                        </button>
+                    </div>
+                    <template x-for="(user, index) in data.users_filtered" :key="index">
+                        <button class="dark:text-white text-black text-sans text-md mb-2 opacity-70 hover:opacity-100 hover:dark:bg-slate-600/50 hover:bg-slate-300/50 rounded-full p-1 transition-all w-full text-left px-1"
+                                @click="data_filters.user.items.push(user); data_filters.user.open = false; update_display();">
+                            <p x-text="user.username"></p>
+                        </button>
+                    </template>
+                </div>
+                <p class="dark:text-white text-black text-sans text-sm my-2">
+                    <span class="font-bold">User</span> <span class="opacity-80">Filter data by user</span>
+                </p>
+            </div>
+
+            <div x-show="type == 'event'" x-transition>
+                <div class="flex flex-row gap-2 flex-wrap" x-ref="event_filters_year">
+                    <template x-for="(year, index) in event_filters.year.items" :key="index">
+                        <button class="ui_button_small flex items-center"
+                                @click="event_filters.year.items = event_filters.year.items.filter(e => e !== year); update_display()">
+                            <i class="ph-bold ph-x mr-1"></i>
+                            <p x-text="year" class="inline-block"></p>
+                        </button>
+                    </template>
+
+                    <button class="ui_button_small"
+                            @click="event_filters.year.open = !event_filters.year.open">
+                        <i class="ph-bold ph-plus"></i> Add
+                    </button>
+                </div>
+                <div class="flex flex-col gap-2 bg-slate-200 dark:bg-slate-700 border-2 dark:border-slate-600 border-slate-300 rounded-lg p-4 overflow-y-scroll max-h-72 max-w-72 items-start z-5"
+                     x-anchor="$refs.event_filters_year"
+                     x-show="event_filters.year.open"
+                     x-click.outside="event_filters.year.open = false"
+                     x-transition>
+                    <div class="flex flex-row gap-2">
+                        <input class="ui_input w-full! grow"
+                               type="text"
+                               placeholder="Search for a year..."
+                               x-ref="year_search"
+                               @input=" data.events_filtered = data.events.filter(e => e.year.toString().includes($refs.year_search.value.toLowerCase()) && e.name.toLowerCase().includes($refs.events_search?.value?.toLowerCase() || '') ) ">
+                        <button class="ui_button_small wrap-break-word aspect-square"
+                                @click="event_filters.year.open = false; $refs.year_search.value = '';">
+                            <i class="ph-bold ph-x"></i>
+                        </button>
+                    </div>
+                    <template x-for="(year, index) in [...new Set(data.events_filtered.map(e => e.year))]"
+                              :key="year">
+                        <button class="dark:text-white text-black text-sans text-md mb-2 opacity-70 hover:opacity-100 hover:dark:bg-slate-600/50 hover:bg-slate-300/50 rounded-full p-1 transition-all w-full text-left px-1"
+                                @click="event_filters.year.items.push(year); event_filters.year.open = false; update_display();">
+                            <p x-text="year"></p>
+                        </button>
+                    </template>
+                </div>
+                <p class="dark:text-white text-black text-sans text-sm my-2">
+                    <span class="font-bold">Year</span> <span class="opacity-80">Filter events by year</span>
+                </p>
+
+                <input class="ui_input"
+                       type="text"
+                       x-model="event_filters.name.value"
+                       @input="update_display()">
+                <p class="dark:text-white text-black text-sans text-sm my-2">
+                    <span class="font-bold">Name</span> <span class="opacity-80">Filter events by name</span>
+                </p>
+
+                <div class="flex flex-row gap-2 flex-wrap"
+                     x-ref="event_filters_event_code">
+                    <template x-for="(code, index) in event_filters.event_code.items" :key="index">
+                        <button class="ui_button_small flex items-center"
+                                @click="event_filters.event_code.items = event_filters.event_code.items.filter(e => e !== code); update_display();">
+                            <i class="ph-bold ph-x mr-1"></i>
+                            <p x-text="code" class="inline-block"></p>
+                        </button>
+                    </template>
+
+                    <button class="ui_button_small"
+                            @click="event_filters.event_code.open = !event_filters.event_code.open">
+                        <i class="ph-bold ph-plus"></i> Add
+                    </button>
+                </div>
+                <div class="flex flex-col gap-2 bg-slate-200 dark:bg-slate-700 border-2 dark:border-slate-600 border-slate-300 rounded-lg p-4 overflow-y-scroll max-h-72 max-w-72 items-start z-5"
+                     x-anchor="$refs.event_filters_event_code"
+                     x-show="event_filters.event_code.open"
+                     x-click.outside="event_filters.event_code.open = false"
+                     x-transition>
+                    <div class="flex flex-row gap-2">
+                        <input class="ui_input w-full! grow"
+                               type="text"
+                               placeholder="Search for an event code..."
+                               x-ref="event_code_search"
+                               @input=" data.events_filtered = data.events.filter(e => e.event_code.toString().includes($refs.event_code_search.value.toLowerCase()) && e.name.toLowerCase().includes($refs.event_code_search?.value?.toLowerCase() || '') ) ">
+                        <button class="ui_button_small wrap-break-word aspect-square"
+                                @click="event_filters.event_code.open = false; $refs.event_code_search.value = ''">
+                            <i class="ph-bold ph-x"></i>
+                        </button>
+                    </div>
+                    <template x-for="(code, index) in [...new Set(data.events_filtered.map(e => e.event_code))]"
+                              :key="code">
+                        <button class="dark:text-white text-black text-sans text-md mb-2 opacity-70 hover:opacity-100 hover:dark:bg-slate-600/50 hover:bg-slate-300/50 rounded-full p-1 transition-all w-full text-left px-1"
+                                @click="event_filters.event_code.items.push(code); event_filters.event_code.open = false; update_display();">
+                            <p x-text="code"></p>
+                        </button>
+                    </template>
+                </div>
+                <p class="dark:text-white text-black text-sans text-sm my-2">
+                    <span class="font-bold">Event Code</span> <span class="opacity-80">Filter events by event code</span>
+                </p>
+            </div>
+
+            <div x-show="type == 'user'" x-transition>
+                <!-- Username Filter Pills -->
+                <div class="flex flex-row gap-2 flex-wrap" x-ref="user_filters_username">
+                    <template x-for="(username, index) in user_filters.username.items"
+                              :key="username">
+                        <button class="ui_button_small flex items-center"
+                                @click="user_filters.username.items = user_filters.username.items.filter(u => u !== username); update_display();">
+                            <i class="ph-bold ph-x mr-1"></i>
+                            <p x-text="username" class="inline-block"></p>
+                        </button>
+                    </template>
+
+                    <button class="ui_button_small"
+                            @click="user_filters.username.open = !user_filters.username.open">
+                        <i class="ph-bold ph-plus"></i> Add
+                    </button>
+                </div>
+
+                <!-- Username Dropdown -->
+                <div class="flex flex-col gap-2 bg-slate-200 dark:bg-slate-700 border-2 dark:border-slate-600 border-slate-300 rounded-lg p-4 overflow-y-scroll max-h-72 max-w-72 items-start z-5"
+                     x-anchor="$refs.user_filters_username"
+                     x-show="user_filters.username.open"
+                     x-click.outside="user_filters.username.open = false"
+                     x-transition>
+                    <div class="flex flex-row gap-2">
+                        <input class="ui_input w-full! grow"
+                               type="text"
+                               placeholder="Search usernames..."
+                               x-ref="username_search"
+                               @input="data.users_filtered = data.users.filter(u => u.username.toLowerCase().includes($refs.username_search.value.toLowerCase()))">
+                        <button class="ui_button_small wrap-break-word aspect-square"
+                                @click="user_filters.username.open = false; $refs.username_search.value = ''">
+                            <i class="ph-bold ph-x"></i>
+                        </button>
+                    </div>
+                    <template x-for="(username, index) in [...new Set(data.users_filtered.map(u => u.username))]"
+                              :key="username">
+                        <button class="dark:text-white text-black text-sans text-md mb-2 opacity-70 hover:opacity-100 hover:dark:bg-slate-600/50 hover:bg-slate-300/50 rounded-full p-1 transition-all w-full text-left px-1"
+                                @click="user_filters.username.items.push(username); user_filters.username.open = false; update_display();">
+                            <p x-text="username"></p>
+                        </button>
+                    </template>
+                </div>
+
+                <p class="dark:text-white text-black text-sans text-sm my-2">
+                    <span class="font-bold">Username</span> <span class="opacity-80">Filter users by username</span>
+                </p>
+
+                <!-- Team Number Filter Pills -->
+                <div class="flex flex-row gap-2 flex-wrap"
+                     x-ref="user_filters_team_number">
+                    <template x-for="(team, index) in user_filters.team_number.items" :key="team">
+                        <button class="ui_button_small flex items-center"
+                                @click="user_filters.team_number.items = user_filters.team_number.items.filter(t => t !== team); update_display();">
+                            <i class="ph-bold ph-x mr-1"></i>
+                            <p x-text="team" class="inline-block"></p>
+                        </button>
+                    </template>
+
+                    <button class="ui_button_small"
+                            @click="user_filters.team_number.open = !user_filters.team_number.open">
+                        <i class="ph-bold ph-plus"></i> Add
+                    </button>
+                </div>
+
+                <!-- Team Number Dropdown -->
+                <div class="flex flex-col gap-2 bg-slate-200 dark:bg-slate-700 border-2 dark:border-slate-600 border-slate-300 rounded-lg p-4 overflow-y-scroll max-h-72 max-w-72 items-start z-5"
+                     x-anchor="$refs.user_filters_team_number"
+                     x-show="user_filters.team_number.open"
+                     x-click.outside="user_filters.team_number.open = false"
+                     x-transition>
+                    <div class="flex flex-row gap-2">
+                        <input class="ui_input w-full! grow"
+                               type="text"
+                               placeholder="Search team numbers..."
+                               x-ref="team_number_search"
+                               @input="data.users_filtered = data.users.filter(u => u.team_number?.toString().includes($refs.team_number_search.value))">
+                        <button class="ui_button_small wrap-break-word aspect-square"
+                                @click="user_filters.team_number.open = false; $refs.team_number_search.value = ''">
+                            <i class="ph-bold ph-x"></i>
+                        </button>
+                    </div>
+                    <template x-for="(team, index) in [...new Set(data.users_filtered.map(u => u.team_number))]"
+                              :key="team">
+                        <button class="dark:text-white text-black text-sans text-md mb-2 opacity-70 hover:opacity-100 hover:dark:bg-slate-600/50 hover:bg-slate-300/50 rounded-full p-1 transition-all w-full text-left px-1"
+                                @click="user_filters.team_number.items.push(team); user_filters.team_number.open = false; update_display();">
+                            <p x-text="team"></p>
+                        </button>
+                    </template>
+                </div>
+
+                <p class="dark:text-white text-black text-sans text-sm my-2">
+                    <span class="font-bold">Team Number</span> <span class="opacity-80">Filter users by team</span>
+                </p>
+            </div>
+
+            <div x-show="type == 'pit'" x-transition>
+                <!-- Event Filter Pills -->
+                <div class="flex flex-row gap-2 flex-wrap" x-ref="pit_filters_event">
+                    <template x-for="(event, index) in pit_filters.event.items"
+                              :key="event.event_code">
+                        <button class="ui_button_small flex items-center"
+                                @click="pit_filters.event.items = pit_filters.event.items.filter(e => e.event_code !== event.event_code); update_display();">
+                            <i class="ph-bold ph-x mr-1"></i>
+                            <p x-text="event.name" class="inline-block"></p>
+                        </button>
+                    </template>
+
+                    <button class="ui_button_small"
+                            @click="pit_filters.event.open = !pit_filters.event.open">
+                        <i class="ph-bold ph-plus"></i> Add
+                    </button>
+                </div>
+
+                <!-- Event Dropdown -->
+                <div class="flex flex-col gap-2 bg-slate-200 dark:bg-slate-700 border-2 dark:border-slate-600 border-slate-300 rounded-lg p-4 overflow-y-scroll max-h-72 max-w-72 items-start z-5"
+                     x-anchor="$refs.pit_filters_event"
+                     x-show="pit_filters.event.open"
+                     x-click.outside="pit_filters.event.open = false"
+                     x-transition>
+                    <div class="flex flex-row gap-2">
+                        <input class="ui_input w-full! grow"
+                               type="text"
+                               placeholder="Search for an event..."
+                               x-ref="pit_event_search"
+                               @input="data.events_filtered = data.events.filter(e => e.name.toLowerCase().includes($refs.pit_event_search.value.toLowerCase()))">
+                        <button class="ui_button_small wrap-break-word aspect-square"
+                                @click="pit_filters.event.open = false; $refs.pit_event_search.value = ''">
+                            <i class="ph-bold ph-x"></i>
+                        </button>
+                    </div>
+                    <template x-for="(event, index) in data.events_filtered" :key="index">
+                        <button class="dark:text-white text-black text-sans text-md mb-2 opacity-70 hover:opacity-100 hover:dark:bg-slate-600/50 hover:bg-slate-300/50 rounded-full p-1 transition-all w-full text-left px-1"
+                                @click="pit_filters.event.items.push(event); pit_filters.event.open = false; update_display();">
+                            <p x-text="event.name"></p>
+                        </button>
+                    </template>
+                </div>
+
+                <p class="dark:text-white text-black text-sans text-sm my-2">
+                    <span class="font-bold">Event</span> <span class="opacity-80">Filter pits by event</span>
+                </p>
+
+                <!-- Year Filter Pills -->
+                <div class="flex flex-row gap-2 flex-wrap" x-ref="pit_filters_year">
+                    <template x-for="(year, index) in pit_filters.year.items" :key="year">
+                        <button class="ui_button_small flex items-center"
+                                @click="pit_filters.year.items = pit_filters.year.items.filter(y => y !== year); update_display();">
+                            <i class="ph-bold ph-x mr-1"></i>
+                            <p x-text="year" class="inline-block"></p>
+                        </button>
+                    </template>
+
+                    <button class="ui_button_small"
+                            @click="pit_filters.year.open = !pit_filters.year.open">
+                        <i class="ph-bold ph-plus"></i> Add
+                    </button>
+                </div>
+
+                <!-- Year Dropdown -->
+                <div class="flex flex-col gap-2 bg-slate-200 dark:bg-slate-700 border-2 dark:border-slate-600 border-slate-300 rounded-lg p-4 overflow-y-scroll max-h-72 max-w-72 items-start z-5"
+                     x-anchor="$refs.pit_filters_year"
+                     x-show="pit_filters.year.open"
+                     x-click.outside="pit_filters.year.open = false"
+                     x-transition>
+                    <div class="flex flex-row gap-2">
+                        <input class="ui_input w-full! grow"
+                               type="text"
+                               placeholder="Search for a year..."
+                               x-ref="pit_year_search"
+                               @input="data.pits_filtered = data.pits.filter(p => p.year?.toString().includes($refs.pit_year_search.value))">
+                        <button class="ui_button_small wrap-break-word aspect-square"
+                                @click="pit_filters.year.open = false; $refs.pit_year_search.value = ''">
+                            <i class="ph-bold ph-x"></i>
+                        </button>
+                    </div>
+                    <template x-for="(year, index) in [...new Set(data.pits_filtered.map(p => p.year))]"
+                              :key="year">
+                        <button class="dark:text-white text-black text-sans text-md mb-2 opacity-70 hover:opacity-100 hover:dark:bg-slate-600/50 hover:bg-slate-300/50 rounded-full p-1 transition-all w-full text-left px-1"
+                                @click="pit_filters.year.items.push(year); pit_filters.year.open = false; update_display();">
+                            <p x-text="year"></p>
+                        </button>
+                    </template>
+                </div>
+
+                <p class="dark:text-white text-black text-sans text-sm my-2">
+                    <span class="font-bold">Year</span> <span class="opacity-80">Filter pits by year</span>
+                </p>
+            </div>
+
+        </div>
+
+        <div class="flex flex-col w-full md:w-3/4 lg:w-2/3 mx-8 my-4 py-2 mb-4">
+            <div x-show="type === 'data'">
+                <div class="flex flex-col">
+                    <template x-for="(item, index) in data.data_display" :key="index">
+                        <div class="flex flex-row w-full dark:bg-slate-800 border-2 dark:border-slate-700 bg-slate-200 border-slate-300 rounded-lg p-4 my-2 gap-2 overflow-x-scroll"
+                             x-data="{ open: false, data: false, deleted: false }"
+                             x-show="!deleted">
+                            <button class="ui_button_icon !max-w-10 !max-h-10" @click="open = !open">
+                                <i class="ph-bold ph-dots-three" x-show="!open"></i>
+                                <i class="ph-bold ph-x" x-show="open"></i>
+                            </button>
+
+                            <div class="flex flex-col">
+                                <div class="flex flex-row items-center flex-wrap">
+                                    <p class="dark:text-white text-black text-sans text-md"
+                                       x-text="item.team_number"></p>
+                                    <p class="dark:text-white text-black text-sans text-md opacity-50">'s data from</p>
+
+                                    <p class="dark:text-white text-black text-sans text-md mx-1"
+                                       x-text="item.event_name"></p>
+                                    <p class="dark:text-white text-black text-sans text-sm mx-1 opacity-50 font-mono"
+                                       x-text="item.event_code"></p>
+                                </div>
+
+                                <div class="flex flex-row items-center gap-1 flex-wrap">
+                                    <p class="dark:text-white text-black text-sans text-sm opacity-50"
+                                       x-show="item.created">Created on</p>
+                                    <p class="dark:text-white text-black text-sans text-sm"
+                                       x-text="new Intl.DateTimeFormat('en-US', {year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'}).format(new Date(item.created))"
+                                       x-show="item.created"></p>
+                                    <p class="dark:text-white text-black text-sans text-sm opacity-50"
+                                       x-show="item.user.username">by</p>
+                                    <p class="dark:text-white text-black text-sans text-sm"
+                                       x-text="item.user.username"
+                                       x-show="item.user.username"></p>
+                                    <p class="dark:text-white text-black text-sans text-sm opacity-50"
+                                       x-show="item.user.team_number">from</p>
+                                    <p class="dark:text-white text-black text-sans text-sm"
+                                       x-text="item.user.team_number"
+                                       x-show="item.user.team_number"></p>
+                                </div>
+
+                                <div class="flex flex-row items-center gap-1 flex-wrap mt-2"
+                                     x-show="open"
+                                     x-collapse>
+                                    <button class="ui_button_small" @click="data = true" x-show="!data">View data</button>
+                                    <button class="ui_button_small" @click="data = false" x-show="data">Hide data</button>
+                                    <button class="ui_button_small" @click="download_json(item.data, item.uuid)">Download data</button>
+                                    <button class="ui_button_small"
+                                            @click="do_admin_operation('data', 'delete', { uuid: item.uuid }); deleted = true;"
+                                            x-show="item.uuid">Delete</button>
+                                </div>
+
+                                <div class="flex flex-row items-center gap-1 flex-wrap mt-2 dark:bg-slate-600 border-2 dark:border-slate-700 bg-slate-300 border-slate-400 rounded-lg p-4"
+                                     x-show="data"
+                                     x-collapse>
+                                    <pre class="dark:text-white text-black text-sans text-sm font-mono"><code x-text="JSON.stringify(item.data, null, 4)"></code></pre>
+                                </div>
+                            </div>
+
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <div x-show="type === 'event'">
+                <div class="flex flex-col">
+                    <template x-for="(item, index) in data.events_display" :key="index">
+                        <div class="flex flex-row w-full dark:bg-slate-800 border-2 dark:border-slate-700 bg-slate-200 border-slate-300 rounded-lg p-4 my-2 gap-2 overflow-x-scroll"
+                             x-data="{ open: false, deleted: false }"
+                             x-show="!deleted">
+                            <button class="ui_button_icon !max-w-10 !max-h-10" @click="open = !open">
+                                <i class="ph-bold ph-dots-three" x-show="!open"></i>
+                                <i class="ph-bold ph-x" x-show="open"></i>
+                            </button>
+
+                            <div class="flex flex-col">
+                                <div class="flex flex-row items-center flex-wrap gap-1">
+                                    <div class="flex flex-row items-center gap-1 bg-slate-300 dark:bg-slate-700 border-2 dark:border-slate-600 border-slate-300 rounded-full px-2 py-1 mr-1"
+                                         x-show="item.custom">
+                                        <p class="dark:text-white text-black text-sans text-sm">Custom</p>
+                                    </div>
+
+                                    <p class="dark:text-white text-black text-sans text-md"
+                                       x-text="item.name"></p>
+                                    <p class="dark:text-white text-black text-sans text-md opacity-50">from</p>
+
+                                    <p class="dark:text-white text-black text-sans text-md"
+                                       x-text="item.year"></p>
+                                    <p class="dark:text-white text-black text-sans text-sm opacity-50 font-mono"
+                                       x-text="item.event_code"></p>
+                                </div>
+
+                                <div class="flex flex-row items-center gap-1 flex-wrap">
+                                    <p class="dark:text-white text-black text-sans text-sm opacity-50"
+                                       x-show="item.created">Created on</p>
+                                    <p class="dark:text-white text-black text-sans text-sm"
+                                       x-text="new Intl.DateTimeFormat('en-US', {year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'}).format(new Date(item.created))"
+                                       x-show="item.created"></p>
+                                    <p class="dark:text-white text-black text-sans text-sm opacity-50"
+                                       x-show="item.user.username">by</p>
+                                    <p class="dark:text-white text-black text-sans text-sm"
+                                       x-text="item.user.username"
+                                       x-show="item.user.username"></p>
+                                    <p class="dark:text-white text-black text-sans text-sm opacity-50"
+                                       x-show="item.user.team_number">from</p>
+                                    <p class="dark:text-white text-black text-sans text-sm"
+                                       x-text="item.user.team_number"
+                                       x-show="item.user.team_number"></p>
+                                </div>
+
+                                <div class="flex flex-row items-center gap-1 flex-wrap">
+                                    <p class="dark:text-white text-black text-sans text-sm"
+                                       x-text="item.data_count"></p>
+                                    <p class="dark:text-white text-black text-sans text-sm opacity-50">scouting reports</p>
+
+                                    <p class="dark:text-white text-black text-sans text-sm"
+                                       x-text="item.pit_count"></p>
+                                    <p class="dark:text-white text-black text-sans text-sm opacity-50">pits</p>
+                                </div>
+
+                                <div class="flex flex-row items-center gap-1 flex-wrap mt-2"
+                                     x-show="open"
+                                     x-collapse>
+                                    <button class="ui_button_small"
+                                            @click="do_admin_operation('event', 'delete', { event_code: item.event_code, year: item.year }); deleted = true;"
+                                            x-show="item.event_code && item.year">Delete event</button>
+                                    <button class="ui_button_small"
+                                            @click="do_admin_operation('event', 'delete_all_data', { event_code: item.event_code, year: item.year }); item.data_count = 0;"
+                                            x-show="item.event_code && item.year">Delete data under event</button>
+                                    <button class="ui_button_small"
+                                            @click="do_admin_operation('event', 'delete_all_pits', { event_code: item.event_code, year: item.year }); item.pit_count = 0;"
+                                            x-show="item.event_code && item.year">Delete pits under event</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <div x-show="type === 'user'">
+                <div class="flex flex-col">
+                    <template x-for="(item, index) in data.users_display" :key="index">
+                        <div class="flex flex-row w-full dark:bg-slate-800 border-2 dark:border-slate-700 bg-slate-200 border-slate-300 rounded-lg p-4 my-2 gap-2 overflow-x-scroll"
+                             x-data="{ open: false, deleted: false }"
+                             x-show="!deleted">
+                            <button class="ui_button_icon !max-w-10 !max-h-10" @click="open = !open">
+                                <i class="ph-bold ph-dots-three" x-show="!open"></i>
+                                <i class="ph-bold ph-x" x-show="open"></i>
+                            </button>
+
+                            <div class="flex flex-col">
+                                <div class="flex flex-row items-center flex-wrap gap-1">
+                                    <div class="flex flex-row items-center gap-1 bg-red-300/30 dark:bg-red-700/30 border-2 dark:border-red-600/80 border-red-300/80 rounded-full px-2 py-1 mr-1"
+                                         x-show="item.banned">
+                                        <p class="dark:text-white text-black text-sans text-sm">Banned</p>
+                                    </div>
+                                    <div class="flex flex-row items-center gap-1 bg-slate-300 dark:bg-slate-700 border-2 dark:border-slate-600 border-slate-300 rounded-full px-2 py-1 mr-1"
+                                         x-show="item.is_staff">
+                                        <p class="dark:text-white text-black text-sans text-sm">Staff</p>
+                                    </div>
+                                    <div class="flex flex-row items-center gap-1 bg-slate-300 dark:bg-slate-700 border-2 dark:border-slate-600 border-slate-300 rounded-full px-2 py-1 mr-1"
+                                         x-show="item.is_superuser">
+                                        <p class="dark:text-white text-black text-sans text-sm">Superuser</p>
+                                    </div>
+
+                                    <p class="dark:text-white text-black text-sans text-md"
+                                       x-text="item.display_name"></p>
+                                    <p class="dark:text-white text-black text-sans text-md opacity-50"
+                                       x-text="item.username"></p>
+
+                                    <p class="dark:text-white text-black text-sans text-md"
+                                       x-text="item.team_number"></p>
+                                </div>
+
+                                <div class="flex flex-row items-center gap-1 flex-wrap">
+                                    <p class="dark:text-white text-black text-sans text-sm opacity-50"
+                                       x-show="item.created">Account created on</p>
+                                    <p class="dark:text-white text-black text-sans text-sm"
+                                       x-text="new Intl.DateTimeFormat('en-US', {year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'}).format(new Date(item.created))"
+                                       x-show="item.created"></p>
+                                </div>
+
+                                <div class="flex flex-row items-center gap-1 flex-wrap mt-2"
+                                     x-show="open"
+                                     x-collapse>
+                                    <button class="ui_button_small"
+                                            @click="do_admin_operation('user', 'delete', { uuid: item.uuid }); deleted = true;">Delete user</button>
+                                    <button class="ui_button_small"
+                                            @click="do_admin_operation('user', 'ban', { uuid: item.uuid }); item.banned = true;"
+                                            x-show="item.banned == false">Ban user</button>
+                                    <button class="ui_button_small"
+                                            @click="do_admin_operation('user', 'unban', { uuid: item.uuid }); item.banned = false;"
+                                            x-show="item.banned">Unban user</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <div x-show="type === 'pit'">
+                <div class="flex flex-col">
+                    <template x-for="(item, index) in data.pits_display" :key="index">
+                        <div class="flex flex-row w-full dark:bg-slate-800 border-2 dark:border-slate-700 bg-slate-200 border-slate-300 rounded-lg p-4 my-2 gap-2 overflow-x-scroll"
+                             x-data="{ open: false, deleted: false }"
+                             x-show="!deleted">
+                            <button class="ui_button_icon !max-w-10 !max-h-10" @click="open = !open">
+                                <i class="ph-bold ph-dots-three" x-show="!open"></i>
+                                <i class="ph-bold ph-x" x-show="open"></i>
+                            </button>
+
+                            <div class="flex flex-col">
+                                <div class="flex flex-row items-center flex-wrap gap-1">
+                                    <p class="dark:text-white text-black text-sans text-md"
+                                       x-text="item.team_number"></p>
+                                    <p class="dark:text-white text-black text-sans text-md opacity-50">'s pit at</p>
+
+                                    <p class="dark:text-white text-black text-sans text-md"
+                                       x-text="item.event_name"></p>
+                                    <p class="dark:text-white text-black text-sans text-md opacity-50">from</p>
+
+                                    <p class="dark:text-white text-black text-sans text-md"
+                                       x-text="item.year"></p>
+                                    <p class="dark:text-white text-black text-sans text-sm opacity-50 font-mono"
+                                       x-text="item.event_code"></p>
+                                </div>
+
+                                <div class="flex flex-row items-center gap-1 flex-wrap"
+                                     x-show="item.nickname">
+                                    <p class="dark:text-white text-black text-sans text-sm"
+                                       x-text="item.nickname">Created on</p>
+                                </div>
+
+                                <div class="flex flex-row items-center gap-1 flex-wrap">
+                                    <p class="dark:text-white text-black text-sans text-sm opacity-50"
+                                       x-show="item.created">Created on</p>
+                                    <p class="dark:text-white text-black text-sans text-sm"
+                                       x-text="new Intl.DateTimeFormat('en-US', {year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'}).format(new Date(item.created))"
+                                       x-show="item.created"></p>
+                                </div>
+
+                                <div class="flex flex-row items-center gap-1 flex-wrap mt-2"
+                                     x-show="open"
+                                     x-collapse>
+                                    <button class="ui_button_small"
+                                            @click="do_admin_operation('pit', 'delete', { uuid: item.uuid }); deleted = true;">Delete</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock body %}
+
+{% block scripts %}
+{% endblock scripts %}

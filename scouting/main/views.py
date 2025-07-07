@@ -1,11 +1,13 @@
 from django.shortcuts import render, HttpResponse, redirect
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseForbidden
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.db.models import Q
 
 from main.models import Data, Event, PitGroup, Pit
+from django.contrib.auth.models import User
 from . import season_fields
 from . import pit_scouting_questions
 
@@ -147,6 +149,7 @@ def index(request):
             "TBA_API_KEY": settings.TBA_API_KEY,
             "YEARS": json.dumps(YEARS),
             "SERVER_MESSAGE": settings.SERVER_MESSAGE,
+            "ADMIN_PATH": settings.ADMIN_PATH,
             "authenticated": json.dumps(True),
             "username": request.user.username,
             "display_name": request.user.profile.display_name,
@@ -161,6 +164,7 @@ def index(request):
             "TBA_API_KEY": settings.TBA_API_KEY,
             "YEARS": json.dumps(YEARS),
             "SERVER_MESSAGE": settings.SERVER_MESSAGE,
+            "ADMIN_PATH": "",
             "authenticated": json.dumps(False),
         }
 
@@ -249,6 +253,23 @@ def service_worker(request):
     """
     sw_path = settings.BASE_DIR / "frontend" / "sw.js"
     return HttpResponse(open(sw_path).read(), content_type="application/javascript")
+
+
+def admin_ui(request):
+    """
+    Returns the custom admin page, if the user is a superuser
+    """
+
+    context = {
+        "SERVER_IP": settings.SERVER_IP,
+        "TBA_API_KEY": settings.TBA_API_KEY,
+        "SERVER_MESSAGE": settings.SERVER_MESSAGE,
+    }
+
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+
+    return render(request, "admin.html", context)
 
 
 def submit(request):
@@ -1025,5 +1046,209 @@ def get_version(request):
         return JsonResponse(
             {"version": settings.SERVER_VERSION}, safe=False, status=200
         )
+    else:
+        return HttpResponse("Request is not a POST request!", status=501)
+
+
+@login_required
+def get_admin_data(request):
+    """
+    For the custom admin UI page. Gets all of the data on the server to be displayed on the admin page, with optional filters
+
+    Body Parameters:
+        type: A list of which data to include. Can be "data", "events", "users", "pits". If not specified, defaults to all
+    """
+
+    if request.method == "POST":
+        try:
+            body = json.loads(request.body)
+        except KeyError:
+            return HttpResponse("No body found in request", status=400)
+
+        if request.user.is_authenticated and (
+            request.user.is_superuser or request.user.is_staff
+        ):
+            data = {
+                "data": [],
+                "events": [],
+                "users": [],
+                "pits": [],
+            }
+
+            if not body.get("type", []) or "data" in body.get("type", []):
+                for item in Data.objects.all():
+                    try:
+                        data["data"].append(
+                            {
+                                "uuid": item.uuid,
+                                "year": item.year,
+                                "event_name": item.event,
+                                "event_code": item.event_code,
+                                "team_number": item.team_number,
+                                "created": item.created,
+                                "user": {
+                                    "uuid": item.user_created.id
+                                    if item.account
+                                    else None,
+                                    "username": item.user_created.profile.display_name
+                                    if item.account
+                                    else item.username_created,
+                                    "team_number": item.user_created.profile.team_number
+                                    if item.account
+                                    else item.team_number_created,
+                                },
+                                "data": item.data,
+                            }
+                        )
+                    except AttributeError:
+                        pass
+
+            if not body.get("type", []) or "events" in body.get("type", []):
+                for item in Event.objects.all():
+                    try:
+                        data["events"].append(
+                            {
+                                "year": item.year,
+                                "name": item.name,
+                                "event_code": item.event_code,
+                                "created": item.created,
+                                "custom": item.custom,
+                                "custom_data": item.custom_data,
+                                "user": {
+                                    "uuid": item.user_created.id
+                                    if item.user_created
+                                    else None,
+                                    "username": item.user_created.profile.display_name
+                                    if item.user_created
+                                    else None,
+                                    "team_number": item.user_created.profile.team_number
+                                    if item.user_created
+                                    else None,
+                                },
+                                "data_count": Data.objects.filter(
+                                    event_model=item
+                                ).count(),
+                                "pit_count": Pit.objects.filter(
+                                    pit_group__event=item
+                                ).count(),
+                            }
+                        )
+                    except AttributeError:
+                        pass
+
+            if not body.get("type", []) or "users" in body.get("type", []):
+                for item in User.objects.all():
+                    try:
+                        data["users"].append(
+                            {
+                                "uuid": item.id,
+                                "username": item.username,
+                                "display_name": item.profile.display_name,
+                                "team_number": item.profile.team_number,
+                                "created": item.date_joined,
+                                "is_superuser": item.is_superuser,
+                                "is_staff": item.is_staff,
+                                "banned": not item.is_active,
+                            }
+                        )
+                    except AttributeError:
+                        pass
+
+            if not body.get("type", []) or "pits" in body.get("type", []):
+                for item in Pit.objects.all():
+                    try:
+                        data["pits"].append(
+                            {
+                                "uuid": item.uuid,
+                                "team_number": item.team_number,
+                                "nickname": item.nickname,
+                                "event_name": item.pit_group.event.name,
+                                "event_code": item.pit_group.event.event_code,
+                                "year": item.pit_group.event.year,
+                                "created": item.created,
+                            }
+                        )
+                    except AttributeError:
+                        pass
+
+            return JsonResponse(data, safe=False, status=200)
+        else:
+            return HttpResponse("User is not authenticated", status=401)
+
+    else:
+        return HttpResponse("Request is not a POST request!", status=501)
+
+
+@login_required
+def do_admin_operation(request):
+    """
+    Does an admin operation from the admin dashboard
+
+    data:
+        operations can be "delete"
+        data should be "uuid"
+
+    event:
+        operations can be "delete", "delete_all_pits", "delete_all_data"
+        data should be "event_code", "year"
+
+    user:
+        operations can be "delete", "ban", "unban"
+        data should be "uuid"
+
+    pit:
+        operations can be "delete"
+        data should be "uuid"
+
+    Body Parameters:
+        type: The thing that is being operated on (data, event, user, pit)
+        operation: The operation to perform
+        data: The data to pass to the operation
+    """
+
+    if request.method == "POST":
+        try:
+            body = json.loads(request.body)
+        except KeyError:
+            return HttpResponse("No body found in request", status=400)
+
+        if request.user.is_authenticated and (
+            request.user.is_superuser or request.user.is_staff
+        ):
+            if body["type"] == "data":
+                if body["operation"] == "delete":
+                    Data.objects.filter(uuid=body["data"]["uuid"]).delete()
+
+            elif body["type"] == "event":
+                event = Event.objects.filter(
+                    event_code=body["data"]["event_code"], year=body["data"]["year"]
+                ).first()
+
+                if not event:
+                    return HttpResponse("Event not found", status=404)
+
+                if body["operation"] == "delete":
+                    event.delete()
+                elif body["operation"] == "delete_all_pits":
+                    Pit.objects.filter(pit_group__event=event).delete()
+                elif body["operation"] == "delete_all_data":
+                    Data.objects.filter(event_model=event).delete()
+
+            elif body["type"] == "user":
+                if body["operation"] == "delete":
+                    User.objects.filter(id=body["data"]["uuid"]).delete()
+                elif body["operation"] == "ban":
+                    User.objects.filter(id=body["data"]["uuid"]).update(is_active=False)
+                elif body["operation"] == "unban":
+                    User.objects.filter(id=body["data"]["uuid"]).update(is_active=True)
+
+            elif body["type"] == "pit":
+                if body["operation"] == "delete":
+                    Pit.objects.filter(uuid=body["data"]["uuid"]).delete()
+
+            return HttpResponse("Success", status=200)
+        else:
+            return HttpResponse("User is not authenticated", status=401)
+
     else:
         return HttpResponse("Request is not a POST request!", status=501)
