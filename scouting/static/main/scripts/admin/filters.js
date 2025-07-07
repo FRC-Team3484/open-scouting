@@ -193,6 +193,25 @@ document.addEventListener("alpine:init", () => {
 			this.data.pits_display = [];
 
 			this.get_data();
+
+			setTimeout(() => {
+				window.dispatchEvent(
+					new CustomEvent("dialog_show", {
+						detail: {
+							event_name: "admin_warning",
+							title: "Actions made here are irreversible",
+							body: "By using this admin dashboard, be warned that any action you take is irreversible (deleting data, etc.). You will not be asked to confirm any actions beyond this dialog. Use caution when interacting on this page.",
+							buttons: [
+								{
+									type: "confirm",
+									icon: "ph-bold ph-check",
+									text: "I understand",
+								},
+							],
+						},
+					}),
+				);
+			}, 300);
 		},
 	}));
 });
