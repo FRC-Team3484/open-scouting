@@ -5,7 +5,7 @@ This document describes the roadmap for Open Scouting, and roughly when each fea
 
 ## To-Do
 ### `v0.1.9-alpha`
-- [ ] [#43](https://github.com/FRC-Team3484/open-scouting/issues/43) - Admin interface
+- [x] [#43](https://github.com/FRC-Team3484/open-scouting/issues/43) - Admin interface
 - [ ] [#57](https://github.com/FRC-Team3484/open-scouting/issues/57) - Create a script or UI for creating `season_fields.py`
 - [x] [#97](https://github.com/FRC-Team3484/open-scouting/issues/97) - Remove the data table page
 - [x] [#98](https://github.com/FRC-Team3484/open-scouting/issues/98) - Adjust scrolling or content on the index page
