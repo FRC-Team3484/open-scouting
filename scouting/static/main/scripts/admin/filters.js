@@ -69,6 +69,8 @@ document.addEventListener("alpine:init", () => {
 					this.data.events_filtered = this.data.events;
 					this.data.users_filtered = this.data.users;
 					this.data.pits_filtered = this.data.pits;
+
+					this.update_display();
 				});
 		},
 
@@ -85,6 +87,8 @@ document.addEventListener("alpine:init", () => {
 
 			this.pit_filters.event.items = [];
 			this.pit_filters.year.items = [];
+
+			this.update_display();
 		},
 
 		download_json(data, file_name) {
@@ -125,10 +129,68 @@ document.addEventListener("alpine:init", () => {
 				});
 		},
 
+		update_display() {
+			if (this.type === "data") {
+				this.data.data_display = this.data.data.filter((item) => {
+					const eventMatch =
+						this.data_filters.event.items.length === 0 ||
+						this.data_filters.event.items.some(
+							(e) => e.event_code === item.event_code,
+						);
+					const userMatch =
+						this.data_filters.user.items.length === 0 ||
+						this.data_filters.user.items.some(
+							(u) => u.username === item.user.username,
+						);
+					return eventMatch && userMatch;
+				});
+			} else if (this.type === "event") {
+				this.data.events_display = this.data.events.filter((item) => {
+					const nameMatch = item.name
+						.toLowerCase()
+						.includes(this.event_filters.name.value.toLowerCase());
+					const yearMatch =
+						this.event_filters.year.items.length === 0 ||
+						this.event_filters.year.items.includes(item.year);
+					const codeMatch =
+						this.event_filters.event_code.items.length === 0 ||
+						this.event_filters.event_code.items.includes(item.event_code);
+					return nameMatch && yearMatch && codeMatch;
+				});
+			} else if (this.type === "user") {
+				this.data.users_display = this.data.users.filter((item) => {
+					const usernameMatch =
+						this.user_filters.username.items.length === 0 ||
+						this.user_filters.username.items.includes(item.username);
+					const teamMatch =
+						this.user_filters.team_number.items.length === 0 ||
+						this.user_filters.team_number.items.includes(item.team_number);
+					return usernameMatch && teamMatch;
+				});
+			} else if (this.type === "pit") {
+				this.data.pits_display = this.data.pits.filter((item) => {
+					const eventMatch =
+						this.pit_filters.event.items.length === 0 ||
+						this.pit_filters.event.items.some(
+							(e) => e.event_code === item.event_code,
+						);
+					const yearMatch =
+						this.pit_filters.year.items.length === 0 ||
+						this.pit_filters.year.items.includes(item.year);
+					return eventMatch && yearMatch;
+				});
+			}
+		},
+
 		init() {
 			this.data.events_filtered = [];
 			this.data.users_filtered = [];
 			this.data.pits_filtered = [];
+
+			this.data.data_display = [];
+			this.data.events_display = [];
+			this.data.users_display = [];
+			this.data.pits_display = [];
 
 			this.get_data();
 		},

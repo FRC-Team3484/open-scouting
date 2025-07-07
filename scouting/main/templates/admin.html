@@ -75,7 +75,7 @@
                 <div class="flex flex-row gap-2 flex-wrap" x-ref="data_filters_event">
                     <template x-for="(event, index) in data_filters.event.items" :key="index">
                         <button class="ui_button_small flex items-center"
-                                @click="data_filters.event.items = data_filters.event.items.filter(e => e !== event)">
+                                @click="data_filters.event.items = data_filters.event.items.filter(e => e !== event); update_display()">
                             <i class="ph-bold ph-x mr-1"></i>
                             <p x-text="event.name" class="inline-block"></p>
                         </button>
@@ -104,7 +104,7 @@
                     </div>
                     <template x-for="(event, index) in data.events_filtered" :key="index">
                         <button class="dark:text-white text-black text-sans text-md mb-2 opacity-70 hover:opacity-100 hover:dark:bg-slate-600/50 hover:bg-slate-300/50 rounded-full p-1 transition-all w-full text-left px-1"
-                                @click="data_filters.event.items.push(event); data_filters.event.open = false">
+                                @click="data_filters.event.items.push(event); data_filters.event.open = false; update_display()">
                             <p x-text="event.name"></p>
                         </button>
                     </template>
@@ -116,7 +116,7 @@
                 <div class="flex flex-row gap-2 flex-wrap" x-ref="data_filters_user">
                     <template x-for="(user, index) in data_filters.user.items" :key="index">
                         <button class="ui_button_small flex items-center"
-                                @click="data_filters.user.items = data_filters.user.items.filter(e => e !== user)">
+                                @click="data_filters.user.items = data_filters.user.items.filter(e => e !== user); update_display()">
                             <i class="ph-bold ph-x mr-1"></i>
                             <p x-text="user.username" class="inline-block"></p>
                         </button>
@@ -145,7 +145,7 @@
                     </div>
                     <template x-for="(user, index) in data.users_filtered" :key="index">
                         <button class="dark:text-white text-black text-sans text-md mb-2 opacity-70 hover:opacity-100 hover:dark:bg-slate-600/50 hover:bg-slate-300/50 rounded-full p-1 transition-all w-full text-left px-1"
-                                @click="data_filters.user.items.push(user); data_filters.user.open = false">
+                                @click="data_filters.user.items.push(user); data_filters.user.open = false; update_display();">
                             <p x-text="user.username"></p>
                         </button>
                     </template>
@@ -159,7 +159,7 @@
                 <div class="flex flex-row gap-2 flex-wrap" x-ref="event_filters_year">
                     <template x-for="(year, index) in event_filters.year.items" :key="index">
                         <button class="ui_button_small flex items-center"
-                                @click="event_filters.year.items = event_filters.year.items.filter(e => e !== year)">
+                                @click="event_filters.year.items = event_filters.year.items.filter(e => e !== year); update_display()">
                             <i class="ph-bold ph-x mr-1"></i>
                             <p x-text="year" class="inline-block"></p>
                         </button>
@@ -182,14 +182,14 @@
                                x-ref="year_search"
                                @input=" data.events_filtered = data.events.filter(e => e.year.toString().includes($refs.year_search.value.toLowerCase()) && e.name.toLowerCase().includes($refs.events_search?.value?.toLowerCase() || '') ) ">
                         <button class="ui_button_small wrap-break-word aspect-square"
-                                @click="event_filters.year.open = false; $refs.year_search.value = ''">
+                                @click="event_filters.year.open = false; $refs.year_search.value = '';">
                             <i class="ph-bold ph-x"></i>
                         </button>
                     </div>
                     <template x-for="(year, index) in [...new Set(data.events_filtered.map(e => e.year))]"
                               :key="year">
                         <button class="dark:text-white text-black text-sans text-md mb-2 opacity-70 hover:opacity-100 hover:dark:bg-slate-600/50 hover:bg-slate-300/50 rounded-full p-1 transition-all w-full text-left px-1"
-                                @click="event_filters.year.items.push(year); event_filters.year.open = false">
+                                @click="event_filters.year.items.push(year); event_filters.year.open = false; update_display();">
                             <p x-text="year"></p>
                         </button>
                     </template>
@@ -198,7 +198,10 @@
                     <span class="font-bold">Year</span> <span class="opacity-80">Filter events by year</span>
                 </p>
 
-                <input class="ui_input" type="text" x-model="event_filters.name.value">
+                <input class="ui_input"
+                       type="text"
+                       x-model="event_filters.name.value"
+                       @input="update_display()">
                 <p class="dark:text-white text-black text-sans text-sm my-2">
                     <span class="font-bold">Name</span> <span class="opacity-80">Filter events by name</span>
                 </p>
@@ -207,7 +210,7 @@
                      x-ref="event_filters_event_code">
                     <template x-for="(code, index) in event_filters.event_code.items" :key="index">
                         <button class="ui_button_small flex items-center"
-                                @click="event_filters.event_code.items = event_filters.event_code.items.filter(e => e !== code)">
+                                @click="event_filters.event_code.items = event_filters.event_code.items.filter(e => e !== code); update_display();">
                             <i class="ph-bold ph-x mr-1"></i>
                             <p x-text="code" class="inline-block"></p>
                         </button>
@@ -237,7 +240,7 @@
                     <template x-for="(code, index) in [...new Set(data.events_filtered.map(e => e.event_code))]"
                               :key="code">
                         <button class="dark:text-white text-black text-sans text-md mb-2 opacity-70 hover:opacity-100 hover:dark:bg-slate-600/50 hover:bg-slate-300/50 rounded-full p-1 transition-all w-full text-left px-1"
-                                @click="event_filters.event_code.items.push(code); event_filters.event_code.open = false">
+                                @click="event_filters.event_code.items.push(code); event_filters.event_code.open = false; update_display();">
                             <p x-text="code"></p>
                         </button>
                     </template>
@@ -253,7 +256,7 @@
                     <template x-for="(username, index) in user_filters.username.items"
                               :key="username">
                         <button class="ui_button_small flex items-center"
-                                @click="user_filters.username.items = user_filters.username.items.filter(u => u !== username)">
+                                @click="user_filters.username.items = user_filters.username.items.filter(u => u !== username); update_display();">
                             <i class="ph-bold ph-x mr-1"></i>
                             <p x-text="username" class="inline-block"></p>
                         </button>
@@ -285,7 +288,7 @@
                     <template x-for="(username, index) in [...new Set(data.users_filtered.map(u => u.username))]"
                               :key="username">
                         <button class="dark:text-white text-black text-sans text-md mb-2 opacity-70 hover:opacity-100 hover:dark:bg-slate-600/50 hover:bg-slate-300/50 rounded-full p-1 transition-all w-full text-left px-1"
-                                @click="user_filters.username.items.push(username); user_filters.username.open = false">
+                                @click="user_filters.username.items.push(username); user_filters.username.open = false; update_display();">
                             <p x-text="username"></p>
                         </button>
                     </template>
@@ -300,7 +303,7 @@
                      x-ref="user_filters_team_number">
                     <template x-for="(team, index) in user_filters.team_number.items" :key="team">
                         <button class="ui_button_small flex items-center"
-                                @click="user_filters.team_number.items = user_filters.team_number.items.filter(t => t !== team)">
+                                @click="user_filters.team_number.items = user_filters.team_number.items.filter(t => t !== team); update_display();">
                             <i class="ph-bold ph-x mr-1"></i>
                             <p x-text="team" class="inline-block"></p>
                         </button>
@@ -332,7 +335,7 @@
                     <template x-for="(team, index) in [...new Set(data.users_filtered.map(u => u.team_number))]"
                               :key="team">
                         <button class="dark:text-white text-black text-sans text-md mb-2 opacity-70 hover:opacity-100 hover:dark:bg-slate-600/50 hover:bg-slate-300/50 rounded-full p-1 transition-all w-full text-left px-1"
-                                @click="user_filters.team_number.items.push(team); user_filters.team_number.open = false">
+                                @click="user_filters.team_number.items.push(team); user_filters.team_number.open = false; update_display();">
                             <p x-text="team"></p>
                         </button>
                     </template>
@@ -349,7 +352,7 @@
                     <template x-for="(event, index) in pit_filters.event.items"
                               :key="event.event_code">
                         <button class="ui_button_small flex items-center"
-                                @click="pit_filters.event.items = pit_filters.event.items.filter(e => e.event_code !== event.event_code)">
+                                @click="pit_filters.event.items = pit_filters.event.items.filter(e => e.event_code !== event.event_code); update_display();">
                             <i class="ph-bold ph-x mr-1"></i>
                             <p x-text="event.name" class="inline-block"></p>
                         </button>
@@ -380,7 +383,7 @@
                     </div>
                     <template x-for="(event, index) in data.events_filtered" :key="index">
                         <button class="dark:text-white text-black text-sans text-md mb-2 opacity-70 hover:opacity-100 hover:dark:bg-slate-600/50 hover:bg-slate-300/50 rounded-full p-1 transition-all w-full text-left px-1"
-                                @click="pit_filters.event.items.push(event); pit_filters.event.open = false">
+                                @click="pit_filters.event.items.push(event); pit_filters.event.open = false; update_display();">
                             <p x-text="event.name"></p>
                         </button>
                     </template>
@@ -394,7 +397,7 @@
                 <div class="flex flex-row gap-2 flex-wrap" x-ref="pit_filters_year">
                     <template x-for="(year, index) in pit_filters.year.items" :key="year">
                         <button class="ui_button_small flex items-center"
-                                @click="pit_filters.year.items = pit_filters.year.items.filter(y => y !== year)">
+                                @click="pit_filters.year.items = pit_filters.year.items.filter(y => y !== year); update_display();">
                             <i class="ph-bold ph-x mr-1"></i>
                             <p x-text="year" class="inline-block"></p>
                         </button>
@@ -426,7 +429,7 @@
                     <template x-for="(year, index) in [...new Set(data.pits_filtered.map(p => p.year))]"
                               :key="year">
                         <button class="dark:text-white text-black text-sans text-md mb-2 opacity-70 hover:opacity-100 hover:dark:bg-slate-600/50 hover:bg-slate-300/50 rounded-full p-1 transition-all w-full text-left px-1"
-                                @click="pit_filters.year.items.push(year); pit_filters.year.open = false">
+                                @click="pit_filters.year.items.push(year); pit_filters.year.open = false; update_display();">
                             <p x-text="year"></p>
                         </button>
                     </template>
@@ -442,7 +445,7 @@
         <div class="flex flex-col w-full md:w-3/4 lg:w-2/3 mx-8 my-4 py-2 mb-4">
             <div x-show="type === 'data'">
                 <div class="flex flex-col">
-                    <template x-for="(item, index) in data.data" :key="index">
+                    <template x-for="(item, index) in data.data_display" :key="index">
                         <div class="flex flex-row w-full dark:bg-slate-800 border-2 dark:border-slate-700 bg-slate-200 border-slate-300 rounded-lg p-4 my-2 gap-2 overflow-x-scroll"
                              x-data="{ open: false, data: false, deleted: false }"
                              x-show="!deleted">
@@ -506,7 +509,7 @@
 
             <div x-show="type === 'event'">
                 <div class="flex flex-col">
-                    <template x-for="(item, index) in data.events" :key="index">
+                    <template x-for="(item, index) in data.events_display" :key="index">
                         <div class="flex flex-row w-full dark:bg-slate-800 border-2 dark:border-slate-700 bg-slate-200 border-slate-300 rounded-lg p-4 my-2 gap-2 overflow-x-scroll"
                              x-data="{ open: false, deleted: false }"
                              x-show="!deleted">
@@ -582,7 +585,7 @@
 
             <div x-show="type === 'user'">
                 <div class="flex flex-col">
-                    <template x-for="(item, index) in data.users" :key="index">
+                    <template x-for="(item, index) in data.users_display" :key="index">
                         <div class="flex flex-row w-full dark:bg-slate-800 border-2 dark:border-slate-700 bg-slate-200 border-slate-300 rounded-lg p-4 my-2 gap-2 overflow-x-scroll"
                              x-data="{ open: false, deleted: false }"
                              x-show="!deleted">
@@ -644,7 +647,7 @@
 
             <div x-show="type === 'pit'">
                 <div class="flex flex-col">
-                    <template x-for="(item, index) in data.pits" :key="index">
+                    <template x-for="(item, index) in data.pits_display" :key="index">
                         <div class="flex flex-row w-full dark:bg-slate-800 border-2 dark:border-slate-700 bg-slate-200 border-slate-300 rounded-lg p-4 my-2 gap-2 overflow-x-scroll"
                              x-data="{ open: false, deleted: false }"
                              x-show="!deleted">
