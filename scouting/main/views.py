@@ -1146,6 +1146,7 @@ def get_admin_data(request):
                                 "created": item.date_joined,
                                 "is_superuser": item.is_superuser,
                                 "is_staff": item.is_staff,
+                                "banned": not item.is_active,
                             }
                         )
                     except AttributeError:
@@ -1233,15 +1234,11 @@ def do_admin_operation(request):
 
             elif body["type"] == "user":
                 if body["operation"] == "delete":
-                    User.objects.filter(uuid=body["data"]["uuid"]).delete()
+                    User.objects.filter(id=body["data"]["uuid"]).delete()
                 elif body["operation"] == "ban":
-                    User.objects.filter(uuid=body["data"]["uuid"]).update(
-                        is_active=False
-                    )
+                    User.objects.filter(id=body["data"]["uuid"]).update(is_active=False)
                 elif body["operation"] == "unban":
-                    User.objects.filter(uuid=body["data"]["uuid"]).update(
-                        is_active=True
-                    )
+                    User.objects.filter(id=body["data"]["uuid"]).update(is_active=True)
 
             elif body["type"] == "pit":
                 if body["operation"] == "delete":

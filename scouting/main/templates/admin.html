@@ -579,6 +579,68 @@
                     </template>
                 </div>
             </div>
+
+            <div x-show="type === 'user'">
+                <div class="flex flex-col">
+                    <template x-for="(item, index) in data.users" :key="index">
+                        <div class="flex flex-row w-full dark:bg-slate-800 border-2 dark:border-slate-700 bg-slate-200 border-slate-300 rounded-lg p-4 my-2 gap-2 overflow-x-scroll"
+                             x-data="{ open: false, deleted: false }"
+                             x-show="!deleted">
+                            <button class="ui_button_icon !max-w-10 !max-h-10" @click="open = !open">
+                                <i class="ph-bold ph-dots-three" x-show="!open"></i>
+                                <i class="ph-bold ph-x" x-show="open"></i>
+                            </button>
+
+                            <div class="flex flex-col">
+                                <div class="flex flex-row items-center flex-wrap gap-1">
+                                    <div class="flex flex-row items-center gap-1 bg-red-300/30 dark:bg-red-700/30 border-2 dark:border-red-600/80 border-red-300/80 rounded-full px-2 py-1 mr-1"
+                                         x-show="item.banned">
+                                        <p class="dark:text-white text-black text-sans text-sm">Banned</p>
+                                    </div>
+                                    <div class="flex flex-row items-center gap-1 bg-slate-300 dark:bg-slate-700 border-2 dark:border-slate-600 border-slate-300 rounded-full px-2 py-1 mr-1"
+                                         x-show="item.is_staff">
+                                        <p class="dark:text-white text-black text-sans text-sm">Staff</p>
+                                    </div>
+                                    <div class="flex flex-row items-center gap-1 bg-slate-300 dark:bg-slate-700 border-2 dark:border-slate-600 border-slate-300 rounded-full px-2 py-1 mr-1"
+                                         x-show="item.is_superuser">
+                                        <p class="dark:text-white text-black text-sans text-sm">Superuser</p>
+                                    </div>
+
+                                    <p class="dark:text-white text-black text-sans text-md"
+                                       x-text="item.display_name"></p>
+                                    <p class="dark:text-white text-black text-sans text-md opacity-50"
+                                       x-text="item.username"></p>
+
+                                    <p class="dark:text-white text-black text-sans text-md"
+                                       x-text="item.team_number"></p>
+                                </div>
+
+                                <div class="flex flex-row items-center gap-1 flex-wrap">
+                                    <p class="dark:text-white text-black text-sans text-sm opacity-50"
+                                       x-show="item.created">Account created on</p>
+                                    <p class="dark:text-white text-black text-sans text-sm"
+                                       x-text="new Intl.DateTimeFormat('en-US', {year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'}).format(new Date(item.created))"
+                                       x-show="item.created"></p>
+                                </div>
+
+                                <div class="flex flex-row items-center gap-1 flex-wrap mt-2"
+                                     x-show="open"
+                                     x-collapse>
+                                    <button class="ui_button_small"
+                                            @click="do_admin_operation('user', 'delete', { uuid: item.uuid }); deleted = true;">Delete user</button>
+                                    <button class="ui_button_small"
+                                            @click="do_admin_operation('user', 'ban', { uuid: item.uuid }); item.banned = true;"
+                                            x-show="item.banned == false">Ban user</button>
+                                    <button class="ui_button_small"
+                                            @click="do_admin_operation('user', 'unban', { uuid: item.uuid }); item.banned = false;"
+                                            x-show="item.banned">Unban user</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </template>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock body %}
