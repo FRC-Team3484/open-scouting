@@ -17,6 +17,11 @@ def get_analytics(request):
     if request.method != "POST":
         return HttpResponse("Request is not a POST request!", status=501)
 
+    if not request.user.is_authenticated or (
+        not request.user.is_staff and not request.user.is_superuser
+    ):
+        return HttpResponse("Not authenticated", status=401)
+
     data = {
         "1_hour": get_view_count_since(hours=1),
         "12_hours": get_view_count_since(hours=12),
