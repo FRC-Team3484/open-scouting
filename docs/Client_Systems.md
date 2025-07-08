@@ -167,13 +167,17 @@ Open Scouting has a [`user.js`](/scouting/static/main/scripts/user.js) file that
 To use utilities from this file on a page, include the following in the `body` block, below the environment variable settings
 ```html
 <script>
-    const user = new User();
-    window.user = user;
+        const user = new User();
+        window.user = user;
 
-    user.check_authentication_status().then(() => {
-        window.dispatchEvent(new CustomEvent("user_ready", { detail: user }));
-    });
-</script>
+        user.check_authentication_status().then(() => {
+            // Now the user is authenticated (or not)
+            user.load_settings().then(() => {
+                // Now settings are also loaded
+                window.dispatchEvent(new CustomEvent("user_ready", { detail: user }));
+            });
+        });
+    </script>
 ```
 
 Now the user utility functions can be used with `user.*`, and things on the page relying on the user utility functions should be called when the `user_ready` event is called

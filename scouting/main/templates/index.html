@@ -24,10 +24,12 @@
         window.user = user;
 
         user.check_authentication_status().then(() => {
-            window.dispatchEvent(new CustomEvent("user_ready", { detail: user }));
+            // Now the user is authenticated (or not)
+            user.load_settings().then(() => {
+                // Now settings are also loaded
+                window.dispatchEvent(new CustomEvent("user_ready", { detail: user }));
+            });
         });
-
-        user.load_settings();
     </script>
 
     <div class="h-screen overflow-y-scroll" id="index">
