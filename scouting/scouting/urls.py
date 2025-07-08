@@ -24,6 +24,7 @@ import main.views
 urlpatterns = [
     path("", include("main.urls")),
     path("authentication/", include("authentication.urls")),
+    path("analytics/", include("analytics.urls")),
     path(
         f"{settings.ADMIN_PATH.rstrip('/')}/ui/", main.views.admin_ui, name="admin_ui"
     ),

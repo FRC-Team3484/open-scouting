@@ -6,3 +6,4 @@ gunicorn
 psycopg2-binary
 requests
 deepdiff
+python-dateutil
