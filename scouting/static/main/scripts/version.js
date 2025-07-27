@@ -84,3 +84,9 @@ get_server_version().then((server_version) => {
 		}
 	}
 });
+
+window.dispatchEvent(
+	new CustomEvent("version", {
+		detail: { CLIENT_VERSION },
+	}),
+);
