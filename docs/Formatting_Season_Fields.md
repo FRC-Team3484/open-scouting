@@ -1,4 +1,6 @@
 # Formatting Season Fields
+> [!NOTE]
+> A terminal app is available in [nfoert/open-scouting-utils](https://github.com/nfoert/open-scouting-utils/season-fields-generator/README.md) to simplify this the creation of new season fields
 
 This page documents how the data in `season_fields.py` should be formatted and set up each year, to aid in quickly setting up the json when a new season begins
 

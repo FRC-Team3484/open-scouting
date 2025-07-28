@@ -5,6 +5,9 @@ This page documents which steps should be followed at the start of a season to q
 These steps should be followed as early in the season as possible, preferably on kickoff day, and at the very least before Week 0 begins
 
 ## 1. Update `season_fields.py`
+> [!NOTE]
+> A terminal app is available in [nfoert/open-scouting-utils](https://github.com/nfoert/open-scouting-utils/season-fields-generator/README.md) to simplify this the creation of new season fields
+
 - Add a new year to the `season_fields.py` file. Follow [Formatting Season Fields](./Formatting_Season_Fields.md) for how to do this. Data entries should be kept simple and not complicated, simplify or remove any fields that you can, and the very minimum amount of fields should be kept required, the goal is to make the process as easy and quick as possible for scouts.
 - Add the new year to the mapping dictionary in the `get_season_fields` function
 
