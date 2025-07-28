@@ -4,13 +4,23 @@ This document describes the roadmap for Open Scouting, and roughly when each fea
 ---
 
 ## To-Do
-### `v0.1.9-alpha`
-- [ ] [#43](https://github.com/FRC-Team3484/open-scouting/issues/43) - Admin interface
-- [ ] [#57](https://github.com/FRC-Team3484/open-scouting/issues/57) - Create a script or UI for creating `season_fields.py`
-- [ ] [#97](https://github.com/FRC-Team3484/open-scouting/issues/97) - Remove the data table page
+### `v0.1.10-alpha`
+- [ ] [#34](https://github.com/FRC-Team3484/open-scouting/issues/34) - Add a notification queue
+- [ ] [#35](https://github.com/FRC-Team3484/open-scouting/issues/35) - Show indicators on the menu button if there's any important messages to the user
+- [ ] [#99](https://github.com/FRC-Team3484/open-scouting/issues/99) - Redo notification system
+
+### `v0.1.11-alpha`
+- [ ] [#100](https://github.com/FRC-Team3484/open-scouting/issues/100) - Reorganize templates
+- [ ] [#31](https://github.com/FRC-Team3484/open-scouting/issues/31) - Support multiple languages and localization
 
 ---
 ## Completed
+### `v0.1.9-alpha`
+- [x] [#43](https://github.com/FRC-Team3484/open-scouting/issues/43) - Admin interface
+- [x] [#57](https://github.com/FRC-Team3484/open-scouting/issues/57) - Create a script or UI for creating `season_fields.py`
+- [x] [#97](https://github.com/FRC-Team3484/open-scouting/issues/97) - Remove the data table page
+- [x] [#98](https://github.com/FRC-Team3484/open-scouting/issues/98) - Adjust scrolling or content on the index page
+
 ### `v0.1.8-alpha`
 - [x] [#67](https://github.com/FRC-Team3484/open-scouting/issues/67) - Change the colors of true and false values in the charts in the advanced data view
 - [x] [#84](https://github.com/FRC-Team3484/open-scouting/issues/84) - Warn the user if their device may clear any local offline data

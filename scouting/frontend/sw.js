@@ -127,7 +127,6 @@ self.addEventListener("install", (event) => {
 		addResourcesToCache([
 			"/",
 			"/contribute",
-			"/data",
 			"/pits",
 			"/advanced_data",
 			"/static/main/scripts/app.js",

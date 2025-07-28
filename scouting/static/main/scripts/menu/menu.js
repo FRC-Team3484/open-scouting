@@ -21,6 +21,7 @@ document.addEventListener("alpine:init", () => {
 		logs_open: false,
 		storage_open: false,
 		storage_warning: false,
+		version: "",
 
 		/**
 		 * Check if the user is offline or not, and store it in a global variable
@@ -401,6 +402,12 @@ document.addEventListener("alpine:init", () => {
 
 			window.addEventListener("storage_warning", (event) => {
 				this.storage_warning = true;
+			});
+
+			window.addEventListener("version", (event) => {
+				const { CLIENT_VERSION } = event.detail;
+
+				this.version = CLIENT_VERSION;
 			});
 
 			// this.show_notification('Open Scouting', 'Welcome to Open Scouting!', 'star');

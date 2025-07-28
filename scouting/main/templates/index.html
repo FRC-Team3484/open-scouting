@@ -16,6 +16,7 @@
         const SERVER_IP = `{{ SERVER_IP }}`;
         const CSRF_TOKEN = `{{ csrf_token }}`;
         const TBA_API_KEY = `{{ TBA_API_KEY }}`;
+        const ADMIN_PATH = `{{ ADMIN_IP }}`;
     </script>
 
     <script>
@@ -23,14 +24,16 @@
         window.user = user;
 
         user.check_authentication_status().then(() => {
-            window.dispatchEvent(new CustomEvent("user_ready", { detail: user }));
+            // Now the user is authenticated (or not)
+            user.load_settings().then(() => {
+                // Now settings are also loaded
+                window.dispatchEvent(new CustomEvent("user_ready", { detail: user }));
+            });
         });
-
-        user.load_settings();
     </script>
 
-    <div class="snap-y snap-mandatory h-screen overflow-y-scroll" id="index">
-        <div class="flex h-screen justify-center items-center flex-col w-screen snap-center px-4">
+    <div class="h-screen overflow-y-scroll" id="index">
+        <div class="flex min-h-screen justify-center items-center flex-col w-screen px-4">
 
             <script src="{% static '/main/scripts/index/header.js' %}"></script>
 
@@ -45,11 +48,11 @@
                          src="{% static '/main/images/logo_dark.png' %}">
                     <p class="font-sans dark:text-white mt-2 text-black text-center">An open source application for easier scouting at FIRST Robotics competitions</p>
                     <div class="flex flex-row mt-4 mb-8">
-                        <a class="dark:text-white text-black text-lg mx-2 hover:scale-105 transition-all opacity-80 hover:opacity-100"
+                        <a class="dark:text-white text-black text-sm md:text-lg mx-2 hover:scale-105 transition-all opacity-80 hover:opacity-100"
                            href="https://github.com/FRC-Team3484/open-scouting"><i class="ph-bold ph-github-logo"></i> Source Code</a>
-                        <a class="dark:text-white text-black text-lg mx-2 hover:scale-105 transition-all opacity-80 hover:opacity-100"
+                        <a class="dark:text-white text-black text-sm md:text-lg mx-2 hover:scale-105 transition-all opacity-80 hover:opacity-100"
                            href="https://github.com/FRC-Team3484/open-scouting/issues"><i class="ph-bold ph-bug"></i> Issues</a>
-                        <a class="dark:text-white text-black text-lg mx-2 hover:scale-105 transition-all opacity-80 hover:opacity-100"
+                        <a class="dark:text-white text-black text-sm md:text-lg mx-2 hover:scale-105 transition-all opacity-80 hover:opacity-100"
                            href="https://github.com/FRC-Team3484/open-scouting/releases"><i class="ph-bold ph-app-window"></i> Releases</a>
                     </div>
                 </div>
@@ -66,7 +69,7 @@
                     </button>
 
                     <div class="flex flex-col" x-show="!demo">
-                        <div class="flex flex-row items-center">
+                        <div class="flex flex-row items-center flex-wrap">
                             <i class="ph-bold ph-user-circle-dashed dark:text-white text-black font-sans px-1"></i>
                             <p class=" dark:text-white text-black font-sans text-md font-bold px-1"
                                x-text="username"></p>
@@ -74,7 +77,7 @@
                                x-text="team_number"></p>
                         </div>
 
-                        <div class="flex flex-row items-center">
+                        <div class="flex flex-row items-center flex-wrap">
                             <i class="ph-bold ph-calendar-blank dark:text-white text-black font-sans px-1"
                                x-show="!custom_event"></i>
                             <i class="ph-bold ph-calendar-star dark:text-white text-black font-sans px-1"
@@ -119,6 +122,7 @@
                                 <i class="ph-bold ph-check-circle"></i>
                             </button>
                             <button class="ui_button_icon mx-1"
+                                    :class="{ '!bg-green-500/50 !dark:bg-green-700/50 !hover:bg-green-500/80 !dark:hover:bg-green-700/80': is_staff || is_superuser }"
                                     @click="profile_menu_open = !profile_menu_open"
                                     x-ref="profile_menu">
                                 <i class="ph-bold ph-dots-three"></i>
@@ -136,6 +140,16 @@
                                 <button class="ui_button_small my-1! py-1! px-2! w-full! text-left!"
                                         @click="window.location.href = '/authentication/profile'">
                                     <i class="ph-bold ph-pencil"></i> Edit Profile
+                                </button>
+                                <button class="ui_button_small my-1! py-1! px-2! w-full! text-left! !bg-green-500/50 !dark:bg-green-700/50 !hover:bg-green-500/80 !dark:hover:bg-green-700/80"
+                                        @click="window.location.href = (`{{ ADMIN_PATH }}/ui`).replace(/\/\/+/g, '/')"
+                                        x-show="is_staff || is_superuser">
+                                    <i class="ph-bold ph-key"></i> Admin Dashboard
+                                </button>
+                                <button class="ui_button_small my-1! py-1! px-2! w-full! text-left! !bg-green-500/50 !dark:bg-green-700/50 !hover:bg-green-500/80 !dark:hover:bg-green-700/80"
+                                        @click="window.location.href = (`{{ ADMIN_PATH }}`).replace(/\/\/+/g, '/')"
+                                        x-show="is_staff || is_superuser">
+                                    <i class="ph-bold ph-key"></i> Django Admin
                                 </button>
                             </div>
 
@@ -460,10 +474,12 @@
                             <i class="ph-bold ph-pencil"></i> Contribute
                         </button>
                         <p class="dark:text-white text-black opacity-80 text-sm text-center">Contribute data to the server</p>
-                        <button class="ui_button" @click="get_header_data('view_data')">
-                            <i class="ph-bold ph-database"></i> View All Data
+
+                        <button class="ui_button" @click="get_header_data('advanced_data')">
+                            <i class="ph-bold ph-hard-drives"></i> View data
                         </button>
-                        <p class="dark:text-white text-black opacity-80 text-sm text-center">View all data for this event</p>
+                        <p class="dark:text-white text-black opacity-80 text-sm text-center">View data for this event in the advanced data view</p>
+
                         <button class="ui_button" @click="get_header_data('pit_scouting')">
                             <i class="ph-bold ph-garage"></i> Pit Scouting
                         </button>
@@ -589,7 +605,7 @@
             </div>
         </div>
 
-        <div class="h-screen w-screen max-w-screen snap-center flex flex-col lg:flex-row justify-center items-center px-6 lg:px-24 overflow-hidden">
+        <div class="w-screen max-w-screen flex flex-col lg:flex-row justify-center items-center px-6 lg:px-24 overflow-hidden">
             <div class="flex flex-col ml-0 lg:ml-12">
                 <p class="text-black dark:text-white font-sans text-2xl md:text-4xl">
                     <i class="ph-bold ph-list-dashes"></i> Features
@@ -616,7 +632,7 @@
             </div>
         </div>
 
-        <div class="h-screen w-screen max-w-screen snap-center flex flex-col justify-end items-left px-6 lg:px-24 py-8 lg:py-28 backdrop-blur-xs"
+        <div class="w-screen max-w-screen flex flex-col justify-end items-left px-6 lg:px-24 pt-28 pb-8 lg:py-28 backdrop-blur-xs"
              style="background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 15%, rgba(0, 0, 0, 0.4) 100%)"
              x-data="">
             <img class="height-auto w-72 hidden dark:block cursor-pointer hover:scale-105 active:scale-95 transition-all"

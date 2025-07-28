@@ -16,7 +16,7 @@ import os
 import environ
 
 # Change this before publishing a new release!
-SERVER_VERSION = "v0.1.8-alpha"
+SERVER_VERSION = "v0.1.9-alpha"
 
 env = environ.Env(
     interpolate=True,
@@ -86,6 +86,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "main",
     "authentication",
+    "analytics",
 ]
 
 MIDDLEWARE = [
@@ -96,6 +97,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "analytics.middleware.PageViewMiddleware",
 ]
 
 ROOT_URLCONF = "scouting.urls"

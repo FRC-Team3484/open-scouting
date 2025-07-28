@@ -5,12 +5,10 @@ from . import views
 urlpatterns = [
     path("", views.index, name="index"),
     path("contribute", views.contribute, name="contribute"),
-    path("data", views.data, name="data"),
     path("pits", views.pits, name="pits"),
     path("advanced_data", views.advanced_data, name="advanced_data"),
     path("sw.js", views.service_worker),
     path("submit", views.submit, name="submit"),
-    path("get_data", views.get_data, name="get_data"),
     path("get_custom_events", views.get_custom_events, name="get_custom_events"),
     path("create_custom_event", views.create_custom_event, name="create_custom_event"),
     path("get_year_data", views.get_year_data, name="get_year_data"),
@@ -39,4 +37,6 @@ urlpatterns = [
     ),
     path("get_data_from_query", views.get_data_from_query, name="get_data_from_query"),
     path("get_version", views.get_version, name="get_version"),
+    path("get_admin_data", views.get_admin_data, name="get_admin_data"),
+    path("do_admin_operation", views.do_admin_operation, name="do_admin_operation"),
 ]

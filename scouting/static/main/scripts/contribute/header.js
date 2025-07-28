@@ -14,12 +14,14 @@ document.addEventListener("alpine:init", () => {
 		},
 
 		/**
-		 * Navigates to the data page using the current event information
+		 * Navigates to the advanced data page using the current event information
 		 */
-		go_to_data() {
+		go_to_advanced_data() {
 			const url = new URL(window.location.href);
-			url.pathname = url.pathname.replace(this.page_path, "/data");
-			window.location.href = url.toString();
+			const eventCode = url.searchParams.get("event_code");
+			const year = url.searchParams.get("year");
+
+			window.location.href = `/advanced_data?year=${year}&events=${eventCode}`;
 		},
 
 		/**

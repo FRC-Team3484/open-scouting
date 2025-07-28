@@ -19,8 +19,14 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 
+import main.views
+
 urlpatterns = [
     path("", include("main.urls")),
     path("authentication/", include("authentication.urls")),
+    path("analytics/", include("analytics.urls")),
+    path(
+        f"{settings.ADMIN_PATH.rstrip('/')}/ui/", main.views.admin_ui, name="admin_ui"
+    ),
     path(settings.ADMIN_PATH, admin.site.urls),
 ]
