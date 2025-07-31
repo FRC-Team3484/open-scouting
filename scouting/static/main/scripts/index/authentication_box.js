@@ -65,7 +65,9 @@ document.addEventListener("alpine:init", () => {
 					new CustomEvent("scouting_notification", {
 						detail: {
 							title: "Event autofilled",
-							body: "Autofilled the event and year from the provided link data",
+							message:
+								"Autofilled the event and year from the provided link data",
+							type: "info",
 							icon: "lightning",
 						},
 					}),
@@ -139,7 +141,9 @@ document.addEventListener("alpine:init", () => {
 					new CustomEvent("scouting_notification", {
 						detail: {
 							title: "Event autofilled",
-							body: "Autofilled the event and year from the provided link data",
+							message:
+								"Autofilled the event and year from the provided link data",
+							type: "info",
 							icon: "lightning",
 						},
 					}),

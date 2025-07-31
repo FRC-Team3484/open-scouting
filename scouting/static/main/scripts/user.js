@@ -214,7 +214,8 @@ class User {
 								new CustomEvent("scouting_notification", {
 									detail: {
 										title: "Settings saved",
-										body: "Your settings have been successfully saved",
+										message: "Your settings have been successfully saved",
+										type: "success",
 										icon: "check-circle",
 									},
 								}),

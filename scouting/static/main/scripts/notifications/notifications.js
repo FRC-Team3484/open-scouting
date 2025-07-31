@@ -41,6 +41,7 @@ window.addEventListener("alpine:init", () => {
 				const { title, message, type, icon } = event.detail;
 
 				this.add_notification(title, message, type, icon);
+				this.process_queue();
 			});
 
 			setTimeout(() => {

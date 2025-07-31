@@ -57,7 +57,9 @@ document.addEventListener("alpine:init", () => {
 					new CustomEvent("scouting_notification", {
 						detail: {
 							title: "Link copied",
-							body: "The link to this event and year has been copied to your clipboard",
+							message:
+								"The link to this event and year has been copied to your clipboard",
+							type: "info",
 							icon: "check-circle",
 						},
 					}),

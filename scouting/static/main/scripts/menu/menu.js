@@ -2,13 +2,6 @@ document.addEventListener("alpine:init", () => {
 	Alpine.data("menu", () => ({
 		open: false,
 		offline: !navigator.onLine,
-		notification_shown: false,
-		notification: {
-			title: "",
-			body: "",
-			icon: "",
-			icon_class: "",
-		},
 		dark_mode: true,
 		credits_open: false,
 		developer_open: false,
@@ -73,39 +66,6 @@ document.addEventListener("alpine:init", () => {
 					}
 				}
 			}
-		},
-
-		/**
-		 * Show a notification across the application
-		 *
-		 * @param {string} title - The title of the notification
-		 * @param {string} body - The body of the notification
-		 * @param {string} icon - The icon of the notification (As a Phosphor icon, omit the 'ph-' part)
-		 */
-		show_notification(title, body, icon) {
-			if (this.notification_shown) {
-				this.hide_notification();
-			}
-
-			this.notification.title = title;
-			this.notification.body = body;
-			this.notification.icon = icon;
-			this.notification.icon_class = `ph-bold ph-${icon}`;
-			this.notification_shown = true;
-
-			setTimeout(() => {
-				this.hide_notification();
-			}, 5000);
-		},
-
-		/**
-		 * Hide the currently shown notification
-		 */
-		hide_notification() {
-			this.notification_shown = false;
-			this.notification.title = "";
-			this.notification.body = "";
-			this.notification.icon = "";
 		},
 
 		/**
@@ -385,12 +345,6 @@ document.addEventListener("alpine:init", () => {
 			setInterval(() => {
 				this.offline_check();
 			}, 500);
-
-			window.addEventListener("scouting_notification", (event) => {
-				event.stopImmediatePropagation();
-				const { title, body, icon } = event.detail;
-				this.show_notification(title, body, icon);
-			});
 
 			this.check_for_offline_reports();
 			this.check_for_offline_pit_scouting();
