@@ -2,13 +2,6 @@ document.addEventListener("alpine:init", () => {
 	Alpine.data("menu", () => ({
 		open: false,
 		offline: !navigator.onLine,
-		notification_shown: false,
-		notification: {
-			title: "",
-			body: "",
-			icon: "",
-			icon_class: "",
-		},
 		dark_mode: true,
 		credits_open: false,
 		developer_open: false,
@@ -33,10 +26,16 @@ document.addEventListener("alpine:init", () => {
 				this.offline_manual_last = false;
 				globalThis.offline = true;
 				window.dispatchEvent(new CustomEvent("scouting_offline"));
-				this.show_notification(
-					"Device offline",
-					"You're now offline. Some features will be reduced until you're back online.",
-					"wifi-slash",
+				window.dispatchEvent(
+					new CustomEvent("scouting_notification", {
+						detail: {
+							title: "Device offline",
+							message:
+								"You're now offline. Some features will be reduced until you're back online.",
+							type: "warning",
+							icon: "wifi-slash",
+						},
+					}),
 				);
 			} else {
 				if (this.offline_manual_last === true) {
@@ -62,50 +61,33 @@ document.addEventListener("alpine:init", () => {
 							"You're now offline. Some features will be reduced until you're back online.",
 							"wifi-slash",
 						);
+						window.dispatchEvent(
+							new CustomEvent("scouting_notification", {
+								detail: {
+									title: "Device offline",
+									message:
+										"You're now offline. Some features will be reduced until you're back online.",
+									type: "warning",
+									icon: "wiif-slash",
+								},
+							}),
+						);
 					} else {
 						globalThis.offline = false;
 						window.dispatchEvent(new CustomEvent("scouting_online"));
-						this.show_notification(
-							"Device online",
-							"You're back online.",
-							"wifi-high",
+						window.dispatchEvent(
+							new CustomEvent("scouting_notification", {
+								detail: {
+									title: "Device online",
+									message: "You're back online.",
+									type: "info",
+									icon: "wifi-high",
+								},
+							}),
 						);
 					}
 				}
 			}
-		},
-
-		/**
-		 * Show a notification across the application
-		 *
-		 * @param {string} title - The title of the notification
-		 * @param {string} body - The body of the notification
-		 * @param {string} icon - The icon of the notification (As a Phosphor icon, omit the 'ph-' part)
-		 */
-		show_notification(title, body, icon) {
-			if (this.notification_shown) {
-				this.hide_notification();
-			}
-
-			this.notification.title = title;
-			this.notification.body = body;
-			this.notification.icon = icon;
-			this.notification.icon_class = `ph-bold ph-${icon}`;
-			this.notification_shown = true;
-
-			setTimeout(() => {
-				this.hide_notification();
-			}, 5000);
-		},
-
-		/**
-		 * Hide the currently shown notification
-		 */
-		hide_notification() {
-			this.notification_shown = false;
-			this.notification.title = "";
-			this.notification.body = "";
-			this.notification.icon = "";
 		},
 
 		/**
@@ -183,10 +165,15 @@ document.addEventListener("alpine:init", () => {
 					.then((count) => {
 						if (count > 0) {
 							this.offline_reports = true;
-							this.show_notification(
-								"Reports available to upload.",
-								`You have ${count} reports that were saved offline ready to upload`,
-								"cloud-arrow-up",
+							window.dispatchEvent(
+								new CustomEvent("scouting_notification", {
+									detail: {
+										title: "Reports available to upload.",
+										message: `You have ${count} reports that were saved offline ready to upload`,
+										type: "info",
+										icon: "cloud-arrow-up",
+									},
+								}),
 							);
 						} else {
 							this.offline_reports = false;
@@ -237,18 +224,29 @@ document.addEventListener("alpine:init", () => {
 						if (res.ok) {
 							db.offline_reports.clear().then(() => {
 								this.offline_reports = false;
-								this.show_notification(
-									"Reports have been uploaded",
-									"All your reports have been stored on the server",
-									"check-circle",
+								window.dispatchEvent(
+									new CustomEvent("scouting_notification", {
+										detail: {
+											title: "Reports have been uploaded",
+											message:
+												"All your reports have been stored on the server",
+											type: "success",
+											icon: "check-circle",
+										},
+									}),
 								);
 							});
 						} else {
 							log("WARNING", "There was an issue uploading scouting reports");
-							this.show_notification(
-								"There was an issue uploading scouting reports",
-								"Your reports may have not been uploaded",
-								"warning",
+							window.dispatchEvent(
+								new CustomEvent("scouting_notification", {
+									detail: {
+										title: "There was an issue uploading scouting reports",
+										message: "Your reports may have not been uploaded",
+										type: "warning",
+										icon: "warning",
+									},
+								}),
 							);
 						}
 					});
@@ -273,10 +271,15 @@ document.addEventListener("alpine:init", () => {
 					.then((count) => {
 						if (count > 0) {
 							this.offline_pit_scouting = true;
-							this.show_notification(
-								"Pit scouting data ready to upload",
-								`You have ${count} pit scouting data that are saved offline ready to upload`,
-								"cloud-arrow-up",
+							window.dispatchEvent(
+								new CustomEvent("scouting_notification", {
+									detail: {
+										title: "Pit scouting data ready to upload",
+										message: `You have ${count} pit scouting data that are saved offline ready to upload`,
+										type: "info",
+										icon: "cloud-arrow-up",
+									},
+								}),
 							);
 						} else {
 							this.offline_pit_scouting = false;
@@ -335,16 +338,28 @@ document.addEventListener("alpine:init", () => {
 						}
 
 						if (!upload_failed) {
-							this.show_notification(
-								"Pit scouting data has been uploaded",
-								"All your pit scouting data has been stored on the server",
-								"check-circle",
+							window.dispatchEvent(
+								new CustomEvent("scouting_notification", {
+									detail: {
+										title: "Pit scouting data has been uploaded",
+										message:
+											"All your pit scouting data has been stored on the server",
+										type: "success",
+										icon: "check-circle",
+									},
+								}),
 							);
 						} else {
-							this.show_notification(
-								"There was an issue uploading pit scouting data",
-								"Your pit scouting data may have not been uploaded",
-								"warning",
+							window.dispatchEvent(
+								new CustomEvent("scouting_notification", {
+									detail: {
+										title: "There was an issue uploading pit scouting data",
+										message:
+											"Your pit scouting data may have not been uploaded",
+										type: "warning",
+										icon: "warning",
+									},
+								}),
 							);
 						}
 
@@ -386,12 +401,6 @@ document.addEventListener("alpine:init", () => {
 				this.offline_check();
 			}, 500);
 
-			window.addEventListener("scouting_notification", (event) => {
-				event.stopImmediatePropagation();
-				const { title, body, icon } = event.detail;
-				this.show_notification(title, body, icon);
-			});
-
 			this.check_for_offline_reports();
 			this.check_for_offline_pit_scouting();
 
@@ -409,8 +418,6 @@ document.addEventListener("alpine:init", () => {
 
 				this.version = CLIENT_VERSION;
 			});
-
-			// this.show_notification('Open Scouting', 'Welcome to Open Scouting!', 'star');
 		},
 	}));
 });

@@ -59,7 +59,8 @@ document.addEventListener("alpine:init", () => {
 							new CustomEvent("scouting_notification", {
 								detail: {
 									title: "Profile saved",
-									body: "Your profile details have been successfully saved",
+									message: "Your profile details have been successfully saved",
+									type: "success",
 									icon: "check-circle",
 								},
 							}),

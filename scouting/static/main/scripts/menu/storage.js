@@ -106,7 +106,9 @@ document.addEventListener("alpine:init", () => {
 					new CustomEvent("scouting_notification", {
 						detail: {
 							title: "Low storage space",
-							body: "Open Scouting is running low on storage that is allocated to it",
+							message:
+								"Open Scouting is running low on storage that is allocated to it",
+							type: "warning",
 							icon: "warning",
 						},
 					}),

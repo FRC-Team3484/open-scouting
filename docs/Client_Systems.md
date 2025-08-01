@@ -10,13 +10,14 @@ This page documents how to use several of the systems and utilities that are bui
 - [Client user management](#client-user-management)
 
 ## Sending notifications
-Notifications are shown next to the menu and can be used to provide the user with some information if an action succeeds or fails
+Notifications are shown at the top right of the screen, and can be used to provide the user with some information if an action succeeds or fails
 
-Send a notification using a JavaScript event, on any page that uses the menu
+Send a notification using a JavaScript event, on any page that inherits from `base.html`
 
 Parameters for the event details:
 - `title` - The title of the notification
-- `body` - The body text of the notification
+- `message` - The message text of the notification
+- `type` - The type of the notification, can be `info`, `success`, `warning` or `error`
 - `icon` - The icon to display on the notification, as a Phosphor Icon, minus the `ph-` part
 
 ```js
@@ -24,7 +25,8 @@ window.dispatchEvent(
     new CustomEvent("scouting_notification", {
         detail: {
             title: "Event autofilled",
-            body: "Autofilled the event and year from the provided link data",
+            message: "Autofilled the event and year from the provided link data",
+            type: "info",
             icon: "lightning",
         },
     }),

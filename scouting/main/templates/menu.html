@@ -3,52 +3,17 @@
 <script src="{% static '/main/scripts/menu/menu.js' %}"></script>
 
 <div x-data="menu">
-    <div class="flex flex-row fixed bottom-2 right-2 justify-end w-auto items-center">
-        <div x-show="notification_shown && !open"
-             class="mx-4 w-full md:bottom-4 md:right-4 text-white text-md md:text-3xl p-1 md:p-2 dark:bg-slate-700/80 border-2 dark:border-slate-600 bg-slate-200/80 border-slate-300 rounded-full backdrop-blur-md"
-             x-transition
-             x-cloak>
-            <div class="flex flex-row items-center justify-between">
-                <div class="flex flex-row dark:text-white text-black ml-2 items-center text-xl">
-                    <i :class="notification.icon_class"></i>
-
-                    <div class="flex flex-col ml-2">
-                        <p class="text-sm font-bold" x-text="notification.title"></p>
-                        <p class="text-sm" x-text="notification.body"></p>
-                    </div>
-                </div>
-
-                <button class="ui_button_icon" @click="hide_notification()">
-                    <i class="ph-bold ph-x"></i>
-                </button>
-            </div>
-        </div>
-
-        <div class="md:bottom-4 md:right-4 dark:text-white text-black text-xl md:text-3xl p-1 md:p-2 dark:bg-slate-700/80 border-2 dark:border-slate-600 bg-slate-200/80 border-slate-300 rounded-full backdrop-blur-md hover:scale-110 active:scale-95 transition-all w-10 h-10 md:w-16 md:h-16 flex flex-row items-center justify-center"
+    <div class="flex flex-row fixed bottom-4 right-4 md:bottom-2 md:right-2 justify-end w-auto items-center">
+        <div class="md:bottom-4 md:right-4 dark:text-white text-black text-xl md:text-3xl p-1 md:p-2 rounded-full backdrop-blur-md hover:scale-110 active:scale-95 transition-all w-10 h-10 md:w-16 md:h-16 flex flex-row items-center justify-center border-2"
+             :class="{'dark:bg-slate-700/80 dark:border-slate-600 bg-slate-200/80 border-slate-300': !offline_reports && !offline_pit_scouting && !storage_warning, 'bg-orange-200/50 dark:bg-orange-800/50 dark:border-orange-700 border-orange-300': offline_reports || offline_pit_scouting || storage_warning}"
              x-show="!open"
              @click="open = true"
              t-transition>
-            <i class="ph-bold ph-list"></i>
-        </div>
-    </div>
-
-    <div x-show="notification_shown && open"
-         class="w-full fixed top-2 left-0 z-10 text-white text-md md:text-3xl p-1 md:p-2 dark:bg-slate-700/80 border-2 dark:border-slate-600 bg-slate-200/80 border-slate-300 rounded-full backdrop-blur-md"
-         x-transition
-         x-cloak>
-        <div class="flex flex-row items-center justify-between">
-            <div class="flex flex-row dark:text-white text-black ml-2 items-center text-xl">
-                <i :class="notification.icon_class"></i>
-
-                <div class="flex flex-col ml-2">
-                    <p class="text-sm font-bold" x-text="notification.title"></p>
-                    <p class="text-sm" x-text="notification.body"></p>
-                </div>
-            </div>
-
-            <button class="ui_button_icon" @click="hide_notification()">
-                <i class="ph-bold ph-x"></i>
-            </button>
+            <i x-show="!(offline_reports || offline_pit_scouting || storage_warning)"
+               class="ph-bold ph-list"></i>
+            <i x-show="offline_reports" class="ph-bold ph-cloud-arrow-up"></i>
+            <i x-show="offline_pit_scouting" class="ph-bold ph-cloud-arrow-up"></i>
+            <i x-show="storage_warning" class="ph-bold ph-warning-circle"></i>
         </div>
     </div>
 

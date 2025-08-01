@@ -12,35 +12,28 @@
 
 <div align="center">
 
-  ![Open Scouting screenshot on mobile](repo/images/mobile.png)
+  ![Open Scouting screenshot on a phone and tablet](repo/images/mobile.png)
 
 </div>
 
 <p align="center">
   <a href="https://skillicons.dev">
-    <img src="https://skillicons.dev/icons?i=django,python,html,css,js,tailwind" />
+    <img src="https://skillicons.dev/icons?i=django,python,html,css,js,tailwind,alpinejs" />
   </a>
 </p>
 
 
 ## Features
-- Save data offline in case of poor connection in the stands
-- Work with The Blue Alliance's API to grab match data allowing to autofill team numbers
-- View all data from an event in a table
-- Have a system for quickly setting up all the required data entries for a new season
-  - Have fields to quickly set up and provide to the user when scouting, e.g. "text", "boolean", "data" ect.
+- Works on any device with a relatively modern web browser. No scouting specific tablets or computers are required, scouts can simply use their own phones
+- Remains functional completely offline, in case of poor or non-existent connection in the stands
+- Uses The Blue Alliance's API to grab match data allowing to quickly autofill team and match numbers when scouts specify what robot they're watching
+- One JSON file needs edited in order to set up the app for a new season, so no season-specific data is hardcoded. This allows Open Scouting to be functional for a new season almost immediate
 - Allow other teams to view and contribute data to the same server
 - Create custom events if events aren't listed on TBA
-- Keep backups of scouting reports locally
-- Dark/light mode theme support
-- Manually go offline in case of bad connection
-- Scout team's pits at competition
-- View and filter data for multiple teams at multiple events and filter that data by a specific recorded stat
-- Scouts can select what field position they're watching (Red 1, Blue 2, ect.) and the team number for them to watch will be autofilled
-- Match numbers are automatically incremented, meaning scouts only need to enter the match they're scouting and the match type and everything else will be filled in for subsequent matches
-<!-- - Tie multiple clients together into a "session" so all the devices can be sent to the next match simultaneously -->
-  <!-- - This will iterate the match number and help autofill some additional information -->
-<!-- - Auto jump to the next section that needs filled out -->
+- Keep backups of scouting reports locally, and keep track of used local storage
+- Supports collaborative pit scouting from multiple scouts or other teams
+- View match data in an advanced data view that supports team summaries, charts, and sorting and filtering the data by team and by score values
+- Scouts can create an account to be able to favorite events and verify their scouting reports, but accounts are optional
 
 ## Installation
 - Follow the steps in [Development Installation](./docs/Development_Installation.md) for how to get Open Scouting up and running locally for development or contributing
