@@ -3,7 +3,7 @@
 <script src="{% static '/main/scripts/menu/menu.js' %}"></script>
 
 <div x-data="menu">
-    <div class="flex flex-row fixed bottom-2 right-2 justify-end w-auto items-center">
+    <div class="flex flex-row fixed bottom-4 right-4 md:bottom-2 md:right-2 justify-end w-auto items-center">
         <div class="md:bottom-4 md:right-4 dark:text-white text-black text-xl md:text-3xl p-1 md:p-2 rounded-full backdrop-blur-md hover:scale-110 active:scale-95 transition-all w-10 h-10 md:w-16 md:h-16 flex flex-row items-center justify-center border-2"
              :class="{'dark:bg-slate-700/80 dark:border-slate-600 bg-slate-200/80 border-slate-300': !offline_reports && !offline_pit_scouting && !storage_warning, 'bg-orange-200/50 dark:bg-orange-800/50 dark:border-orange-700 border-orange-300': offline_reports || offline_pit_scouting || storage_warning}"
              x-show="!open"
