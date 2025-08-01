@@ -37,7 +37,7 @@ The following variables are for the superuser that is created when the server st
 Additionally, you should configure the environment variables for setting up emails
 
 > [!NOTE]
-> If you're having issues with pip being able to resolve the DNS name, you may need to restart your docker daemon using `sudo systemctl restart docker`
+> If you're having issues with pip being unable to resolve the DNS name, you may need to restart your docker daemon using `sudo systemctl restart docker`
 
 Finally, building and running the server is as simple as running the following
 ```bash
@@ -63,4 +63,22 @@ Add these lines into the editor that opens
 ```bash
 0 2 * * * docker exec -t postgres pg_dump -U postgres -F c -f /backups/db_backup_$(date +\%F).dump mydatabase
 0 3 * * * find /mnt/db/backups -type f -name "db_backup_*.dump" -mtime +7 -exec rm {} \;
+```
+
+## Updating your install
+Open Scouting can be updated by running a few simple commands
+
+First, bring the containers down to stop the server
+```bash
+docker compose down
+```
+
+Next, pull the latest changes
+```bash
+git pull
+```
+
+Finally, rebuild the containers and start the server again
+```bash
+docker compose up --build -d
 ```
