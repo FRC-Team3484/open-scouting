@@ -9,7 +9,11 @@
              x-show="!open"
              @click="open = true"
              t-transition>
-            <i class="ph-bold ph-list"></i>
+            <i x-show="!(offline_reports || offline_pit_scouting || storage_warning)"
+               class="ph-bold ph-list"></i>
+            <i x-show="offline_reports" class="ph-bold ph-cloud-arrow-up"></i>
+            <i x-show="offline_pit_scouting" class="ph-bold ph-cloud-arrow-up"></i>
+            <i x-show="storage_warning" class="ph-bold ph-warning-circle"></i>
         </div>
     </div>
 
