@@ -156,7 +156,7 @@ def index(request):
             "team_number": request.user.profile.team_number,
         }
 
-        return render(request, "index.html", context)
+        return render(request, "index/index.html", context)
 
     else:
         context = {
@@ -168,7 +168,7 @@ def index(request):
             "authenticated": json.dumps(False),
         }
 
-        return render(request, "index.html", context)
+        return render(request, "index/index.html", context)
 
 
 def contribute(request):
@@ -199,7 +199,7 @@ def contribute(request):
         "demo": request.GET.get("demo", "unknown"),
     }
 
-    return render(request, "contribute.html", context)
+    return render(request, "contribute/contribute.html", context)
 
 
 def pits(request):
@@ -227,7 +227,7 @@ def pits(request):
         "demo": request.GET.get("demo", "unknown"),
     }
 
-    return render(request, "pits.html", context)
+    return render(request, "pits/pits.html", context)
 
 
 def advanced_data(request):
@@ -244,7 +244,7 @@ def advanced_data(request):
         "YEARS": json.dumps(YEARS),
     }
 
-    return render(request, "advanced_data.html", context)
+    return render(request, "advanced_data/advanced_data.html", context)
 
 
 def service_worker(request):
@@ -269,7 +269,7 @@ def admin_ui(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
 
-    return render(request, "admin.html", context)
+    return render(request, "admin/admin.html", context)
 
 
 def submit(request):

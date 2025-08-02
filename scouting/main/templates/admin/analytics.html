@@ -1,0 +1,83 @@
+{% load static %}
+
+<script src="{% static '/main/scripts/admin/analytics.js' %}"></script>
+
+<div x-data="analytics" class="flex flex-col w-full items-center">
+    <div class="flex flex-col w-full md:w-3/4 lg:w-2/3 mx-8 my-4 py-2 dark:bg-slate-800 border-2 dark:border-slate-700 bg-slate-200 border-slate-300 rounded-lg mb-4">
+        <div class="flex flex-row items-center justify-between mx-4"
+             @click="open = !open">
+            <div class="flex flex-row items-center">
+                <i class="ph-bold ph-chart-bar dark:text-white text-black text-2xl"></i>
+                <p class="dark:text-white text-black text-sans text-2xl ml-2">Page view analytics</p>
+            </div>
+
+            <i class="ph-bold ph-caret-down dark:text-white text-black"
+               x-show="!open"></i>
+            <i class="ph-bold ph-caret-up dark:text-white text-black" x-show="open"></i>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 mx-4 my-2"
+             x-show="open"
+             x-collapse>
+            <div class="flex flex-col border-2 dark:border-slate-700 bg-slate-200/50 dark:bg-slate-600/50 border-slate-300 rounded-lg p-4 h-full">
+                <p class="dark:text-white text-black text-sans text-lg"
+                   x-text="one_hour"></p>
+                <p class="dark:text-white text-black text-sans text-sm opacity-50">Last hour</p>
+            </div>
+
+            <div class="flex flex-col border-2 dark:border-slate-700 bg-slate-200/50 dark:bg-slate-600/50 border-slate-300 rounded-lg p-4 h-full">
+                <p class="dark:text-white text-black text-sans text-lg"
+                   x-text="twelve_hours"></p>
+                <p class="dark:text-white text-black text-sans text-sm opacity-50">Last 12 hours</p>
+            </div>
+
+            <div class="flex flex-col border-2 dark:border-slate-700 bg-slate-200/50 dark:bg-slate-600/50 border-slate-300 rounded-lg p-4 h-full">
+                <p class="dark:text-white text-black text-sans text-lg"
+                   x-text="twenty_four_hours"></p>
+                <p class="dark:text-white text-black text-sans text-sm opacity-50">Last 24 hours</p>
+            </div>
+
+            <div class="flex flex-col border-2 dark:border-slate-700 bg-slate-200/50 dark:bg-slate-600/50 border-slate-300 rounded-lg p-4 h-full">
+                <p class="dark:text-white text-black text-sans text-lg"
+                   x-text="three_days"></p>
+                <p class="dark:text-white text-black text-sans text-sm opacity-50">Last 3 days</p>
+            </div>
+
+            <div class="flex flex-col border-2 dark:border-slate-700 bg-slate-200/50 dark:bg-slate-600/50 border-slate-300 rounded-lg p-4 h-full">
+                <p class="dark:text-white text-black text-sans text-lg"
+                   x-text="seven_days"></p>
+                <p class="dark:text-white text-black text-sans text-sm opacity-50">Last 7 days</p>
+            </div>
+
+            <div class="flex flex-col border-2 dark:border-slate-700 bg-slate-200/50 dark:bg-slate-600/50 border-slate-300 rounded-lg p-4 h-full">
+                <p class="dark:text-white text-black text-sans text-lg"
+                   x-text="one_month"></p>
+                <p class="dark:text-white text-black text-sans text-sm opacity-50">Last month</p>
+            </div>
+
+            <div class="flex flex-col border-2 dark:border-slate-700 bg-slate-200/50 dark:bg-slate-600/50 border-slate-300 rounded-lg p-4 h-full">
+                <p class="dark:text-white text-black text-sans text-lg"
+                   x-text="three_months"></p>
+                <p class="dark:text-white text-black text-sans text-sm opacity-50">Last 3 months</p>
+            </div>
+
+            <div class="flex flex-col border-2 dark:border-slate-700 bg-slate-200/50 dark:bg-slate-600/50 border-slate-300 rounded-lg p-4 h-full">
+                <p class="dark:text-white text-black text-sans text-lg"
+                   x-text="six_months"></p>
+                <p class="dark:text-white text-black text-sans text-sm opacity-50">Last 6 months</p>
+            </div>
+
+            <div class="flex flex-col border-2 dark:border-slate-700 bg-slate-200/50 dark:bg-slate-600/50 border-slate-300 rounded-lg p-4 h-full">
+                <p class="dark:text-white text-black text-sans text-lg"
+                   x-text="one_year"></p>
+                <p class="dark:text-white text-black text-sans text-sm opacity-50">Last year</p>
+            </div>
+
+            <div class="flex flex-col border-2 dark:border-slate-700 bg-slate-200/50 dark:bg-slate-600/50 border-slate-300 rounded-lg p-4 h-full">
+                <p class="dark:text-white text-black text-sans text-lg"
+                   x-text="all_time"></p>
+                <p class="dark:text-white text-black text-sans text-sm opacity-50">All time</p>
+            </div>
+        </div>
+    </div>
+</div>

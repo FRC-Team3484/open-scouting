@@ -1,0 +1,76 @@
+<!-- 
+    Handles the menu page for checking if any locally backed up scouting reports were never actually saved
+-->
+{% load static %}
+
+<script src="{% static '/main/scripts/menu/menu_report_backup_check.js' %}"></script>
+
+<div x-data="menu_report_backup_check"
+     x-show="mrbc_open"
+     @click.outside="mrbc_open = false"
+     x-transition
+     class="flex flex-col fixed bottom-0 z-10 inset-x-0 mx-auto bg-slate-200/80 dark:bg-slate-700/80 border-2 dark:border-slate-600 border-slate-300 rounded-t-2xl backdrop-blur-md w-screen md:w-3/4 lg:w-1/2 h-3/4 md:min-h-1/2 overflow-y-auto p-4"
+     x-transition
+     x-cloak>
+    <div class="flex flex-row justify-between items-center w-full border-b-2 dark:border-slate-600 border-slate-300 px-6 py-4 mb-6">
+        <div class="flex flex-col">
+            <p class="text-black dark:text-white text-2xl font-bold">Check Backed Up Scouting Reports</p>
+            <p class="text-black dark:text-white text-sm">
+                Check to ensure that your scouting reports have been saved on the server. Copies are saved locally in case of request or network failure.
+            </p>
+        </div>
+
+        <button class="ui_button_icon" @click="mrbc_open = false">
+            <i class="ph-bold ph-x"></i>
+        </button>
+    </div>
+
+    <div class="flex flex-row w-full items-center justify-center text-center mb-6">
+        <p x-text="locally_backed_up_reports"
+           class="dark:text-white text-black text-md font-bold mr-1"></p>
+        <p class="dark:text-white text-black font-sans text-md">Checkable reports</p>
+    </div>
+
+    <button class="ui_button" @click="check_local_backup_reports()">
+        <i class="ph-bold ph-check"></i> Check Reports
+    </button>
+
+    <div x-show="backed_up_reports_checked"
+         class="flex flex-col items-center justify-center w-full my-2"
+         x-collapse>
+        <p class="dark:text-white text-black font-bold">
+            <i class="ph-bold ph-seal-check"></i> Reports have been checked with the server
+        </p>
+        <p class="dark:text-white text-black text-sm mb-2">If they were missing, they were automatically uploaded</p>
+
+        <div class="flex flex-row w-full items-center justify-center">
+            <p x-text="backed_up_reports_found"
+               class="dark:text-white text-black text-sm font-bold"></p>
+            <p class="dark:text-white text-black font-sans text-sm ml-1">Backed up reports found on the server</p>
+        </div>
+
+        <div class="flex flex-row w-full items-center justify-center">
+            <p x-text="backed_up_reports_not_found"
+               class="dark:text-white text-black text-sm font-bold"></p>
+            <p class="dark:text-white text-black font-sans text-sm ml-1">Backed up reports not found on the server</p>
+        </div>
+    </div>
+
+    <button class="ui_button"
+            @click="backed_up_reports_confirm_delete = !backed_up_reports_confirm_delete">
+        <i class="ph-bold ph-trash"></i> Clear Saved Reports
+    </button>
+
+    <div x-show="backed_up_reports_confirm_delete"
+         class="flex flex-row items-center justify-center w-full"
+         x-collapse>
+        <button class="ui_button mx-2"
+                @click="backed_up_reports_confirm_delete = false">
+            <i class="ph-bold ph-x"></i> Cancel
+        </button>
+        <button class="ui_button mx-2 hover:bg-red-600/80 active:bg-red-700/80"
+                @click="clear_saved_backup_reports()">
+            <i class="ph-bold ph-trash"></i> Confirm
+        </button>
+    </div>
+</div>
