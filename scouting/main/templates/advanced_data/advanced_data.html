@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head_title %}Open Scouting{% endblock %}
+
+{% block head_scripts %}
+{% endblock head_scripts %}
+
+{% block stylesheets %}
+{% endblock stylesheets %}
+
+{% block body %}
+    <script>
+        const SERVER_IP = "{{ SERVER_IP }}";
+        const CSRF_TOKEN = "{{ csrf_token }}";
+        const TBA_API_KEY = "{{ TBA_API_KEY }}";
+        const YEARS = '{{ YEARS | safe }}';
+    </script>
+
+    <div class="flex flex-col min-h-screen w-screen items-center justify-center">
+        <div class="flex flex-row w-full md:w-3/4 lg:w-2/3 mx-8 my-4 py-2 dark:bg-slate-800 border-2 dark:border-slate-700 bg-slate-200 border-slate-300 rounded-lg mb-4 items-center justify-center"
+             x-data>
+            <img class="w-16 h-16 aspect-square m-2 hover:scale-110 transition-all ease-in-out active:scale-95"
+                 src="{% static '/main/images/icon_rounded.png' %}"
+                 @click="window.location.href = '{{ SERVER_IP }}'">
+
+            <div class="flex flex-col">
+                <div class="flex flex-row items-center">
+                    <p class="dark:text-white text-black text-sans text-2xl">Advanced Data View</p>
+                </div>
+            </div>
+
+        </div>
+
+        {% include "advanced_data/filters.html" %}
+
+        {% include "advanced_data/main.html" %}
+
+    </div>
+
+{% endblock body %}
+
+{% block scripts %}
+{% endblock scripts %}

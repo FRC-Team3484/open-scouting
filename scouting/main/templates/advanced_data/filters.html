@@ -1,0 +1,175 @@
+{% load static %}
+
+<script src="{% static '/main/scripts/advanced_data/filters.js' %}"></script>
+
+<div class="flex flex-col w-full md:w-3/4 lg:w-2/3 mx-8 my-2 py-2 dark:bg-slate-800 border-2 dark:border-slate-700 bg-slate-200 border-slate-300 rounded-lg gap-2"
+     x-data="filters"
+     x-show="!offline">
+    <p class="dark:text-white text-black text-sans text-2xl ml-4">
+        <i class="ph-bold ph-funnel"></i> Filters
+    </p>
+    <p class="dark:text-white text-black text-sans text-sm ml-6 opacity-80">
+        Filter results by year and then by both teams and events. If both a team and event is shown, only data from that team recorded at that event is shown
+    </p>
+    <div class="flex flex-row items-center gap-2 ml-6" x-ref="year">
+        <p class="dark:text-white text-black text-sans text-lg">Year</p>
+        <select class="ui_input w-32!"
+                x-ref="year_input"
+                @input="update_results_and_query();">
+            <template x-for="year in YEARS" :key="year">
+                <option x-text="year"></option>
+            </template>
+        </select>
+    </div>
+    <div class="flex flex-row items-center gap-2 ml-6 flex-wrap" x-ref="teams">
+        <p class="dark:text-white text-black text-sans text-lg">Teams</p>
+        <template x-for="team in teams" :key="teams.indexOf(team)">
+            <button class="ui_button_small flex! flex-row! items-center gap-1"
+                    @click="remove_team(team)">
+                <i class="ph-bold ph-x"></i>
+                <img class="w-4 h-4 aspect-square rounded-full"
+                     :src='"https://thebluealliance.com/avatar/" + $refs.year_input.value + "/frc" + team + ".png"'
+                     @error="event.target.style.display = 'none'">
+                <p x-text="team"></p>
+            </button>
+        </template>
+        <button class="ui_button_small opacity-80"
+                x-ref="teams_add"
+                @click="add_team_open = !add_team_open">
+            <i class="ph-bold ph-plus"></i> Add
+        </button>
+    </div>
+    <div class="dark:bg-slate-800/80 border-2 dark:border-slate-700 bg-slate-200/80 border-slate-300 rounded-xl flex flex-col backdrop-blur-md z-10 p-2 max-w-screen max-h-64 overflow-y-scroll"
+         x-anchor.offset.5="$refs.teams_add"
+         x-show="add_team_open"
+         x-transition
+         @click.outside="add_team_open = false">
+        <div class="flex flex-row items-center gap-2">
+            <input class="ui_input w-full!"
+                   type="text"
+                   placeholder="Search for a team..."
+                   x-ref="teams_search"
+                   @input="update_team_search()">
+            <button class="ui_button_small"
+                    @click="add_team_open = false; $refs.teams_search.value = ''">
+                <i class="ph-bold ph-x"></i>
+            </button>
+        </div>
+
+        <template x-for="team in team_results_filtered">
+            <div class="flex flex-row mx-4 my-1 dark:hover:bg-slate-700/80 hover:bg-slate-200/80 dark:active:bg-slate-600/80 active:bg-slate-100/80 rounded-lg transition-colors"
+                 @click="add_team(team)">
+                <img class="w-8 h-8 aspect-square m-2"
+                     :src='"https://thebluealliance.com/avatar/" + $refs.year_input.value + "/frc" + team + ".png"'
+                     @error="event.target.style.display = 'none'">
+                <p class="dark:text-white text-black text-sans text-md m-2"
+                   x-text="team"></p>
+            </div>
+        </template>
+    </div>
+
+    <div class="flex flex-row items-center gap-2 ml-6 flex-wrap"
+         x-ref="events">
+        <p class="dark:text-white text-black text-sans text-lg">Events</p>
+        <template x-for="event in events" :key="events.indexOf(event)">
+            <button class="ui_button_small flex! flex-row! items-center gap-1"
+                    @click="remove_event(event)">
+                <i class="ph-bold ph-x"></i>
+                <p x-text="event.name"></p>
+            </button>
+        </template>
+        <button class="ui_button_small opacity-80"
+                x-ref="events_add"
+                @click="add_event_open = !add_event_open">
+            <i class="ph-bold ph-plus"></i> Add
+        </button>
+    </div>
+    <div class="dark:bg-slate-800/80 border-2 dark:border-slate-700 bg-slate-200/80 border-slate-300 rounded-xl flex flex-col backdrop-blur-md z-10 p-2 max-w-screen max-h-64 overflow-y-scroll"
+         x-anchor.offset.5="$refs.events_add"
+         x-show="add_event_open"
+         x-transition
+         @click.outside="add_event_open = false">
+        <div class="flex flex-row items-center gap-2">
+            <input class="ui_input w-full!"
+                   type="text"
+                   placeholder="Search for an event..."
+                   x-ref="events_search"
+                   @input="update_event_search()">
+            <button class="ui_button_small"
+                    @click="add_event_open = false; this.$refs.events_search.value = ''">
+                <i class="ph-bold ph-x"></i>
+            </button>
+        </div>
+
+        <template x-for="event in event_results_filtered">
+            <div class="flex flex-col mx-4 my-1 dark:hover:bg-slate-700/80 hover:bg-slate-200/80 dark:active:bg-slate-600/80 active:bg-slate-100/80 rounded-lg transition-colors"
+                 @click="add_event(event)">
+                <p class="dark:text-white text-black text-sans text-md m-2"
+                   x-text="event.name"></p>
+                <p class="dark:text-white text-black text-sans font-mono text-sm opacity-80 ml-2"
+                   x-text="event.code"></p>
+            </div>
+        </template>
+    </div>
+    <p class="dark:text-white text-black font-mono text-sm ml-6 opacity-60 break-all mr-6"
+       x-text="query"></p>
+
+    <div class="flex flex-row flex-wrap gap-2 ml-6">
+        <button class="ui_button_small" @click="clear_filters()">
+            <i class="ph-bold ph-trash"></i> Clear Filters
+        </button>
+
+        <button class="ui_button_small" @click="$dispatch('collapse_all')">
+            <i class="ph-bold ph-caret-up"></i> Collapse all sections
+        </button>
+    </div>
+
+    <div class="flex flex-row flex-wrap items-center">
+        <button class="ui_button_small ml-6"
+                x-ref="data_menu_export"
+                @click="data_menu_export_open = !data_menu_export_open">
+            <i class="ph-bold ph-export"></i>
+        </button>
+        <p class="dark:text-white text-black text-sans text-md opacity-80 ml-2"
+           x-text="'Viewing data for ' + Object.keys(data_sorted).length + ' teams'"></p>
+        <div class="dark:bg-slate-700/60 bg-slate-200/60 border-2 dark:border-slate-600 border-slate-300 rounded-xl backdrop-blur-md flex flex-col p-4 z-10"
+             x-show="data_menu_export_open"
+             x-anchor.offset.10="$refs.data_menu_export"
+             @click.outside="data_menu_export_open = false"
+             x-transition>
+            <button class="ui_button_small my-1! py-1! px-2! w-full! text-left!"
+                    @click="export_as_json()">
+                <i class="ph-bold ph-file-code"></i> Export data as JSON
+            </button>
+            <button class="ui_button_small my-1! py-1! px-2! w-full! text-left!"
+                    @click="export_as_csv()">
+                <i class="ph-bold ph-file-csv"></i> Export data as CSV
+            </button>
+        </div>
+    </div>
+
+    <div class="flex flex-col">
+        <p class="dark:text-white text-black text-sans text-2xl ml-4 mt-4">
+            <i class="ph-bold ph-funnel-simple"></i> Sort By
+        </p>
+        <p class="dark:text-white text-black text-sans text-sm ml-6 opacity-80">
+            Sorts the data displayed below by each team by a stat. For example, sort the teams in descending order by the average coral scored during the autonomous period
+        </p>
+        <div class="flex flex-row mx-4 gap-2">
+            <select class="ui_input"
+                    x-ref="sort_field"
+                    @change="update_results_and_query()">
+                <template x-for="field in sort_fields">
+                    <option :value="field.simple_name" x-text="field.name"></option>
+                </template>
+            </select>
+            <select class="ui_input"
+                    x-ref="sort_order"
+                    @change="update_results_and_query()">
+                <option value="descending">Descending (High to low)</option>
+                <option value="ascending">Ascending (Low to high)</option>
+            </select>
+        </div>
+    </div>
+
+</div>

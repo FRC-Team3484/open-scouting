@@ -244,7 +244,7 @@ def advanced_data(request):
         "YEARS": json.dumps(YEARS),
     }
 
-    return render(request, "advanced_data.html", context)
+    return render(request, "advanced_data/advanced_data.html", context)
 
 
 def service_worker(request):
