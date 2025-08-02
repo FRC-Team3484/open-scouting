@@ -156,7 +156,7 @@ def index(request):
             "team_number": request.user.profile.team_number,
         }
 
-        return render(request, "index.html", context)
+        return render(request, "index/index.html", context)
 
     else:
         context = {
@@ -168,7 +168,7 @@ def index(request):
             "authenticated": json.dumps(False),
         }
 
-        return render(request, "index.html", context)
+        return render(request, "index/index.html", context)
 
 
 def contribute(request):
