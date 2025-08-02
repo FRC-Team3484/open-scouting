@@ -199,7 +199,7 @@ def contribute(request):
         "demo": request.GET.get("demo", "unknown"),
     }
 
-    return render(request, "contribute.html", context)
+    return render(request, "contribute/contribute.html", context)
 
 
 def pits(request):

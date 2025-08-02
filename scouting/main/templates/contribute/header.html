@@ -1,0 +1,54 @@
+{% load static %}
+
+<script src="{% static '/main/scripts/contribute/header.js' %}"></script>
+
+<div class="flex flex-row w-full md:w-3/4 lg:w-2/3 mx-8 my-4 py-2 dark:bg-slate-800 border-2 dark:border-slate-700 bg-slate-200 border-slate-300 rounded-lg mb-4 items-center justify-center"
+     x-data="header">
+    <img class="w-16 h-16 aspect-square m-2 hover:scale-110 transition-all ease-in-out active:scale-95"
+         src="{% static '/main/images/icon_rounded.png' %}"
+         @click="window.location.href = '{{ SERVER_IP }}'">
+
+    <div class="flex flex-col">
+        <div class="flex flex-row items-center">
+
+            <button class="ui_button_icon mr-2"
+                    @click="page_dropdown = !page_dropdown"
+                    x-ref="page_button">
+                <i class="ph-bold ph-dots-three"></i>
+            </button>
+            <div class="dark:bg-slate-700/60 bg-slate-200/60 border-2 dark:border-slate-600 border-slate-300 rounded-xl backdrop-blur-md flex flex-col p-4 z-10"
+                 x-show="page_dropdown"
+                 x-anchor.offset.10="$refs.page_button"
+                 x-transition>
+                <button class="ui_button_small my-1! py-1! px-2! w-full! text-left!"
+                        @click="go_to_contribute">
+                    <i class="ph-bold ph-pencil"></i> Add Scouting Reports
+                </button>
+                <button class="ui_button_small my-1! py-1! px-2! w-full! text-left!"
+                        @click="go_to_advanced_data">
+                    <i class="ph-bold ph-hard-drives"></i> View Scouting Data
+                </button>
+                <button class="ui_button_small my-1! py-1! px-2! w-full! text-left!"
+                        @click="go_to_pits">
+                    <i class="ph-bold ph-garage"></i> Pit Scouting
+                </button>
+            </div>
+            <p class="dark:text-white text-black text-sans text-2xl">Contribute</p>
+        </div>
+
+        <div class="flex flex-row" x-show="!demo">
+            <p class="dark:text-white text-black text-sans text-sm mx-1">Contributing data to event</p>
+            <p class="dark:text-white text-black text-sans font-bold text-sm mx-1">{{ event_name }}</p>
+            <p class="dark:text-white text-black text-sans text-sm mx-1">as</p>
+            <p class="dark:text-white text-black text-sans font-bold text-sm mx-1">{{ username }}</p>
+        </div>
+
+        <div class="flex flex-col p-2 ml-2 mt-2 rounded-lg border-solid border-2 dark:border-slate-600 dark:bg-purple-900/50 border-slate-300 bg-purple-200/50"
+             x-show="demo">
+            <p class="dark:text-white text-black font-sans text-md ">
+                <i class="ph-bold ph-test-tube"></i> Open Scouting is in demo mode
+            </p>
+            <p class="dark:text-white text-black font-sans text-sm">Any contributed data will not be saved to the server</p>
+        </div>
+    </div>
+</div>

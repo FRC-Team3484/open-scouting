@@ -1,0 +1,51 @@
+{% load static %}
+
+<script src="{% static '/main/scripts/contribute/team_information.js' %}"></script>
+
+<div x-data="team_information"
+     x-show="show"
+     class="flex flex-col w-full md:w-3/4 lg:w-2/3 mx-8 py-2 dark:bg-slate-800 border-2 dark:border-slate-700 bg-slate-200 border-slate-300 rounded-lg mb-4 px-6 gap-2"
+     x-transition
+     x-cloak>
+    <div class="flex flex-row items-center gap-2">
+        <i class="ph-bold ph-selection dark:text-white text-black"></i>
+        <p class="dark:text-white text-black text-sans text-lg">Select position to watch</p>
+        <span class="dark:bg-slate-700 bg-slate-300 rounded-full px-2 py-1 text-xs dark:text-white text-black tippy-target"
+              data-tippy-content="Testing is needed to determine if this feature works at all events. Please open an issue if any issues are encountered">Experimental</span>
+    </div>
+    <p class="dark:text-white text-black text-sans text-sm opacity-80">
+        While scouting, watch teams during a match based on their position in the driver stations or on the screen. For example, if you select "Red 1", you should watch the first team on the red alliance.
+    </p>
+    <p class="dark:text-white text-black text-sans text-sm opacity-80">In some cases data may be inaccurate or unavailable. Set to "None" to disable</p>
+
+    <div class="flex flex-row items-center gap-2">
+        <select class="ui_input w-32!"
+                x-ref="team"
+                @change="changeColor($event); process_data()">
+            <option value="None">None</option>
+            <option value="Red 1" class="text-red-500!">Red 1</option>
+            <option value="Red 2" class="text-red-500!">Red 2</option>
+            <option value="Red 3" class="text-red-500!">Red 3</option>
+            <option value="Blue 1" class="text-blue-500!">Blue 1</option>
+            <option value="Blue 2" class="text-blue-500!">Blue 2</option>
+            <option value="Blue 3" class="text-blue-500!">Blue 3</option>
+        </select>
+
+        <script>
+                function changeColor(value) {
+                    const selectedOption = event.target.options[event.target.selectedIndex];
+                    event.target.className = `ui_input w-32! ${selectedOption.className}`;
+
+                    const urlParams = new URLSearchParams(window.location.search);
+                    urlParams.set('position', encodeURIComponent(event.target.value));
+                    window.history.replaceState({}, '', `${window.location.pathname}?${urlParams}`);
+                }
+        </script>
+
+        <p class="dark:text-white text-black font-bold text-sans text-md"
+           x-show="team_to_watch"
+           x-transition
+           x-text="'Look for robot ' + team_to_watch"></p>
+    </div>
+
+</div>
