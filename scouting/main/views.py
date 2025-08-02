@@ -269,7 +269,7 @@ def admin_ui(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
 
-    return render(request, "admin.html", context)
+    return render(request, "admin/admin.html", context)
 
 
 def submit(request):
