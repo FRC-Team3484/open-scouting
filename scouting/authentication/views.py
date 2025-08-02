@@ -50,7 +50,7 @@ def auth(request):
             "EMAIL_ENABLED": settings.EMAIL_ENABLED,
         }
 
-        return render(request, "authentication.html", context)
+        return render(request, "authentication/authentication.html", context)
 
 
 def profile(request):
