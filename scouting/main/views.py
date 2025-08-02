@@ -227,7 +227,7 @@ def pits(request):
         "demo": request.GET.get("demo", "unknown"),
     }
 
-    return render(request, "pits.html", context)
+    return render(request, "pits/pits.html", context)
 
 
 def advanced_data(request):
