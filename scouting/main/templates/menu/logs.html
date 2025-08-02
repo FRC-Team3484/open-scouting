@@ -1,0 +1,63 @@
+{% load static %}
+
+<script src="{% static '/main/scripts/menu/logs.js' %}"></script>
+
+<div x-data="menu_logs"
+     x-show="logs_open"
+     @click.outside="logs_open = false"
+     x-transition
+     class="flex flex-col fixed bottom-0 z-10 inset-x-0 mx-auto bg-slate-200/80 dark:bg-slate-700/80 border-2 dark:border-slate-600 border-slate-300 rounded-t-2xl backdrop-blur-md w-screen md:w-3/4 lg:w-1/2 h-3/4 md:min-h-1/2 overflow-y-auto p-4"
+     x-transition
+     x-cloak>
+    <div class="flex flex-row justify-between items-center w-full border-b-2 dark:border-slate-600 border-slate-300 px-6 py-4 mb-6">
+        <div class="flex flex-col">
+            <p class="text-black dark:text-white text-2xl font-bold">View client side logs</p>
+            <p class="text-black dark:text-white text-sm">View the logs of the client, used for debugging and opening bug reports</p>
+            <div class="flex flex-row gap-2 mt-2">
+                <a href="https://github.com/FRC-Team3484/open-scouting/issues">
+                    <button class="ui_button_small">
+                        <i class="ph-bold ph-bug"></i> Open GitHub Issues
+                    </button>
+                </a>
+                <button class="ui_button_small"
+                        @click="copy_all_logs_to_clipboard(); $el.innerHTML = `<i class='ph-bold ph-check-circle'></i> Copied!`"
+                        x-ref="copy_all_logs_button">
+                    <i class="ph-bold ph-clipboard-text"></i> Copy all logs
+                </button>
+                <button class="ui_button_small" @click="download_log_file()">
+                    <i class="ph-bold ph-download-simple"></i> Download log file
+                </button>
+            </div>
+        </div>
+
+        <button class="ui_button_icon" @click="logs_open = false">
+            <i class="ph-bold ph-x"></i>
+        </button>
+    </div>
+
+    <div class="flex flex-col">
+        <template x-if="logs_open">
+            <template x-for="log in logs.slice().reverse()">
+                <div class="flex flex-col md:flex-row gap-2 m-1"
+                     :class="{ 'bg-yellow-500/20': log.level === 'WARNING', 'bg-red-500/20': log.level === 'ERROR', }">
+                    <div class="flex flex-row gap-2 items-center">
+                        <button class="ui_button_small w-8 h-8 aspect-square"
+                                @click="copy_to_clipboard(log.level, log.date, log.message)">
+                            <i class="ph-bold ph-clipboard-text"></i>
+                        </button>
+                        <p class="font-bold"
+                           :class="{ 'dark:text-white text-black': log.level === 'INFO' || log.level === 'DEBUG', 'text-yellow-500': log.level === 'WARNING', 'text-red-500': log.level === 'ERROR', }"
+                           x-text="log.level ? log.level : ''"></p>
+                        <p class="dark:text-white text-black italic"
+                           x-text="log.date ? log.date : ''"></p>
+                    </div>
+
+                    <p class="dark:text-white text-black"
+                       x-text="log.message ? log.message : ''"></p>
+                </div>
+            </template>
+        </template>
+
+        <p class="dark:text-white text-black">Only the 100 most recent log entries are preserved on page reload</p>
+    </div>
+</div>
