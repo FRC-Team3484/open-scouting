@@ -66,7 +66,7 @@ def profile(request):
             "user": request.user,
         }
 
-        return render(request, "profile.html", context)
+        return render(request, "profile/profile.html", context)
     else:
         return redirect("auth")
 
