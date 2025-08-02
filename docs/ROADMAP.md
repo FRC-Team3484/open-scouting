@@ -5,7 +5,7 @@ This document describes the roadmap for Open Scouting, and roughly when each fea
 
 ## To-Do
 ### `v0.1.11-alpha`
-- [ ] [#100](https://github.com/FRC-Team3484/open-scouting/issues/100) - Reorganize templates
+- [x] [#100](https://github.com/FRC-Team3484/open-scouting/issues/100) - Reorganize templates
 - [ ] [#31](https://github.com/FRC-Team3484/open-scouting/issues/31) - Support multiple languages and localization
 
 ### `v1.0.0`
