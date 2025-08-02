@@ -1,0 +1,90 @@
+{% load static %}
+
+<script src="{% static '/main/scripts/index/authentication_box.js' %}"></script>
+
+<div class="flex flex-col"
+     x-data="authentication_box"
+     x-show="page == 1"
+     x-transition>
+
+    <div x-show="!authenticated">
+        <button class="ui_button w-full" @click="sign_in()">
+            <i class="ph-bold ph-user-circle"></i> Sign In
+        </button>
+    </div>
+
+    <div x-show="authenticated">
+        <div class="flex flex-row dark:bg-slate-800 dark:border-slate-700 bg-slate-200 border-slate-300 border-2 rounded-2xl p-2 justify-between items-center align-middle">
+            <p class="dark:text-white text-black font-sans text-md font-bold p-2"
+               x-text="'Continue as ' + display_name"></p>
+            <button class="ui_button_icon mx-1" @click="continue_with_account()">
+                <i class="ph-bold ph-check-circle"></i>
+            </button>
+            <button class="ui_button_icon mx-1"
+                    :class="{ '!bg-green-500/50 !dark:bg-green-700/50 !hover:bg-green-500/80 !dark:hover:bg-green-700/80': is_staff || is_superuser }"
+                    @click="profile_menu_open = !profile_menu_open"
+                    x-ref="profile_menu">
+                <i class="ph-bold ph-dots-three"></i>
+            </button>
+
+            <div class="dark:bg-slate-700/60 bg-slate-200/60 border-2 dark:border-slate-600 border-slate-300 rounded-xl backdrop-blur-md flex flex-col p-4 z-10"
+                 x-show="profile_menu_open"
+                 x-anchor.offset.10="$refs.profile_menu"
+                 @click.outside="profile_menu_open = false"
+                 x-transition>
+                <button class="ui_button_small my-1! py-1! px-2! w-full! text-left!"
+                        @click="sign_out_check()">
+                    <i class="ph-bold ph-sign-out"></i> Sign Out
+                </button>
+                <button class="ui_button_small my-1! py-1! px-2! w-full! text-left!"
+                        @click="window.location.href = '/authentication/profile'">
+                    <i class="ph-bold ph-pencil"></i> Edit Profile
+                </button>
+                <button class="ui_button_small my-1! py-1! px-2! w-full! text-left! !bg-green-500/50 !dark:bg-green-700/50 !hover:bg-green-500/80 !dark:hover:bg-green-700/80"
+                        @click="window.location.href = (`{{ ADMIN_PATH }}/ui`).replace(/\/\/+/g, '/')"
+                        x-show="is_staff || is_superuser">
+                    <i class="ph-bold ph-key"></i> Admin Dashboard
+                </button>
+                <button class="ui_button_small my-1! py-1! px-2! w-full! text-left! !bg-green-500/50 !dark:bg-green-700/50 !hover:bg-green-500/80 !dark:hover:bg-green-700/80"
+                        @click="window.location.href = (`{{ ADMIN_PATH }}`).replace(/\/\/+/g, '/')"
+                        x-show="is_staff || is_superuser">
+                    <i class="ph-bold ph-key"></i> Django Admin
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <button class="ui_button" @click="open = !open" x-show="!authenticated">
+        <i class="ph-bold ph-user-circle-dashed"></i> Continue without account
+    </button>
+
+    <div class="flex flex-col justify-center items-center"
+         x-show="open"
+         x-collapse>
+        <input class="ui_input"
+               type="text"
+               placeholder="Temporary user name"
+               @input="check()"
+               x-ref="username">
+        <input class="ui_input"
+               type="text"
+               placeholder="Your team number"
+               @input="check()"
+               x-ref="team_number">
+        <button class="ui_button" x-ref="next" @click="submit()" disabled>
+            <i class="ph-bold ph-arrow-circle-right"></i> Next
+        </button>
+    </div>
+
+    <p class="text-black dark:text-white font-sans text-center mt-2">Or...</p>
+
+    <button class="ui_button" @click="advanced_data_view()">
+        <i class="ph-bold ph-hard-drives"></i> Advanced Data View
+    </button>
+
+    <button class="border-solid border-2 dark:border-slate-600 dark:bg-purple-900/50 dark:hover:bg-purple-900/80 dark:active:bg-purple-800/80 dark:text-white border-slate-300 bg-purple-200/50 hover:bg-purple-200/80 active:bg-purple-300/80 text-black rounded-xl py-2 px-8 transition backdrop-blur-lg my-2 disabled:scale-95 disabled:opacity-80"
+            @click="start_demo()">
+        <i class="ph-bold ph-test-tube"></i> Try Open Scouting
+    </button>
+</div>

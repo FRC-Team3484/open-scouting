@@ -1,0 +1,64 @@
+{% load static %}
+
+<script src="{% static '/main/scripts/index/header.js' %}"></script>
+
+<div x-data="header">
+    <div class="flex flex-col justify-center items-center"
+         x-show="basic"
+         x-transition
+         x-cloak>
+        <img class="w-full md:w-1/2 xl:w-2/6 px-10 hidden dark:block"
+             src="{% static '/main/images/logo_light.png' %}">
+        <img class="w-full md:w-1/2 xl:w-2/6 px-10 dark:hidden block"
+             src="{% static '/main/images/logo_dark.png' %}">
+        <p class="font-sans dark:text-white mt-2 text-black text-center">An open source application for easier scouting at FIRST Robotics competitions</p>
+        <div class="flex flex-row mt-4 mb-8">
+            <a class="dark:text-white text-black text-sm md:text-lg mx-2 hover:scale-105 transition-all opacity-80 hover:opacity-100"
+               href="https://github.com/FRC-Team3484/open-scouting"><i class="ph-bold ph-github-logo"></i> Source Code</a>
+            <a class="dark:text-white text-black text-sm md:text-lg mx-2 hover:scale-105 transition-all opacity-80 hover:opacity-100"
+               href="https://github.com/FRC-Team3484/open-scouting/issues"><i class="ph-bold ph-bug"></i> Issues</a>
+            <a class="dark:text-white text-black text-sm md:text-lg mx-2 hover:scale-105 transition-all opacity-80 hover:opacity-100"
+               href="https://github.com/FRC-Team3484/open-scouting/releases"><i class="ph-bold ph-app-window"></i> Releases</a>
+        </div>
+    </div>
+    <div class="flex flex-row dark:bg-slate-800 dark:border-slate-700 bg-slate-200 border-slate-300 border-2 rounded-lg w-full px-6 justify-center items-center py-4 mt-6"
+         x-show="!basic"
+         x-transition
+         x-cloak>
+        <img class="w-16 h-16 aspect-square m-2 hover:scale-110 transition-all ease-in-out active:scale-95"
+             src="{% static '/main/images/icon_rounded.png' %}"
+             @click="start_over()">
+
+        <button class="ui_button_icon" @click="start_over()">
+            <i class="ph-bold ph-arrow-clockwise"></i>
+        </button>
+
+        <div class="flex flex-col" x-show="!demo">
+            <div class="flex flex-row items-center flex-wrap">
+                <i class="ph-bold ph-user-circle-dashed dark:text-white text-black font-sans px-1"></i>
+                <p class=" dark:text-white text-black font-sans text-md font-bold px-1"
+                   x-text="username"></p>
+                <p class=" dark:text-white text-black font-mono text-sm px-1 opacity-70"
+                   x-text="team_number"></p>
+            </div>
+
+            <div class="flex flex-row items-center flex-wrap">
+                <i class="ph-bold ph-calendar-blank dark:text-white text-black font-sans px-1"
+                   x-show="!custom_event"></i>
+                <i class="ph-bold ph-calendar-star dark:text-white text-black font-sans px-1"
+                   x-show="custom_event"></i>
+                <p class=" dark:text-white text-black font-sans text-md font-bold px-1"
+                   x-text="event_name"></p>
+                <p class=" dark:text-white text-black font-mono text-sm px-1 opacity-70 max-w-14 overflow-x-hidden"
+                   x-text="event_code"></p>
+            </div>
+        </div>
+
+        <div x-show="demo">
+            <p class="p-2 ml-2 rounded-full dark:text-white text-black font-sans text-md border-solid border-2 dark:border-slate-600 dark:bg-purple-900/50 border-slate-300 bg-purple-200/50">
+                <i class="ph-bold ph-test-tube"></i> Open Scouting is in demo mode
+            </p>
+        </div>
+    </div>
+
+</div>
