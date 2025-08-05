@@ -53,5 +53,8 @@ Next, create a new branch and implement your changes. You can install this proje
 
 Eventually, `development` will be merged into `main` and your changes will be released into production with a new release. Thanks for your contribution!
 
+### Translations
+Additionally, help translating Open Scouting is also always welcome! Please see [Contributing Translations](/docs/Contributing_Translations.md) for more information
+
 ## To-Do
 Please see the [roadmap](/docs/ROADMAP.md) for the currently planned out things that need to be completed. Additionally, see the [issues page](https://github.com/FRC-Team3484/open-scouting/issues) for any current bugs or features that need implemented, but aren't officially scheduled.
