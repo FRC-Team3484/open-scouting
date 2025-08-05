@@ -15,6 +15,7 @@ document.addEventListener("alpine:init", () => {
 		storage_open: false,
 		storage_warning: false,
 		version: "",
+		language_open: false,
 
 		/**
 		 * Check if the user is offline or not, and store it in a global variable
@@ -366,6 +367,30 @@ document.addEventListener("alpine:init", () => {
 						this.offline_pit_scouting = false;
 					}
 				});
+		},
+
+		/**
+		 * Sends a POST request to the server (i18n/setlang) to set the current language
+		 *
+		 * @param {*} language
+		 */
+		set_language(language) {
+			const formData = new URLSearchParams();
+			formData.append("language", language);
+			formData.append("next", window.location.pathname); // optional but recommended
+
+			fetch(`${SERVER_IP}/i18n/setlang/`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/x-www-form-urlencoded",
+					"X-CSRFToken": CSRF_TOKEN,
+				},
+				body: formData.toString(),
+			}).then((response) => {
+				if (response.ok) {
+					window.location.reload();
+				}
+			});
 		},
 
 		/**

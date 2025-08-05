@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-05 15:48+0000\n"
+"POT-Creation-Date: 2025-08-05 16:25+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,8 +17,29 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
 #. Translators: Description of the application
 #: main/templates/index/header.html:16
 msgid ""
 "An open source application for easier scouting at FIRST Robotics competitions"
+msgstr ""
+
+#: scouting/settings.py:183
+msgid "English"
+msgstr ""
+
+#: scouting/settings.py:184
+msgid "Spanish"
+msgstr ""
+
+#: scouting/settings.py:185
+msgid "French"
+msgstr ""
+
+#: scouting/settings.py:186
+msgid "German"
+msgstr ""
+
+#: scouting/settings.py:187
+msgid "Italian"
 msgstr ""

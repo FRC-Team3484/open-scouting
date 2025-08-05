@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 
 <script src="{% static '/main/scripts/menu/menu.js' %}"></script>
 
@@ -102,6 +103,26 @@
                class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"><i class="ph-bold ph-notebook"></i> Changelog</a>
             <a href="https://github.com/FRC-Team3484/open-scouting/issues"
                class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"><i class="ph-bold ph-bug"></i> Report a Bug</a>
+        </div>
+
+        <div class="flex flex-col pt-6 w-full">
+            <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"
+                    @click="language_open = !language_open">
+                <i class="ph-bold ph-globe" x-show="!language_open"></i><i class="ph-bold ph-x" x-show="language_open"></i> Language
+            </button>
+        </div>
+
+        <div class="flex flex-col w-full dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg p-2 mt-6 pl-4"
+             x-transition
+             x-show="language_open">
+            <p class="dark:text-white text-black text-lg text-sans font-bold">Select Language</p>
+            {% get_current_language as CURRENT_LANGUAGE %}
+            {% get_available_languages as LANGUAGES %}
+            {% get_language_info_list for LANGUAGES as languages %}
+
+            <div class="flex flex-row flex-wrap gap-2 mt-2">
+                {% for language in languages %}<button class="ui_button_small" @click="set_language('{{ language.code }}')">{{ language.name }}</button>{% endfor %}
+            </div>
         </div>
 
         <div x-show="offline_reports"

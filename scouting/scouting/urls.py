@@ -18,6 +18,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
+from django.conf.urls.i18n import i18n_patterns
 
 import main.views
 
@@ -28,5 +29,6 @@ urlpatterns = [
     path(
         f"{settings.ADMIN_PATH.rstrip('/')}/ui/", main.views.admin_ui, name="admin_ui"
     ),
+    path("i18n/", include("django.conf.urls.i18n")),
     path(settings.ADMIN_PATH, admin.site.urls),
 ]

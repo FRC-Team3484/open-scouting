@@ -15,6 +15,8 @@ import os
 
 import environ
 
+from django.utils.translation import gettext_lazy as _
+
 # Change this before publishing a new release!
 SERVER_VERSION = "v0.1.10-alpha"
 
@@ -97,6 +99,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
     "analytics.middleware.PageViewMiddleware",
 ]
 
@@ -175,6 +178,14 @@ USE_I18N = True
 USE_TZ = True
 
 LOCALE_PATHS = (os.path.join(BASE_DIR, "locale"),)
+
+LANGUAGES = (
+    ("en", _("English")),
+    ("es", _("Spanish")),
+    ("fr", _("French")),
+    ("de", _("German")),
+    ("it", _("Italian")),
+)
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
