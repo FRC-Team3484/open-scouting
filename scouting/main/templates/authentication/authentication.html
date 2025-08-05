@@ -28,7 +28,7 @@
         <img class="w-full md:w-1/2 xl:w-2/6 px-10 dark:hidden block hover:scale-[1.03] active:scale-95 transition-all"
              src="{% static '/main/images/logo_dark.png' %}"
              @click="window.location.href = '{{ SERVER_IP }}'">
-        <p class="dark:text-white text-black text-sans text-center text-lg">Sign in or create an account</p>
+        <p class="dark:text-white text-black text-sans text-center text-lg">{% translate "Sign in or create an account" %}</p>
 
         <script src="{% static '/main/scripts/authentication/auth.js' %}"></script>
 
@@ -38,7 +38,7 @@
                  x-show="sign_in && !forgot_password"
                  x-transition:enter.delay.300ms>
                 <p class="dark:text-white text-black text-sans text-center text-2xl mb-2">
-                    <i class="ph-bold ph-user-circle-check"></i> Sign in
+                    <i class="ph-bold ph-user-circle-check"></i>{% translate "Sign in" %}
                 </p>
 
                 <div class="flex flex-row dark:bg-red-500/50 dark:border-red-400/70 border-2 rounded-lg bg-red-400/50 border-red-500/70 my-4 mx-2"
@@ -50,12 +50,12 @@
 
                 <div class="flex flex-col w-full items-center">
                     <input class="ui_input w-full"
-                           placeholder="Email"
+                           placeholder="{% translate "Email" %}"
                            type="text"
                            x-ref="sign_in_email"
                            @input="check_sign_in_fields()">
                     <input class="ui_input w-full"
-                           placeholder="Password"
+                           placeholder="{% translate "Password" %}"
                            :type="sign_in_show_password ? 'text' : 'password'"
                            x-ref="sign_in_password"
                            @input="check_sign_in_fields()">
@@ -63,7 +63,7 @@
                             x-ref="sign_in_button"
                             @click="check_sign_in()"
                             disabled>
-                        <i class="ph-bold ph-check-circle"></i> Sign in
+                        <i class="ph-bold ph-check-circle"></i>{% translate "Sign in" %}
                     </button>
 
                     <div class="flex flex-row items-center w-full justify-center mt-2 mb-1">
@@ -72,20 +72,20 @@
                                type="checkbox">
                         <p class="dark:text-white text-black text-sans text-md ml-2"
                            @click="check_password_visibility()"
-                           x-show="!sign_in_show_password">Show Password</p>
+                           x-show="!sign_in_show_password">{% translate "Show Password" %}</p>
                         <p class="dark:text-white text-black text-sans text-md ml-2"
                            @click="check_password_visibility()"
-                           x-show="sign_in_show_password">Hide Password</p>
+                           x-show="sign_in_show_password">{% translate "Hide Password" %}</p>
                     </div>
                     <button class="dark:text-white text-md text-black opacity-70 hover:opacity-100 transition-opacity active:opacity-50 mb-2"
-                            @click="forgot_password = true">Reset password</button>
+                            @click="forgot_password = true">{% translate "Reset password" %}</button>
 
                 </div>
 
                 <div class="h-1 w-16 mb-2 dark:bg-slate-700 border-1 dark:border-slate-600 bg-slate-300 border-slate-400 rounded-full"></div>
-                <p class="dark:text-white text-black text-sans text-center text-md">Or...</p>
+                <p class="dark:text-white text-black text-sans text-center text-md">{% translate "Or..." %}</p>
                 <button class="ui_button" @click="sign_in = false">
-                    <i class="ph-bold ph-user-circle-plus"></i> Create Account
+                    <i class="ph-bold ph-user-circle-plus"></i>{% translate "Create Account" %}
                 </button>
             </div>
 
@@ -94,7 +94,7 @@
                  x-show="sign_in && forgot_password"
                  x-transition:enter.delay.300ms>
                 <p class="dark:text-white text-black text-sans text-center text-2xl mb-2">
-                    <i class="ph-bold ph-key"></i> Reset password
+                    <i class="ph-bold ph-key"></i>{% translate "Reset password" %}
                 </p>
 
                 <div class="flex flex-row dark:bg-red-500/50 dark:border-red-400/70 border-2 rounded-lg bg-red-400/50 border-red-500/70 my-4 mx-2"
@@ -107,9 +107,9 @@
                 <div class="flex flex-col w-full items-center my-8"
                      x-show="forgot_password_page == 1"
                      x-transition:enter.delay.300ms>
-                    <p class="dark:text-white text-black text-sans text-center text-md">Enter the email to the account you'd like to change</p>
+                    <p class="dark:text-white text-black text-sans text-center text-md">{% translate "Enter the email to the account you'd like to change" %}</p>
                     <input class="ui_input w-full"
-                           placeholder="Email"
+                           placeholder="{% translate "Email" %}"
                            type="text"
                            x-ref="forgot_password_email"
                            @input="if ($el.value.includes('@') && $el.value.includes('.')) $refs.forgot_password_email_next.disabled = false; else $refs.forgot_password_email_next.disabled = true">
@@ -117,20 +117,20 @@
                             @click="send_forgot_password_email(); forgot_password_email = $refs.forgot_password_email.value"
                             x-ref="forgot_password_email_next"
                             disabled>
-                        <i class="ph-bold ph-arrow-circle-right"></i> Send reset email
+                        <i class="ph-bold ph-arrow-circle-right"></i>{% translate "Send reset email" %}
                     </button>
                     <div class="flex flex-row items-center justify-center"
                          x-show="sending_forgot_password"
                          x-transition>
                         <i class="ph-bold ph-circle-notch animate-spin origin-center dark:text-white text-black text-sans text-md"></i>
-                        <p class="dark:text-white text-black text-sans text-md ml-2">Sending Verification Code...</p>
+                        <p class="dark:text-white text-black text-sans text-md ml-2">{% translate "Sending Verification Code..." %}</p>
                     </div>
                 </div>
 
                 <div class="flex flex-col w-full items-center my-8"
                      x-show="forgot_password_page == 2"
                      x-transition:enter.delay.300ms>
-                    <p class="dark:text-white text-black text-sans text-center text-md">Verify account</p>
+                    <p class="dark:text-white text-black text-sans text-center text-md">{% translate "Verify account" %}</p>
                     <p class="dark:text-white text-black text-sans text-center text-sm">
                         <p class="dark:text-white text-black text-sans text-center text-sm mx-2 max-w-2xl opacity-80"
                            x-text="'We sent a verification code to ' + forgot_password_email + '. Please check your email for a message from {{ EMAIL_HOST_USER }} and enter the verification code below'">
@@ -138,7 +138,7 @@
                     </p>
 
                     <input class="ui_input w-full"
-                           placeholder="Verification Code"
+                           placeholder="{% translate "Verification Code" %}"
                            type="text"
                            x-ref="forgot_password_verification_code"
                            @input="if ($el.value.length == 6) $refs.forgot_password_verify_next.disabled = false; else $refs.forgot_password_verify_next.disabled = true">
@@ -147,22 +147,22 @@
                             x-ref="forgot_password_verify_next"
                             @click="verify_forgot_password_code()"
                             disabled>
-                        <i class="ph-bold ph-check-circle"></i> Verify
+                        <i class="ph-bold ph-check-circle"></i>{% translate "Verify" %}
                     </button>
                     <button class="ui_button"
                             x-ref="forgot_password_verify_resend"
                             @click="send_forgot_password_email()">
-                        <i class="ph-bold ph-arrow-clockwise"></i> Resend Code
+                        <i class="ph-bold ph-arrow-clockwise"></i>{% translate "Resend Code" %}
                     </button>
                 </div>
 
                 <div class="flex flex-col w-full items-center my-8"
                      x-show="forgot_password_page == 3"
                      x-transition:enter.delay.300ms>
-                    <p class="dark:text-white text-black text-sans text-center text-md">Enter new password</p>
+                    <p class="dark:text-white text-black text-sans text-center text-md">{% translate "Enter new password" %}</p>
 
                     <input class="ui_input w-full"
-                           placeholder="Password"
+                           placeholder="{% translate "Password" %}"
                            type="password"
                            x-ref="forgot_password_password"
                            @input="if ($el.value.length > 0) $refs.forgot_password_password_next.disabled = false; else $refs.forgot_password_password_next.disabled = true">
@@ -170,28 +170,28 @@
                     <button x-ref="forgot_password_password_next"
                             class="ui_button"
                             @click="change_password()">
-                        <i class="ph-bold ph-key"></i> Change Password
+                        <i class="ph-bold ph-key"></i>{% translate "Change Password" %}
                     </button>
                 </div>
 
                 <div class="flex flex-col items-center my-8"
                      x-show="forgot_password_page == 4"
                      x-transition:enter.delay.300ms>
-                    <p class="dark:text-white text-black text-sans text-center text-md">Your password has been successfully changed!</p>
+                    <p class="dark:text-white text-black text-sans text-center text-md">{% translate "Your password has been successfully changed!" %}</p>
                     <p class="dark:text-white text-black text-sans text-center text-6xl my-2">
                         <i class="ph-bold ph-check-circle"></i>
                     </p>
-                    <p class="dark:text-white text-black text-sans text-center text-sm">You will be redirected in a few moments, or you can press the button below to sign in</p>
+                    <p class="dark:text-white text-black text-sans text-center text-sm">{% translate "You will be redirected in a few moments, or you can press the button below to sign in" %}</p>
 
                     <div class="flex flex-row">
                         <button class="ui_button mx-1" @click="cancel_forgot_password()">
-                            <i class="ph-bold ph-house"></i> Sign in
+                            <i class="ph-bold ph-house"></i>{% translate "Sign in" %}
                         </button>
                     </div>
                 </div>
 
                 <button class="ui_button" @click="cancel_forgot_password()">
-                    <i class="ph-bold ph-x-circle"></i> Cancel
+                    <i class="ph-bold ph-x-circle"></i>{% translate "Cancel" %}
                 </button>
             </div>
 
@@ -200,20 +200,20 @@
                  x-show="!sign_in"
                  x-transition:enter.delay.300ms>
                 <p class="dark:text-white text-black text-sans text-center text-2xl">
-                    <i class="ph-bold ph-user-circle-plus"></i> Create Account
+                    <i class="ph-bold ph-user-circle-plus"></i>{% translate "Create Account" %}
                 </p>
 
                 <div class="flex flex-col items-center my-8"
                      x-show="create_account_page == 1"
                      x-transition:enter.delay.300ms>
-                    <p class="dark:text-white text-black text-sans text-center text-md">Enter display name and team number</p>
+                    <p class="dark:text-white text-black text-sans text-center text-md">{% translate "Enter display name and team number" %}</p>
                     <input class="ui_input"
-                           placeholder="Display Name"
+                           placeholder="{% translate "Display Name" %}"
                            type="text"
                            x-ref="create_display_name"
                            @input="check_display_name_and_team_number()">
                     <input class="ui_input"
-                           placeholder="Team Number"
+                           placeholder="{% translate "Team Number" %}"
                            type="text"
                            x-ref="create_team_number"
                            @input.debounce.250ms="display_team_number"
@@ -235,29 +235,29 @@
                             @click="create_account_page = 2"
                             x-ref="create_display_name_team_number_next"
                             disabled>
-                        <i class="ph-bold ph-arrow-circle-right"></i> Next
+                        <i class="ph-bold ph-arrow-circle-right"></i>{% translate "Next" %}
                     </button>
                 </div>
 
                 <div class="flex flex-col items-center my-8"
                      x-show="create_account_page == 2"
                      x-transition:enter.delay.300ms>
-                    <p class="dark:text-white text-black text-sans text-center text-md">Enter email</p>
+                    <p class="dark:text-white text-black text-sans text-center text-md">{% translate "Enter email" %}</p>
                     <input class="ui_input"
-                           placeholder="Email"
+                           placeholder="{% translate "Email" %}"
                            type="text"
                            x-ref="create_email"
                            @input="check_email()">
 
                     <div class="flex flex-row">
                         <button class="ui_button mx-1" @click="create_account_start_over()">
-                            <i class="ph-bold ph-arrow-circle-left"></i> Start Over
+                            <i class="ph-bold ph-arrow-circle-left"></i>{% translate "Start Over" %}
                         </button>
                         <button class="ui_button mx-1"
                                 @click="send_verification_code(); sending_email = true"
                                 x-ref="create_email_next"
                                 disabled>
-                            <i class="ph-bold ph-arrow-circle-right"></i> Next
+                            <i class="ph-bold ph-arrow-circle-right"></i>{% translate "Next" %}
                         </button>
                     </div>
 
@@ -265,14 +265,14 @@
                          x-show="sending_email"
                          x-transition>
                         <i class="ph-bold ph-circle-notch animate-spin ori dark:text-white text-black text-sans text-md"></i>
-                        <p class="dark:text-white text-black text-sans text-md ml-2">Sending Verification Code...</p>
+                        <p class="dark:text-white text-black text-sans text-md ml-2">{% translate "Sending Verification Code..." %}</p>
                     </div>
                 </div>
 
                 <div class="flex flex-col items-center my-8"
                      x-show="create_account_page == 3"
                      x-transition:enter.delay.300ms>
-                    <p class="dark:text-white text-black text-sans text-center text-md">Verify email</p>
+                    <p class="dark:text-white text-black text-sans text-center text-md">{% translate "Verify email" %}</p>
                     <p class="dark:text-white text-black text-sans text-center text-sm">
                         <p class="dark:text-white text-black text-sans text-center text-sm mx-2 max-w-2xl opacity-80"
                            x-text="'We sent a verification code to ' + user.email + '. Please check your email for a message from {{ EMAIL_HOST_USER }} and enter the verification code below'">
@@ -287,35 +287,35 @@
                     </div>
 
                     <input class="ui_input"
-                           placeholder="Verification Code"
+                           placeholder="{% translate "Verification Code" %}"
                            type="text"
                            x-ref="create_verification_code"
                            @input="check_verification_code_fields()">
 
                     <div class="flex flex-row">
                         <button class="ui_button mx-1" @click="create_account_start_over()">
-                            <i class="ph-bold ph-arrow-circle-left"></i> Start Over
+                            <i class="ph-bold ph-arrow-circle-left"></i>{% translate "Start Over" %}
                         </button>
                         <button class="ui_button mx-1"
                                 @click="check_verification_code()"
                                 x-ref="create_verify_next">
-                            <i class="ph-bold ph-arrow-circle-right"></i> Verify
+                            <i class="ph-bold ph-arrow-circle-right"></i>{% translate "Verify" %}
                         </button>
                     </div>
 
                     <button class="ui_button mx-1"
                             @click="send_verification_code()"
                             x-ref="create_verify_next">
-                        <i class="ph-bold ph-arrow-clockwise"></i> Resend Code
+                        <i class="ph-bold ph-arrow-clockwise"></i>{% translate "Resend Code" %}
                     </button>
                 </div>
 
                 <div class="flex flex-col items-center my-8"
                      x-show="create_account_page == 4"
                      x-transition:enter.delay.300ms>
-                    <p class="dark:text-white text-black text-sans text-center text-md">Create password</p>
+                    <p class="dark:text-white text-black text-sans text-center text-md">{% translate "Create password" %}</p>
                     <p class="dark:text-white text-black text-sans text-center text-sm mx-2">
-                        Secure passwords are longer than 8 characters, contain numbers and symbols, and have capital and lowercase letters.
+                        {% translate "Secure passwords are longer than 8 characters, contain numbers and symbols, and have capital and lowercase letters." %}
                     </p>
 
                     <div class="flex flex-row dark:bg-green-700/50 dark:border-green-500/70 border-2 rounded-lg bg-green-400/50 border-green-600/70 my-4 mx-2 max-w-2xl"
@@ -334,7 +334,7 @@
 
                     <div class="flex flex-row items-center justify-center">
                         <input class="ui_input"
-                               placeholder="Password"
+                               placeholder="{% translate "Password" %}"
                                type="password"
                                x-ref="create_password"
                                @input="check_password_field_and_strength()">
@@ -344,7 +344,7 @@
                                type="checkbox">
                         <p class="dark:text-white text-black text-sans text-md ml-2"
                            x-ref="create_password_visibility_label"
-                           @click="check_password_visibility()">Show</p>
+                           @click="check_password_visibility()">{% translate "Show" %}</p>
                     </div>
 
                     <p class="dark:text-white text-black text-sans text-center text-md"
@@ -355,12 +355,12 @@
 
                     <div class="flex flex-row">
                         <button class="ui_button mx-1" @click="create_account_start_over()">
-                            <i class="ph-bold ph-arrow-circle-left"></i> Start Over
+                            <i class="ph-bold ph-arrow-circle-left"></i>{% translate "Start Over" %}
                         </button>
                         <button class="ui_button mx-1"
                                 @click="create_account()"
                                 x-ref="create_create_account">
-                            <i class="ph-bold ph-check-circle"></i> Create Account
+                            <i class="ph-bold ph-check-circle"></i>{% translate "Create Account" %}
                         </button>
                     </div>
                 </div>
@@ -368,23 +368,23 @@
                 <div class="flex flex-col items-center my-8"
                      x-show="create_account_page == 5"
                      x-transition:enter.delay.300ms>
-                    <p class="dark:text-white text-black text-sans text-center text-md">Your account has been successfully created!</p>
+                    <p class="dark:text-white text-black text-sans text-center text-md">{% translate "Your account has been successfully created!" %}</p>
                     <p class="dark:text-white text-black text-sans text-center text-6xl my-2">
                         <i class="ph-bold ph-check-circle"></i>
                     </p>
-                    <p class="dark:text-white text-black text-sans text-center text-sm">You will be redirected in a few moments, or you can press the button below</p>
+                    <p class="dark:text-white text-black text-sans text-center text-sm">{% translate "You will be redirected in a few moments, or you can press the button below" %}</p>
 
                     <div class="flex flex-row">
                         <button class="ui_button mx-1" @click="go_to_index()">
-                            <i class="ph-bold ph-house"></i> Go to Home
+                            <i class="ph-bold ph-house"></i>{% translate "Go to Home" %}
                         </button>
                     </div>
                 </div>
 
                 <div class="h-1 w-16 mb-2 dark:bg-slate-700 border-1 dark:border-slate-600 bg-slate-300 border-slate-400 rounded-full"></div>
-                <p class="dark:text-white text-black text-sans text-center text-md">Or...</p>
+                <p class="dark:text-white text-black text-sans text-center text-md">{% translate "Or..." %}</p>
                 <button class="ui_button" @click="sign_in = true">
-                    <i class="ph-bold ph-user-circle-check"></i> Sign in
+                    <i class="ph-bold ph-user-circle-check"></i>{% translate "Sign in" %}
                 </button>
             </div>
         </div>

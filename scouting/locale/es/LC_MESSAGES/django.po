@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: v0.1.11-alpha\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-05 17:46+0000\n"
+"POT-Creation-Date: 2025-08-05 18:11+0000\n"
 "PO-Revision-Date: 2025-08-05 12:29-0400\n"
 "Last-Translator: nfoert <nfoert@proton.me>\n"
 "Language-Team: Spanish\n"
@@ -110,6 +110,168 @@ msgstr ""
 msgid "Capabilities"
 msgstr ""
 
+#: main/templates/authentication/authentication.html:31
+msgid "Sign in or create an account"
+msgstr ""
+
+#: main/templates/authentication/authentication.html:41
+#: main/templates/authentication/authentication.html:65
+#: main/templates/authentication/authentication.html:180
+#: main/templates/authentication/authentication.html:365
+msgid "Sign in"
+msgstr ""
+
+#: main/templates/authentication/authentication.html:52
+#: main/templates/authentication/authentication.html:108
+#: main/templates/authentication/authentication.html:235
+msgid "Email"
+msgstr ""
+
+#: main/templates/authentication/authentication.html:57
+#: main/templates/authentication/authentication.html:158
+#: main/templates/authentication/authentication.html:318
+msgid "Password"
+msgstr ""
+
+#: main/templates/authentication/authentication.html:73
+msgid "Show Password"
+msgstr ""
+
+#: main/templates/authentication/authentication.html:76
+msgid "Hide Password"
+msgstr ""
+
+#: main/templates/authentication/authentication.html:79
+#: main/templates/authentication/authentication.html:94
+msgid "Reset password"
+msgstr ""
+
+#: main/templates/authentication/authentication.html:84
+#: main/templates/authentication/authentication.html:363
+#: main/templates/index/authentication_box.html:80
+msgid "Or..."
+msgstr ""
+
+#: main/templates/authentication/authentication.html:86
+#: main/templates/authentication/authentication.html:193
+#: main/templates/authentication/authentication.html:343
+msgid "Create Account"
+msgstr ""
+
+#: main/templates/authentication/authentication.html:106
+msgid "Enter the email to the account you'd like to change"
+msgstr ""
+
+#: main/templates/authentication/authentication.html:116
+msgid "Send reset email"
+msgstr ""
+
+#: main/templates/authentication/authentication.html:121
+#: main/templates/authentication/authentication.html:254
+msgid "Sending Verification Code..."
+msgstr ""
+
+#: main/templates/authentication/authentication.html:128
+msgid "Verify account"
+msgstr ""
+
+#: main/templates/authentication/authentication.html:136
+#: main/templates/authentication/authentication.html:276
+msgid "Verification Code"
+msgstr ""
+
+#: main/templates/authentication/authentication.html:145
+#: main/templates/authentication/authentication.html:287
+msgid "Verify"
+msgstr ""
+
+#: main/templates/authentication/authentication.html:149
+#: main/templates/authentication/authentication.html:293
+msgid "Resend Code"
+msgstr ""
+
+#: main/templates/authentication/authentication.html:155
+msgid "Enter new password"
+msgstr ""
+
+#: main/templates/authentication/authentication.html:166
+msgid "Change Password"
+msgstr ""
+
+#: main/templates/authentication/authentication.html:172
+msgid "Your password has been successfully changed!"
+msgstr ""
+
+#: main/templates/authentication/authentication.html:176
+msgid ""
+"You will be redirected in a few moments, or you can press the button below "
+"to sign in"
+msgstr ""
+
+#: main/templates/authentication/authentication.html:185
+msgid "Cancel"
+msgstr ""
+
+#: main/templates/authentication/authentication.html:198
+msgid "Enter display name and team number"
+msgstr ""
+
+#: main/templates/authentication/authentication.html:200
+msgid "Display Name"
+msgstr ""
+
+#: main/templates/authentication/authentication.html:205
+msgid "Team Number"
+msgstr ""
+
+#: main/templates/authentication/authentication.html:227
+#: main/templates/authentication/authentication.html:247
+#: main/templates/index/authentication_box.html:76
+#: main/templates/index/year_select.html:30
+msgid "Next"
+msgstr ""
+
+#: main/templates/authentication/authentication.html:233
+msgid "Enter email"
+msgstr ""
+
+#: main/templates/authentication/authentication.html:242
+#: main/templates/authentication/authentication.html:283
+#: main/templates/authentication/authentication.html:339
+msgid "Start Over"
+msgstr ""
+
+#: main/templates/authentication/authentication.html:261
+msgid "Verify email"
+msgstr ""
+
+#: main/templates/authentication/authentication.html:299
+msgid "Create password"
+msgstr ""
+
+#: main/templates/authentication/authentication.html:300
+msgid ""
+"Secure passwords are longer than 8 characters, contain numbers and symbols, "
+"and have capital and lowercase letters."
+msgstr ""
+
+#: main/templates/authentication/authentication.html:328
+msgid "Show"
+msgstr ""
+
+#: main/templates/authentication/authentication.html:350
+msgid "Your account has been successfully created!"
+msgstr ""
+
+#: main/templates/authentication/authentication.html:354
+msgid ""
+"You will be redirected in a few moments, or you can press the button below"
+msgstr ""
+
+#: main/templates/authentication/authentication.html:358
+msgid "Go to Home"
+msgstr ""
+
 #: main/templates/index/authentication_box.html:12
 msgid "Sign In"
 msgstr ""
@@ -144,15 +306,6 @@ msgstr ""
 
 #: main/templates/index/authentication_box.html:72
 msgid "Your team number"
-msgstr ""
-
-#: main/templates/index/authentication_box.html:76
-#: main/templates/index/year_select.html:30
-msgid "Next"
-msgstr ""
-
-#: main/templates/index/authentication_box.html:80
-msgid "Or..."
 msgstr ""
 
 #: main/templates/index/authentication_box.html:88
