@@ -17,6 +17,9 @@ python manage.py migrate
 # Collect static files
 python manage.py collectstatic --noinput
 
+# Build binary translation files
+python manage.py compilemessages
+
 # Create super user
 echo "Checking if a superuser already exists..."
 python manage.py shell <<EOF
