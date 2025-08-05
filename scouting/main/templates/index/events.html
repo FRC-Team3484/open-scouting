@@ -8,8 +8,7 @@
      x-show="page == 3"
      x-transition>
     <p class="text-center dark:text-white text-black font-sans text-2xl my-4">
-        <i class="ph-bold ph-calendar-blank"></i> Select event
-    </p>
+        <i class="ph-bold ph-calendar-blank"></i>{% translate "Select event" %}</p>
 
     <div class="my-4">
         <div class="flex flex-row flex-wrap gap-2 mb-2">
@@ -17,7 +16,7 @@
                     :disabled="active_tab === 'tba'"
                     @click="active_tab = 'tba'">
                 <i class="ph-bold ph-check-circle"></i>
-                <span class="dark:text-white text-black text-sm md:text-md">TBA Events</span>
+                <span class="dark:text-white text-black text-sm md:text-md">{% translate "TBA Events" %}</span>
                 <span class="dark:text-white text-black bg-slate-200 dark:bg-slate-600 py-1 px-2 rounded-full border-slate-300 dark:border-slate-700 max-w-4 aspect-square my-2 text-sm border-2"
                       x-text="filtered_events.length"></span>
             </button>
@@ -26,7 +25,7 @@
                     :disabled="active_tab === 'custom'"
                     @click="active_tab = 'custom'">
                 <i class="ph-bold ph-pencil"></i>
-                <span class="dark:text-white text-black text-sm md:text-md">Custom Events</span>
+                <span class="dark:text-white text-black text-sm md:text-md">{% translate "Custom Events" %}</span>
                 <span class="dark:text-white text-black bg-slate-200 dark:bg-slate-600 py-1 px-2 rounded-full border-slate-300 dark:border-slate-700 max-w-4 aspect-square my-2 text-sm border-2"
                       x-text="custom_filtered_events.length"></span>
             </button>
@@ -36,7 +35,7 @@
                         :disabled="active_tab === 'favorites'"
                         @click="active_tab = 'favorites'">
                     <i class="ph-bold ph-star"></i>
-                    <span class="dark:text-white text-black text-sm md:text-md">Favorites</span>
+                    <span class="dark:text-white text-black text-sm md:text-md">{% translate "Favorites" %}</span>
                     <span class="dark:text-white text-black bg-slate-200 dark:bg-slate-600 py-1 px-2 rounded-full border-slate-300 dark:border-slate-700 max-w-4 aspect-square my-2 text-sm border-2"
                           x-text="favorite_filtered_events.length"></span>
                 </button>
@@ -47,13 +46,13 @@
                        type="checkbox"
                        x-ref="show_past_events"
                        @input="update_filters()">
-                <p class="dark:text-white text-black ml-2">Show past events</p>
+                <p class="dark:text-white text-black ml-2">{% translate "Show past events" %}</p>
             </div>
 
         </div>
 
         <input class="ui_input !w-full"
-               placeholder="Search for an event..."
+               placeholder="{% translate "Search for an event..." %}"
                x-ref="event_search"
                @input="update_filters()">
 
@@ -105,18 +104,15 @@
                 <p class="dark:text-white text-black text-center text-lg"
                    x-show="no_events && !loading"
                    x-transition>
-                    <i class="ph-bold ph-smiley-sad"></i> No events found
-                </p>
+                    <i class="ph-bold ph-smiley-sad"></i>{% translate "No events found" %}</p>
 
                 <p class="dark:text-white text-black text-center text-lg"
                    x-show="loading"
                    x-transition>
-                    <i class="ph-bold ph-circle-notch !animate-spin origin-center"></i> Loading events...
-                </p>
+                    <i class="ph-bold ph-circle-notch !animate-spin origin-center"></i>{% translate "Loading events..." %}</p>
 
                 <button class="ui_button w-full" @click="create_custom_event()">
-                    <i class="ph-bold ph-plus"></i> Create a custom Event
-                </button>
+                    <i class="ph-bold ph-plus"></i>{% translate "Create a custom Event" %}</button>
             </div>
 
             <div x-show="active_tab === 'custom'">
@@ -146,18 +142,15 @@
                 <p class="dark:text-white text-black text-center text-lg"
                    x-show="custom_filtered_events.length === 0 && !loading"
                    x-transition>
-                    <i class="ph-bold ph-smiley-sad"></i> No events found
-                </p>
+                    <i class="ph-bold ph-smiley-sad"></i>{% translate "No events found" %}</p>
 
                 <p class="dark:text-white text-black text-center text-lg"
                    x-show="loading"
                    x-transition>
-                    <i class="ph-bold ph-circle-notch !animate-spin origin-center"></i> Loading events...
-                </p>
+                    <i class="ph-bold ph-circle-notch !animate-spin origin-center"></i>{% translate "Loading events..." %}</p>
 
                 <button class="ui_button w-full" @click="create_custom_event()">
-                    <i class="ph-bold ph-plus"></i> Create a custom Event
-                </button>
+                    <i class="ph-bold ph-plus"></i>{% translate "Create a custom Event" %}</button>
             </div>
 
             <div x-show="active_tab === 'favorites'">
@@ -208,14 +201,12 @@
                 <p class="dark:text-white text-black text-center text-lg"
                    x-show="favorite_filtered_events.length === 0 && !loading"
                    x-transition>
-                    <i class="ph-bold ph-smiley-sad"></i> No favorite events
-                </p>
+                    <i class="ph-bold ph-smiley-sad"></i>{% translate "No favorite events" %}</p>
 
                 <p class="dark:text-white text-black text-center text-lg"
                    x-show="loading"
                    x-transition>
-                    <i class="ph-bold ph-circle-notch !animate-spin origin-center"></i> Loading events...
-                </p>
+                    <i class="ph-bold ph-circle-notch !animate-spin origin-center"></i>{% translate "Loading events..." %}</p>
             </div>
 
         </div>

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: v0.1.11-alpha\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-05 16:25+0000\n"
-"PO-Revision-Date: 2025-08-05 12:19-0400\n"
+"POT-Creation-Date: 2025-08-05 17:03+0000\n"
+"PO-Revision-Date: 2025-08-05 12:29-0400\n"
 "Last-Translator: nfoert <nfoert@proton.me>\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -19,13 +19,323 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Gtranslator 48.0\n"
 
+#: main/templates/index/authentication_box.html:12
+msgid "Sign In"
+msgstr ""
+
+#: main/templates/index/authentication_box.html:19
+msgid "Continue as"
+msgstr ""
+
+#: main/templates/index/authentication_box.html:37
+msgid "Sign Out"
+msgstr ""
+
+#: main/templates/index/authentication_box.html:41
+msgid "Edit Profile"
+msgstr ""
+
+#: main/templates/index/authentication_box.html:46
+msgid "Admin Dashboard"
+msgstr ""
+
+#: main/templates/index/authentication_box.html:51
+msgid "Django Admin"
+msgstr ""
+
+#: main/templates/index/authentication_box.html:59
+msgid "Continue without account"
+msgstr ""
+
+#: main/templates/index/authentication_box.html:67
+msgid "Temporary user name"
+msgstr ""
+
+#: main/templates/index/authentication_box.html:72
+msgid "Your team number"
+msgstr ""
+
+#: main/templates/index/authentication_box.html:76
+#: main/templates/index/year_select.html:30
+msgid "Next"
+msgstr ""
+
+#: main/templates/index/authentication_box.html:80
+msgid "Or..."
+msgstr ""
+
+#: main/templates/index/authentication_box.html:83
+msgid "Advanced Data View"
+msgstr ""
+
+#: main/templates/index/authentication_box.html:88
+msgid "Try Open Scouting"
+msgstr ""
+
+#: main/templates/index/create_custom_event.html:14
+msgid "Create Custom Event"
+msgstr ""
+
+#: main/templates/index/create_custom_event.html:16
+msgid ""
+"Custom events are used when an event isn't present in The Blue Alliance. "
+"Creating a custom event makes this event available to all users across Open "
+"Scouting to contribute and view data for."
+msgstr ""
+
+#: main/templates/index/create_custom_event.html:27
+msgid "Name"
+msgstr ""
+
+#: main/templates/index/create_custom_event.html:30
+msgid "Enter the name for this event"
+msgstr ""
+
+#: main/templates/index/create_custom_event.html:33
+#: main/templates/index/create_custom_event.html:66
+#: main/templates/index/year_select.html:13
+msgid "Year"
+msgstr ""
+
+#: main/templates/index/create_custom_event.html:41
+msgid "What year did this event take place?"
+msgstr ""
+
+#: main/templates/index/create_custom_event.html:45
+msgid "Event begins"
+msgstr ""
+
+#: main/templates/index/create_custom_event.html:49
+msgid "What day does this event begin?"
+msgstr ""
+
+#: main/templates/index/create_custom_event.html:53
+msgid "Event ends"
+msgstr ""
+
+#: main/templates/index/create_custom_event.html:57
+msgid "What day does this event end?"
+msgstr ""
+
+#: main/templates/index/create_custom_event.html:60
+msgid "Event location"
+msgstr ""
+
+#: main/templates/index/create_custom_event.html:63
+msgid "Where will this event be held?"
+msgstr ""
+
+#: main/templates/index/create_custom_event.html:69
+msgid "Select an Event Type"
+msgstr ""
+
+#: main/templates/index/create_custom_event.html:70
+msgid "District Event"
+msgstr ""
+
+#: main/templates/index/create_custom_event.html:71
+msgid "Regional Event"
+msgstr ""
+
+#: main/templates/index/create_custom_event.html:72
+msgid "Preseason Event"
+msgstr ""
+
+#: main/templates/index/create_custom_event.html:73
+msgid "Offseason Event"
+msgstr ""
+
+#: main/templates/index/create_custom_event.html:74
+msgid "Other Event"
+msgstr ""
+
+#: main/templates/index/create_custom_event.html:77
+msgid "What kind of event is this?"
+msgstr ""
+
+#: main/templates/index/create_custom_event.html:80
+msgid "Create new Custom Event"
+msgstr ""
+
+#: main/templates/index/events.html:11
+msgid "Select event"
+msgstr ""
+
+#: main/templates/index/events.html:19
+msgid "TBA Events"
+msgstr ""
+
+#: main/templates/index/events.html:28
+msgid "Custom Events"
+msgstr ""
+
+#: main/templates/index/events.html:38
+msgid "Favorites"
+msgstr ""
+
+#: main/templates/index/events.html:49
+msgid "Show past events"
+msgstr ""
+
+#: main/templates/index/events.html:55
+msgid "Search for an event..."
+msgstr ""
+
+#: main/templates/index/events.html:107 main/templates/index/events.html:145
+msgid "No events found"
+msgstr ""
+
+#: main/templates/index/events.html:112 main/templates/index/events.html:150
+#: main/templates/index/events.html:209
+msgid "Loading events..."
+msgstr ""
+
+#: main/templates/index/events.html:115 main/templates/index/events.html:153
+msgid "Create a custom Event"
+msgstr ""
+
+#: main/templates/index/events.html:204
+msgid "No favorite events"
+msgstr ""
+
 #. Translators: Description of the application
 #: main/templates/index/header.html:16
 msgid ""
 "An open source application for easier scouting at FIRST Robotics competitions"
 msgstr ""
-"Una aplicación de código abierto para facilitar la exploración en las "
-"competiciones FIRST Robotics"
+
+#: main/templates/index/header.html:19 main/templates/index/index.html:165
+msgid "Source Code"
+msgstr ""
+
+#: main/templates/index/header.html:21 main/templates/index/index.html:167
+msgid "Issues"
+msgstr ""
+
+#: main/templates/index/header.html:23 main/templates/index/index.html:169
+msgid "Releases"
+msgstr ""
+
+#. Translators: Demo mode warning
+#: main/templates/index/header.html:62
+msgid "Open Scouting is in demo mode"
+msgstr ""
+
+#: main/templates/index/index.html:58
+msgid "Event Actions"
+msgstr ""
+
+#: main/templates/index/index.html:61
+msgid "Contribute Data"
+msgstr ""
+
+#: main/templates/index/index.html:76
+msgid "Contribute"
+msgstr ""
+
+#: main/templates/index/index.html:77
+msgid "Contribute data to the server"
+msgstr ""
+
+#: main/templates/index/index.html:80
+msgid "View data"
+msgstr ""
+
+#: main/templates/index/index.html:81
+msgid "View data for this event in the advanced data view"
+msgstr ""
+
+#: main/templates/index/index.html:84
+msgid "Pit Scouting"
+msgstr ""
+
+#: main/templates/index/index.html:85
+msgid "View or contribute pit scouting data for this event"
+msgstr ""
+
+#: main/templates/index/index.html:90
+msgid "Share a link to this event"
+msgstr ""
+
+#: main/templates/index/index.html:91
+msgid ""
+"Sharing a link allows scouts to easily get to the correct event to quickly "
+"begin scouting"
+msgstr ""
+
+#: main/templates/index/index.html:94
+msgid "Copy Link"
+msgstr ""
+
+#: main/templates/index/index.html:104
+msgid "Scroll for info"
+msgstr ""
+
+#: main/templates/index/index.html:128
+msgid "Features"
+msgstr ""
+
+#: main/templates/index/index.html:129
+msgid ""
+"Open Scouting is an open source application for easier scouting at FIRST "
+"Robotics competitions"
+msgstr ""
+
+#: main/templates/index/index.html:131
+msgid "Gather pit scouting data"
+msgstr ""
+
+#: main/templates/index/index.html:132
+msgid "Anyone can contribute data, and anyone can view it, no account needed"
+msgstr ""
+
+#: main/templates/index/index.html:133
+msgid "Works offline in case of poor connection in the stands"
+msgstr ""
+
+#: main/templates/index/index.html:134
+msgid "Uses The Blue Alliance to autofill data for faster scouting"
+msgstr ""
+
+#: main/templates/index/index.html:135
+msgid "Create custom events if an event isn't in TBA"
+msgstr ""
+
+#: main/templates/index/index.html:136
+msgid "Manually go offline in case of bad connection"
+msgstr ""
+
+#: main/templates/index/index.html:137
+msgid "Demo mode to let scouts try out the app"
+msgstr ""
+
+#: main/templates/index/index.html:138
+msgid "Share links to an event to start scouting as fast as possible"
+msgstr ""
+
+#: main/templates/index/index.html:139
+msgid "Create an account to verify your scouting reports"
+msgstr ""
+
+#: main/templates/index/index.html:161
+msgid "Log In"
+msgstr ""
+
+#: main/templates/index/index.html:173
+msgid "Documentation"
+msgstr ""
+
+#: main/templates/index/index.html:175
+msgid "Development Branch"
+msgstr ""
+
+#: main/templates/index/year_select.html:10
+msgid "Select year"
+msgstr ""
+
+#: main/templates/index/year_select.html:26
+msgid "with data this year"
+msgstr ""
 
 #: scouting/settings.py:183
 msgid "English"
