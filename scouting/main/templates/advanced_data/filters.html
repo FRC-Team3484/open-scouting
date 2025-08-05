@@ -10,13 +10,10 @@
      x-data="filters"
      x-show="!offline">
     <p class="dark:text-white text-black text-sans text-2xl ml-4">
-        <i class="ph-bold ph-funnel"></i> Filters
-    </p>
-    <p class="dark:text-white text-black text-sans text-sm ml-6 opacity-80">
-        Filter results by year and then by both teams and events. If both a team and event is shown, only data from that team recorded at that event is shown
-    </p>
+        <i class="ph-bold ph-funnel"></i>{% translate "Filters" %}</p>
+    <p class="dark:text-white text-black text-sans text-sm ml-6 opacity-80">{% translate "Filter results by year and then by both teams and events. If both a team and event is shown, only data from that team recorded at that event is shown" %}</p>
     <div class="flex flex-row items-center gap-2 ml-6" x-ref="year">
-        <p class="dark:text-white text-black text-sans text-lg">Year</p>
+        <p class="dark:text-white text-black text-sans text-lg">{% translate "Year" %}</p>
         <select class="ui_input w-32!"
                 x-ref="year_input"
                 @input="update_results_and_query();">
@@ -26,7 +23,7 @@
         </select>
     </div>
     <div class="flex flex-row items-center gap-2 ml-6 flex-wrap" x-ref="teams">
-        <p class="dark:text-white text-black text-sans text-lg">Teams</p>
+        <p class="dark:text-white text-black text-sans text-lg">{% translate "Teams" %}</p>
         <template x-for="team in teams" :key="teams.indexOf(team)">
             <button class="ui_button_small flex! flex-row! items-center gap-1"
                     @click="remove_team(team)">
@@ -40,8 +37,7 @@
         <button class="ui_button_small opacity-80"
                 x-ref="teams_add"
                 @click="add_team_open = !add_team_open">
-            <i class="ph-bold ph-plus"></i> Add
-        </button>
+            <i class="ph-bold ph-plus"></i>{% translate "Add" %}</button>
     </div>
     <div class="dark:bg-slate-800/80 border-2 dark:border-slate-700 bg-slate-200/80 border-slate-300 rounded-xl flex flex-col backdrop-blur-md z-10 p-2 max-w-screen max-h-64 overflow-y-scroll"
          x-anchor.offset.5="$refs.teams_add"
@@ -51,7 +47,7 @@
         <div class="flex flex-row items-center gap-2">
             <input class="ui_input w-full!"
                    type="text"
-                   placeholder="Search for a team..."
+                   placeholder="{% translate "Search for a team..." %}"
                    x-ref="teams_search"
                    @input="update_team_search()">
             <button class="ui_button_small"
@@ -74,7 +70,7 @@
 
     <div class="flex flex-row items-center gap-2 ml-6 flex-wrap"
          x-ref="events">
-        <p class="dark:text-white text-black text-sans text-lg">Events</p>
+        <p class="dark:text-white text-black text-sans text-lg">{% translate "Events" %}</p>
         <template x-for="event in events" :key="events.indexOf(event)">
             <button class="ui_button_small flex! flex-row! items-center gap-1"
                     @click="remove_event(event)">
@@ -85,8 +81,7 @@
         <button class="ui_button_small opacity-80"
                 x-ref="events_add"
                 @click="add_event_open = !add_event_open">
-            <i class="ph-bold ph-plus"></i> Add
-        </button>
+            <i class="ph-bold ph-plus"></i>{% translate "Add" %}</button>
     </div>
     <div class="dark:bg-slate-800/80 border-2 dark:border-slate-700 bg-slate-200/80 border-slate-300 rounded-xl flex flex-col backdrop-blur-md z-10 p-2 max-w-screen max-h-64 overflow-y-scroll"
          x-anchor.offset.5="$refs.events_add"
@@ -96,7 +91,7 @@
         <div class="flex flex-row items-center gap-2">
             <input class="ui_input w-full!"
                    type="text"
-                   placeholder="Search for an event..."
+                   placeholder="{% translate "Search for an event..." %}"
                    x-ref="events_search"
                    @input="update_event_search()">
             <button class="ui_button_small"
@@ -120,12 +115,10 @@
 
     <div class="flex flex-row flex-wrap gap-2 ml-6">
         <button class="ui_button_small" @click="clear_filters()">
-            <i class="ph-bold ph-trash"></i> Clear Filters
-        </button>
+            <i class="ph-bold ph-trash"></i>{% translate "Clear Filters" %}</button>
 
         <button class="ui_button_small" @click="$dispatch('collapse_all')">
-            <i class="ph-bold ph-caret-up"></i> Collapse all sections
-        </button>
+            <i class="ph-bold ph-caret-up"></i>{% translate "Collapse all sections" %}</button>
     </div>
 
     <div class="flex flex-row flex-wrap items-center">
@@ -143,22 +136,17 @@
              x-transition>
             <button class="ui_button_small my-1! py-1! px-2! w-full! text-left!"
                     @click="export_as_json()">
-                <i class="ph-bold ph-file-code"></i> Export data as JSON
-            </button>
+                <i class="ph-bold ph-file-code"></i>{% translate "Export data as JSON" %}</button>
             <button class="ui_button_small my-1! py-1! px-2! w-full! text-left!"
                     @click="export_as_csv()">
-                <i class="ph-bold ph-file-csv"></i> Export data as CSV
-            </button>
+                <i class="ph-bold ph-file-csv"></i>{% translate "Export data as CSV" %}</button>
         </div>
     </div>
 
     <div class="flex flex-col">
         <p class="dark:text-white text-black text-sans text-2xl ml-4 mt-4">
-            <i class="ph-bold ph-funnel-simple"></i> Sort By
-        </p>
-        <p class="dark:text-white text-black text-sans text-sm ml-6 opacity-80">
-            Sorts the data displayed below by each team by a stat. For example, sort the teams in descending order by the average coral scored during the autonomous period
-        </p>
+            <i class="ph-bold ph-funnel-simple"></i>{% translate "Sort By" %}</p>
+        <p class="dark:text-white text-black text-sans text-sm ml-6 opacity-80">{% translate "Sorts the data displayed below by each team by a stat. For example, sort the teams in descending order by the average coral scored during the autonomous period" %}</p>
         <div class="flex flex-row mx-4 gap-2">
             <select class="ui_input"
                     x-ref="sort_field"
@@ -170,8 +158,8 @@
             <select class="ui_input"
                     x-ref="sort_order"
                     @change="update_results_and_query()">
-                <option value="descending">Descending (High to low)</option>
-                <option value="ascending">Ascending (Low to high)</option>
+                <option value="descending">{% translate "Descending (High to low)" %}</option>
+                <option value="ascending">{% translate "Ascending (Low to high)" %}</option>
             </select>
         </div>
     </div>

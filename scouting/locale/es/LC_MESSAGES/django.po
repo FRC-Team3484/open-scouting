@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: v0.1.11-alpha\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-05 17:03+0000\n"
+"POT-Creation-Date: 2025-08-05 17:46+0000\n"
 "PO-Revision-Date: 2025-08-05 12:29-0400\n"
 "Last-Translator: nfoert <nfoert@proton.me>\n"
 "Language-Team: Spanish\n"
@@ -18,6 +18,97 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Gtranslator 48.0\n"
+
+#: main/templates/advanced_data/advanced_data.html:28
+#: main/templates/index/authentication_box.html:83
+msgid "Advanced Data View"
+msgstr ""
+
+#: main/templates/advanced_data/filters.html:13
+msgid "Filters"
+msgstr ""
+
+#: main/templates/advanced_data/filters.html:14
+msgid ""
+"Filter results by year and then by both teams and events. If both a team and "
+"event is shown, only data from that team recorded at that event is shown"
+msgstr ""
+
+#: main/templates/advanced_data/filters.html:16
+#: main/templates/index/create_custom_event.html:33
+#: main/templates/index/create_custom_event.html:66
+#: main/templates/index/year_select.html:13
+msgid "Year"
+msgstr ""
+
+#: main/templates/advanced_data/filters.html:26
+msgid "Teams"
+msgstr ""
+
+#: main/templates/advanced_data/filters.html:40
+#: main/templates/advanced_data/filters.html:84
+msgid "Add"
+msgstr ""
+
+#: main/templates/advanced_data/filters.html:50
+msgid "Search for a team..."
+msgstr ""
+
+#: main/templates/advanced_data/filters.html:73
+msgid "Events"
+msgstr ""
+
+#: main/templates/advanced_data/filters.html:94
+#: main/templates/index/events.html:55
+msgid "Search for an event..."
+msgstr ""
+
+#: main/templates/advanced_data/filters.html:118
+msgid "Clear Filters"
+msgstr ""
+
+#: main/templates/advanced_data/filters.html:121
+msgid "Collapse all sections"
+msgstr ""
+
+#: main/templates/advanced_data/filters.html:139
+msgid "Export data as JSON"
+msgstr ""
+
+#: main/templates/advanced_data/filters.html:142
+msgid "Export data as CSV"
+msgstr ""
+
+#: main/templates/advanced_data/filters.html:148
+msgid "Sort By"
+msgstr ""
+
+#: main/templates/advanced_data/filters.html:149
+msgid ""
+"Sorts the data displayed below by each team by a stat. For example, sort the "
+"teams in descending order by the average coral scored during the autonomous "
+"period"
+msgstr ""
+
+#: main/templates/advanced_data/filters.html:161
+msgid "Descending (High to low)"
+msgstr ""
+
+#: main/templates/advanced_data/filters.html:162
+msgid "Ascending (Low to high)"
+msgstr ""
+
+#: main/templates/advanced_data/main.html:43
+msgid "Summary"
+msgstr ""
+
+#: main/templates/advanced_data/main.html:53
+msgid "Score & Miss Averages"
+msgstr ""
+
+#: main/templates/advanced_data/main.html:99
+msgid "Capabilities"
+msgstr ""
 
 #: main/templates/index/authentication_box.html:12
 msgid "Sign In"
@@ -64,10 +155,6 @@ msgstr ""
 msgid "Or..."
 msgstr ""
 
-#: main/templates/index/authentication_box.html:83
-msgid "Advanced Data View"
-msgstr ""
-
 #: main/templates/index/authentication_box.html:88
 msgid "Try Open Scouting"
 msgstr ""
@@ -89,12 +176,6 @@ msgstr ""
 
 #: main/templates/index/create_custom_event.html:30
 msgid "Enter the name for this event"
-msgstr ""
-
-#: main/templates/index/create_custom_event.html:33
-#: main/templates/index/create_custom_event.html:66
-#: main/templates/index/year_select.html:13
-msgid "Year"
 msgstr ""
 
 #: main/templates/index/create_custom_event.html:41
@@ -175,10 +256,6 @@ msgstr ""
 
 #: main/templates/index/events.html:49
 msgid "Show past events"
-msgstr ""
-
-#: main/templates/index/events.html:55
-msgid "Search for an event..."
 msgstr ""
 
 #: main/templates/index/events.html:107 main/templates/index/events.html:145
