@@ -55,43 +55,36 @@
                      x-transition>
                     <div class="flex flex-col justify-center items-center dark:bg-slate-800/80 bg-slate-200 rounded-lg border-2 dark:border-slate-700 border-slate-300 my-2 p-2 md:p-6">
                         <p class="text-center dark:text-white text-black font-sans text-lg md:text-2xl mb-1 md:mb-4">
-                            <i class="ph-bold ph-sliders-horizontal"></i>{% translate "Event Actions" %}</p>
-                        <!-- TODO: Support scouting in sessions -->
-                        <!-- <button class="ui_button" @click="contribute_open = !contribute_open">
-                        <i class="ph-bold ph-pencil-simple-line"></i>{% translate "Contribute Data" %}</button>
-                        <div class="flex flex-col justify-center items-center mb-6" x-show="contribute_open" x-collapse>
-                            <button class="ui_button" disabled>
-                                <i class="ph-bold ph-link"></i> Create a session
-                            </button>
-                            <p class="dark:text-white text-black opacity-80 text-sm text-center">
-                                Create a session with one scout as the host to allow some more information to be autofilled and managed by the head scout
-                            </p>
-                            <button class="ui_button" @click="get_header_data('contribute_separately')">
-                                <i class="ph-bold ph-pencil"></i> Contribute separately
-                            </button>
-                            <p class="dark:text-white text-black opacity-80 text-sm text-center">Contribute data without a session</p>
-</div> -->
+                            <i class="ph-bold ph-sliders-horizontal"></i>{% translate "Event Actions" %}
+                        </p>
 
                         <button class="ui_button" @click="get_header_data('contribute_separately')">
-                            <i class="ph-bold ph-pencil"></i>{% translate "Contribute" %}</button>
+                            <i class="ph-bold ph-pencil"></i>{% translate "Contribute" %}
+                        </button>
                         <p class="dark:text-white text-black opacity-80 text-sm text-center">{% translate "Contribute data to the server" %}</p>
 
                         <button class="ui_button" @click="get_header_data('advanced_data')">
-                            <i class="ph-bold ph-hard-drives"></i>{% translate "View data" %}</button>
+                            <i class="ph-bold ph-hard-drives"></i>{% translate "View data" %}
+                        </button>
                         <p class="dark:text-white text-black opacity-80 text-sm text-center">{% translate "View data for this event in the advanced data view" %}</p>
 
                         <button class="ui_button" @click="get_header_data('pit_scouting')">
-                            <i class="ph-bold ph-garage"></i>{% translate "Pit Scouting" %}</button>
+                            <i class="ph-bold ph-garage"></i>{% translate "Pit Scouting" %}
+                        </button>
                         <p class="dark:text-white text-black opacity-80 text-sm text-center">{% translate "View or contribute pit scouting data for this event" %}</p>
                     </div>
 
                     <div class="flex flex-col justify-center items-center dark:bg-slate-800/80 bg-slate-200 rounded-lg border-2 dark:border-slate-700 border-slate-300 my-2 p-2 md:p-6">
                         <p class="text-center dark:text-white text-black font-sans text-lg md:text-2xl mb-1 md:mb-4">
-                            <i class="ph-bold ph-export"></i>{% translate "Share a link to this event" %}</p>
-                        <p class="dark:text-white text-black opacity-80 text-sm text-center mb-6">{% translate "Sharing a link allows scouts to easily get to the correct event to quickly begin scouting" %}</p>
+                            <i class="ph-bold ph-export"></i>{% translate "Share a link to this event" %}
+                        </p>
+                        <p class="dark:text-white text-black opacity-80 text-sm text-center mb-6">
+                            {% translate "Sharing a link allows scouts to easily get to the correct event to quickly begin scouting" %}
+                        </p>
 
                         <button class="ui_button" @click="get_link_data()">
-                            <i class="ph-bold ph-link"></i>{% translate "Copy Link" %}</button>
+                            <i class="ph-bold ph-link"></i>{% translate "Copy Link" %}
+                        </button>
                     </div>
                 </div>
             </div>
@@ -101,7 +94,8 @@
                  x-show="scroll_value == 0"
                  x-transition>
                 <p class="text-center dark:text-white text-black text-md opacity-60 hover:opacity-100 active:opacity-100 transition-opacity text-sm md:text-md">
-                    <i class="ph-bold ph-mouse-scroll"></i>{% translate "Scroll for info" %}</p>
+                    <i class="ph-bold ph-mouse-scroll"></i>{% translate "Scroll for info" %}
+                </p>
             </div>
 
             <script>
@@ -125,8 +119,11 @@
         <div class="w-screen max-w-screen flex flex-col lg:flex-row justify-center items-center px-6 lg:px-24 overflow-hidden">
             <div class="flex flex-col ml-0 lg:ml-12">
                 <p class="text-black dark:text-white font-sans text-2xl md:text-4xl">
-                    <i class="ph-bold ph-list-dashes"></i>{% translate "Features" %}</p>
-                <p class="text-black dark:text-white font-sans text-md md:text-lg mb-4 opacity-80">{% translate "Open Scouting is an open source application for easier scouting at FIRST Robotics competitions" %}</p>
+                    <i class="ph-bold ph-list-dashes"></i>{% translate "Features" %}
+                </p>
+                <p class="text-black dark:text-white font-sans text-md md:text-lg mb-4 opacity-80">
+                    {% translate "Open Scouting is an open source application for easier scouting at FIRST Robotics competitions" %}
+                </p>
                 <ul class="list-disc ml-4 text-black dark:text-white text-sm md:text-md">
                     <li>{% translate "Gather pit scouting data" %}</li>
                     <li>{% translate "Anyone can contribute data, and anyone can view it, no account needed" %}</li>

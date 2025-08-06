@@ -133,9 +133,9 @@
                      x-transition:enter.delay.300ms>
                     <p class="dark:text-white text-black text-sans text-center text-md">{% translate "Verify account" %}</p>
                     <p class="dark:text-white text-black text-sans text-center text-sm">
-                        <p class="dark:text-white text-black text-sans text-center text-sm mx-2 max-w-2xl opacity-80"
-                           x-text="'We sent a verification code to ' + forgot_password_email + '. Please check your email for a message from {{ EMAIL_HOST_USER }} and enter the verification code below'">
+                        <p x-text="'{{ _("We sent a verification code to %(email)s. Please check your email for a message from %(host)s and enter the verification code below") |escapejs }}' .replace('%(email)s', forgot_password_email) .replace('%(host)s', '{{ EMAIL_HOST_USER }}')">
                         </p>
+
                     </p>
 
                     <input class="ui_input w-full"
@@ -275,8 +275,7 @@
                      x-transition:enter.delay.300ms>
                     <p class="dark:text-white text-black text-sans text-center text-md">{% translate "Verify email" %}</p>
                     <p class="dark:text-white text-black text-sans text-center text-sm">
-                        <p class="dark:text-white text-black text-sans text-center text-sm mx-2 max-w-2xl opacity-80"
-                           x-text="'We sent a verification code to ' + user.email + '. Please check your email for a message from {{ EMAIL_HOST_USER }} and enter the verification code below'">
+                        <p x-text="'{{ _("We sent a verification code to %(email)s. Please check your email for a message from %(host)s and enter the verification code below") |escapejs }}' .replace('%(email)s', forgot_password_email) .replace('%(host)s', '{{ EMAIL_HOST_USER }}')">
                         </p>
                     </p>
 
