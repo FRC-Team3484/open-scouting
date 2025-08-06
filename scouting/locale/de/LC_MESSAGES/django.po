@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-06 12:46+0000\n"
+"POT-Creation-Date: 2025-08-06 12:49+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,6 +46,7 @@ msgstr ""
 
 #: main/templates/advanced_data/filters.html:40
 #: main/templates/advanced_data/filters.html:84
+#: main/templates/pits/pits.html:259
 msgid "Add"
 msgstr ""
 
@@ -221,6 +222,7 @@ msgid "Display Name"
 msgstr ""
 
 #: main/templates/authentication/authentication.html:216
+#: main/templates/pits/pits.html:280
 msgid "Team Number"
 msgstr ""
 
@@ -310,15 +312,16 @@ msgstr ""
 msgid "Please fill out all of the required fields"
 msgstr ""
 
-#: main/templates/contribute/header.html:29
+#: main/templates/contribute/header.html:29 main/templates/pits/header.html:29
 msgid "Add Scouting Reports"
 msgstr ""
 
-#: main/templates/contribute/header.html:32
+#: main/templates/contribute/header.html:32 main/templates/pits/header.html:32
 msgid "View Scouting Data"
 msgstr ""
 
 #: main/templates/contribute/header.html:35 main/templates/index/index.html:84
+#: main/templates/pits/header.html:35 main/templates/pits/header.html:37
 msgid "Pit Scouting"
 msgstr ""
 
@@ -330,16 +333,17 @@ msgstr ""
 msgid "Contributing data to event"
 msgstr ""
 
-#: main/templates/contribute/header.html:43
+#: main/templates/contribute/header.html:43 main/templates/pits/header.html:43
 msgid "as"
 msgstr ""
 
 #. Translators: Demo mode warning
 #: main/templates/contribute/header.html:50 main/templates/index/header.html:62
+#: main/templates/pits/header.html:50
 msgid "Open Scouting is in demo mode"
 msgstr ""
 
-#: main/templates/contribute/header.html:51
+#: main/templates/contribute/header.html:51 main/templates/pits/header.html:51
 msgid "Any contributed data will not be saved to the server"
 msgstr ""
 
@@ -398,10 +402,13 @@ msgid "Continue as"
 msgstr ""
 
 #: main/templates/index/authentication_box.html:37
+#: main/templates/profile/profile.html:50
 msgid "Sign Out"
 msgstr ""
 
 #: main/templates/index/authentication_box.html:41
+#: main/templates/profile/profile.html:76
+#: main/templates/profile/profile.html:87
 msgid "Edit Profile"
 msgstr ""
 
@@ -901,6 +908,119 @@ msgstr ""
 
 #: main/templates/menu/storage.html:81
 msgid "Pit scouting"
+msgstr ""
+
+#: main/templates/pits/header.html:41
+msgid "Viewing pits for"
+msgstr ""
+
+#: main/templates/pits/pits.html:40
+msgid "View All Pits"
+msgstr ""
+
+#: main/templates/pits/pits.html:44
+msgid "View Incomplete Pits"
+msgstr ""
+
+#: main/templates/pits/pits.html:48
+msgid "View Pits With No Data"
+msgstr ""
+
+#: main/templates/pits/pits.html:52
+msgid "View Completed Pits"
+msgstr ""
+
+#: main/templates/pits/pits.html:57
+msgid "Select a team number below to jump to that team in the list"
+msgstr ""
+
+#: main/templates/pits/pits.html:246
+msgid "Add Custom Question"
+msgstr ""
+
+#: main/templates/pits/pits.html:253
+msgid "Question"
+msgstr ""
+
+#: main/templates/pits/pits.html:268
+msgid "Is a team's pit not here yet?"
+msgstr ""
+
+#: main/templates/pits/pits.html:271
+msgid "Add a pit"
+msgstr ""
+
+#: main/templates/pits/pits.html:277
+msgid "Add a new pit"
+msgstr ""
+
+#: main/templates/pits/pits.html:286
+msgid "Add pit"
+msgstr ""
+
+#: main/templates/pits/pits.html:308
+msgid "Fetching data from server..."
+msgstr ""
+
+#: main/templates/pits/pits.html:312
+msgid "Unsaved changes"
+msgstr ""
+
+#: main/templates/pits/pits.html:316
+msgid "Changes saved"
+msgstr ""
+
+#: main/templates/pits/pits.html:320
+msgid "Syncing data..."
+msgstr ""
+
+#: main/templates/pits/pits.html:324
+msgid "Data saved offline"
+msgstr ""
+
+#: main/templates/profile/profile.html:48
+msgid "Back to home"
+msgstr ""
+
+#: main/templates/profile/profile.html:60
+msgid "Profile"
+msgstr ""
+
+#: main/templates/profile/profile.html:63
+msgid "Email:"
+msgstr ""
+
+#: main/templates/profile/profile.html:67
+msgid "Display Name:"
+msgstr ""
+
+#: main/templates/profile/profile.html:71
+msgid "Team Number:"
+msgstr ""
+
+#: main/templates/profile/profile.html:79
+#: main/templates/profile/profile.html:115
+msgid "Change Settings"
+msgstr ""
+
+#: main/templates/profile/profile.html:89
+#: main/templates/profile/profile.html:91
+msgid "Display name"
+msgstr ""
+
+#: main/templates/profile/profile.html:95
+#: main/templates/profile/profile.html:97
+msgid "Team number"
+msgstr ""
+
+#: main/templates/profile/profile.html:103
+#: main/templates/profile/profile.html:159
+msgid "Save Changes"
+msgstr ""
+
+#: main/templates/profile/profile.html:106
+#: main/templates/profile/profile.html:162
+msgid "Cancel Changes"
 msgstr ""
 
 #: scouting/settings.py:183
