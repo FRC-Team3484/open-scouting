@@ -40,15 +40,21 @@ LANGUAGES = (
 )
 ```
 
-Next, create the .po file:
+Next, create the .po file, for both the templates and JavaScript:
 ```bash
 cd scouting
 python manage.py makemessages -l es # Use the language code of your new language here
+python manage.py makemessages -l es -d djangojs # For JavaScript
 ```
 
-Now, subsequent runs of `python manage.py makemessages -all` will now update this file with any new translation strings
+Now, subsequent runs of `python manage.py makemessages -all` and `python manage.py makemessages --all -d djangojs` (for JavaScript) will now update this file with any new translation strings
 
 ## Translation strings
 For code contributors, you will need to mark strings in your templates and scripts as translatable, so they can be added to any `.po` files and eventually translated correctly.
 
-Read through the [official django docs](https://docs.djangoproject.com/en/5.2/topics/i18n/) for how to do this. Once you've added your translation strings, run `python manage.py makemessages -all` to add your new translation strings into the `.po` files.
+Read through the [official django docs](https://docs.djangoproject.com/en/5.2/topics/i18n/) for how to do this. Once you've added your translation strings, run the following commands to add your new translation strings into the `.po` files:
+```bash
+python manage.py makemessages --all
+python manage.py makemessages --all -d djangojs # For JavaScript
+python manage.py compilemessages
+```

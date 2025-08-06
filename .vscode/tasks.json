@@ -99,7 +99,7 @@
       {
         "label": "Make and update translation files",
         "type": "shell",
-        "command": "source .venv/bin/activate && cd scouting && python manage.py makemessages --all && python manage.py compilemessages",
+        "command": "source .venv/bin/activate && cd scouting && python manage.py makemessages --all && python manage.py makemessages -all -d djangojs && python manage.py compilemessages",
         "windows": {
           "command": ".venv\\Scripts\\activate && cd scouting && python manage.py test"
         },

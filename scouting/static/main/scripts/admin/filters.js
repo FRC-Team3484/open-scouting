@@ -120,8 +120,8 @@ document.addEventListener("alpine:init", () => {
 					window.dispatchEvent(
 						new CustomEvent("scouting_notification", {
 							detail: {
-								title: "Success",
-								message: "The admin operation was successful",
+								title: gettext("Success"),
+								message: gettext("The admin operation was successful"),
 								type: "success",
 								icon: "check-circle",
 							},

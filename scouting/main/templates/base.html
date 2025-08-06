@@ -46,6 +46,8 @@
             window.addEventListener("offline", () => globalThis.offline = true);
         </script>
 
+        <script src="{% url 'javascript-catalog' %}"></script>
+
         <script src="{% static '/main/scripts/db.js' %}"></script>
         <script src="{% static '/main/scripts/log.js' %}"></script>
         <script type="module" src="{% static '/main/scripts/version.js' %}"></script>
