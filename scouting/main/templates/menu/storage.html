@@ -15,8 +15,8 @@
      x-cloak>
     <div class="flex flex-row justify-between items-center w-full border-b-2 dark:border-slate-600 border-slate-300 px-6 py-4 mb-6">
         <div class="flex flex-col">
-            <p class="text-black dark:text-white text-2xl font-bold">Client side storage</p>
-            <p class="text-black dark:text-white text-sm">View and manage the storage used by the client</p>
+            <p class="text-black dark:text-white text-2xl font-bold">{% translate "Client side storage" %}</p>
+            <p class="text-black dark:text-white text-sm">{% translate "View and manage the storage used by the client" %}</p>
         </div>
 
         <button class="ui_button_icon" @click="storage_open = false">
@@ -24,9 +24,7 @@
         </button>
     </div>
 
-    <p class="text-black dark:text-white text-md mb-6">
-        An estimation of the storage used by the client and the storage that the browser has allocated for it. The total storage avaliable may fluctuate based off of the avaliable storage space on the user's device.
-    </p>
+    <p class="text-black dark:text-white text-md mb-6">{% translate "An estimation of the storage used by the client and the storage that the browser has allocated for it. The total storage avaliable may fluctuate based off of the avaliable storage space on the user's device." %}</p>
 
     <div class="flex flex-col w-full gap-2">
         <div class="flex flex-row gap-1">
@@ -35,7 +33,7 @@
             <p class="text-black dark:text-white text-md">/</p>
             <p class="text-black dark:text-white text-md"
                x-text="`${(total / 1024 / 1024).toFixed(2)} MB`"></p>
-            <p class="text-black dark:text-white text-md font-bold">used</p>
+            <p class="text-black dark:text-white text-md font-bold">{% translate "used" %}</p>
         </div>
 
         <div class="flex flex-row gap-2 items-center justify-center">
@@ -48,51 +46,46 @@
             </progress>
         </div>
 
-        <p class="text-black dark:text-white text-md my-6">
-            Clearing any of the items below is irreversible. If any items are indicated to be unsaved, those can be uploaded to the server in the main section of the menu
-        </p>
+        <p class="text-black dark:text-white text-md my-6">{% translate "Clearing any of the items below is irreversible. If any items are indicated to be unsaved, those can be uploaded to the server in the main section of the menu" %}</p>
 
         <div class="flex flex-row gap-1 flex-wrap">
             <button class="ui_button_small" @click="clear_backups_dialog()">
-                <i class="ph-bold ph-trash"></i> Clear
-            </button>
-            <p class="text-black dark:text-white text-md font-bold mx-2">Backed up scouting reports</p>
+                <i class="ph-bold ph-trash"></i>{% translate "Clear" %}</button>
+            <p class="text-black dark:text-white text-md font-bold mx-2">{% translate "Backed up scouting reports" %}</p>
             <p class="text-black dark:text-white text-md" x-text="report_backups"></p>
-            <p class="text-black dark:text-white text-md">items</p>
+            <p class="text-black dark:text-white text-md">{% translate "items" %}</p>
         </div>
         <div class="flex flex-row gap-1 flex-wrap">
             <button class="ui_button_small" @click="clear_offline_reports_dialog()">
-                <i class="ph-bold ph-trash"></i> Clear
-            </button>
+                <i class="ph-bold ph-trash"></i>{% translate "Clear" %}</button>
 
-            <p class="text-black dark:text-white text-md font-bold mx-2">Offline scouting reports</p>
+            <p class="text-black dark:text-white text-md font-bold mx-2">{% translate "Offline scouting reports" %}</p>
 
             <template x-if="offline_reports > 0">
                 <div class="flex flex-row gap-1">
                     <p class="text-orange-500 text-md" x-text="offline_reports"></p>
-                    <p class="text-orange-500 text-md">unsaved items</p>
+                    <p class="text-orange-500 text-md">{% translate "unsaved items" %}</p>
                 </div>
             </template>
 
             <template x-if="offline_reports === 0">
                 <div class="flex flex-row gap-1">
                     <p class="text-black dark:text-white text-md" x-text="offline_reports"></p>
-                    <p class="text-black dark:text-white text-md">items</p>
+                    <p class="text-black dark:text-white text-md">{% translate "items" %}</p>
                 </div>
             </template>
         </div>
         <div class="flex flex-row gap-1 flex-wrap">
             <button class="ui_button_small" @click="clear_pit_scouting_dialog()">
-                <i class="ph-bold ph-trash"></i> Clear
-            </button>
-            <p class="text-black dark:text-white text-md font-bold mx-2">Pit scouting</p>
+                <i class="ph-bold ph-trash"></i>{% translate "Clear" %}</button>
+            <p class="text-black dark:text-white text-md font-bold mx-2">{% translate "Pit scouting" %}</p>
             <p class="text-black dark:text-white text-md" x-text="pit_scouting"></p>
-            <p class="text-black dark:text-white text-md">items</p>
+            <p class="text-black dark:text-white text-md">{% translate "items" %}</p>
 
             <template x-if="pit_scouting_unsaved > 0">
                 <div class="flex flex-row gap-1">
                     <p class="text-orange-500 text-md ml-2" x-text="pit_scouting_unsaved"></p>
-                    <p class="text-orange-500 text-md">unsaved items</p>
+                    <p class="text-orange-500 text-md">{% translate "unsaved items" %}</p>
                 </div>
             </template>
         </div>

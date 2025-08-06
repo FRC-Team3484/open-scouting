@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: v0.1.11-alpha\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-06 12:44+0000\n"
+"POT-Creation-Date: 2025-08-06 12:46+0000\n"
 "PO-Revision-Date: 2025-08-05 12:29-0400\n"
 "Last-Translator: nfoert <nfoert@proton.me>\n"
 "Language-Team: Spanish\n"
@@ -209,6 +209,7 @@ msgid ""
 msgstr ""
 
 #: main/templates/authentication/authentication.html:194
+#: main/templates/menu/menu_report_backup_check.html:64
 msgid "Cancel"
 msgstr ""
 
@@ -552,6 +553,7 @@ msgid ""
 msgstr ""
 
 #: main/templates/index/header.html:19 main/templates/index/index.html:165
+#: main/templates/menu/menu.html:101
 msgid "Source Code"
 msgstr ""
 
@@ -669,6 +671,237 @@ msgstr ""
 
 #: main/templates/index/year_select.html:26
 msgid "with data this year"
+msgstr ""
+
+#: main/templates/menu/logs.html:18
+msgid "View client side logs"
+msgstr ""
+
+#: main/templates/menu/logs.html:19
+msgid "View the logs of the client, used for debugging and opening bug reports"
+msgstr ""
+
+#: main/templates/menu/logs.html:23
+msgid "Open GitHub Issues"
+msgstr ""
+
+#: main/templates/menu/logs.html:28
+msgid "Copy all logs"
+msgstr ""
+
+#: main/templates/menu/logs.html:30
+msgid "Download log file"
+msgstr ""
+
+#: main/templates/menu/logs.html:62
+msgid "Only the 100 most recent log entries are preserved on page reload"
+msgstr ""
+
+#: main/templates/menu/menu.html:85
+msgid "Light Mode"
+msgstr ""
+
+#: main/templates/menu/menu.html:86
+msgid "Dark Mode"
+msgstr ""
+
+#: main/templates/menu/menu.html:91
+msgid "Go Online"
+msgstr ""
+
+#: main/templates/menu/menu.html:92
+msgid "Go Offline"
+msgstr ""
+
+#: main/templates/menu/menu.html:98
+msgid "Home"
+msgstr ""
+
+#: main/templates/menu/menu.html:103
+msgid "Changelog"
+msgstr ""
+
+#: main/templates/menu/menu.html:105
+msgid "Report a Bug"
+msgstr ""
+
+#: main/templates/menu/menu.html:111
+msgid "Language"
+msgstr ""
+
+#: main/templates/menu/menu.html:117
+msgid "Select Language"
+msgstr ""
+
+#: main/templates/menu/menu.html:133
+msgid "Upload scouting reports"
+msgstr ""
+
+#: main/templates/menu/menu.html:134
+msgid ""
+"While you were offline, some reports were saved locally. You should upload "
+"them to ensure that they've been saved to the server."
+msgstr ""
+
+#: main/templates/menu/menu.html:139 main/templates/menu/menu.html:154
+msgid "Upload"
+msgstr ""
+
+#: main/templates/menu/menu.html:148
+msgid "Upload pit scouting data"
+msgstr ""
+
+#: main/templates/menu/menu.html:149
+msgid ""
+"While you were offline, some pit scouting data was saved locally. You should "
+"upload them to ensure that they've been saved to the server."
+msgstr ""
+
+#: main/templates/menu/menu.html:160
+#: main/templates/menu/menu_report_backup_check.html:17
+msgid "Check Backed Up Scouting Reports"
+msgstr ""
+
+#: main/templates/menu/menu.html:166
+msgid "Manage Storage"
+msgstr ""
+
+#: main/templates/menu/menu.html:169
+msgid "Low Storage remaining"
+msgstr ""
+
+#: main/templates/menu/menu.html:175
+msgid "Credits"
+msgstr ""
+
+#: main/templates/menu/menu.html:178
+msgid "Created by"
+msgstr ""
+
+#: main/templates/menu/menu.html:179
+msgid "3484 Short Circuit"
+msgstr ""
+
+#: main/templates/menu/menu.html:181
+msgid "Powered by"
+msgstr ""
+
+#: main/templates/menu/menu.html:182
+msgid "The Blue Alliance"
+msgstr ""
+
+#: main/templates/menu/menu.html:190
+msgid "Developer Settings"
+msgstr ""
+
+#: main/templates/menu/menu.html:197
+msgid "View logs"
+msgstr ""
+
+#: main/templates/menu/menu.html:200
+msgid "Clear saved match reports, pit scouting data, and backups"
+msgstr ""
+
+#: main/templates/menu/menu.html:204
+msgid "Network-first service worker"
+msgstr ""
+
+#: main/templates/menu/menu.html:208
+msgid "Cache-first service worker"
+msgstr ""
+
+#: main/templates/menu/menu.html:211
+msgid "Clear service worker cache"
+msgstr ""
+
+#: main/templates/menu/menu_report_backup_check.html:18
+msgid ""
+"Check to ensure that your scouting reports have been saved on the server. "
+"Copies are saved locally in case of request or network failure."
+msgstr ""
+
+#: main/templates/menu/menu_report_backup_check.html:29
+msgid "Checkable reports"
+msgstr ""
+
+#: main/templates/menu/menu_report_backup_check.html:33
+msgid "Check Reports"
+msgstr ""
+
+#: main/templates/menu/menu_report_backup_check.html:39
+msgid "Reports have been checked with the server"
+msgstr ""
+
+#: main/templates/menu/menu_report_backup_check.html:40
+msgid "If they were missing, they were automatically uploaded"
+msgstr ""
+
+#: main/templates/menu/menu_report_backup_check.html:45
+msgid "Backed up reports found on the server"
+msgstr ""
+
+#: main/templates/menu/menu_report_backup_check.html:51
+msgid "Backed up reports not found on the server"
+msgstr ""
+
+#: main/templates/menu/menu_report_backup_check.html:57
+msgid "Clear Saved Reports"
+msgstr ""
+
+#: main/templates/menu/menu_report_backup_check.html:67
+msgid "Confirm"
+msgstr ""
+
+#: main/templates/menu/storage.html:18
+msgid "Client side storage"
+msgstr ""
+
+#: main/templates/menu/storage.html:19
+msgid "View and manage the storage used by the client"
+msgstr ""
+
+#: main/templates/menu/storage.html:27
+msgid ""
+"An estimation of the storage used by the client and the storage that the "
+"browser has allocated for it. The total storage avaliable may fluctuate "
+"based off of the avaliable storage space on the user's device."
+msgstr ""
+
+#: main/templates/menu/storage.html:36
+msgid "used"
+msgstr ""
+
+#: main/templates/menu/storage.html:49
+msgid ""
+"Clearing any of the items below is irreversible. If any items are indicated "
+"to be unsaved, those can be uploaded to the server in the main section of "
+"the menu"
+msgstr ""
+
+#: main/templates/menu/storage.html:53 main/templates/menu/storage.html:60
+#: main/templates/menu/storage.html:80
+msgid "Clear"
+msgstr ""
+
+#: main/templates/menu/storage.html:54
+msgid "Backed up scouting reports"
+msgstr ""
+
+#: main/templates/menu/storage.html:56 main/templates/menu/storage.html:74
+#: main/templates/menu/storage.html:83
+msgid "items"
+msgstr ""
+
+#: main/templates/menu/storage.html:62
+msgid "Offline scouting reports"
+msgstr ""
+
+#: main/templates/menu/storage.html:67 main/templates/menu/storage.html:88
+msgid "unsaved items"
+msgstr ""
+
+#: main/templates/menu/storage.html:81
+msgid "Pit scouting"
 msgstr ""
 
 #: scouting/settings.py:183
