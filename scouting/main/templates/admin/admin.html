@@ -35,15 +35,14 @@
                      src="{% static '/main/images/icon_rounded.png' %}"
                      @click="window.location.href = '{{ SERVER_IP }}'">
                 <div class="flex flex-col">
-                    <p class="dark:text-white text-black text-sans text-2xl">Admin Dashboard</p>
-                    <p class="dark:text-white text-black text-sans text-md">
-                        Viewing as <span class="font-bold">{{ user.profile.display_name }}</span> <span class="opacity-50">({{ user.email }})</span>
+                    <p class="dark:text-white text-black text-sans text-2xl">{% translate "Admin Dashboard" %}</p>
+                    <p class="dark:text-white text-black text-sans text-md">{% translate "Viewing as" %}<span class="font-bold">{{ user.profile.display_name }}</span> <span class="opacity-50">({{ user.email }})</span>
                     </p>
                 </div>
             </div>
 
             <button class="ui_button_small"
-                    @click="window.location.href = window.location.href.replace(/\/ui\/?$/, '')">Django Admin</button>
+                    @click="window.location.href = window.location.href.replace(/\/ui\/?$/, '')">{% translate "Django Admin" %}</button>
         </div>
 
         {% include "admin/analytics.html" %}

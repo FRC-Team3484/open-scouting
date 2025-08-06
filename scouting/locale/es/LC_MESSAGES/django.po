@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: v0.1.11-alpha\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-06 12:51+0000\n"
+"POT-Creation-Date: 2025-08-06 12:57+0000\n"
 "PO-Revision-Date: 2025-08-05 12:29-0400\n"
 "Last-Translator: nfoert <nfoert@proton.me>\n"
 "Language-Team: Spanish\n"
@@ -19,13 +19,295 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Gtranslator 48.0\n"
 
+#: main/templates/admin/admin.html:38
+#: main/templates/index/authentication_box.html:47
+msgid "Admin Dashboard"
+msgstr ""
+
+#: main/templates/admin/admin.html:39
+msgid "Viewing as"
+msgstr ""
+
+#: main/templates/admin/admin.html:45
+#: main/templates/index/authentication_box.html:52
+msgid "Django Admin"
+msgstr ""
+
+#: main/templates/admin/analytics.html:11
+msgid "Page view analytics"
+msgstr ""
+
+#: main/templates/admin/analytics.html:25
+msgid "Last hour"
+msgstr ""
+
+#: main/templates/admin/analytics.html:31
+msgid "Last 12 hours"
+msgstr ""
+
+#: main/templates/admin/analytics.html:37
+msgid "Last 24 hours"
+msgstr ""
+
+#: main/templates/admin/analytics.html:43
+msgid "Last 3 days"
+msgstr ""
+
+#: main/templates/admin/analytics.html:49
+msgid "Last 7 days"
+msgstr ""
+
+#: main/templates/admin/analytics.html:55
+msgid "Last month"
+msgstr ""
+
+#: main/templates/admin/analytics.html:61
+msgid "Last 3 months"
+msgstr ""
+
+#: main/templates/admin/analytics.html:67
+msgid "Last 6 months"
+msgstr ""
+
+#: main/templates/admin/analytics.html:73
+msgid "Last year"
+msgstr ""
+
+#: main/templates/admin/analytics.html:79
+msgid "All time"
+msgstr ""
+
+#: main/templates/admin/filters.html:10
+#: main/templates/advanced_data/filters.html:14
+msgid "Filters"
+msgstr ""
+
+#: main/templates/admin/filters.html:14
+msgid "Select a type..."
+msgstr ""
+
+#: main/templates/admin/filters.html:15
+msgid "Data"
+msgstr ""
+
+#: main/templates/admin/filters.html:16 main/templates/admin/filters.html:65
+#: main/templates/admin/filters.html:339
+msgid "Event"
+msgstr ""
+
+#: main/templates/admin/filters.html:17 main/templates/admin/filters.html:105
+msgid "User"
+msgstr ""
+
+#: main/templates/admin/filters.html:18
+msgid "Pit"
+msgstr ""
+
+#: main/templates/admin/filters.html:21
+msgid "Type"
+msgstr ""
+
+#: main/templates/admin/filters.html:21
+msgid "What type of data to view or edit"
+msgstr ""
+
+#: main/templates/admin/filters.html:25
+#: main/templates/advanced_data/filters.html:124
+msgid "Clear Filters"
+msgstr ""
+
+#: main/templates/admin/filters.html:39 main/templates/admin/filters.html:79
+#: main/templates/admin/filters.html:121 main/templates/admin/filters.html:171
+#: main/templates/admin/filters.html:216 main/templates/admin/filters.html:262
+#: main/templates/admin/filters.html:310 main/templates/admin/filters.html:354
+#: main/templates/advanced_data/filters.html:44
+#: main/templates/advanced_data/filters.html:89
+#: main/templates/pits/pits.html:266
+msgid "Add"
+msgstr ""
+
+#: main/templates/admin/filters.html:49 main/templates/admin/filters.html:322
+#: main/templates/advanced_data/filters.html:100
+#: main/templates/index/events.html:57
+msgid "Search for an event..."
+msgstr ""
+
+#: main/templates/admin/filters.html:65
+msgid "Filter data by event"
+msgstr ""
+
+#: main/templates/admin/filters.html:89
+msgid "Search for a user..."
+msgstr ""
+
+#: main/templates/admin/filters.html:105
+msgid "Filter data by user"
+msgstr ""
+
+#: main/templates/admin/filters.html:131 main/templates/admin/filters.html:366
+msgid "Search for a year..."
+msgstr ""
+
+#: main/templates/admin/filters.html:148 main/templates/admin/filters.html:384
+#: main/templates/advanced_data/filters.html:20
+#: main/templates/index/create_custom_event.html:34
+#: main/templates/index/create_custom_event.html:67
+#: main/templates/index/year_select.html:15
+msgid "Year"
+msgstr ""
+
+#: main/templates/admin/filters.html:148
+msgid "Filter events by year"
+msgstr ""
+
+#: main/templates/admin/filters.html:156
+#: main/templates/index/create_custom_event.html:28
+msgid "Name"
+msgstr ""
+
+#: main/templates/admin/filters.html:156
+msgid "Filter events by name"
+msgstr ""
+
+#: main/templates/admin/filters.html:181
+msgid "Search for an event code..."
+msgstr ""
+
+#: main/templates/admin/filters.html:198
+msgid "Event Code"
+msgstr ""
+
+#: main/templates/admin/filters.html:198
+msgid "Filter events by event code"
+msgstr ""
+
+#: main/templates/admin/filters.html:228
+msgid "Search usernames..."
+msgstr ""
+
+#: main/templates/admin/filters.html:246
+msgid "Username"
+msgstr ""
+
+#: main/templates/admin/filters.html:246
+msgid "Filter users by username"
+msgstr ""
+
+#: main/templates/admin/filters.html:274
+msgid "Search team numbers..."
+msgstr ""
+
+#: main/templates/admin/filters.html:292
+#: main/templates/authentication/authentication.html:217
+#: main/templates/pits/pits.html:289
+msgid "Team Number"
+msgstr ""
+
+#: main/templates/admin/filters.html:292
+msgid "Filter users by team"
+msgstr ""
+
+#: main/templates/admin/filters.html:339
+msgid "Filter pits by event"
+msgstr ""
+
+#: main/templates/admin/filters.html:384
+msgid "Filter pits by year"
+msgstr ""
+
+#: main/templates/admin/filters.html:406
+msgid "'s data from"
+msgstr ""
+
+#: main/templates/admin/filters.html:416 main/templates/admin/filters.html:485
+#: main/templates/admin/filters.html:623 main/templates/admin/filters.html:628
+msgid "Created on"
+msgstr ""
+
+#: main/templates/admin/filters.html:421 main/templates/admin/filters.html:490
+msgid "by"
+msgstr ""
+
+#: main/templates/admin/filters.html:426 main/templates/admin/filters.html:475
+#: main/templates/admin/filters.html:495 main/templates/admin/filters.html:612
+msgid "from"
+msgstr ""
+
+#: main/templates/admin/filters.html:435 main/templates/index/index.html:80
+msgid "View data"
+msgstr ""
+
+#: main/templates/admin/filters.html:436
+msgid "Hide data"
+msgstr ""
+
+#: main/templates/admin/filters.html:437
+msgid "Download data"
+msgstr ""
+
+#: main/templates/admin/filters.html:440 main/templates/admin/filters.html:638
+msgid "Delete"
+msgstr ""
+
+#: main/templates/admin/filters.html:470
+msgid "Custom"
+msgstr ""
+
+#: main/templates/admin/filters.html:504
+msgid "scouting reports"
+msgstr ""
+
+#: main/templates/admin/filters.html:508
+msgid "pits"
+msgstr ""
+
+#: main/templates/admin/filters.html:516
+msgid "Delete event"
+msgstr ""
+
+#: main/templates/admin/filters.html:519
+msgid "Delete data under event"
+msgstr ""
+
+#: main/templates/admin/filters.html:522
+msgid "Delete pits under event"
+msgstr ""
+
+#: main/templates/admin/filters.html:546
+msgid "Banned"
+msgstr ""
+
+#: main/templates/admin/filters.html:550
+msgid "Staff"
+msgstr ""
+
+#: main/templates/admin/filters.html:554
+msgid "Superuser"
+msgstr ""
+
+#: main/templates/admin/filters.html:568
+msgid "Account created on"
+msgstr ""
+
+#: main/templates/admin/filters.html:578
+msgid "Delete user"
+msgstr ""
+
+#: main/templates/admin/filters.html:581
+msgid "Ban user"
+msgstr ""
+
+#: main/templates/admin/filters.html:584
+msgid "Unban user"
+msgstr ""
+
+#: main/templates/admin/filters.html:608
+msgid "'s pit at"
+msgstr ""
+
 #: main/templates/advanced_data/advanced_data.html:29
 #: main/templates/index/authentication_box.html:84
 msgid "Advanced Data View"
-msgstr ""
-
-#: main/templates/advanced_data/filters.html:14
-msgid "Filters"
 msgstr ""
 
 #: main/templates/advanced_data/filters.html:17
@@ -34,21 +316,8 @@ msgid ""
 "event is shown, only data from that team recorded at that event is shown"
 msgstr ""
 
-#: main/templates/advanced_data/filters.html:20
-#: main/templates/index/create_custom_event.html:34
-#: main/templates/index/create_custom_event.html:67
-#: main/templates/index/year_select.html:15
-msgid "Year"
-msgstr ""
-
 #: main/templates/advanced_data/filters.html:30
 msgid "Teams"
-msgstr ""
-
-#: main/templates/advanced_data/filters.html:44
-#: main/templates/advanced_data/filters.html:89
-#: main/templates/pits/pits.html:266
-msgid "Add"
 msgstr ""
 
 #: main/templates/advanced_data/filters.html:55
@@ -57,15 +326,6 @@ msgstr ""
 
 #: main/templates/advanced_data/filters.html:78
 msgid "Events"
-msgstr ""
-
-#: main/templates/advanced_data/filters.html:100
-#: main/templates/index/events.html:57
-msgid "Search for an event..."
-msgstr ""
-
-#: main/templates/advanced_data/filters.html:124
-msgid "Clear Filters"
 msgstr ""
 
 #: main/templates/advanced_data/filters.html:128
@@ -220,11 +480,6 @@ msgstr ""
 
 #: main/templates/authentication/authentication.html:212
 msgid "Display Name"
-msgstr ""
-
-#: main/templates/authentication/authentication.html:217
-#: main/templates/pits/pits.html:289
-msgid "Team Number"
 msgstr ""
 
 #: main/templates/authentication/authentication.html:239
@@ -413,14 +668,6 @@ msgstr ""
 msgid "Edit Profile"
 msgstr ""
 
-#: main/templates/index/authentication_box.html:47
-msgid "Admin Dashboard"
-msgstr ""
-
-#: main/templates/index/authentication_box.html:52
-msgid "Django Admin"
-msgstr ""
-
 #: main/templates/index/authentication_box.html:60
 msgid "Continue without account"
 msgstr ""
@@ -446,10 +693,6 @@ msgid ""
 "Custom events are used when an event isn't present in The Blue Alliance. "
 "Creating a custom event makes this event available to all users across Open "
 "Scouting to contribute and view data for."
-msgstr ""
-
-#: main/templates/index/create_custom_event.html:28
-msgid "Name"
 msgstr ""
 
 #: main/templates/index/create_custom_event.html:31
@@ -582,10 +825,6 @@ msgstr ""
 
 #: main/templates/index/index.html:77
 msgid "Contribute data to the server"
-msgstr ""
-
-#: main/templates/index/index.html:80
-msgid "View data"
 msgstr ""
 
 #: main/templates/index/index.html:81
