@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: v0.1.11-alpha\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-05 18:11+0000\n"
+"POT-Creation-Date: 2025-08-06 12:44+0000\n"
 "PO-Revision-Date: 2025-08-05 12:29-0400\n"
 "Last-Translator: nfoert <nfoert@proton.me>\n"
 "Language-Team: Spanish\n"
@@ -115,161 +115,278 @@ msgid "Sign in or create an account"
 msgstr ""
 
 #: main/templates/authentication/authentication.html:41
-#: main/templates/authentication/authentication.html:65
-#: main/templates/authentication/authentication.html:180
-#: main/templates/authentication/authentication.html:365
+#: main/templates/authentication/authentication.html:66
+#: main/templates/authentication/authentication.html:188
+#: main/templates/authentication/authentication.html:387
 msgid "Sign in"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:52
-#: main/templates/authentication/authentication.html:108
-#: main/templates/authentication/authentication.html:235
+#: main/templates/authentication/authentication.html:53
+#: main/templates/authentication/authentication.html:112
+#: main/templates/authentication/authentication.html:247
 msgid "Email"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:57
-#: main/templates/authentication/authentication.html:158
-#: main/templates/authentication/authentication.html:318
+#: main/templates/authentication/authentication.html:58
+#: main/templates/authentication/authentication.html:165
+#: main/templates/authentication/authentication.html:337
 msgid "Password"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:73
+#: main/templates/authentication/authentication.html:75
 msgid "Show Password"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:76
+#: main/templates/authentication/authentication.html:78
 msgid "Hide Password"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:79
-#: main/templates/authentication/authentication.html:94
+#: main/templates/authentication/authentication.html:81
+#: main/templates/authentication/authentication.html:97
 msgid "Reset password"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:84
-#: main/templates/authentication/authentication.html:363
+#: main/templates/authentication/authentication.html:86
+#: main/templates/authentication/authentication.html:385
 #: main/templates/index/authentication_box.html:80
 msgid "Or..."
 msgstr ""
 
-#: main/templates/authentication/authentication.html:86
-#: main/templates/authentication/authentication.html:193
-#: main/templates/authentication/authentication.html:343
+#: main/templates/authentication/authentication.html:88
+#: main/templates/authentication/authentication.html:203
+#: main/templates/authentication/authentication.html:363
 msgid "Create Account"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:106
+#: main/templates/authentication/authentication.html:110
 msgid "Enter the email to the account you'd like to change"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:116
+#: main/templates/authentication/authentication.html:120
 msgid "Send reset email"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:121
-#: main/templates/authentication/authentication.html:254
+#: main/templates/authentication/authentication.html:126
+#: main/templates/authentication/authentication.html:268
 msgid "Sending Verification Code..."
 msgstr ""
 
-#: main/templates/authentication/authentication.html:128
+#: main/templates/authentication/authentication.html:133
 msgid "Verify account"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:136
-#: main/templates/authentication/authentication.html:276
+#: main/templates/authentication/authentication.html:141
+#: main/templates/authentication/authentication.html:290
 msgid "Verification Code"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:145
-#: main/templates/authentication/authentication.html:287
+#: main/templates/authentication/authentication.html:150
+#: main/templates/authentication/authentication.html:302
 msgid "Verify"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:149
-#: main/templates/authentication/authentication.html:293
+#: main/templates/authentication/authentication.html:155
+#: main/templates/authentication/authentication.html:309
 msgid "Resend Code"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:155
+#: main/templates/authentication/authentication.html:162
 msgid "Enter new password"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:166
+#: main/templates/authentication/authentication.html:173
 msgid "Change Password"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:172
+#: main/templates/authentication/authentication.html:180
 msgid "Your password has been successfully changed!"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:176
+#: main/templates/authentication/authentication.html:184
 msgid ""
 "You will be redirected in a few moments, or you can press the button below "
 "to sign in"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:185
+#: main/templates/authentication/authentication.html:194
 msgid "Cancel"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:198
+#: main/templates/authentication/authentication.html:209
 msgid "Enter display name and team number"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:200
+#: main/templates/authentication/authentication.html:211
 msgid "Display Name"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:205
+#: main/templates/authentication/authentication.html:216
 msgid "Team Number"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:227
-#: main/templates/authentication/authentication.html:247
+#: main/templates/authentication/authentication.html:238
+#: main/templates/authentication/authentication.html:260
 #: main/templates/index/authentication_box.html:76
 #: main/templates/index/year_select.html:30
 msgid "Next"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:233
+#: main/templates/authentication/authentication.html:245
 msgid "Enter email"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:242
-#: main/templates/authentication/authentication.html:283
-#: main/templates/authentication/authentication.html:339
+#: main/templates/authentication/authentication.html:254
+#: main/templates/authentication/authentication.html:297
+#: main/templates/authentication/authentication.html:358
 msgid "Start Over"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:261
+#: main/templates/authentication/authentication.html:275
 msgid "Verify email"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:299
+#: main/templates/authentication/authentication.html:316
 msgid "Create password"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:300
+#: main/templates/authentication/authentication.html:318
 msgid ""
 "Secure passwords are longer than 8 characters, contain numbers and symbols, "
 "and have capital and lowercase letters."
 msgstr ""
 
-#: main/templates/authentication/authentication.html:328
+#: main/templates/authentication/authentication.html:347
 msgid "Show"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:350
+#: main/templates/authentication/authentication.html:371
 msgid "Your account has been successfully created!"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:354
+#: main/templates/authentication/authentication.html:375
 msgid ""
 "You will be redirected in a few moments, or you can press the button below"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:358
+#: main/templates/authentication/authentication.html:379
 msgid "Go to Home"
+msgstr ""
+
+#: main/templates/contribute/contribute.html:34
+msgid "The data has been successfully submitted"
+msgstr ""
+
+#: main/templates/contribute/contribute.html:64
+msgid ""
+"The data has been successfully stored locally. It will be uploaded when you "
+"go online."
+msgstr ""
+
+#: main/templates/contribute/contribute.html:94
+msgid "The data isn't submitted to the server while you're in demo mode"
+msgstr ""
+
+#: main/templates/contribute/contribute.html:129
+msgid "Submit"
+msgstr ""
+
+#: main/templates/contribute/contribute.html:142
+msgid "Export report as JSON"
+msgstr ""
+
+#: main/templates/contribute/contribute.html:144
+msgid "Import JSON report"
+msgstr ""
+
+#: main/templates/contribute/contribute.html:152
+msgid "Clear and reset"
+msgstr ""
+
+#: main/templates/contribute/contribute.html:155
+msgid "Save report offline"
+msgstr ""
+
+#: main/templates/contribute/contribute.html:160
+msgid "Please fill out all of the required fields"
+msgstr ""
+
+#: main/templates/contribute/header.html:29
+msgid "Add Scouting Reports"
+msgstr ""
+
+#: main/templates/contribute/header.html:32
+msgid "View Scouting Data"
+msgstr ""
+
+#: main/templates/contribute/header.html:35 main/templates/index/index.html:84
+msgid "Pit Scouting"
+msgstr ""
+
+#: main/templates/contribute/header.html:37 main/templates/index/index.html:76
+msgid "Contribute"
+msgstr ""
+
+#: main/templates/contribute/header.html:41
+msgid "Contributing data to event"
+msgstr ""
+
+#: main/templates/contribute/header.html:43
+msgid "as"
+msgstr ""
+
+#. Translators: Demo mode warning
+#: main/templates/contribute/header.html:50 main/templates/index/header.html:62
+msgid "Open Scouting is in demo mode"
+msgstr ""
+
+#: main/templates/contribute/header.html:51
+msgid "Any contributed data will not be saved to the server"
+msgstr ""
+
+#: main/templates/contribute/team_information.html:16
+msgid "Select position to watch"
+msgstr ""
+
+#: main/templates/contribute/team_information.html:18
+msgid "Experimental"
+msgstr ""
+
+#: main/templates/contribute/team_information.html:20
+msgid ""
+"While scouting, watch teams during a match based on their position in the "
+"driver stations or on the screen. For example, if you select \\"
+msgstr ""
+
+#: main/templates/contribute/team_information.html:21
+msgid "In some cases data may be inaccurate or unavailable. Set to \\"
+msgstr ""
+
+#: main/templates/contribute/team_information.html:27
+msgid "None"
+msgstr ""
+
+#: main/templates/contribute/team_information.html:28
+msgid "Red 1"
+msgstr ""
+
+#: main/templates/contribute/team_information.html:29
+msgid "Red 2"
+msgstr ""
+
+#: main/templates/contribute/team_information.html:30
+msgid "Red 3"
+msgstr ""
+
+#: main/templates/contribute/team_information.html:31
+msgid "Blue 1"
+msgstr ""
+
+#: main/templates/contribute/team_information.html:32
+msgid "Blue 2"
+msgstr ""
+
+#: main/templates/contribute/team_information.html:33
+msgid "Blue 3"
 msgstr ""
 
 #: main/templates/index/authentication_box.html:12
@@ -446,21 +563,12 @@ msgstr ""
 msgid "Releases"
 msgstr ""
 
-#. Translators: Demo mode warning
-#: main/templates/index/header.html:62
-msgid "Open Scouting is in demo mode"
-msgstr ""
-
 #: main/templates/index/index.html:58
 msgid "Event Actions"
 msgstr ""
 
 #: main/templates/index/index.html:61
 msgid "Contribute Data"
-msgstr ""
-
-#: main/templates/index/index.html:76
-msgid "Contribute"
 msgstr ""
 
 #: main/templates/index/index.html:77
@@ -473,10 +581,6 @@ msgstr ""
 
 #: main/templates/index/index.html:81
 msgid "View data for this event in the advanced data view"
-msgstr ""
-
-#: main/templates/index/index.html:84
-msgid "Pit Scouting"
 msgstr ""
 
 #: main/templates/index/index.html:85
