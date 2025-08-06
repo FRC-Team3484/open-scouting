@@ -108,7 +108,8 @@
         <div class="flex flex-col pt-6 w-full">
             <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"
                     @click="language_open = !language_open">
-                <i class="ph-bold ph-globe" x-show="!language_open"></i><i class="ph-bold ph-x" x-show="language_open"></i>{% translate "Language" %}</button>
+                <i class="ph-bold ph-globe" x-show="!language_open"></i><i class="ph-bold ph-x" x-show="language_open"></i>{% translate "Language" %}
+            </button>
         </div>
 
         <div class="flex flex-col w-full dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg p-2 mt-6 pl-4"
@@ -120,7 +121,10 @@
             {% get_language_info_list for LANGUAGES as languages %}
 
             <div class="flex flex-row flex-wrap gap-2 mt-2">
-                {% for language in languages %}<button class="ui_button_small" @click="set_language('{{ language.code }}')">{{ language.name }}</button>{% endfor %}
+                {% for language in languages %}
+                    <button class="ui_button_small {% if language.code == CURRENT_LANGUAGE %}opacity-50 pointer-events-none{% endif %}"
+                            @click="set_language('{{ language.code }}')">{{ language.name }}</button>
+                {% endfor %}
             </div>
         </div>
 
@@ -131,12 +135,15 @@
                 <i class="ph-bold ph-cloud-arrow-up dark:text-white text-black text-4xl mr-2"></i>
                 <div class="flex flex-col">
                     <p class="dark:text-white text-black text-lg text-sans font-bold">{% translate "Upload scouting reports" %}</p>
-                    <p class="dark:text-white text-black text-md text-sans">{% translate "While you were offline, some reports were saved locally. You should upload them to ensure that they've been saved to the server." %}</p>
+                    <p class="dark:text-white text-black text-md text-sans">
+                        {% translate "While you were offline, some reports were saved locally. You should upload them to ensure that they've been saved to the server." %}
+                    </p>
                 </div>
             </div>
 
             <button class="ui_button" @click="upload_offline_reports()">
-                <i class="ph-bold ph-cloud-arrow-up"></i>{% translate "Upload" %}</button>
+                <i class="ph-bold ph-cloud-arrow-up"></i>{% translate "Upload" %}
+            </button>
         </div>
 
         <div x-show="offline_pit_scouting"
@@ -146,24 +153,29 @@
                 <i class="ph-bold ph-cloud-arrow-up dark:text-white text-black text-4xl mr-2"></i>
                 <div class="flex flex-col">
                     <p class="dark:text-white text-black text-lg text-sans font-bold">{% translate "Upload pit scouting data" %}</p>
-                    <p class="dark:text-white text-black text-md text-sans">{% translate "While you were offline, some pit scouting data was saved locally. You should upload them to ensure that they've been saved to the server." %}</p>
+                    <p class="dark:text-white text-black text-md text-sans">
+                        {% translate "While you were offline, some pit scouting data was saved locally. You should upload them to ensure that they've been saved to the server." %}
+                    </p>
                 </div>
             </div>
 
             <button class="ui_button" @click="upload_offline_pit_scouting()">
-                <i class="ph-bold ph-cloud-arrow-up"></i>{% translate "Upload" %}</button>
+                <i class="ph-bold ph-cloud-arrow-up"></i>{% translate "Upload" %}
+            </button>
         </div>
 
         <div class="flex flex-col pt-6 w-full">
             <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"
                     @click="mrbc_open = true">
-                <i class="ph-bold ph-seal-check"></i>{% translate "Check Backed Up Scouting Reports" %}</button>
+                <i class="ph-bold ph-seal-check"></i>{% translate "Check Backed Up Scouting Reports" %}
+            </button>
         </div>
 
         <div class="flex flex-col pt-6 w-full">
             <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"
                     @click="storage_open = true">
-                <i class="ph-bold ph-floppy-disk"></i>{% translate "Manage Storage" %}</button>
+                <i class="ph-bold ph-floppy-disk"></i>{% translate "Manage Storage" %}
+            </button>
 
             <p x-show="storage_warning"
                class="text-orange-500 font-bold ml-auto mr-auto mt-1">{% translate "Low Storage remaining" %}</p>
@@ -172,14 +184,17 @@
         <div class="flex flex-col pt-6 w-full">
             <button @click="credits_open = !credits_open"
                     class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md w-full duration-300">
-                <i x-show="!credits_open" class="ph-bold ph-heart"></i> <i x-show="credits_open" class="ph-bold ph-x"></i>{% translate "Credits" %}</button>
+                <i x-show="!credits_open" class="ph-bold ph-heart"></i> <i x-show="credits_open" class="ph-bold ph-x"></i>{% translate "Credits" %}
+            </button>
 
             <div x-show="credits_open" x-collapse class="mx-6">
-                <p class="dark:text-white text-black text-md pt-2">{% translate "Created by" %}<a href="https://www.thebluealliance.com/team/3484"
-    class="dark:text-blue-400 text-blue-600 dark:hover:text-blue-500 hover:text-blue-700 transition-colors">{% translate "3484 Short Circuit" %}</a>
+                <p class="dark:text-white text-black text-md pt-2">
+                    {% translate "Created by" %}<a href="https://www.thebluealliance.com/team/3484"
+   class="dark:text-blue-400 text-blue-600 dark:hover:text-blue-500 hover:text-blue-700 transition-colors">{% translate "3484 Short Circuit" %}</a>
                 </p>
-                <p class="dark:text-white text-black text-md pt-2">{% translate "Powered by" %}<a href="https://www.thebluealliance.com"
-    class="dark:text-blue-400 text-blue-600 dark:hover:text-blue-500 hover:text-blue-700 transition-colors">{% translate "The Blue Alliance" %}</a>
+                <p class="dark:text-white text-black text-md pt-2">
+                    {% translate "Powered by" %}<a href="https://www.thebluealliance.com"
+   class="dark:text-blue-400 text-blue-600 dark:hover:text-blue-500 hover:text-blue-700 transition-colors">{% translate "The Blue Alliance" %}</a>
                 </p>
             </div>
         </div>
@@ -187,28 +202,34 @@
         <div class="flex flex-col pt-6 w-full">
             <button @click="developer_open = !developer_open; if (developer_open) $dispatch('developer_open', developer_open)"
                     class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md w-full duration-300">
-                <i x-show="!developer_open" class="ph-bold ph-bug"></i> <i x-show="developer_open" class="ph-bold ph-x"></i>{% translate "Developer Settings" %}</button>
+                <i x-show="!developer_open" class="ph-bold ph-bug"></i> <i x-show="developer_open" class="ph-bold ph-x"></i>{% translate "Developer Settings" %}
+            </button>
 
             <div x-show="developer_open"
                  x-collapse
                  class="grid=cols-2 grid gap-x-2 gap-y-2 pt-6 mx-6">
                 <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"
                         @click="logs_open = true">
-                    <i class="ph-bold ph-notebook"></i>{% translate "View logs" %}</button>
+                    <i class="ph-bold ph-notebook"></i>{% translate "View logs" %}
+                </button>
                 <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"
                         @click="clear_database()">
-                    <i class="ph-bold ph-trash"></i>{% translate "Clear saved match reports, pit scouting data, and backups" %}</button>
+                    <i class="ph-bold ph-trash"></i>{% translate "Clear saved match reports, pit scouting data, and backups" %}
+                </button>
                 <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"
                         @click="toggle_service_worker_mode()"
                         x-show="service_worker_cache_first">
-                    <i class="ph-bold ph-network"></i>{% translate "Network-first service worker" %}</button>
+                    <i class="ph-bold ph-network"></i>{% translate "Network-first service worker" %}
+                </button>
                 <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"
                         @click="toggle_service_worker_mode()"
                         x-show="!service_worker_cache_first">
-                    <i class="ph-bold ph-database"></i>{% translate "Cache-first service worker" %}</button>
+                    <i class="ph-bold ph-database"></i>{% translate "Cache-first service worker" %}
+                </button>
                 <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"
                         @click="clear_service_worker_cache()">
-                    <i class="ph-bold ph-trash"></i>{% translate "Clear service worker cache" %}</button>
+                    <i class="ph-bold ph-trash"></i>{% translate "Clear service worker cache" %}
+                </button>
             </div>
         </div>
 
