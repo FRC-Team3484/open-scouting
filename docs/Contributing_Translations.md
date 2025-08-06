@@ -17,7 +17,7 @@ The table below shows the currently supported languages and their translation pr
 > ![NOTE]
 > There is some software available to make the translation experience better, instead of having to edit a file directly. See [POEdit](https://poedit.net/) or [GNOME Translation Editor](https://wiki.gnome.org/Apps/Gtranslator)
 
-When contributing translations, navigate to the `/scouting/locale/` folder, and find the language you'd like to contribute translations on. Edit the corresponding `.po` file with your changes, by changing each `msgstr` with the translated text, like so:
+When contributing translations, navigate to the `/scouting/locale/` folder, and find the language you'd like to contribute translations on. Edit the corresponding `django.po` and `djangojs.po` files with your changes, by changing each `msgstr` with the translated text, like so:
 
 ```po
 #: main/templates/advanced_data/advanced_data.html:28
@@ -52,9 +52,11 @@ Now, subsequent runs of `python manage.py makemessages -all` and `python manage.
 ## Translation strings
 For code contributors, you will need to mark strings in your templates and scripts as translatable, so they can be added to any `.po` files and eventually translated correctly.
 
-Read through the [official django docs](https://docs.djangoproject.com/en/5.2/topics/i18n/) for how to do this. Once you've added your translation strings, run the following commands to add your new translation strings into the `.po` files:
+Read through the [official django docs](https://docs.djangoproject.com/en/5.2/topics/i18n/) for how to do this. Once you've added your translation strings to templates and JavaScript files, run the following commands to add your new translation strings into the `.po` files:
 ```bash
 python manage.py makemessages --all
 python manage.py makemessages --all -d djangojs # For JavaScript
 python manage.py compilemessages
 ```
+
+Visual Studio Code users can also run the `Make and update translation files` task using the `Ctrl-Shift-P > Run Task`

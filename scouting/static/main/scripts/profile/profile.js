@@ -17,11 +17,21 @@ document.addEventListener("alpine:init", () => {
 					new CustomEvent("dialog_show", {
 						detail: {
 							event_name: "sign_out",
-							title: "Signing out will clear page cache",
-							body: "You're currently offline. Signing out will reset any cached pages to make sure your user is actually signed in. Those pages will not be able to be cached again until you're online, so the site may not work properly if you proceed. Are you sure you want to sign out?",
+							title: gettext("Signing out will clear page cache"),
+							body: gettext(
+								"You're currently offline. Signing out will reset any cached pages to make sure your user is actually signed in. Those pages will not be able to be cached again until you're online, so the site may not work properly if you proceed. Are you sure you want to sign out?",
+							),
 							buttons: [
-								{ type: "confirm", icon: "ph-bold ph-check", text: "Sign out" },
-								{ type: "cancel", icon: "ph-bold ph-x", text: "Not now" },
+								{
+									type: "confirm",
+									icon: "ph-bold ph-check",
+									text: gettext("Sign out"),
+								},
+								{
+									type: "cancel",
+									icon: "ph-bold ph-x",
+									text: gettext("Not now"),
+								},
 							],
 						},
 					}),
@@ -58,8 +68,10 @@ document.addEventListener("alpine:init", () => {
 						window.dispatchEvent(
 							new CustomEvent("scouting_notification", {
 								detail: {
-									title: "Profile saved",
-									message: "Your profile details have been successfully saved",
+									title: gettext("Profile saved"),
+									message: gettext(
+										"Your profile details have been successfully saved",
+									),
 									type: "success",
 									icon: "check-circle",
 								},
@@ -73,8 +85,9 @@ document.addEventListener("alpine:init", () => {
 		init() {
 			window.addEventListener("beforeunload", (event) => {
 				if (this.settings || this.editing) {
-					event.returnValue =
-						"Are you sure you want to close the page? You have unsaved changes.";
+					event.returnValue = gettext(
+						"Are you sure you want to close the page? You have unsaved changes.",
+					);
 				}
 			});
 		},

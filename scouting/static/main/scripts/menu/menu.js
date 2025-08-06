@@ -30,9 +30,10 @@ document.addEventListener("alpine:init", () => {
 				window.dispatchEvent(
 					new CustomEvent("scouting_notification", {
 						detail: {
-							title: "Device offline",
-							message:
+							title: gettext("Device offline"),
+							message: gettext(
 								"You're now offline. Some features will be reduced until you're back online.",
+							),
 							type: "warning",
 							icon: "wifi-slash",
 						},
@@ -57,17 +58,13 @@ document.addEventListener("alpine:init", () => {
 					if (this.offline) {
 						globalThis.offline = true;
 						window.dispatchEvent(new CustomEvent("scouting_offline"));
-						this.show_notification(
-							"Device offline",
-							"You're now offline. Some features will be reduced until you're back online.",
-							"wifi-slash",
-						);
 						window.dispatchEvent(
 							new CustomEvent("scouting_notification", {
 								detail: {
-									title: "Device offline",
-									message:
+									title: gettext("Device offline"),
+									message: gettext(
 										"You're now offline. Some features will be reduced until you're back online.",
+									),
 									type: "warning",
 									icon: "wiif-slash",
 								},
@@ -79,8 +76,8 @@ document.addEventListener("alpine:init", () => {
 						window.dispatchEvent(
 							new CustomEvent("scouting_notification", {
 								detail: {
-									title: "Device online",
-									message: "You're back online.",
+									title: gettext("Device online"),
+									message: gettext("You're back online."),
 									type: "info",
 									icon: "wifi-high",
 								},
@@ -169,8 +166,12 @@ document.addEventListener("alpine:init", () => {
 							window.dispatchEvent(
 								new CustomEvent("scouting_notification", {
 									detail: {
-										title: "Reports available to upload.",
-										message: `You have ${count} reports that were saved offline ready to upload`,
+										title: gettext("Reports available to upload."),
+										message: ngettext(
+											"You have one report that was saved offline ready to upload",
+											"You have %s reports that were saved offline ready to upload",
+											count,
+										),
 										type: "info",
 										icon: "cloud-arrow-up",
 									},
@@ -228,9 +229,10 @@ document.addEventListener("alpine:init", () => {
 								window.dispatchEvent(
 									new CustomEvent("scouting_notification", {
 										detail: {
-											title: "Reports have been uploaded",
-											message:
+											title: gettext("Reports have been uploaded"),
+											message: gettext(
 												"All your reports have been stored on the server",
+											),
 											type: "success",
 											icon: "check-circle",
 										},
@@ -242,8 +244,10 @@ document.addEventListener("alpine:init", () => {
 							window.dispatchEvent(
 								new CustomEvent("scouting_notification", {
 									detail: {
-										title: "There was an issue uploading scouting reports",
-										message: "Your reports may have not been uploaded",
+										title: gettext(
+											"There was an issue uploading scouting reports",
+										),
+										message: gettext("Your reports may have not been uploaded"),
 										type: "warning",
 										icon: "warning",
 									},
@@ -275,8 +279,12 @@ document.addEventListener("alpine:init", () => {
 							window.dispatchEvent(
 								new CustomEvent("scouting_notification", {
 									detail: {
-										title: "Pit scouting data ready to upload",
-										message: `You have ${count} pit scouting data that are saved offline ready to upload`,
+										title: gettext("Pit scouting data ready to upload"),
+										message: ngettext(
+											"You have one pit that was saved offline ready to upload",
+											"You have %s pits that were saved offline ready to upload",
+											count,
+										),
 										type: "info",
 										icon: "cloud-arrow-up",
 									},
@@ -342,9 +350,10 @@ document.addEventListener("alpine:init", () => {
 							window.dispatchEvent(
 								new CustomEvent("scouting_notification", {
 									detail: {
-										title: "Pit scouting data has been uploaded",
-										message:
+										title: gettext("Pit scouting data has been uploaded"),
+										message: gettext(
 											"All your pit scouting data has been stored on the server",
+										),
 										type: "success",
 										icon: "check-circle",
 									},
@@ -354,9 +363,12 @@ document.addEventListener("alpine:init", () => {
 							window.dispatchEvent(
 								new CustomEvent("scouting_notification", {
 									detail: {
-										title: "There was an issue uploading pit scouting data",
-										message:
+										title: gettext(
+											"There was an issue uploading pit scouting data",
+										),
+										message: gettext(
 											"Your pit scouting data may have not been uploaded",
+										),
 										type: "warning",
 										icon: "warning",
 									},

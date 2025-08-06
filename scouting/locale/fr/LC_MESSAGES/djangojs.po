@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-06 13:30+0000\n"
+"POT-Creation-Date: 2025-08-06 13:51+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,4 +24,309 @@ msgstr ""
 
 #: static/main/scripts/admin/filters.js:124
 msgid "The admin operation was successful"
+msgstr ""
+
+#: static/main/scripts/admin/filters.js:203
+msgid "Actions made here are irreversible"
+msgstr ""
+
+#: static/main/scripts/admin/filters.js:205
+msgid ""
+"By using this admin dashboard, be warned that any action you take is "
+"irreversible (deleting data, etc.). You will not be asked to confirm any "
+"actions beyond this dialog. Use caution when interacting on this page."
+msgstr ""
+
+#: static/main/scripts/admin/filters.js:211
+msgid "I understand"
+msgstr ""
+
+#: static/main/scripts/authentication/auth.js:213
+msgid "Your email has been verified!"
+msgstr ""
+
+#: static/main/scripts/authentication/auth.js:221
+#: static/main/scripts/authentication/auth.js:527
+#: static/main/scripts/authentication/auth.js:580
+msgid ""
+"The verification code has expired. Use the 'Resend Code' to send a new one."
+msgstr ""
+
+#: static/main/scripts/authentication/auth.js:225
+#: static/main/scripts/authentication/auth.js:531
+#: static/main/scripts/authentication/auth.js:584
+msgid "The verification code is incorrect!"
+msgstr ""
+
+#: static/main/scripts/authentication/auth.js:267
+msgid "Poor Password"
+msgstr ""
+
+#: static/main/scripts/authentication/auth.js:269
+msgid "Weak Password"
+msgstr ""
+
+#: static/main/scripts/authentication/auth.js:271
+msgid "Okay Password"
+msgstr ""
+
+#: static/main/scripts/authentication/auth.js:273
+msgid "Strong Password"
+msgstr ""
+
+#: static/main/scripts/authentication/auth.js:275
+msgid "Very Strong Password"
+msgstr ""
+
+#: static/main/scripts/authentication/auth.js:287
+msgid "Hide"
+msgstr ""
+
+#: static/main/scripts/authentication/auth.js:290
+msgid "Show"
+msgstr ""
+
+#: static/main/scripts/authentication/auth.js:330
+msgid ""
+"A user with that username already exists. Reload this page or press 'Start "
+"Over' to create an account with a different username"
+msgstr ""
+
+#: static/main/scripts/authentication/auth.js:334
+msgid "There was an issue creating your account"
+msgstr ""
+
+#: static/main/scripts/authentication/auth.js:338
+msgid "There was an unknown issue creating your account"
+msgstr ""
+
+#: static/main/scripts/authentication/auth.js:368
+msgid "Signing in will clear page cache"
+msgstr ""
+
+#: static/main/scripts/authentication/auth.js:370
+msgid ""
+"You're currently offline. Signing in will reset any cached pages to make "
+"sure your user is actually signed in. Those pages will not be able to be "
+"cached again until you're online, so the site may not work properly if you "
+"proceed. Are you sure you want to sign in?"
+msgstr ""
+
+#: static/main/scripts/authentication/auth.js:376
+msgid "Sign in"
+msgstr ""
+
+#: static/main/scripts/authentication/auth.js:381
+#: static/main/scripts/profile/profile.js:33 static/main/scripts/version.js:82
+msgid "Not now"
+msgstr ""
+
+#: static/main/scripts/authentication/auth.js:419
+msgid "Your username or password is incorrect"
+msgstr ""
+
+#: static/main/scripts/authentication/auth.js:422
+msgid "There was an issue signing you in"
+msgstr ""
+
+#: static/main/scripts/authentication/auth.js:425
+msgid "There was an unknown issue signing you in"
+msgstr ""
+
+#: static/main/scripts/authentication/auth.js:489
+msgid "Unable to send verification code"
+msgstr ""
+
+#: static/main/scripts/authentication/auth.js:588
+msgid "Unable to change password: %(error)s"
+msgstr ""
+
+#: static/main/scripts/index/authentication_box.js:67
+#: static/main/scripts/index/authentication_box.js:144
+msgid "Event autofilled"
+msgstr ""
+
+#: static/main/scripts/index/authentication_box.js:69
+#: static/main/scripts/index/authentication_box.js:146
+msgid "Autofilled the event and year from the provided link data"
+msgstr ""
+
+#: static/main/scripts/index/authentication_box.js:171
+#: static/main/scripts/profile/profile.js:20
+msgid "Signing out will clear page cache"
+msgstr ""
+
+#: static/main/scripts/index/authentication_box.js:173
+#: static/main/scripts/profile/profile.js:22
+msgid ""
+"You're currently offline. Signing out will reset any cached pages to make "
+"sure your user is actually signed in. Those pages will not be able to be "
+"cached again until you're online, so the site may not work properly if you "
+"proceed. Are you sure you want to sign out?"
+msgstr ""
+
+#: static/main/scripts/index/index.js:59
+msgid "Link copied"
+msgstr ""
+
+#: static/main/scripts/index/index.js:61
+msgid "The link to this event and year has been copied to your clipboard"
+msgstr ""
+
+#: static/main/scripts/menu/logs.js:14
+msgid "Copy all logs"
+msgstr ""
+
+#: static/main/scripts/menu/menu.js:33 static/main/scripts/menu/menu.js:64
+msgid "Device offline"
+msgstr ""
+
+#: static/main/scripts/menu/menu.js:35 static/main/scripts/menu/menu.js:66
+msgid ""
+"You're now offline. Some features will be reduced until you're back online."
+msgstr ""
+
+#: static/main/scripts/menu/menu.js:79
+msgid "Device online"
+msgstr ""
+
+#: static/main/scripts/menu/menu.js:80
+msgid "You're back online."
+msgstr ""
+
+#: static/main/scripts/menu/menu.js:169
+msgid "Reports available to upload."
+msgstr ""
+
+#: static/main/scripts/menu/menu.js:171
+#, javascript-format
+msgid "You have one report that was saved offline ready to upload"
+msgid_plural "You have %s reports that were saved offline ready to upload"
+msgstr[0] ""
+msgstr[1] ""
+
+#: static/main/scripts/menu/menu.js:232
+msgid "Reports have been uploaded"
+msgstr ""
+
+#: static/main/scripts/menu/menu.js:234
+msgid "All your reports have been stored on the server"
+msgstr ""
+
+#: static/main/scripts/menu/menu.js:248
+msgid "There was an issue uploading scouting reports"
+msgstr ""
+
+#: static/main/scripts/menu/menu.js:250
+msgid "Your reports may have not been uploaded"
+msgstr ""
+
+#: static/main/scripts/menu/menu.js:282
+msgid "Pit scouting data ready to upload"
+msgstr ""
+
+#: static/main/scripts/menu/menu.js:284
+#, javascript-format
+msgid "You have one pit that was saved offline ready to upload"
+msgid_plural "You have %s pits that were saved offline ready to upload"
+msgstr[0] ""
+msgstr[1] ""
+
+#: static/main/scripts/menu/menu.js:353
+msgid "Pit scouting data has been uploaded"
+msgstr ""
+
+#: static/main/scripts/menu/menu.js:355
+msgid "All your pit scouting data has been stored on the server"
+msgstr ""
+
+#: static/main/scripts/menu/menu.js:367
+msgid "There was an issue uploading pit scouting data"
+msgstr ""
+
+#: static/main/scripts/menu/menu.js:370
+msgid "Your pit scouting data may have not been uploaded"
+msgstr ""
+
+#: static/main/scripts/menu/storage.js:44
+msgid "Are you sure you want to clear your report backups?"
+msgstr ""
+
+#: static/main/scripts/menu/storage.js:47
+msgid ""
+"This will permanently delete all of your report backups and cannot be "
+"undone. Are you sure you want to continue?"
+msgstr ""
+
+#: static/main/scripts/menu/storage.js:53
+#: static/main/scripts/menu/storage.js:77
+#: static/main/scripts/menu/storage.js:101
+msgid "Clear"
+msgstr ""
+
+#: static/main/scripts/menu/storage.js:55
+#: static/main/scripts/menu/storage.js:79
+#: static/main/scripts/menu/storage.js:103
+msgid "Cancel"
+msgstr ""
+
+#: static/main/scripts/menu/storage.js:68
+msgid "Are you sure you want to clear your offline scouting reports?"
+msgstr ""
+
+#: static/main/scripts/menu/storage.js:71
+msgid ""
+"This will permanently delete all of your scouting reports that were not yet "
+"uploaded to the server, and this action cannot be undone. Are you sure you "
+"want to continue?"
+msgstr ""
+
+#: static/main/scripts/menu/storage.js:92
+msgid "Are you sure you want to clear your pit scouting data?"
+msgstr ""
+
+#: static/main/scripts/menu/storage.js:95
+msgid ""
+"This will permanently delete all of your local pit scouting data, some of "
+"which may be unsaved. This action cannot be undone. Are you sure you want to "
+"continue?"
+msgstr ""
+
+#: static/main/scripts/menu/storage.js:131
+msgid "Low storage space"
+msgstr ""
+
+#: static/main/scripts/menu/storage.js:133
+msgid "Open Scouting is running low on storage that is allocated to it"
+msgstr ""
+
+#: static/main/scripts/profile/profile.js:28
+msgid "Sign out"
+msgstr ""
+
+#: static/main/scripts/profile/profile.js:71
+msgid "Profile saved"
+msgstr ""
+
+#: static/main/scripts/profile/profile.js:73
+msgid "Your profile details have been successfully saved"
+msgstr ""
+
+#: static/main/scripts/profile/profile.js:89
+msgid "Are you sure you want to close the page? You have unsaved changes."
+msgstr ""
+
+#: static/main/scripts/version.js:69
+msgid "Client update available"
+msgstr ""
+
+#: static/main/scripts/version.js:71
+msgid ""
+"You currently have old client files cached. It's recommended to clear your "
+"service worker cache to ensure all client side code is up to date. Do you "
+"wish to clear your cache now?"
+msgstr ""
+
+#: static/main/scripts/version.js:77
+msgid "Clear cache"
 msgstr ""

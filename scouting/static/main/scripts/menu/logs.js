@@ -11,8 +11,7 @@ document.addEventListener("alpine:init", () => {
 			navigator.clipboard.writeText(logText);
 
 			setTimeout(() => {
-				this.$refs.copy_all_logs_button.innerHTML =
-					'<i class="ph-bold ph-clipboard-text"></i> Copy all logs';
+				this.$refs.copy_all_logs_button.innerHTML = `<i class="ph-bold ph-clipboard-text"></i> ${gettext("Copy all logs")}`;
 			}, 3000);
 		},
 
