@@ -3,6 +3,7 @@
 -->
 
 {% load static %}
+{% load i18n %}
 
 <script src="{% static '/main/scripts/menu/logs.js' %}"></script>
 
@@ -20,14 +21,17 @@
             <div class="flex flex-row gap-2 mt-2">
                 <a href="https://github.com/FRC-Team3484/open-scouting/issues">
                     <button class="ui_button_small">
-                        <i class="ph-bold ph-bug"></i>{% translate "Open GitHub Issues" %}</button>
+                        <i class="ph-bold ph-bug"></i>{% translate "Open GitHub Issues" %}
+                    </button>
                 </a>
                 <button class="ui_button_small"
                         @click="copy_all_logs_to_clipboard(); $el.innerHTML = `<i class='ph-bold ph-check-circle'></i> Copied!`"
                         x-ref="copy_all_logs_button">
-                    <i class="ph-bold ph-clipboard-text"></i>{% translate "Copy all logs" %}</button>
+                    <i class="ph-bold ph-clipboard-text"></i>{% translate "Copy all logs" %}
+                </button>
                 <button class="ui_button_small" @click="download_log_file()">
-                    <i class="ph-bold ph-download-simple"></i>{% translate "Download log file" %}</button>
+                    <i class="ph-bold ph-download-simple"></i>{% translate "Download log file" %}
+                </button>
             </div>
         </div>
 

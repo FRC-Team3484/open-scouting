@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-06 12:48+0000\n"
+"POT-Creation-Date: 2025-08-06 12:51+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,537 +18,537 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: main/templates/advanced_data/advanced_data.html:28
-#: main/templates/index/authentication_box.html:83
+#: main/templates/advanced_data/advanced_data.html:29
+#: main/templates/index/authentication_box.html:84
 msgid "Advanced Data View"
 msgstr ""
 
-#: main/templates/advanced_data/filters.html:13
+#: main/templates/advanced_data/filters.html:14
 msgid "Filters"
 msgstr ""
 
-#: main/templates/advanced_data/filters.html:14
+#: main/templates/advanced_data/filters.html:17
 msgid ""
 "Filter results by year and then by both teams and events. If both a team and "
 "event is shown, only data from that team recorded at that event is shown"
 msgstr ""
 
-#: main/templates/advanced_data/filters.html:16
-#: main/templates/index/create_custom_event.html:33
-#: main/templates/index/create_custom_event.html:66
-#: main/templates/index/year_select.html:13
+#: main/templates/advanced_data/filters.html:20
+#: main/templates/index/create_custom_event.html:34
+#: main/templates/index/create_custom_event.html:67
+#: main/templates/index/year_select.html:15
 msgid "Year"
 msgstr ""
 
-#: main/templates/advanced_data/filters.html:26
+#: main/templates/advanced_data/filters.html:30
 msgid "Teams"
 msgstr ""
 
-#: main/templates/advanced_data/filters.html:40
-#: main/templates/advanced_data/filters.html:84
-#: main/templates/pits/pits.html:259
+#: main/templates/advanced_data/filters.html:44
+#: main/templates/advanced_data/filters.html:89
+#: main/templates/pits/pits.html:266
 msgid "Add"
 msgstr ""
 
-#: main/templates/advanced_data/filters.html:50
+#: main/templates/advanced_data/filters.html:55
 msgid "Search for a team..."
 msgstr ""
 
-#: main/templates/advanced_data/filters.html:73
+#: main/templates/advanced_data/filters.html:78
 msgid "Events"
 msgstr ""
 
-#: main/templates/advanced_data/filters.html:94
-#: main/templates/index/events.html:55
+#: main/templates/advanced_data/filters.html:100
+#: main/templates/index/events.html:57
 msgid "Search for an event..."
 msgstr ""
 
-#: main/templates/advanced_data/filters.html:118
+#: main/templates/advanced_data/filters.html:124
 msgid "Clear Filters"
 msgstr ""
 
-#: main/templates/advanced_data/filters.html:121
+#: main/templates/advanced_data/filters.html:128
 msgid "Collapse all sections"
 msgstr ""
 
-#: main/templates/advanced_data/filters.html:139
+#: main/templates/advanced_data/filters.html:147
 msgid "Export data as JSON"
 msgstr ""
 
-#: main/templates/advanced_data/filters.html:142
+#: main/templates/advanced_data/filters.html:151
 msgid "Export data as CSV"
 msgstr ""
 
-#: main/templates/advanced_data/filters.html:148
+#: main/templates/advanced_data/filters.html:158
 msgid "Sort By"
 msgstr ""
 
-#: main/templates/advanced_data/filters.html:149
+#: main/templates/advanced_data/filters.html:161
 msgid ""
 "Sorts the data displayed below by each team by a stat. For example, sort the "
 "teams in descending order by the average coral scored during the autonomous "
 "period"
 msgstr ""
 
-#: main/templates/advanced_data/filters.html:161
+#: main/templates/advanced_data/filters.html:174
 msgid "Descending (High to low)"
 msgstr ""
 
-#: main/templates/advanced_data/filters.html:162
+#: main/templates/advanced_data/filters.html:175
 msgid "Ascending (Low to high)"
 msgstr ""
 
-#: main/templates/advanced_data/main.html:43
+#: main/templates/advanced_data/main.html:44
 msgid "Summary"
 msgstr ""
 
-#: main/templates/advanced_data/main.html:53
+#: main/templates/advanced_data/main.html:54
 msgid "Score & Miss Averages"
 msgstr ""
 
-#: main/templates/advanced_data/main.html:99
+#: main/templates/advanced_data/main.html:100
 msgid "Capabilities"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:31
+#: main/templates/authentication/authentication.html:32
 msgid "Sign in or create an account"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:41
-#: main/templates/authentication/authentication.html:66
-#: main/templates/authentication/authentication.html:188
-#: main/templates/authentication/authentication.html:387
+#: main/templates/authentication/authentication.html:42
+#: main/templates/authentication/authentication.html:67
+#: main/templates/authentication/authentication.html:189
+#: main/templates/authentication/authentication.html:388
 msgid "Sign in"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:53
-#: main/templates/authentication/authentication.html:112
-#: main/templates/authentication/authentication.html:247
+#: main/templates/authentication/authentication.html:54
+#: main/templates/authentication/authentication.html:113
+#: main/templates/authentication/authentication.html:248
 msgid "Email"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:58
-#: main/templates/authentication/authentication.html:165
-#: main/templates/authentication/authentication.html:337
+#: main/templates/authentication/authentication.html:59
+#: main/templates/authentication/authentication.html:166
+#: main/templates/authentication/authentication.html:338
 msgid "Password"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:75
+#: main/templates/authentication/authentication.html:76
 msgid "Show Password"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:78
+#: main/templates/authentication/authentication.html:79
 msgid "Hide Password"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:81
-#: main/templates/authentication/authentication.html:97
+#: main/templates/authentication/authentication.html:82
+#: main/templates/authentication/authentication.html:98
 msgid "Reset password"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:86
-#: main/templates/authentication/authentication.html:385
-#: main/templates/index/authentication_box.html:80
+#: main/templates/authentication/authentication.html:87
+#: main/templates/authentication/authentication.html:386
+#: main/templates/index/authentication_box.html:81
 msgid "Or..."
 msgstr ""
 
-#: main/templates/authentication/authentication.html:88
-#: main/templates/authentication/authentication.html:203
-#: main/templates/authentication/authentication.html:363
+#: main/templates/authentication/authentication.html:89
+#: main/templates/authentication/authentication.html:204
+#: main/templates/authentication/authentication.html:364
 msgid "Create Account"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:110
+#: main/templates/authentication/authentication.html:111
 msgid "Enter the email to the account you'd like to change"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:120
+#: main/templates/authentication/authentication.html:121
 msgid "Send reset email"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:126
-#: main/templates/authentication/authentication.html:268
+#: main/templates/authentication/authentication.html:127
+#: main/templates/authentication/authentication.html:269
 msgid "Sending Verification Code..."
 msgstr ""
 
-#: main/templates/authentication/authentication.html:133
+#: main/templates/authentication/authentication.html:134
 msgid "Verify account"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:141
-#: main/templates/authentication/authentication.html:290
+#: main/templates/authentication/authentication.html:142
+#: main/templates/authentication/authentication.html:291
 msgid "Verification Code"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:150
-#: main/templates/authentication/authentication.html:302
+#: main/templates/authentication/authentication.html:151
+#: main/templates/authentication/authentication.html:303
 msgid "Verify"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:155
-#: main/templates/authentication/authentication.html:309
+#: main/templates/authentication/authentication.html:156
+#: main/templates/authentication/authentication.html:310
 msgid "Resend Code"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:162
+#: main/templates/authentication/authentication.html:163
 msgid "Enter new password"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:173
+#: main/templates/authentication/authentication.html:174
 msgid "Change Password"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:180
+#: main/templates/authentication/authentication.html:181
 msgid "Your password has been successfully changed!"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:184
+#: main/templates/authentication/authentication.html:185
 msgid ""
 "You will be redirected in a few moments, or you can press the button below "
 "to sign in"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:194
-#: main/templates/menu/menu_report_backup_check.html:64
+#: main/templates/authentication/authentication.html:195
+#: main/templates/menu/menu_report_backup_check.html:70
 msgid "Cancel"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:209
+#: main/templates/authentication/authentication.html:210
 msgid "Enter display name and team number"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:211
+#: main/templates/authentication/authentication.html:212
 msgid "Display Name"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:216
-#: main/templates/pits/pits.html:280
+#: main/templates/authentication/authentication.html:217
+#: main/templates/pits/pits.html:289
 msgid "Team Number"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:238
-#: main/templates/authentication/authentication.html:260
-#: main/templates/index/authentication_box.html:76
-#: main/templates/index/year_select.html:30
+#: main/templates/authentication/authentication.html:239
+#: main/templates/authentication/authentication.html:261
+#: main/templates/index/authentication_box.html:77
+#: main/templates/index/year_select.html:32
 msgid "Next"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:245
+#: main/templates/authentication/authentication.html:246
 msgid "Enter email"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:254
-#: main/templates/authentication/authentication.html:297
-#: main/templates/authentication/authentication.html:358
+#: main/templates/authentication/authentication.html:255
+#: main/templates/authentication/authentication.html:298
+#: main/templates/authentication/authentication.html:359
 msgid "Start Over"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:275
+#: main/templates/authentication/authentication.html:276
 msgid "Verify email"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:316
+#: main/templates/authentication/authentication.html:317
 msgid "Create password"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:318
+#: main/templates/authentication/authentication.html:319
 msgid ""
 "Secure passwords are longer than 8 characters, contain numbers and symbols, "
 "and have capital and lowercase letters."
 msgstr ""
 
-#: main/templates/authentication/authentication.html:347
+#: main/templates/authentication/authentication.html:348
 msgid "Show"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:371
+#: main/templates/authentication/authentication.html:372
 msgid "Your account has been successfully created!"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:375
+#: main/templates/authentication/authentication.html:376
 msgid ""
 "You will be redirected in a few moments, or you can press the button below"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:379
+#: main/templates/authentication/authentication.html:380
 msgid "Go to Home"
 msgstr ""
 
-#: main/templates/contribute/contribute.html:34
+#: main/templates/contribute/contribute.html:35
 msgid "The data has been successfully submitted"
 msgstr ""
 
-#: main/templates/contribute/contribute.html:64
+#: main/templates/contribute/contribute.html:66
 msgid ""
 "The data has been successfully stored locally. It will be uploaded when you "
 "go online."
 msgstr ""
 
-#: main/templates/contribute/contribute.html:94
+#: main/templates/contribute/contribute.html:97
 msgid "The data isn't submitted to the server while you're in demo mode"
 msgstr ""
 
-#: main/templates/contribute/contribute.html:129
+#: main/templates/contribute/contribute.html:133
 msgid "Submit"
 msgstr ""
 
-#: main/templates/contribute/contribute.html:142
+#: main/templates/contribute/contribute.html:147
 msgid "Export report as JSON"
 msgstr ""
 
-#: main/templates/contribute/contribute.html:144
+#: main/templates/contribute/contribute.html:150
 msgid "Import JSON report"
 msgstr ""
 
-#: main/templates/contribute/contribute.html:152
+#: main/templates/contribute/contribute.html:159
 msgid "Clear and reset"
 msgstr ""
 
-#: main/templates/contribute/contribute.html:155
+#: main/templates/contribute/contribute.html:163
 msgid "Save report offline"
 msgstr ""
 
-#: main/templates/contribute/contribute.html:160
+#: main/templates/contribute/contribute.html:169
 msgid "Please fill out all of the required fields"
 msgstr ""
 
-#: main/templates/contribute/header.html:29 main/templates/pits/header.html:29
+#: main/templates/contribute/header.html:30 main/templates/pits/header.html:30
 msgid "Add Scouting Reports"
 msgstr ""
 
-#: main/templates/contribute/header.html:32 main/templates/pits/header.html:32
+#: main/templates/contribute/header.html:34 main/templates/pits/header.html:34
 msgid "View Scouting Data"
 msgstr ""
 
-#: main/templates/contribute/header.html:35 main/templates/index/index.html:84
-#: main/templates/pits/header.html:35 main/templates/pits/header.html:37
+#: main/templates/contribute/header.html:38 main/templates/index/index.html:84
+#: main/templates/pits/header.html:38 main/templates/pits/header.html:41
 msgid "Pit Scouting"
 msgstr ""
 
-#: main/templates/contribute/header.html:37 main/templates/index/index.html:76
+#: main/templates/contribute/header.html:41 main/templates/index/index.html:76
 msgid "Contribute"
 msgstr ""
 
-#: main/templates/contribute/header.html:41
+#: main/templates/contribute/header.html:45
 msgid "Contributing data to event"
 msgstr ""
 
-#: main/templates/contribute/header.html:43 main/templates/pits/header.html:43
+#: main/templates/contribute/header.html:47 main/templates/pits/header.html:47
 msgid "as"
 msgstr ""
 
 #. Translators: Demo mode warning
-#: main/templates/contribute/header.html:50 main/templates/index/header.html:62
-#: main/templates/pits/header.html:50
+#: main/templates/contribute/header.html:54 main/templates/index/header.html:62
+#: main/templates/pits/header.html:54
 msgid "Open Scouting is in demo mode"
 msgstr ""
 
-#: main/templates/contribute/header.html:51 main/templates/pits/header.html:51
+#: main/templates/contribute/header.html:56 main/templates/pits/header.html:56
 msgid "Any contributed data will not be saved to the server"
 msgstr ""
 
-#: main/templates/contribute/team_information.html:16
+#: main/templates/contribute/team_information.html:17
 msgid "Select position to watch"
 msgstr ""
 
-#: main/templates/contribute/team_information.html:18
+#: main/templates/contribute/team_information.html:19
 msgid "Experimental"
 msgstr ""
 
-#: main/templates/contribute/team_information.html:20
+#: main/templates/contribute/team_information.html:22
 msgid ""
 "While scouting, watch teams during a match based on their position in the "
 "driver stations or on the screen. For example, if you select \\"
 msgstr ""
 
-#: main/templates/contribute/team_information.html:21
+#: main/templates/contribute/team_information.html:24
 msgid "In some cases data may be inaccurate or unavailable. Set to \\"
 msgstr ""
 
-#: main/templates/contribute/team_information.html:27
+#: main/templates/contribute/team_information.html:30
 msgid "None"
 msgstr ""
 
-#: main/templates/contribute/team_information.html:28
+#: main/templates/contribute/team_information.html:31
 msgid "Red 1"
 msgstr ""
 
-#: main/templates/contribute/team_information.html:29
+#: main/templates/contribute/team_information.html:32
 msgid "Red 2"
 msgstr ""
 
-#: main/templates/contribute/team_information.html:30
+#: main/templates/contribute/team_information.html:33
 msgid "Red 3"
 msgstr ""
 
-#: main/templates/contribute/team_information.html:31
+#: main/templates/contribute/team_information.html:34
 msgid "Blue 1"
 msgstr ""
 
-#: main/templates/contribute/team_information.html:32
+#: main/templates/contribute/team_information.html:35
 msgid "Blue 2"
 msgstr ""
 
-#: main/templates/contribute/team_information.html:33
+#: main/templates/contribute/team_information.html:36
 msgid "Blue 3"
 msgstr ""
 
-#: main/templates/index/authentication_box.html:12
+#: main/templates/index/authentication_box.html:13
 msgid "Sign In"
 msgstr ""
 
-#: main/templates/index/authentication_box.html:19
+#: main/templates/index/authentication_box.html:20
 msgid "Continue as"
 msgstr ""
 
-#: main/templates/index/authentication_box.html:37
-#: main/templates/profile/profile.html:50
+#: main/templates/index/authentication_box.html:38
+#: main/templates/profile/profile.html:53
 msgid "Sign Out"
 msgstr ""
 
-#: main/templates/index/authentication_box.html:41
-#: main/templates/profile/profile.html:76
-#: main/templates/profile/profile.html:87
+#: main/templates/index/authentication_box.html:42
+#: main/templates/profile/profile.html:81
+#: main/templates/profile/profile.html:94
 msgid "Edit Profile"
 msgstr ""
 
-#: main/templates/index/authentication_box.html:46
+#: main/templates/index/authentication_box.html:47
 msgid "Admin Dashboard"
 msgstr ""
 
-#: main/templates/index/authentication_box.html:51
+#: main/templates/index/authentication_box.html:52
 msgid "Django Admin"
 msgstr ""
 
-#: main/templates/index/authentication_box.html:59
+#: main/templates/index/authentication_box.html:60
 msgid "Continue without account"
 msgstr ""
 
-#: main/templates/index/authentication_box.html:67
+#: main/templates/index/authentication_box.html:68
 msgid "Temporary user name"
 msgstr ""
 
-#: main/templates/index/authentication_box.html:72
+#: main/templates/index/authentication_box.html:73
 msgid "Your team number"
 msgstr ""
 
-#: main/templates/index/authentication_box.html:88
+#: main/templates/index/authentication_box.html:89
 msgid "Try Open Scouting"
 msgstr ""
 
-#: main/templates/index/create_custom_event.html:14
+#: main/templates/index/create_custom_event.html:15
 msgid "Create Custom Event"
 msgstr ""
 
-#: main/templates/index/create_custom_event.html:16
+#: main/templates/index/create_custom_event.html:17
 msgid ""
 "Custom events are used when an event isn't present in The Blue Alliance. "
 "Creating a custom event makes this event available to all users across Open "
 "Scouting to contribute and view data for."
 msgstr ""
 
-#: main/templates/index/create_custom_event.html:27
+#: main/templates/index/create_custom_event.html:28
 msgid "Name"
 msgstr ""
 
-#: main/templates/index/create_custom_event.html:30
+#: main/templates/index/create_custom_event.html:31
 msgid "Enter the name for this event"
 msgstr ""
 
-#: main/templates/index/create_custom_event.html:41
+#: main/templates/index/create_custom_event.html:42
 msgid "What year did this event take place?"
 msgstr ""
 
-#: main/templates/index/create_custom_event.html:45
+#: main/templates/index/create_custom_event.html:46
 msgid "Event begins"
 msgstr ""
 
-#: main/templates/index/create_custom_event.html:49
+#: main/templates/index/create_custom_event.html:50
 msgid "What day does this event begin?"
 msgstr ""
 
-#: main/templates/index/create_custom_event.html:53
+#: main/templates/index/create_custom_event.html:54
 msgid "Event ends"
 msgstr ""
 
-#: main/templates/index/create_custom_event.html:57
+#: main/templates/index/create_custom_event.html:58
 msgid "What day does this event end?"
 msgstr ""
 
-#: main/templates/index/create_custom_event.html:60
+#: main/templates/index/create_custom_event.html:61
 msgid "Event location"
 msgstr ""
 
-#: main/templates/index/create_custom_event.html:63
+#: main/templates/index/create_custom_event.html:64
 msgid "Where will this event be held?"
 msgstr ""
 
-#: main/templates/index/create_custom_event.html:69
+#: main/templates/index/create_custom_event.html:70
 msgid "Select an Event Type"
 msgstr ""
 
-#: main/templates/index/create_custom_event.html:70
+#: main/templates/index/create_custom_event.html:71
 msgid "District Event"
 msgstr ""
 
-#: main/templates/index/create_custom_event.html:71
+#: main/templates/index/create_custom_event.html:72
 msgid "Regional Event"
 msgstr ""
 
-#: main/templates/index/create_custom_event.html:72
+#: main/templates/index/create_custom_event.html:73
 msgid "Preseason Event"
 msgstr ""
 
-#: main/templates/index/create_custom_event.html:73
+#: main/templates/index/create_custom_event.html:74
 msgid "Offseason Event"
 msgstr ""
 
-#: main/templates/index/create_custom_event.html:74
+#: main/templates/index/create_custom_event.html:75
 msgid "Other Event"
 msgstr ""
 
-#: main/templates/index/create_custom_event.html:77
+#: main/templates/index/create_custom_event.html:78
 msgid "What kind of event is this?"
 msgstr ""
 
-#: main/templates/index/create_custom_event.html:80
+#: main/templates/index/create_custom_event.html:81
 msgid "Create new Custom Event"
 msgstr ""
 
-#: main/templates/index/events.html:11
+#: main/templates/index/events.html:12
 msgid "Select event"
 msgstr ""
 
-#: main/templates/index/events.html:19
+#: main/templates/index/events.html:21
 msgid "TBA Events"
 msgstr ""
 
-#: main/templates/index/events.html:28
+#: main/templates/index/events.html:30
 msgid "Custom Events"
 msgstr ""
 
-#: main/templates/index/events.html:38
+#: main/templates/index/events.html:40
 msgid "Favorites"
 msgstr ""
 
-#: main/templates/index/events.html:49
+#: main/templates/index/events.html:51
 msgid "Show past events"
 msgstr ""
 
-#: main/templates/index/events.html:107 main/templates/index/events.html:145
+#: main/templates/index/events.html:109 main/templates/index/events.html:150
 msgid "No events found"
 msgstr ""
 
-#: main/templates/index/events.html:112 main/templates/index/events.html:150
-#: main/templates/index/events.html:209
+#: main/templates/index/events.html:115 main/templates/index/events.html:156
+#: main/templates/index/events.html:218
 msgid "Loading events..."
 msgstr ""
 
-#: main/templates/index/events.html:115 main/templates/index/events.html:153
+#: main/templates/index/events.html:119 main/templates/index/events.html:160
 msgid "Create a custom Event"
 msgstr ""
 
-#: main/templates/index/events.html:204
+#: main/templates/index/events.html:212
 msgid "No favorite events"
 msgstr ""
 
@@ -671,35 +671,35 @@ msgstr ""
 msgid "Development Branch"
 msgstr ""
 
-#: main/templates/index/year_select.html:10
+#: main/templates/index/year_select.html:11
 msgid "Select year"
 msgstr ""
 
-#: main/templates/index/year_select.html:26
+#: main/templates/index/year_select.html:28
 msgid "with data this year"
 msgstr ""
 
-#: main/templates/menu/logs.html:18
+#: main/templates/menu/logs.html:19
 msgid "View client side logs"
 msgstr ""
 
-#: main/templates/menu/logs.html:19
+#: main/templates/menu/logs.html:20
 msgid "View the logs of the client, used for debugging and opening bug reports"
 msgstr ""
 
-#: main/templates/menu/logs.html:23
+#: main/templates/menu/logs.html:24
 msgid "Open GitHub Issues"
 msgstr ""
 
-#: main/templates/menu/logs.html:28
+#: main/templates/menu/logs.html:30
 msgid "Copy all logs"
 msgstr ""
 
-#: main/templates/menu/logs.html:30
+#: main/templates/menu/logs.html:33
 msgid "Download log file"
 msgstr ""
 
-#: main/templates/menu/logs.html:62
+#: main/templates/menu/logs.html:66
 msgid "Only the 100 most recent log entries are preserved on page reload"
 msgstr ""
 
@@ -764,7 +764,7 @@ msgid ""
 msgstr ""
 
 #: main/templates/menu/menu.html:160
-#: main/templates/menu/menu_report_backup_check.html:17
+#: main/templates/menu/menu_report_backup_check.html:18
 msgid "Check Backed Up Scouting Reports"
 msgstr ""
 
@@ -820,207 +820,211 @@ msgstr ""
 msgid "Clear service worker cache"
 msgstr ""
 
-#: main/templates/menu/menu_report_backup_check.html:18
+#: main/templates/menu/menu_report_backup_check.html:20
 msgid ""
 "Check to ensure that your scouting reports have been saved on the server. "
 "Copies are saved locally in case of request or network failure."
 msgstr ""
 
-#: main/templates/menu/menu_report_backup_check.html:29
+#: main/templates/menu/menu_report_backup_check.html:32
 msgid "Checkable reports"
 msgstr ""
 
-#: main/templates/menu/menu_report_backup_check.html:33
+#: main/templates/menu/menu_report_backup_check.html:36
 msgid "Check Reports"
 msgstr ""
 
-#: main/templates/menu/menu_report_backup_check.html:39
+#: main/templates/menu/menu_report_backup_check.html:43
 msgid "Reports have been checked with the server"
 msgstr ""
 
-#: main/templates/menu/menu_report_backup_check.html:40
+#: main/templates/menu/menu_report_backup_check.html:45
 msgid "If they were missing, they were automatically uploaded"
 msgstr ""
 
-#: main/templates/menu/menu_report_backup_check.html:45
+#: main/templates/menu/menu_report_backup_check.html:50
 msgid "Backed up reports found on the server"
 msgstr ""
 
-#: main/templates/menu/menu_report_backup_check.html:51
+#: main/templates/menu/menu_report_backup_check.html:56
 msgid "Backed up reports not found on the server"
 msgstr ""
 
-#: main/templates/menu/menu_report_backup_check.html:57
+#: main/templates/menu/menu_report_backup_check.html:62
 msgid "Clear Saved Reports"
 msgstr ""
 
-#: main/templates/menu/menu_report_backup_check.html:67
+#: main/templates/menu/menu_report_backup_check.html:74
 msgid "Confirm"
 msgstr ""
 
-#: main/templates/menu/storage.html:18
+#: main/templates/menu/storage.html:19
 msgid "Client side storage"
 msgstr ""
 
-#: main/templates/menu/storage.html:19
+#: main/templates/menu/storage.html:20
 msgid "View and manage the storage used by the client"
 msgstr ""
 
-#: main/templates/menu/storage.html:27
+#: main/templates/menu/storage.html:29
 msgid ""
 "An estimation of the storage used by the client and the storage that the "
 "browser has allocated for it. The total storage avaliable may fluctuate "
 "based off of the avaliable storage space on the user's device."
 msgstr ""
 
-#: main/templates/menu/storage.html:36
+#: main/templates/menu/storage.html:39
 msgid "used"
 msgstr ""
 
-#: main/templates/menu/storage.html:49
+#: main/templates/menu/storage.html:53
 msgid ""
 "Clearing any of the items below is irreversible. If any items are indicated "
 "to be unsaved, those can be uploaded to the server in the main section of "
 "the menu"
 msgstr ""
 
-#: main/templates/menu/storage.html:53 main/templates/menu/storage.html:60
-#: main/templates/menu/storage.html:80
+#: main/templates/menu/storage.html:58 main/templates/menu/storage.html:66
+#: main/templates/menu/storage.html:87
 msgid "Clear"
 msgstr ""
 
-#: main/templates/menu/storage.html:54
+#: main/templates/menu/storage.html:60
 msgid "Backed up scouting reports"
 msgstr ""
 
-#: main/templates/menu/storage.html:56 main/templates/menu/storage.html:74
-#: main/templates/menu/storage.html:83
+#: main/templates/menu/storage.html:62 main/templates/menu/storage.html:81
+#: main/templates/menu/storage.html:91
 msgid "items"
 msgstr ""
 
-#: main/templates/menu/storage.html:62
+#: main/templates/menu/storage.html:69
 msgid "Offline scouting reports"
 msgstr ""
 
-#: main/templates/menu/storage.html:67 main/templates/menu/storage.html:88
+#: main/templates/menu/storage.html:74 main/templates/menu/storage.html:96
 msgid "unsaved items"
 msgstr ""
 
-#: main/templates/menu/storage.html:81
+#: main/templates/menu/storage.html:89
 msgid "Pit scouting"
 msgstr ""
 
-#: main/templates/pits/header.html:41
+#: main/templates/pits/header.html:45
 msgid "Viewing pits for"
 msgstr ""
 
-#: main/templates/pits/pits.html:40
+#: main/templates/pits/pits.html:42
 msgid "View All Pits"
 msgstr ""
 
-#: main/templates/pits/pits.html:44
+#: main/templates/pits/pits.html:47
 msgid "View Incomplete Pits"
 msgstr ""
 
-#: main/templates/pits/pits.html:48
+#: main/templates/pits/pits.html:52
 msgid "View Pits With No Data"
 msgstr ""
 
-#: main/templates/pits/pits.html:52
+#: main/templates/pits/pits.html:57
 msgid "View Completed Pits"
 msgstr ""
 
-#: main/templates/pits/pits.html:57
+#: main/templates/pits/pits.html:63
 msgid "Select a team number below to jump to that team in the list"
 msgstr ""
 
-#: main/templates/pits/pits.html:246
+#: main/templates/pits/pits.html:252
 msgid "Add Custom Question"
 msgstr ""
 
-#: main/templates/pits/pits.html:253
+#: main/templates/pits/pits.html:260
 msgid "Question"
 msgstr ""
 
-#: main/templates/pits/pits.html:268
+#: main/templates/pits/pits.html:276
 msgid "Is a team's pit not here yet?"
 msgstr ""
 
-#: main/templates/pits/pits.html:271
+#: main/templates/pits/pits.html:279
 msgid "Add a pit"
 msgstr ""
 
-#: main/templates/pits/pits.html:277
+#: main/templates/pits/pits.html:286
 msgid "Add a new pit"
 msgstr ""
 
-#: main/templates/pits/pits.html:286
+#: main/templates/pits/pits.html:295
 msgid "Add pit"
 msgstr ""
 
-#: main/templates/pits/pits.html:308
+#: main/templates/pits/pits.html:318
 msgid "Fetching data from server..."
 msgstr ""
 
-#: main/templates/pits/pits.html:312
+#: main/templates/pits/pits.html:323
 msgid "Unsaved changes"
 msgstr ""
 
-#: main/templates/pits/pits.html:316
+#: main/templates/pits/pits.html:328
 msgid "Changes saved"
 msgstr ""
 
-#: main/templates/pits/pits.html:320
+#: main/templates/pits/pits.html:333
 msgid "Syncing data..."
 msgstr ""
 
-#: main/templates/pits/pits.html:324
+#: main/templates/pits/pits.html:338
 msgid "Data saved offline"
 msgstr ""
 
-#: main/templates/profile/profile.html:48
+#: main/templates/profile/profile.html:50
 msgid "Back to home"
 msgstr ""
 
-#: main/templates/profile/profile.html:60
+#: main/templates/profile/profile.html:64
 msgid "Profile"
 msgstr ""
 
-#: main/templates/profile/profile.html:63
+#: main/templates/profile/profile.html:68
 msgid "Email:"
 msgstr ""
 
-#: main/templates/profile/profile.html:67
+#: main/templates/profile/profile.html:72
 msgid "Display Name:"
 msgstr ""
 
-#: main/templates/profile/profile.html:71
+#: main/templates/profile/profile.html:76
 msgid "Team Number:"
 msgstr ""
 
-#: main/templates/profile/profile.html:79
-#: main/templates/profile/profile.html:115
+#: main/templates/profile/profile.html:85
+#: main/templates/profile/profile.html:125
 msgid "Change Settings"
 msgstr ""
 
-#: main/templates/profile/profile.html:89
-#: main/templates/profile/profile.html:91
+#: main/templates/profile/profile.html:97
+#: main/templates/profile/profile.html:99
 msgid "Display name"
 msgstr ""
 
-#: main/templates/profile/profile.html:95
-#: main/templates/profile/profile.html:97
+#: main/templates/profile/profile.html:103
+#: main/templates/profile/profile.html:105
 msgid "Team number"
 msgstr ""
 
-#: main/templates/profile/profile.html:103
-#: main/templates/profile/profile.html:159
+#: main/templates/profile/profile.html:111
+#: main/templates/profile/profile.html:170
 msgid "Save Changes"
 msgstr ""
 
-#: main/templates/profile/profile.html:106
-#: main/templates/profile/profile.html:162
+#: main/templates/profile/profile.html:115
+#: main/templates/profile/profile.html:174
 msgid "Cancel Changes"
+msgstr ""
+
+#: main/templates/server_message.html:10
+msgid "Server Message"
 msgstr ""
 
 #: scouting/settings.py:183

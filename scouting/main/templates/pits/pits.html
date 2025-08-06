@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
+
 {% block head_title %}
     Open Scouting | Pit Scouting
 {% endblock head_title %}
@@ -37,19 +39,23 @@
                     <button class="ui_button_small m-1!"
                             :disabled="filter == 'all'"
                             @click="filter = 'all'; filter_pit_data(); get_pit_status()">
-                        <i class="ph-bold ph-selection-all"></i>{% translate "View All Pits" %}</button>
+                        <i class="ph-bold ph-selection-all"></i>{% translate "View All Pits" %}
+                    </button>
                     <button class="ui_button_small m-1!"
                             :disabled="filter == 'incomplete'"
                             @click="filter = 'incomplete'; filter_pit_data(); get_pit_status()">
-                        <i class="ph-bold ph-arrows-clockwise"></i>{% translate "View Incomplete Pits" %}</button>
+                        <i class="ph-bold ph-arrows-clockwise"></i>{% translate "View Incomplete Pits" %}
+                    </button>
                     <button class="ui_button_small m-1!"
                             :disabled="filter == 'no_data'"
                             @click="filter = 'no_data'; filter_pit_data(); get_pit_status()">
-                        <i class="ph-bold ph-x"></i>{% translate "View Pits With No Data" %}</button>
+                        <i class="ph-bold ph-x"></i>{% translate "View Pits With No Data" %}
+                    </button>
                     <button class="ui_button_small m-1!"
                             :disabled="filter == 'completed'"
                             @click="filter = 'completed'; filter_pit_data(); get_pit_status()">
-                        <i class="ph-bold ph-check"></i>{% translate "View Completed Pits" %}</button>
+                        <i class="ph-bold ph-check"></i>{% translate "View Completed Pits" %}
+                    </button>
                 </div>
 
                 <p x-show="pit_status.length > 0"
@@ -243,7 +249,8 @@
                                  @click.outside="custom_question_open = false">
                                 <button class="ui_button_small ml-4 mt-1"
                                         @click="custom_question_open = !custom_question_open">
-                                    <i class="ph-bold ph-plus-circle"></i>{% translate "Add Custom Question" %}</button>
+                                    <i class="ph-bold ph-plus-circle"></i>{% translate "Add Custom Question" %}
+                                </button>
                                 <div class="flex flex-row"
                                      x-show="custom_question_open"
                                      x-collapse
@@ -256,7 +263,8 @@
                                     <button class="ui_button_small ml-2"
                                             :disabled="question_input == ''"
                                             @click="custom_question_open = false; submit_question($event, $refs.question_input)">
-                                        <i class="ph-bold ph-check"></i>{% translate "Add" %}</button>
+                                        <i class="ph-bold ph-check"></i>{% translate "Add" %}
+                                    </button>
                                 </div>
                             </div>
 
@@ -268,7 +276,8 @@
                     <p class="dark:text-white text-black text-lg text-center">{% translate "Is a team's pit not here yet?" %}</p>
                     <div class="flex flex-col" x-data="{ add_pit_open: false }">
                         <button class="ui_button" @click="add_pit_open = !add_pit_open">
-                            <i class="ph-bold ph-plus-circle"></i>{% translate "Add a pit" %}</button>
+                            <i class="ph-bold ph-plus-circle"></i>{% translate "Add a pit" %}
+                        </button>
                         <div class="flex flex-col dark:bg-slate-700/80 bg-slate-200/80 border-2 dark:border-slate-600 border-slate-300 rounded-xl backdrop-blur-md p-4"
                              x-show="add_pit_open"
                              @click.outside="add_pit_open = false"
@@ -283,7 +292,8 @@
                             <button class="ui_button"
                                     @click="add_pit_open = false; submit_team($event, $refs.team_number_input)"
                                     :disabled="team_number_input == ''">
-                                <i class="ph-bold ph-check"></i>{% translate "Add pit" %}</button>
+                                <i class="ph-bold ph-check"></i>{% translate "Add pit" %}
+                            </button>
                         </div>
                     </div>
 
@@ -305,23 +315,28 @@
                     <p class="dark:text-white text-black mr-2 text-md md:text-md"
                        x-show="state == 'loading'"
                        x-transition:enter.delay.300ms>
-                        <i class="ph-bold ph-circle-notch animate-spin"></i>{% translate "Fetching data from server..." %}</p>
+                        <i class="ph-bold ph-circle-notch animate-spin"></i>{% translate "Fetching data from server..." %}
+                    </p>
                     <p class="text-red-500 mr-2 text-md md:text-md"
                        x-show="state == 'unsaved'"
                        x-transition:enter.delay.300ms>
-                        <i class="ph-bold ph-x"></i>{% translate "Unsaved changes" %}</p>
+                        <i class="ph-bold ph-x"></i>{% translate "Unsaved changes" %}
+                    </p>
                     <p class="text-green-500 mr-2 text-md md:text-md"
                        x-show="state == 'saved'"
                        x-transition:enter.delay.300ms>
-                        <i class="ph-bold ph-check"></i>{% translate "Changes saved" %}</p>
+                        <i class="ph-bold ph-check"></i>{% translate "Changes saved" %}
+                    </p>
                     <p class="text-blue-500 mr-2 text-md md:text-md"
                        x-show="state == 'syncing'"
                        x-transition:enter.delay.300ms>
-                        <i class="ph-bold ph-circle-notch animate-spin"></i>{% translate "Syncing data..." %}</p>
+                        <i class="ph-bold ph-circle-notch animate-spin"></i>{% translate "Syncing data..." %}
+                    </p>
                     <p class="text-orange-500 mr-2 text-md md:text-md"
                        x-show="state == 'offline'"
                        x-transition:enter.delay.300ms>
-                        <i class="ph-bold ph-warning"></i>{% translate "Data saved offline" %}</p>
+                        <i class="ph-bold ph-warning"></i>{% translate "Data saved offline" %}
+                    </p>
                 </div>
             </div>
         </div>

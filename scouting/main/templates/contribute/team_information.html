@@ -3,6 +3,7 @@
 -->
 
 {% load static %}
+{% load i18n %}
 
 <script src="{% static '/main/scripts/contribute/team_information.js' %}"></script>
 
@@ -17,7 +18,9 @@
         <span class="dark:bg-slate-700 bg-slate-300 rounded-full px-2 py-1 text-xs dark:text-white text-black tippy-target"
               data-tippy-content="Testing is needed to determine if this feature works at all events. Please open an issue if any issues are encountered">{% translate "Experimental" %}</span>
     </div>
-    <p class="dark:text-white text-black text-sans text-sm opacity-80">{% translate "While scouting, watch teams during a match based on their position in the driver stations or on the screen. For example, if you select \"Red 1\", you should watch the first team on the red alliance." %}</p>
+    <p class="dark:text-white text-black text-sans text-sm opacity-80">
+        {% translate "While scouting, watch teams during a match based on their position in the driver stations or on the screen. For example, if you select \"Red 1\", you should watch the first team on the red alliance." %}
+    </p>
     <p class="dark:text-white text-black text-sans text-sm opacity-80">{% translate "In some cases data may be inaccurate or unavailable. Set to \"None\" to disable" %}</p>
 
     <div class="flex flex-row items-center gap-2">

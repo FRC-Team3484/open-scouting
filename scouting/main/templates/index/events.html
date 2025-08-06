@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 
 <script src="{% static '/main/scripts/index/events.js' %}"></script>
 <script src="{% static '/main/scripts/index/favorite_toggle.js' %}"></script>
@@ -8,7 +9,8 @@
      x-show="page == 3"
      x-transition>
     <p class="text-center dark:text-white text-black font-sans text-2xl my-4">
-        <i class="ph-bold ph-calendar-blank"></i>{% translate "Select event" %}</p>
+        <i class="ph-bold ph-calendar-blank"></i>{% translate "Select event" %}
+    </p>
 
     <div class="my-4">
         <div class="flex flex-row flex-wrap gap-2 mb-2">
@@ -104,15 +106,18 @@
                 <p class="dark:text-white text-black text-center text-lg"
                    x-show="no_events && !loading"
                    x-transition>
-                    <i class="ph-bold ph-smiley-sad"></i>{% translate "No events found" %}</p>
+                    <i class="ph-bold ph-smiley-sad"></i>{% translate "No events found" %}
+                </p>
 
                 <p class="dark:text-white text-black text-center text-lg"
                    x-show="loading"
                    x-transition>
-                    <i class="ph-bold ph-circle-notch !animate-spin origin-center"></i>{% translate "Loading events..." %}</p>
+                    <i class="ph-bold ph-circle-notch !animate-spin origin-center"></i>{% translate "Loading events..." %}
+                </p>
 
                 <button class="ui_button w-full" @click="create_custom_event()">
-                    <i class="ph-bold ph-plus"></i>{% translate "Create a custom Event" %}</button>
+                    <i class="ph-bold ph-plus"></i>{% translate "Create a custom Event" %}
+                </button>
             </div>
 
             <div x-show="active_tab === 'custom'">
@@ -142,15 +147,18 @@
                 <p class="dark:text-white text-black text-center text-lg"
                    x-show="custom_filtered_events.length === 0 && !loading"
                    x-transition>
-                    <i class="ph-bold ph-smiley-sad"></i>{% translate "No events found" %}</p>
+                    <i class="ph-bold ph-smiley-sad"></i>{% translate "No events found" %}
+                </p>
 
                 <p class="dark:text-white text-black text-center text-lg"
                    x-show="loading"
                    x-transition>
-                    <i class="ph-bold ph-circle-notch !animate-spin origin-center"></i>{% translate "Loading events..." %}</p>
+                    <i class="ph-bold ph-circle-notch !animate-spin origin-center"></i>{% translate "Loading events..." %}
+                </p>
 
                 <button class="ui_button w-full" @click="create_custom_event()">
-                    <i class="ph-bold ph-plus"></i>{% translate "Create a custom Event" %}</button>
+                    <i class="ph-bold ph-plus"></i>{% translate "Create a custom Event" %}
+                </button>
             </div>
 
             <div x-show="active_tab === 'favorites'">
@@ -201,12 +209,14 @@
                 <p class="dark:text-white text-black text-center text-lg"
                    x-show="favorite_filtered_events.length === 0 && !loading"
                    x-transition>
-                    <i class="ph-bold ph-smiley-sad"></i>{% translate "No favorite events" %}</p>
+                    <i class="ph-bold ph-smiley-sad"></i>{% translate "No favorite events" %}
+                </p>
 
                 <p class="dark:text-white text-black text-center text-lg"
                    x-show="loading"
                    x-transition>
-                    <i class="ph-bold ph-circle-notch !animate-spin origin-center"></i>{% translate "Loading events..." %}</p>
+                    <i class="ph-bold ph-circle-notch !animate-spin origin-center"></i>{% translate "Loading events..." %}
+                </p>
             </div>
 
         </div>

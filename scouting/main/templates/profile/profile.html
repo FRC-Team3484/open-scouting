@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
+
 {% block head_title %}
     Open Scouting
 {% endblock head_title %}
@@ -45,9 +47,11 @@
             <!-- <div class="border-2 border-slate-600/80 rounded-full w-32 h-32 aspect-square"></div> -->
 
             <button class="ui_button_small !w-full" @click="window.location.href = '/'">
-                <i class="ph-bold ph-arrow-left"></i>{% translate "Back to home" %}</button>
+                <i class="ph-bold ph-arrow-left"></i>{% translate "Back to home" %}
+            </button>
             <button class="ui_button_small !w-full" @click="sign_out_check()">
-                <i class="ph-bold ph-sign-out"></i>{% translate "Sign Out" %}</button>
+                <i class="ph-bold ph-sign-out"></i>{% translate "Sign Out" %}
+            </button>
         </div>
 
         <div class="border-2 border-slate-600/80 rounded-full md:w-2 md:h-64 w-64 h-2"></div>
@@ -57,7 +61,8 @@
                  x-show="!editing && !settings"
                  x-transition:enter.delay.300ms>
                 <p class="dark:text-white text-black font-sans text-2xl text-left">
-                    <i class="ph-bold ph-user-circle"></i>{% translate "Profile" %}</p>
+                    <i class="ph-bold ph-user-circle"></i>{% translate "Profile" %}
+                </p>
 
                 <p class="dark:text-white text-black font-sans text-md text-left">
                     <span class="opacity-50 mr-2">{% translate "Email:" %}</span><span class="opacity-100">{{ user.email }}</span>
@@ -73,10 +78,12 @@
 
                 <div class="flex flex-row gap-2">
                     <button class="ui_button_small" @click="editing = true">
-                        <i class="ph-bold ph-pencil"></i>{% translate "Edit Profile" %}</button>
+                        <i class="ph-bold ph-pencil"></i>{% translate "Edit Profile" %}
+                    </button>
 
                     <button class="ui_button_small" @click="settings = true">
-                        <i class="ph-bold ph-pencil"></i>{% translate "Change Settings" %}</button>
+                        <i class="ph-bold ph-pencil"></i>{% translate "Change Settings" %}
+                    </button>
                 </div>
             </div>
 
@@ -84,7 +91,8 @@
                  x-show="editing"
                  x-transition:enter.delay.300ms>
                 <p class="dark:text-white text-black font-sans text-2xl text-left">
-                    <i class="ph-bold ph-pencil"></i>{% translate "Edit Profile" %}</p>
+                    <i class="ph-bold ph-pencil"></i>{% translate "Edit Profile" %}
+                </p>
 
                 <p class="dark:text-white text-black font-sans text-sm text-left opacity-80">{% translate "Display name" %}</p>
                 <input class="ui_input"
@@ -100,10 +108,12 @@
 
                 <div class="flex flex-row gap-2">
                     <button class="ui_button_small" @click="save_profile()">
-                        <i class="ph-bold ph-check-circle"></i>{% translate "Save Changes" %}</button>
+                        <i class="ph-bold ph-check-circle"></i>{% translate "Save Changes" %}
+                    </button>
 
                     <button class="ui_button_small" @click="editing = false">
-                        <i class="ph-bold ph-x-circle"></i>{% translate "Cancel Changes" %}</button>
+                        <i class="ph-bold ph-x-circle"></i>{% translate "Cancel Changes" %}
+                    </button>
                 </div>
             </div>
 
@@ -112,7 +122,8 @@
                  x-transition:enter.delay.300ms>
 
                 <p class="dark:text-white text-black font-sans text-2xl text-left mb-2">
-                    <i class="ph-bold ph-pencil"></i>{% translate "Change Settings" %}</p>
+                    <i class="ph-bold ph-pencil"></i>{% translate "Change Settings" %}
+                </p>
 
                 <template x-if="settings">
                     <template x-for="setting in user.settings" :key="setting.name">
@@ -156,10 +167,12 @@
                 <div class="flex flex-row gap-2">
                     <button class="ui_button_small"
                             @click="user.save_settings(true); settings = false">
-                        <i class="ph-bold ph-check-circle"></i>{% translate "Save Changes" %}</button>
+                        <i class="ph-bold ph-check-circle"></i>{% translate "Save Changes" %}
+                    </button>
 
                     <button class="ui_button_small" @click="settings = false">
-                        <i class="ph-bold ph-x-circle"></i>{% translate "Cancel Changes" %}</button>
+                        <i class="ph-bold ph-x-circle"></i>{% translate "Cancel Changes" %}
+                    </button>
                 </div>
             </div>
         </div>
