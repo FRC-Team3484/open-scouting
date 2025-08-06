@@ -37,28 +37,24 @@
                     <button class="ui_button_small m-1!"
                             :disabled="filter == 'all'"
                             @click="filter = 'all'; filter_pit_data(); get_pit_status()">
-                        <i class="ph-bold ph-selection-all"></i> View All Pits
-                    </button>
+                        <i class="ph-bold ph-selection-all"></i>{% translate "View All Pits" %}</button>
                     <button class="ui_button_small m-1!"
                             :disabled="filter == 'incomplete'"
                             @click="filter = 'incomplete'; filter_pit_data(); get_pit_status()">
-                        <i class="ph-bold ph-arrows-clockwise"></i> View Incomplete Pits
-                    </button>
+                        <i class="ph-bold ph-arrows-clockwise"></i>{% translate "View Incomplete Pits" %}</button>
                     <button class="ui_button_small m-1!"
                             :disabled="filter == 'no_data'"
                             @click="filter = 'no_data'; filter_pit_data(); get_pit_status()">
-                        <i class="ph-bold ph-x"></i> View Pits With No Data
-                    </button>
+                        <i class="ph-bold ph-x"></i>{% translate "View Pits With No Data" %}</button>
                     <button class="ui_button_small m-1!"
                             :disabled="filter == 'completed'"
                             @click="filter = 'completed'; filter_pit_data(); get_pit_status()">
-                        <i class="ph-bold ph-check"></i> View Completed Pits
-                    </button>
+                        <i class="ph-bold ph-check"></i>{% translate "View Completed Pits" %}</button>
                 </div>
 
                 <p x-show="pit_status.length > 0"
                    x-transition
-                   class="dark:text-white text-black text-sans text-md my-2 ml-2">Select a team number below to jump to that team in the list</p>
+                   class="dark:text-white text-black text-sans text-md my-2 ml-2">{% translate "Select a team number below to jump to that team in the list" %}</p>
 
                 <div class="flex flex-row flex-wrap mb-4">
                     <template x-for="pit in pit_status">
@@ -247,22 +243,20 @@
                                  @click.outside="custom_question_open = false">
                                 <button class="ui_button_small ml-4 mt-1"
                                         @click="custom_question_open = !custom_question_open">
-                                    <i class="ph-bold ph-plus-circle"></i> Add Custom Question
-                                </button>
+                                    <i class="ph-bold ph-plus-circle"></i>{% translate "Add Custom Question" %}</button>
                                 <div class="flex flex-row"
                                      x-show="custom_question_open"
                                      x-collapse
                                      x-data="{ question_input: '' }">
                                     <input class="ui_input mt-1 ml-4 w-1/2"
                                            type="text"
-                                           placeholder="Question"
+                                           placeholder="{% translate "Question" %}"
                                            x-ref="question_input"
                                            x-model="question_input">
                                     <button class="ui_button_small ml-2"
                                             :disabled="question_input == ''"
                                             @click="custom_question_open = false; submit_question($event, $refs.question_input)">
-                                        <i class="ph-bold ph-check"></i> Add
-                                    </button>
+                                        <i class="ph-bold ph-check"></i>{% translate "Add" %}</button>
                                 </div>
                             </div>
 
@@ -271,27 +265,25 @@
                 </template>
 
                 <div class="flex flex-col bg-slate-200/80 dark:bg-slate-700/80 border-2 dark:border-slate-600 border-slate-300 rounded-xl backdrop-blur-md p-4 mt-2 mb-4">
-                    <p class="dark:text-white text-black text-lg text-center">Is a team's pit not here yet?</p>
+                    <p class="dark:text-white text-black text-lg text-center">{% translate "Is a team's pit not here yet?" %}</p>
                     <div class="flex flex-col" x-data="{ add_pit_open: false }">
                         <button class="ui_button" @click="add_pit_open = !add_pit_open">
-                            <i class="ph-bold ph-plus-circle"></i> Add a pit
-                        </button>
+                            <i class="ph-bold ph-plus-circle"></i>{% translate "Add a pit" %}</button>
                         <div class="flex flex-col dark:bg-slate-700/80 bg-slate-200/80 border-2 dark:border-slate-600 border-slate-300 rounded-xl backdrop-blur-md p-4"
                              x-show="add_pit_open"
                              @click.outside="add_pit_open = false"
                              x-data="{ team_number_input: '' }"
                              x-collapse>
-                            <p class="dark:text-white text-black text-md text-center">Add a new pit</p>
+                            <p class="dark:text-white text-black text-md text-center">{% translate "Add a new pit" %}</p>
                             <input class="ui_input mt-1 w-full!"
                                    type="number"
-                                   placeholder="Team Number"
+                                   placeholder="{% translate "Team Number" %}"
                                    x-ref="team_number_input"
                                    x-model="team_number_input">
                             <button class="ui_button"
                                     @click="add_pit_open = false; submit_team($event, $refs.team_number_input)"
                                     :disabled="team_number_input == ''">
-                                <i class="ph-bold ph-check"></i> Add pit
-                            </button>
+                                <i class="ph-bold ph-check"></i>{% translate "Add pit" %}</button>
                         </div>
                     </div>
 
@@ -313,28 +305,23 @@
                     <p class="dark:text-white text-black mr-2 text-md md:text-md"
                        x-show="state == 'loading'"
                        x-transition:enter.delay.300ms>
-                        <i class="ph-bold ph-circle-notch animate-spin"></i> Fetching data from server...
-                    </p>
+                        <i class="ph-bold ph-circle-notch animate-spin"></i>{% translate "Fetching data from server..." %}</p>
                     <p class="text-red-500 mr-2 text-md md:text-md"
                        x-show="state == 'unsaved'"
                        x-transition:enter.delay.300ms>
-                        <i class="ph-bold ph-x"></i> Unsaved changes
-                    </p>
+                        <i class="ph-bold ph-x"></i>{% translate "Unsaved changes" %}</p>
                     <p class="text-green-500 mr-2 text-md md:text-md"
                        x-show="state == 'saved'"
                        x-transition:enter.delay.300ms>
-                        <i class="ph-bold ph-check"></i> Changes saved
-                    </p>
+                        <i class="ph-bold ph-check"></i>{% translate "Changes saved" %}</p>
                     <p class="text-blue-500 mr-2 text-md md:text-md"
                        x-show="state == 'syncing'"
                        x-transition:enter.delay.300ms>
-                        <i class="ph-bold ph-circle-notch animate-spin"></i> Syncing data...
-                    </p>
+                        <i class="ph-bold ph-circle-notch animate-spin"></i>{% translate "Syncing data..." %}</p>
                     <p class="text-orange-500 mr-2 text-md md:text-md"
                        x-show="state == 'offline'"
                        x-transition:enter.delay.300ms>
-                        <i class="ph-bold ph-warning"></i> Data saved offline
-                    </p>
+                        <i class="ph-bold ph-warning"></i>{% translate "Data saved offline" %}</p>
                 </div>
             </div>
         </div>
