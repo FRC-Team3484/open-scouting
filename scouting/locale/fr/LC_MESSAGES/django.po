@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-07 14:21+0000\n"
+"POT-Creation-Date: 2025-08-07 15:05+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,7 +29,7 @@ msgid "Display Name"
 msgstr ""
 
 #: authentication/models.py:9 main/models.py:17 main/models.py:95
-#: main/templates/admin/filters.html:300
+#: main/season_fields.py:52 main/templates/admin/filters.html:300
 #: main/templates/authentication/authentication.html:217
 #: main/templates/pits/pits.html:289
 msgid "Team Number"
@@ -133,6 +133,142 @@ msgstr ""
 
 #: main/models.py:102
 msgid "Pit Group"
+msgstr ""
+
+#: main/season_fields.py:48
+msgid "Main"
+msgstr ""
+
+#: main/season_fields.py:60
+msgid "Match Number"
+msgstr ""
+
+#: main/season_fields.py:68
+msgid "Match Type"
+msgstr ""
+
+#: main/season_fields.py:92 main/season_fields.py:265
+msgid "Auton"
+msgstr ""
+
+#: main/season_fields.py:96 main/season_fields.py:128
+msgid "Speaker Shot"
+msgstr ""
+
+#: main/season_fields.py:107
+msgid "Amp Shot"
+msgstr ""
+
+#: main/season_fields.py:120 main/season_fields.py:345
+msgid "Teleop"
+msgstr ""
+
+#: main/season_fields.py:124
+msgid "Speaker"
+msgstr ""
+
+#: main/season_fields.py:139
+msgid "Speaker Misses"
+msgstr ""
+
+#: main/season_fields.py:152
+msgid "Amp"
+msgstr ""
+
+#: main/season_fields.py:156
+msgid "Amp Shots"
+msgstr ""
+
+#: main/season_fields.py:167
+msgid "Amp Misses"
+msgstr ""
+
+#: main/season_fields.py:182 main/season_fields.py:417
+msgid "Extra Information"
+msgstr ""
+
+#: main/season_fields.py:186 main/season_fields.py:269
+msgid "Left Starting Zone"
+msgstr ""
+
+#: main/season_fields.py:194
+msgid "Shoot Distance"
+msgstr ""
+
+#: main/season_fields.py:203
+msgid "Floor Pickup"
+msgstr ""
+
+#: main/season_fields.py:211
+msgid "Climb"
+msgstr ""
+
+#: main/season_fields.py:219
+msgid "Scored Trap"
+msgstr ""
+
+#: main/season_fields.py:227 main/season_fields.py:430
+msgid "Feeder Station Pickup"
+msgstr ""
+
+#: main/season_fields.py:235
+msgid "Moved During Auto"
+msgstr ""
+
+#: main/season_fields.py:245 main/season_fields.py:504
+msgid "Additional Notes"
+msgstr ""
+
+#: main/season_fields.py:249 main/season_fields.py:508
+msgid "Additional Notes or Comments"
+msgstr ""
+
+#: main/season_fields.py:277 main/season_fields.py:349
+msgid "Coral Scored in Reef"
+msgstr ""
+
+#: main/season_fields.py:288 main/season_fields.py:360
+msgid "Coral Dropped"
+msgstr ""
+
+#: main/season_fields.py:299 main/season_fields.py:371
+msgid "Algae Removed"
+msgstr ""
+
+#: main/season_fields.py:310 main/season_fields.py:382
+msgid "Algae Scored in Net"
+msgstr ""
+
+#: main/season_fields.py:321 main/season_fields.py:393
+msgid "Algae Scored in Processor"
+msgstr ""
+
+#: main/season_fields.py:332 main/season_fields.py:404
+msgid "Algae Score Failed"
+msgstr ""
+
+#: main/season_fields.py:421
+msgid "Coral Levels"
+msgstr ""
+
+#: main/season_fields.py:438
+msgid "End Location"
+msgstr ""
+
+#: main/season_fields.py:447
+msgid "Driver Skill"
+msgstr ""
+
+#: main/season_fields.py:463
+msgid "Defense"
+msgstr ""
+
+#: main/season_fields.py:479
+msgid "Penalities"
+msgstr ""
+
+#: main/season_fields.py:494
+msgid "Robot was damaged and/or disabled during the match"
 msgstr ""
 
 #: main/templates/admin/admin.html:44

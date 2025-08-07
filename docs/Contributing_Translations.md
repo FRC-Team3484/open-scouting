@@ -29,6 +29,9 @@ msgstr "Vista de datos avanzada"
 Once you've made your changes, ensure to update the table above if you've made new translation progress. Finally, open a PR with your changes into `development`. Your new translations will be reviewed and eventually merged into the latest version of Open Scouting. Thank you for your contribution!
 
 ## Adding new languages
+> ![IMPORTANT]
+> Support has not yet been fully added for right to left languages. This is definitely something that needs added in future. If you wish to contribute a right to left language, please open an issue, and support for that will be prioritized
+
 If your language isn't already added into Open Scouting, feel free to add it!
 
 First, find the `LANGUAGES` setting in `settings.py`, and add your language to it:
