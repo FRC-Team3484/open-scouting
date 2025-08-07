@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 
 <script src="{% static '/main/scripts/index/header.js' %}"></script>
 
@@ -11,14 +12,15 @@
              src="{% static '/main/images/logo_light.png' %}">
         <img class="w-full md:w-1/2 xl:w-2/6 px-10 dark:hidden block"
              src="{% static '/main/images/logo_dark.png' %}">
-        <p class="font-sans dark:text-white mt-2 text-black text-center">An open source application for easier scouting at FIRST Robotics competitions</p>
+        {# Translators: Description of the application #}
+        <p class="font-sans dark:text-white mt-2 text-black text-center">{% translate "An open source application for easier scouting at FIRST Robotics competitions" %}</p>
         <div class="flex flex-row mt-4 mb-8">
             <a class="dark:text-white text-black text-sm md:text-lg mx-2 hover:scale-105 transition-all opacity-80 hover:opacity-100"
-               href="https://github.com/FRC-Team3484/open-scouting"><i class="ph-bold ph-github-logo"></i> Source Code</a>
+               href="https://github.com/FRC-Team3484/open-scouting"><i class="ph-bold ph-github-logo"></i> {% translate "Source Code" %}</a>
             <a class="dark:text-white text-black text-sm md:text-lg mx-2 hover:scale-105 transition-all opacity-80 hover:opacity-100"
-               href="https://github.com/FRC-Team3484/open-scouting/issues"><i class="ph-bold ph-bug"></i> Issues</a>
+               href="https://github.com/FRC-Team3484/open-scouting/issues"><i class="ph-bold ph-bug"></i> {% translate "Issues" %}</a>
             <a class="dark:text-white text-black text-sm md:text-lg mx-2 hover:scale-105 transition-all opacity-80 hover:opacity-100"
-               href="https://github.com/FRC-Team3484/open-scouting/releases"><i class="ph-bold ph-app-window"></i> Releases</a>
+               href="https://github.com/FRC-Team3484/open-scouting/releases"><i class="ph-bold ph-app-window"></i> {% translate "Releases" %}</a>
         </div>
     </div>
     <div class="flex flex-row dark:bg-slate-800 dark:border-slate-700 bg-slate-200 border-slate-300 border-2 rounded-lg w-full px-6 justify-center items-center py-4 mt-6"
@@ -56,7 +58,8 @@
 
         <div x-show="demo">
             <p class="p-2 ml-2 rounded-full dark:text-white text-black font-sans text-md border-solid border-2 dark:border-slate-600 dark:bg-purple-900/50 border-slate-300 bg-purple-200/50">
-                <i class="ph-bold ph-test-tube"></i> Open Scouting is in demo mode
+                {# Translators: Demo mode warning #}
+                <i class="ph-bold ph-test-tube"></i> {% translate "Open Scouting is in demo mode" %}
             </p>
         </div>
     </div>

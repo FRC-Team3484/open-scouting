@@ -2,6 +2,7 @@
     Handles the menu page for checking if any locally backed up scouting reports were never actually saved
 -->
 {% load static %}
+{% load i18n %}
 
 <script src="{% static '/main/scripts/menu/menu_report_backup_check.js' %}"></script>
 
@@ -14,9 +15,9 @@
      x-cloak>
     <div class="flex flex-row justify-between items-center w-full border-b-2 dark:border-slate-600 border-slate-300 px-6 py-4 mb-6">
         <div class="flex flex-col">
-            <p class="text-black dark:text-white text-2xl font-bold">Check Backed Up Scouting Reports</p>
+            <p class="text-black dark:text-white text-2xl font-bold">{% translate "Check Backed Up Scouting Reports" %}</p>
             <p class="text-black dark:text-white text-sm">
-                Check to ensure that your scouting reports have been saved on the server. Copies are saved locally in case of request or network failure.
+                {% translate "Check to ensure that your scouting reports have been saved on the server. Copies are saved locally in case of request or network failure." %}
             </p>
         </div>
 
@@ -28,37 +29,37 @@
     <div class="flex flex-row w-full items-center justify-center text-center mb-6">
         <p x-text="locally_backed_up_reports"
            class="dark:text-white text-black text-md font-bold mr-1"></p>
-        <p class="dark:text-white text-black font-sans text-md">Checkable reports</p>
+        <p class="dark:text-white text-black font-sans text-md">{% translate "Checkable reports" %}</p>
     </div>
 
     <button class="ui_button" @click="check_local_backup_reports()">
-        <i class="ph-bold ph-check"></i> Check Reports
+        <i class="ph-bold ph-check"></i>{% translate "Check Reports" %}
     </button>
 
     <div x-show="backed_up_reports_checked"
          class="flex flex-col items-center justify-center w-full my-2"
          x-collapse>
         <p class="dark:text-white text-black font-bold">
-            <i class="ph-bold ph-seal-check"></i> Reports have been checked with the server
+            <i class="ph-bold ph-seal-check"></i>{% translate "Reports have been checked with the server" %}
         </p>
-        <p class="dark:text-white text-black text-sm mb-2">If they were missing, they were automatically uploaded</p>
+        <p class="dark:text-white text-black text-sm mb-2">{% translate "If they were missing, they were automatically uploaded" %}</p>
 
         <div class="flex flex-row w-full items-center justify-center">
             <p x-text="backed_up_reports_found"
                class="dark:text-white text-black text-sm font-bold"></p>
-            <p class="dark:text-white text-black font-sans text-sm ml-1">Backed up reports found on the server</p>
+            <p class="dark:text-white text-black font-sans text-sm ml-1">{% translate "Backed up reports found on the server" %}</p>
         </div>
 
         <div class="flex flex-row w-full items-center justify-center">
             <p x-text="backed_up_reports_not_found"
                class="dark:text-white text-black text-sm font-bold"></p>
-            <p class="dark:text-white text-black font-sans text-sm ml-1">Backed up reports not found on the server</p>
+            <p class="dark:text-white text-black font-sans text-sm ml-1">{% translate "Backed up reports not found on the server" %}</p>
         </div>
     </div>
 
     <button class="ui_button"
             @click="backed_up_reports_confirm_delete = !backed_up_reports_confirm_delete">
-        <i class="ph-bold ph-trash"></i> Clear Saved Reports
+        <i class="ph-bold ph-trash"></i>{% translate "Clear Saved Reports" %}
     </button>
 
     <div x-show="backed_up_reports_confirm_delete"
@@ -66,11 +67,11 @@
          x-collapse>
         <button class="ui_button mx-2"
                 @click="backed_up_reports_confirm_delete = false">
-            <i class="ph-bold ph-x"></i> Cancel
+            <i class="ph-bold ph-x"></i>{% translate "Cancel" %}
         </button>
         <button class="ui_button mx-2 hover:bg-red-600/80 active:bg-red-700/80"
                 @click="clear_saved_backup_reports()">
-            <i class="ph-bold ph-trash"></i> Confirm
+            <i class="ph-bold ph-trash"></i>{% translate "Confirm" %}
         </button>
     </div>
 </div>

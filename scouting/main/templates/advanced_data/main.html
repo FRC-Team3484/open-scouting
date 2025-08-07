@@ -3,6 +3,7 @@
 -->
 
 {% load static %}
+{% load i18n %}
 
 <script src="{% static '/main/scripts/advanced_data/advanced_data.js' %}"></script>
 
@@ -40,7 +41,7 @@
                              @collapse_all.window="open = false">
                             <div class="flex flex-row justify-between items-center cursor-pointer"
                                  @click="open = !open">
-                                <p class="dark:text-white text-black text-xl font-semibold">Summary</p>
+                                <p class="dark:text-white text-black text-xl font-semibold">{% translate "Summary" %}</p>
                                 <i class="ph-bold ph-caret-down dark:text-white text-black"
                                    x-show="open"></i>
                                 <i class="ph-bold ph-caret-up dark:text-white text-black" x-show="!open"></i>
@@ -48,9 +49,8 @@
 
                             <div x-show="open" x-collapse class="mt-2 text-sm">
                                 <!-- Averages for scores and misses -->
-                                <!-- Averages for scores and misses -->
                                 <div class="mb-4">
-                                    <p class="text-md dark:text-white text-black font-semibold mb-2">Score & Miss Averages</p>
+                                    <p class="text-md dark:text-white text-black font-semibold mb-2">{% translate "Score & Miss Averages" %}</p>
                                     <ul class="ml-4 list-disc list-inside">
                                         <template x-for="phase in ['auton']" :key="phase">
                                             <template x-if="teamEntry.data[phase]">
@@ -96,7 +96,7 @@
 
                                 <!-- Capability percentages -->
                                 <div>
-                                    <p class="text-md dark:text-white text-black font-semibold mb-2">Capabilities</p>
+                                    <p class="text-md dark:text-white text-black font-semibold mb-2">{% translate "Capabilities" %}</p>
                                     <ul class="ml-4 list-disc list-inside">
                                         <template x-for="(capabilityValue, capabilityName) in teamEntry.data.capabilities"
                                                   :key="capabilityName">

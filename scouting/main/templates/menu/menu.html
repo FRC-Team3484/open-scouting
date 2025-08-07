@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 
 <script src="{% static '/main/scripts/menu/menu.js' %}"></script>
 
@@ -81,27 +82,50 @@
             <button class="dark:text-black text-white dark:bg-slate-200/80 bg-slate-700/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:text-white active:text-black dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-600 dark:hover:bg-slate-100 text-center text-md duration-300"
                     @click="toggle_dark_mode()">
                 <i class="ph-bold ph-moon" x-show="dark_mode" x-transition></i> <i class="ph-bold ph-sun" x-show="!dark_mode" x-transition></i>
-                <p x-show="dark_mode">Light Mode</p>
-                <p x-show="!dark_mode">Dark Mode</p>
+                <p x-show="dark_mode">{% translate "Light Mode" %}</p>
+                <p x-show="!dark_mode">{% translate "Dark Mode" %}</p>
             </button>
             <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"
                     @click="toggle_offline_manual()">
                 <i class="ph-bold ph-wifi-slash" x-show="offline_manual" x-transition></i> <i class="ph-bold ph-wifi-high" x-show="!offline_manual" x-transition></i>
-                <p x-show="offline_manual">Go Online</p>
-                <p x-show="!offline_manual">Go Offline</p>
+                <p x-show="offline_manual">{% translate "Go Online" %}</p>
+                <p x-show="!offline_manual">{% translate "Go Offline" %}</p>
             </button>
         </div>
 
         <div class="grid-cols-2 grid gap-x-2 gap-y-2 pt-6">
             <a href="{{ SERVER_IP }}"
-               class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"><i class="ph-bold ph-house"></i> Home</a>
+               class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"><i class="ph-bold ph-house"></i>{% translate "Home" %}</a>
             <!-- TODO: Update these links when repo moves -->
             <a href="https://github.com/FRC-Team3484/open-scouting"
-               class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"><i class="ph-bold ph-github-logo"></i> Source Code</a>
+               class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"><i class="ph-bold ph-github-logo"></i>{% translate "Source Code" %}</a>
             <a href="https://github.com/FRC-Team3484/open-scouting/releases"
-               class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"><i class="ph-bold ph-notebook"></i> Changelog</a>
+               class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"><i class="ph-bold ph-notebook"></i>{% translate "Changelog" %}</a>
             <a href="https://github.com/FRC-Team3484/open-scouting/issues"
-               class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"><i class="ph-bold ph-bug"></i> Report a Bug</a>
+               class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"><i class="ph-bold ph-bug"></i>{% translate "Report a Bug" %}</a>
+        </div>
+
+        <div class="flex flex-col pt-6 w-full">
+            <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"
+                    @click="language_open = !language_open">
+                <i class="ph-bold ph-globe" x-show="!language_open"></i><i class="ph-bold ph-x" x-show="language_open"></i>{% translate "Language" %}
+            </button>
+        </div>
+
+        <div class="flex flex-col w-full dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg p-2 mt-6 pl-4"
+             x-transition
+             x-show="language_open">
+            <p class="dark:text-white text-black text-lg text-sans font-bold">{% translate "Select Language" %}</p>
+            {% get_current_language as CURRENT_LANGUAGE %}
+            {% get_available_languages as LANGUAGES %}
+            {% get_language_info_list for LANGUAGES as languages %}
+
+            <div class="flex flex-row flex-wrap gap-2 mt-2">
+                {% for language in languages %}
+                    <button class="ui_button_small {% if language.code == CURRENT_LANGUAGE %}opacity-50 pointer-events-none{% endif %}"
+                            @click="set_language('{{ language.code }}')">{{ language.name }}</button>
+                {% endfor %}
+            </div>
         </div>
 
         <div x-show="offline_reports"
@@ -110,15 +134,15 @@
             <div class="flex flex-row">
                 <i class="ph-bold ph-cloud-arrow-up dark:text-white text-black text-4xl mr-2"></i>
                 <div class="flex flex-col">
-                    <p class="dark:text-white text-black text-lg text-sans font-bold">Upload scouting reports</p>
+                    <p class="dark:text-white text-black text-lg text-sans font-bold">{% translate "Upload scouting reports" %}</p>
                     <p class="dark:text-white text-black text-md text-sans">
-                        While you were offline, some reports were saved locally. You should upload them to ensure that they've been saved to the server.
+                        {% translate "While you were offline, some reports were saved locally. You should upload them to ensure that they've been saved to the server." %}
                     </p>
                 </div>
             </div>
 
             <button class="ui_button" @click="upload_offline_reports()">
-                <i class="ph-bold ph-cloud-arrow-up"></i> Upload
+                <i class="ph-bold ph-cloud-arrow-up"></i>{% translate "Upload" %}
             </button>
         </div>
 
@@ -128,49 +152,49 @@
             <div class="flex flex-row">
                 <i class="ph-bold ph-cloud-arrow-up dark:text-white text-black text-4xl mr-2"></i>
                 <div class="flex flex-col">
-                    <p class="dark:text-white text-black text-lg text-sans font-bold">Upload pit scouting data</p>
+                    <p class="dark:text-white text-black text-lg text-sans font-bold">{% translate "Upload pit scouting data" %}</p>
                     <p class="dark:text-white text-black text-md text-sans">
-                        While you were offline, some pit scouting data was saved locally. You should upload them to ensure that they've been saved to the server.
+                        {% translate "While you were offline, some pit scouting data was saved locally. You should upload them to ensure that they've been saved to the server." %}
                     </p>
                 </div>
             </div>
 
             <button class="ui_button" @click="upload_offline_pit_scouting()">
-                <i class="ph-bold ph-cloud-arrow-up"></i> Upload
+                <i class="ph-bold ph-cloud-arrow-up"></i>{% translate "Upload" %}
             </button>
         </div>
 
         <div class="flex flex-col pt-6 w-full">
             <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"
                     @click="mrbc_open = true">
-                <i class="ph-bold ph-seal-check"></i> Check Backed Up Scouting Reports
+                <i class="ph-bold ph-seal-check"></i>{% translate "Check Backed Up Scouting Reports" %}
             </button>
         </div>
 
         <div class="flex flex-col pt-6 w-full">
             <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"
                     @click="storage_open = true">
-                <i class="ph-bold ph-floppy-disk"></i> Manage Storage
+                <i class="ph-bold ph-floppy-disk"></i>{% translate "Manage Storage" %}
             </button>
 
             <p x-show="storage_warning"
-               class="text-orange-500 font-bold ml-auto mr-auto mt-1">Low Storage remaining</p>
+               class="text-orange-500 font-bold ml-auto mr-auto mt-1">{% translate "Low Storage remaining" %}</p>
         </div>
 
         <div class="flex flex-col pt-6 w-full">
             <button @click="credits_open = !credits_open"
                     class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md w-full duration-300">
-                <i x-show="!credits_open" class="ph-bold ph-heart"></i> <i x-show="credits_open" class="ph-bold ph-x"></i> Credits
+                <i x-show="!credits_open" class="ph-bold ph-heart"></i> <i x-show="credits_open" class="ph-bold ph-x"></i>{% translate "Credits" %}
             </button>
 
             <div x-show="credits_open" x-collapse class="mx-6">
                 <p class="dark:text-white text-black text-md pt-2">
-                    Created by <a href="https://www.thebluealliance.com/team/3484"
-    class="dark:text-blue-400 text-blue-600 dark:hover:text-blue-500 hover:text-blue-700 transition-colors">3484 Short Circuit</a>
+                    {% translate "Created by" %}<a href="https://www.thebluealliance.com/team/3484"
+   class="dark:text-blue-400 text-blue-600 dark:hover:text-blue-500 hover:text-blue-700 transition-colors">{% translate "3484 Short Circuit" %}</a>
                 </p>
                 <p class="dark:text-white text-black text-md pt-2">
-                    Powered by <a href="https://www.thebluealliance.com"
-    class="dark:text-blue-400 text-blue-600 dark:hover:text-blue-500 hover:text-blue-700 transition-colors">The Blue Alliance</a>
+                    {% translate "Powered by" %}<a href="https://www.thebluealliance.com"
+   class="dark:text-blue-400 text-blue-600 dark:hover:text-blue-500 hover:text-blue-700 transition-colors">{% translate "The Blue Alliance" %}</a>
                 </p>
             </div>
         </div>
@@ -178,7 +202,7 @@
         <div class="flex flex-col pt-6 w-full">
             <button @click="developer_open = !developer_open; if (developer_open) $dispatch('developer_open', developer_open)"
                     class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md w-full duration-300">
-                <i x-show="!developer_open" class="ph-bold ph-bug"></i> <i x-show="developer_open" class="ph-bold ph-x"></i> Developer Settings
+                <i x-show="!developer_open" class="ph-bold ph-bug"></i> <i x-show="developer_open" class="ph-bold ph-x"></i>{% translate "Developer Settings" %}
             </button>
 
             <div x-show="developer_open"
@@ -186,25 +210,25 @@
                  class="grid=cols-2 grid gap-x-2 gap-y-2 pt-6 mx-6">
                 <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"
                         @click="logs_open = true">
-                    <i class="ph-bold ph-notebook"></i> View logs
+                    <i class="ph-bold ph-notebook"></i>{% translate "View logs" %}
                 </button>
                 <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"
                         @click="clear_database()">
-                    <i class="ph-bold ph-trash"></i> Clear saved match reports, pit scouting data, and backups
+                    <i class="ph-bold ph-trash"></i>{% translate "Clear saved match reports, pit scouting data, and backups" %}
                 </button>
                 <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"
                         @click="toggle_service_worker_mode()"
                         x-show="service_worker_cache_first">
-                    <i class="ph-bold ph-network"></i> Network-first service worker
+                    <i class="ph-bold ph-network"></i>{% translate "Network-first service worker" %}
                 </button>
                 <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"
                         @click="toggle_service_worker_mode()"
                         x-show="!service_worker_cache_first">
-                    <i class="ph-bold ph-database"></i> Cache-first service worker
+                    <i class="ph-bold ph-database"></i>{% translate "Cache-first service worker" %}
                 </button>
                 <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"
                         @click="clear_service_worker_cache()">
-                    <i class="ph-bold ph-trash"></i> Clear service worker cache
+                    <i class="ph-bold ph-trash"></i>{% translate "Clear service worker cache" %}
                 </button>
             </div>
         </div>

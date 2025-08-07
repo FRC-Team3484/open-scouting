@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 {% block head_title %}Open Scouting | Contribute{% endblock %}
 
 {% block head_scripts %}{% endblock %}
@@ -31,7 +32,7 @@
              x-cloak>
             <div>
                 <p class="dark:text-white text-black text-sans text-center">
-                    <i class="ph-bold ph-check-circle"></i> The data has been successfully submitted
+                    <i class="ph-bold ph-check-circle"></i>{% translate "The data has been successfully submitted" %}
                 </p>
             </div>
         </div>
@@ -62,7 +63,7 @@
              x-cloak>
             <div>
                 <p class="dark:text-white text-black text-sans text-center">
-                    <i class="ph-bold ph-floppy-disk"></i> The data has been successfully stored locally. It will be uploaded when you go online.
+                    <i class="ph-bold ph-floppy-disk"></i>{% translate "The data has been successfully stored locally. It will be uploaded when you go online." %}
                 </p>
             </div>
         </div>
@@ -93,7 +94,7 @@
              x-cloak>
             <div>
                 <p class="dark:text-white text-black text-sans text-center">
-                    <i class="ph-bold ph-test-tube"></i> The data isn't submitted to the server while you're in demo mode
+                    <i class="ph-bold ph-test-tube"></i>{% translate "The data isn't submitted to the server while you're in demo mode" %}
                 </p>
             </div>
         </div>
@@ -129,7 +130,7 @@
              x-data="submit_manager()">
             <div class="flex flex-row items-center">
                 <button class="ui_button mr-4" @click="submit_button()">
-                    <i class="ph-bold ph-check-circle"></i> Submit
+                    <i class="ph-bold ph-check-circle"></i>{% translate "Submit" %}
                 </button>
                 <button class="ui_button_icon"
                         x-ref="menu_button"
@@ -143,10 +144,10 @@
                      x-transition>
                     <button class="ui_button_small my-1! py-1! px-2! w-full! text-left!"
                             @click="export_as_json">
-                        <i class="ph-bold ph-file-code"></i> Export report as JSON
+                        <i class="ph-bold ph-file-code"></i>{% translate "Export report as JSON" %}
                     </button>
                     <label class="ui_button_small flex flex-row items-center my-1! py-1! px-2! w-full!">
-                        <i class="ph-bold ph-upload-simple mr-1"></i> Import JSON report
+                        <i class="ph-bold ph-upload-simple mr-1"></i>{% translate "Import JSON report" %}
                         <input type="file"
                                accept="application/json"
                                style="display: none"
@@ -155,17 +156,17 @@
                     </label>
                     <button class="ui_button_small my-1! py-1! px-2! w-full! text-left!"
                             @click="reset">
-                        <i class="ph-bold ph-trash"></i> Clear and reset
+                        <i class="ph-bold ph-trash"></i>{% translate "Clear and reset" %}
                     </button>
                     <button class="ui_button_small my-1! py-1! px-2! w-full! text-left!"
                             @click="save_report_offline">
-                        <i class="ph-bold ph-cloud-slash"></i> Save report offline
+                        <i class="ph-bold ph-cloud-slash"></i>{% translate "Save report offline" %}
                     </button>
                 </div>
             </div>
 
             <div x-show="missing_required_fields" x-transition>
-                <p class="text-sans dark:text-red-700 text-red-500 font-bold text-center">Please fill out all of the required fields</p>
+                <p class="text-sans dark:text-red-700 text-red-500 font-bold text-center">{% translate "Please fill out all of the required fields" %}</p>
             </div>
         </div>
     {% endblock body %}

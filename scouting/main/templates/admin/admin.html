@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
+
 {% block head_title %}Open Scouting | Admin{% endblock %}
 
 {% block head_scripts %}
@@ -9,11 +11,15 @@
 {% endblock stylesheets %}
 
 {% block body %}
+    {% get_current_language as CURRENT_LANGUAGE %}
+
     <script>
         const SERVER_IP = "{{ SERVER_IP }}";
         const CSRF_TOKEN = "{{ csrf_token }}";
         const TBA_API_KEY = "{{ TBA_API_KEY }}";
         const YEARS = '{{ YEARS | safe }}';
+
+        const DJANGO_LOCALE = "{{ CURRENT_LANGUAGE }}";
     </script>
 
     <script>
@@ -35,15 +41,15 @@
                      src="{% static '/main/images/icon_rounded.png' %}"
                      @click="window.location.href = '{{ SERVER_IP }}'">
                 <div class="flex flex-col">
-                    <p class="dark:text-white text-black text-sans text-2xl">Admin Dashboard</p>
+                    <p class="dark:text-white text-black text-sans text-2xl">{% translate "Admin Dashboard" %}</p>
                     <p class="dark:text-white text-black text-sans text-md">
-                        Viewing as <span class="font-bold">{{ user.profile.display_name }}</span> <span class="opacity-50">({{ user.email }})</span>
+                        {% translate "Viewing as" %}<span class="font-bold">{{ user.profile.display_name }}</span> <span class="opacity-50">({{ user.email }})</span>
                     </p>
                 </div>
             </div>
 
             <button class="ui_button_small"
-                    @click="window.location.href = window.location.href.replace(/\/ui\/?$/, '')">Django Admin</button>
+                    @click="window.location.href = window.location.href.replace(/\/ui\/?$/, '')">{% translate "Django Admin" %}</button>
         </div>
 
         {% include "admin/analytics.html" %}

@@ -64,9 +64,10 @@ document.addEventListener("alpine:init", () => {
 				window.dispatchEvent(
 					new CustomEvent("scouting_notification", {
 						detail: {
-							title: "Event autofilled",
-							message:
+							title: gettext("Event autofilled"),
+							message: gettext(
 								"Autofilled the event and year from the provided link data",
+							),
 							type: "info",
 							icon: "lightning",
 						},
@@ -140,9 +141,10 @@ document.addEventListener("alpine:init", () => {
 				window.dispatchEvent(
 					new CustomEvent("scouting_notification", {
 						detail: {
-							title: "Event autofilled",
-							message:
+							title: gettext("Event autofilled"),
+							message: gettext(
 								"Autofilled the event and year from the provided link data",
+							),
 							type: "info",
 							icon: "lightning",
 						},
@@ -166,8 +168,10 @@ document.addEventListener("alpine:init", () => {
 					new CustomEvent("dialog_show", {
 						detail: {
 							event_name: "sign_out",
-							title: "Signing out will clear page cache",
-							body: "You're currently offline. Signing out will reset any cached pages to make sure your user is actually signed in. Those pages will not be able to be cached again until you're online, so the site may not work properly if you proceed. Are you sure you want to sign out?",
+							title: gettext("Signing out will clear page cache"),
+							body: gettext(
+								"You're currently offline. Signing out will reset any cached pages to make sure your user is actually signed in. Those pages will not be able to be cached again until you're online, so the site may not work properly if you proceed. Are you sure you want to sign out?",
+							),
 							buttons: [
 								{ type: "confirm", icon: "ph-bold ph-check", text: "Sign out" },
 								{ type: "cancel", icon: "ph-bold ph-x", text: "Not now" },

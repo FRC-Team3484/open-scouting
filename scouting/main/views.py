@@ -2,6 +2,7 @@ from django.shortcuts import render, HttpResponse, redirect
 from django.http import JsonResponse, HttpResponseForbidden
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.cache import never_cache
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.db.models import Q

@@ -3,6 +3,7 @@
 -->
 
 {% load static %}
+{% load i18n %}
 
 <script src="{% static '/main/scripts/menu/logs.js' %}"></script>
 
@@ -15,21 +16,21 @@
      x-cloak>
     <div class="flex flex-row justify-between items-center w-full border-b-2 dark:border-slate-600 border-slate-300 px-6 py-4 mb-6">
         <div class="flex flex-col">
-            <p class="text-black dark:text-white text-2xl font-bold">View client side logs</p>
-            <p class="text-black dark:text-white text-sm">View the logs of the client, used for debugging and opening bug reports</p>
+            <p class="text-black dark:text-white text-2xl font-bold">{% translate "View client side logs" %}</p>
+            <p class="text-black dark:text-white text-sm">{% translate "View the logs of the client, used for debugging and opening bug reports" %}</p>
             <div class="flex flex-row gap-2 mt-2">
                 <a href="https://github.com/FRC-Team3484/open-scouting/issues">
                     <button class="ui_button_small">
-                        <i class="ph-bold ph-bug"></i> Open GitHub Issues
+                        <i class="ph-bold ph-bug"></i>{% translate "Open GitHub Issues" %}
                     </button>
                 </a>
                 <button class="ui_button_small"
-                        @click="copy_all_logs_to_clipboard(); $el.innerHTML = `<i class='ph-bold ph-check-circle'></i> Copied!`"
+                        @click="copy_all_logs_to_clipboard(); $el.innerHTML = `<i class='ph-bold ph-check-circle'></i> {% translate 'Copied!' %}`"
                         x-ref="copy_all_logs_button">
-                    <i class="ph-bold ph-clipboard-text"></i> Copy all logs
+                    <i class="ph-bold ph-clipboard-text"></i>{% translate "Copy all logs" %}
                 </button>
                 <button class="ui_button_small" @click="download_log_file()">
-                    <i class="ph-bold ph-download-simple"></i> Download log file
+                    <i class="ph-bold ph-download-simple"></i>{% translate "Download log file" %}
                 </button>
             </div>
         </div>
@@ -62,6 +63,6 @@
             </template>
         </template>
 
-        <p class="dark:text-white text-black">Only the 100 most recent log entries are preserved on page reload</p>
+        <p class="dark:text-white text-black">{% translate "Only the 100 most recent log entries are preserved on page reload" %}</p>
     </div>
 </div>

@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
+
 {% block head_title %}
     Open Scouting
 {% endblock head_title %}
@@ -45,10 +47,10 @@
             <!-- <div class="border-2 border-slate-600/80 rounded-full w-32 h-32 aspect-square"></div> -->
 
             <button class="ui_button_small !w-full" @click="window.location.href = '/'">
-                <i class="ph-bold ph-arrow-left"></i> Back to home
+                <i class="ph-bold ph-arrow-left"></i>{% translate "Back to home" %}
             </button>
             <button class="ui_button_small !w-full" @click="sign_out_check()">
-                <i class="ph-bold ph-sign-out"></i> Sign Out
+                <i class="ph-bold ph-sign-out"></i>{% translate "Sign Out" %}
             </button>
         </div>
 
@@ -59,28 +61,28 @@
                  x-show="!editing && !settings"
                  x-transition:enter.delay.300ms>
                 <p class="dark:text-white text-black font-sans text-2xl text-left">
-                    <i class="ph-bold ph-user-circle"></i> Profile
+                    <i class="ph-bold ph-user-circle"></i>{% translate "Profile" %}
                 </p>
 
                 <p class="dark:text-white text-black font-sans text-md text-left">
-                    <span class="opacity-50 mr-2">Email:</span><span class="opacity-100">{{ user.email }}</span>
+                    <span class="opacity-50 mr-2">{% translate "Email:" %}</span><span class="opacity-100">{{ user.email }}</span>
                 </p>
 
                 <p class="dark:text-white text-black font-sans text-md text-left">
-                    <span class="opacity-50 mr-2">Display Name:</span><span class="opacity-100" x-text="display_name"></span>
+                    <span class="opacity-50 mr-2">{% translate "Display Name:" %}</span><span class="opacity-100" x-text="display_name"></span>
                 </p>
 
                 <p class="dark:text-white text-black font-sans text-md text-left">
-                    <span class="opacity-50 mr-2">Team Number:</span><span class="opacity-100" x-text="team_number"></span>
+                    <span class="opacity-50 mr-2">{% translate "Team Number:" %}</span><span class="opacity-100" x-text="team_number"></span>
                 </p>
 
                 <div class="flex flex-row gap-2">
                     <button class="ui_button_small" @click="editing = true">
-                        <i class="ph-bold ph-pencil"></i> Edit Profile
+                        <i class="ph-bold ph-pencil"></i>{% translate "Edit Profile" %}
                     </button>
 
                     <button class="ui_button_small" @click="settings = true">
-                        <i class="ph-bold ph-pencil"></i> Change Settings
+                        <i class="ph-bold ph-pencil"></i>{% translate "Change Settings" %}
                     </button>
                 </div>
             </div>
@@ -89,28 +91,28 @@
                  x-show="editing"
                  x-transition:enter.delay.300ms>
                 <p class="dark:text-white text-black font-sans text-2xl text-left">
-                    <i class="ph-bold ph-pencil"></i> Edit Profile
+                    <i class="ph-bold ph-pencil"></i>{% translate "Edit Profile" %}
                 </p>
 
-                <p class="dark:text-white text-black font-sans text-sm text-left opacity-80">Display name</p>
+                <p class="dark:text-white text-black font-sans text-sm text-left opacity-80">{% translate "Display name" %}</p>
                 <input class="ui_input"
-                       placeholder="Display name"
+                       placeholder="{% translate "Display name" %}"
                        type="text"
                        x-model="display_name">
 
-                <p class="dark:text-white text-black font-sans text-sm text-left opacity-80">Team number</p>
+                <p class="dark:text-white text-black font-sans text-sm text-left opacity-80">{% translate "Team number" %}</p>
                 <input class="ui_input"
-                       placeholder="Team number"
+                       placeholder="{% translate "Team number" %}"
                        type="text"
                        x-model="team_number">
 
                 <div class="flex flex-row gap-2">
                     <button class="ui_button_small" @click="save_profile()">
-                        <i class="ph-bold ph-check-circle"></i> Save Changes
+                        <i class="ph-bold ph-check-circle"></i>{% translate "Save Changes" %}
                     </button>
 
                     <button class="ui_button_small" @click="editing = false">
-                        <i class="ph-bold ph-x-circle"></i> Cancel Changes
+                        <i class="ph-bold ph-x-circle"></i>{% translate "Cancel Changes" %}
                     </button>
                 </div>
             </div>
@@ -120,7 +122,7 @@
                  x-transition:enter.delay.300ms>
 
                 <p class="dark:text-white text-black font-sans text-2xl text-left mb-2">
-                    <i class="ph-bold ph-pencil"></i> Change Settings
+                    <i class="ph-bold ph-pencil"></i>{% translate "Change Settings" %}
                 </p>
 
                 <template x-if="settings">
@@ -165,11 +167,11 @@
                 <div class="flex flex-row gap-2">
                     <button class="ui_button_small"
                             @click="user.save_settings(true); settings = false">
-                        <i class="ph-bold ph-check-circle"></i> Save Changes
+                        <i class="ph-bold ph-check-circle"></i>{% translate "Save Changes" %}
                     </button>
 
                     <button class="ui_button_small" @click="settings = false">
-                        <i class="ph-bold ph-x-circle"></i> Cancel Changes
+                        <i class="ph-bold ph-x-circle"></i>{% translate "Cancel Changes" %}
                     </button>
                 </div>
             </div>

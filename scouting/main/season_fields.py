@@ -1,25 +1,43 @@
+from django.utils.translation import gettext_lazy as _
+from django.utils.functional import Promise
+import copy
+
+
+def force_str_in_dict(obj):
+    """Recursively convert lazy translation objects to regular strings in dicts/lists."""
+    if isinstance(obj, Promise):
+        return str(obj)
+    elif isinstance(obj, dict):
+        return {key: force_str_in_dict(value) for key, value in obj.items()}
+    elif isinstance(obj, list):
+        return [force_str_in_dict(item) for item in obj]
+    else:
+        return obj
+
+
 def get_season_fields(year):
     season_mapping = {"2024": crescendo, "2025": reefscape}
 
-    season_fields = season_mapping.get(
-        year, []
-    ).copy()  # Copy to avoid modifying original lists
+    # Deep copy to avoid modifying original
+    season_fields = copy.deepcopy(season_mapping.get(year, []))
 
+    # Add `main` at the beginning
     if isinstance(main, list):
-        season_fields = main + season_fields  # Ensure `main` is properly included
+        season_fields = copy.deepcopy(main) + season_fields
     else:
-        season_fields.insert(0, main)
+        season_fields.insert(0, copy.deepcopy(main))
 
     # Assign a universal order across all fields
     order_index = 0
     for section in season_fields:
         if isinstance(section, dict) and "fields" in section:
             for field in section["fields"]:
-                if isinstance(field, dict):  # Ensure field is a dictionary
+                if isinstance(field, dict):
                     field.setdefault("order", order_index)
-                    order_index += 1  # Increment order globally
+                    order_index += 1
 
-    return season_fields
+    # Convert lazy translation proxies to real strings
+    return force_str_in_dict(season_fields)
 
 
 # ----------
@@ -27,11 +45,11 @@ def get_season_fields(year):
 # ----------
 main = [
     {
-        "section": "Main",
+        "section": _("Main"),
         "simple_name": "main",
         "fields": [
             {
-                "name": "Team Number",
+                "name": _("Team Number"),
                 "simple_name": "team_number",
                 "type": "large_integer",
                 "required": True,
@@ -39,7 +57,7 @@ main = [
                 "game_piece": "",
             },
             {
-                "name": "Match Number",
+                "name": _("Match Number"),
                 "simple_name": "match_number",
                 "type": "large_integer",
                 "required": True,
@@ -47,7 +65,7 @@ main = [
                 "game_piece": "",
             },
             {
-                "name": "Match Type",
+                "name": _("Match Type"),
                 "simple_name": "match_type",
                 "type": "choice",
                 "choices": [
@@ -71,11 +89,11 @@ main = [
 # ----------
 crescendo = [
     {
-        "section": "Auton",
+        "section": _("Auton"),
         "simple_name": "auton",
         "fields": [
             {
-                "name": "Speaker Shot",
+                "name": _("Speaker Shot"),
                 "simple_name": "speaker_shot",
                 "type": "integer",
                 "default": 0,
@@ -86,7 +104,7 @@ crescendo = [
                 "game_piece": "note",
             },
             {
-                "name": "Amp Shot",
+                "name": _("Amp Shot"),
                 "simple_name": "amp_shot",
                 "type": "integer",
                 "default": 0,
@@ -99,15 +117,15 @@ crescendo = [
         ],
     },
     {
-        "section": "Teleop",
+        "section": _("Teleop"),
         "simple_name": "teleop",
         "fields": [
             {
-                "section": "Speaker",
+                "section": _("Speaker"),
                 "simple_name": "teleop_speaker",
                 "fields": [
                     {
-                        "name": "Speaker Shot",
+                        "name": _("Speaker Shot"),
                         "simple_name": "speaker_shot",
                         "type": "integer",
                         "default": 0,
@@ -118,7 +136,7 @@ crescendo = [
                         "game_piece": "note",
                     },
                     {
-                        "name": "Speaker Misses",
+                        "name": _("Speaker Misses"),
                         "simple_name": "speaker_miss",
                         "type": "integer",
                         "default": 0,
@@ -131,11 +149,11 @@ crescendo = [
                 ],
             },
             {
-                "section": "Amp",
+                "section": _("Amp"),
                 "simple_name": "teleop_amp",
                 "fields": [
                     {
-                        "name": "Amp Shots",
+                        "name": _("Amp Shots"),
                         "simple_name": "amp_shot",
                         "type": "integer",
                         "default": 0,
@@ -146,7 +164,7 @@ crescendo = [
                         "game_piece": "note",
                     },
                     {
-                        "name": "Amp Misses",
+                        "name": _("Amp Misses"),
                         "simple_name": "amp_miss",
                         "type": "integer",
                         "default": 0,
@@ -161,11 +179,11 @@ crescendo = [
         ],
     },
     {
-        "section": "Extra Information",
+        "section": _("Extra Information"),
         "simple_name": "extra_information",
         "fields": [
             {
-                "name": "Left Starting Zone",
+                "name": _("Left Starting Zone"),
                 "simple_name": "left_starting_zone",
                 "type": "boolean",
                 "required": False,
@@ -173,7 +191,7 @@ crescendo = [
                 "game_piece": "",
             },
             {
-                "name": "Shoot Distance",
+                "name": _("Shoot Distance"),
                 "simple_name": "shoot_distance",
                 "type": "multiple_choice",
                 "choices": ["N/A", "Close", "Mid Field", "Far"],
@@ -182,7 +200,7 @@ crescendo = [
                 "game_piece": "",
             },
             {
-                "name": "Floor Pickup",
+                "name": _("Floor Pickup"),
                 "simple_name": "floor_pickup",
                 "type": "boolean",
                 "required": False,
@@ -190,7 +208,7 @@ crescendo = [
                 "game_piece": "",
             },
             {
-                "name": "Climb",
+                "name": _("Climb"),
                 "simple_name": "climb",
                 "type": "boolean",
                 "required": False,
@@ -198,7 +216,7 @@ crescendo = [
                 "game_piece": "",
             },
             {
-                "name": "Scored Trap",
+                "name": _("Scored Trap"),
                 "simple_name": "scored_trap",
                 "type": "boolean",
                 "required": False,
@@ -206,7 +224,7 @@ crescendo = [
                 "game_piece": "",
             },
             {
-                "name": "Feeder Station Pickup",
+                "name": _("Feeder Station Pickup"),
                 "simple_name": "feeder_station_pickup",
                 "type": "boolean",
                 "required": False,
@@ -214,7 +232,7 @@ crescendo = [
                 "game_piece": "",
             },
             {
-                "name": "Moved During Auto",
+                "name": _("Moved During Auto"),
                 "simple_name": "moved_during_auto",
                 "type": "boolean",
                 "required": False,
@@ -224,11 +242,11 @@ crescendo = [
         ],
     },
     {
-        "section": "Additional Notes",
+        "section": _("Additional Notes"),
         "simple_name": "additional_notes",
         "fields": [
             {
-                "name": "Additional Notes or Comments",
+                "name": _("Additional Notes or Comments"),
                 "simple_name": "notes",
                 "type": "text",
                 "required": False,
@@ -244,11 +262,11 @@ crescendo = [
 # ----------
 reefscape = [
     {
-        "section": "Auton",
+        "section": _("Auton"),
         "simple_name": "auton",
         "fields": [
             {
-                "name": "Left Starting Zone",
+                "name": _("Left Starting Zone"),
                 "simple_name": "auton_moved",
                 "type": "boolean",
                 "required": False,
@@ -256,7 +274,7 @@ reefscape = [
                 "game_piece": "",
             },
             {
-                "name": "Coral Scored in Reef",
+                "name": _("Coral Scored in Reef"),
                 "simple_name": "auton_coral_scored",
                 "type": "integer",
                 "default": 0,
@@ -267,7 +285,7 @@ reefscape = [
                 "game_piece": "coral",
             },
             {
-                "name": "Coral Dropped",
+                "name": _("Coral Dropped"),
                 "simple_name": "auton_coral_dropped",
                 "type": "integer",
                 "default": 0,
@@ -278,7 +296,7 @@ reefscape = [
                 "game_piece": "coral",
             },
             {
-                "name": "Algae Removed",
+                "name": _("Algae Removed"),
                 "simple_name": "auton_algae_removed",
                 "type": "integer",
                 "default": 0,
@@ -289,7 +307,7 @@ reefscape = [
                 "game_piece": "algae",
             },
             {
-                "name": "Algae Scored in Net",
+                "name": _("Algae Scored in Net"),
                 "simple_name": "auton_algae_scored_in_net",
                 "type": "integer",
                 "default": 0,
@@ -300,7 +318,7 @@ reefscape = [
                 "game_piece": "algae",
             },
             {
-                "name": "Algae Scored in Processor",
+                "name": _("Algae Scored in Processor"),
                 "simple_name": "auton_algae_scored_in_processor",
                 "type": "integer",
                 "default": 0,
@@ -311,7 +329,7 @@ reefscape = [
                 "game_piece": "algae",
             },
             {
-                "name": "Algae Score Failed",
+                "name": _("Algae Score Failed"),
                 "simple_name": "algae_score_failed",
                 "type": "integer",
                 "default": 0,
@@ -324,11 +342,11 @@ reefscape = [
         ],
     },
     {
-        "section": "Teleop",
+        "section": _("Teleop"),
         "simple_name": "teleop",
         "fields": [
             {
-                "name": "Coral Scored in Reef",
+                "name": _("Coral Scored in Reef"),
                 "simple_name": "coral_scored",
                 "type": "integer",
                 "default": 0,
@@ -339,7 +357,7 @@ reefscape = [
                 "game_piece": "coral",
             },
             {
-                "name": "Coral Dropped",
+                "name": _("Coral Dropped"),
                 "simple_name": "coral_dropped",
                 "type": "integer",
                 "default": 0,
@@ -350,7 +368,7 @@ reefscape = [
                 "game_piece": "coral",
             },
             {
-                "name": "Algae Removed",
+                "name": _("Algae Removed"),
                 "simple_name": "algae_removed",
                 "type": "integer",
                 "default": 0,
@@ -361,7 +379,7 @@ reefscape = [
                 "game_piece": "algae",
             },
             {
-                "name": "Algae Scored in Net",
+                "name": _("Algae Scored in Net"),
                 "simple_name": "algae_scored_in_net",
                 "type": "integer",
                 "default": 0,
@@ -372,7 +390,7 @@ reefscape = [
                 "game_piece": "algae",
             },
             {
-                "name": "Algae Scored in Processor",
+                "name": _("Algae Scored in Processor"),
                 "simple_name": "algae_scored_in_processor",
                 "type": "integer",
                 "default": 0,
@@ -383,7 +401,7 @@ reefscape = [
                 "game_piece": "algae",
             },
             {
-                "name": "Algae Score Failed",
+                "name": _("Algae Score Failed"),
                 "simple_name": "algae_score_failed",
                 "type": "integer",
                 "default": 0,
@@ -396,11 +414,11 @@ reefscape = [
         ],
     },
     {
-        "section": "Extra Information",
+        "section": _("Extra Information"),
         "simple_name": "extra_information",
         "fields": [
             {
-                "name": "Coral Levels",
+                "name": _("Coral Levels"),
                 "simple_name": "coral_levels",
                 "type": "multiple_choice",
                 "choices": ["Level 1", "Level 2", "Level 3", "Level 4"],
@@ -409,7 +427,7 @@ reefscape = [
                 "game_piece": "",
             },
             {
-                "name": "Feeder Station Pickup",
+                "name": _("Feeder Station Pickup"),
                 "simple_name": "feeder_pickup",
                 "type": "boolean",
                 "required": False,
@@ -417,7 +435,7 @@ reefscape = [
                 "game_piece": "",
             },
             {
-                "name": "End Location",
+                "name": _("End Location"),
                 "simple_name": "end_location",
                 "type": "choice",
                 "choices": ["N/A", "Barge Zone", "Shallow Cage", "Deep Cage"],
@@ -426,7 +444,7 @@ reefscape = [
                 "game_piece": "",
             },
             {
-                "name": "Driver Skill",
+                "name": _("Driver Skill"),
                 "simple_name": "driver_skill",
                 "type": "choice",
                 "choices": [
@@ -442,7 +460,7 @@ reefscape = [
                 "game_piece": "",
             },
             {
-                "name": "Defense",
+                "name": _("Defense"),
                 "simple_name": "defense",
                 "type": "choice",
                 "choices": [
@@ -458,7 +476,7 @@ reefscape = [
                 "game_piece": "",
             },
             {
-                "name": "Penalities",
+                "name": _("Penalities"),
                 "simple_name": "penalities",
                 "type": "choice",
                 "choices": [
@@ -473,7 +491,7 @@ reefscape = [
                 "game_piece": "",
             },
             {
-                "name": "Robot was damaged and/or disabled during the match",
+                "name": _("Robot was damaged and/or disabled during the match"),
                 "simple_name": "disabled",
                 "type": "boolean",
                 "required": False,
@@ -483,11 +501,11 @@ reefscape = [
         ],
     },
     {
-        "section": "Additional Notes",
+        "section": _("Additional Notes"),
         "simple_name": "additional_notes",
         "fields": [
             {
-                "name": "Additional Notes or Comments",
+                "name": _("Additional Notes or Comments"),
                 "simple_name": "notes",
                 "type": "text",
                 "required": False,
