@@ -11,11 +11,15 @@
 {% endblock stylesheets %}
 
 {% block body %}
+    {% get_current_language as CURRENT_LANGUAGE %}
+
     <script>
         const SERVER_IP = "{{ SERVER_IP }}";
         const CSRF_TOKEN = "{{ csrf_token }}";
         const TBA_API_KEY = "{{ TBA_API_KEY }}";
         const YEARS = '{{ YEARS | safe }}';
+
+        const DJANGO_LOCALE = "{{ CURRENT_LANGUAGE }}";
     </script>
 
     <script>

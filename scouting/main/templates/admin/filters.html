@@ -425,7 +425,7 @@
                                 <p class="dark:text-white text-black text-sans text-sm opacity-50"
                                    x-show="item.created">{% translate "Created on" %}</p>
                                 <p class="dark:text-white text-black text-sans text-sm"
-                                   x-text="new Intl.DateTimeFormat('en-US', {year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'}).format(new Date(item.created))"
+                                   x-text="item.created ? luxon.DateTime.fromISO(item.created).setLocale(DJANGO_LOCALE).toLocaleString(luxon.DateTime.DATETIME_MED) : ''"
                                    x-show="item.created"></p>
                                 <p class="dark:text-white text-black text-sans text-sm opacity-50"
                                    x-show="item.user.username">{% translate "by" %}</p>
@@ -494,7 +494,7 @@
                                 <p class="dark:text-white text-black text-sans text-sm opacity-50"
                                    x-show="item.created">{% translate "Created on" %}</p>
                                 <p class="dark:text-white text-black text-sans text-sm"
-                                   x-text="new Intl.DateTimeFormat('en-US', {year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'}).format(new Date(item.created))"
+                                   x-text="item.created ? luxon.DateTime.fromISO(item.created).setLocale(DJANGO_LOCALE).toLocaleString(luxon.DateTime.DATETIME_MED) : ''"
                                    x-show="item.created"></p>
                                 <p class="dark:text-white text-black text-sans text-sm opacity-50"
                                    x-show="item.user.username">{% translate "by" %}</p>
@@ -577,7 +577,7 @@
                                 <p class="dark:text-white text-black text-sans text-sm opacity-50"
                                    x-show="item.created">{% translate "Account created on" %}</p>
                                 <p class="dark:text-white text-black text-sans text-sm"
-                                   x-text="new Intl.DateTimeFormat('en-US', {year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'}).format(new Date(item.created))"
+                                   x-text="item.created ? luxon.DateTime.fromISO(item.created).setLocale(DJANGO_LOCALE).toLocaleString(luxon.DateTime.DATETIME_MED) : ''"
                                    x-show="item.created"></p>
                             </div>
 
@@ -637,7 +637,7 @@
                                 <p class="dark:text-white text-black text-sans text-sm opacity-50"
                                    x-show="item.created">{% translate "Created on" %}</p>
                                 <p class="dark:text-white text-black text-sans text-sm"
-                                   x-text="new Intl.DateTimeFormat('en-US', {year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'}).format(new Date(item.created))"
+                                   x-text="item.created ? luxon.DateTime.fromISO(item.created).setLocale(DJANGO_LOCALE).toLocaleString(luxon.DateTime.DATETIME_MED) : ''"
                                    x-show="item.created"></p>
                             </div>
 
