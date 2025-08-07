@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-07 13:47+0000\n"
+"POT-Creation-Date: 2025-08-07 14:21+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,16 +18,133 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: main/templates/admin/admin.html:40
+#: authentication/models.py:7 authentication/models.py:30
+#: main/templates/admin/filters.html:18 main/templates/admin/filters.html:109
+msgid "User"
+msgstr ""
+
+#: authentication/models.py:8
+#: main/templates/authentication/authentication.html:212
+msgid "Display Name"
+msgstr ""
+
+#: authentication/models.py:9 main/models.py:17 main/models.py:95
+#: main/templates/admin/filters.html:300
+#: main/templates/authentication/authentication.html:217
+#: main/templates/pits/pits.html:289
+msgid "Team Number"
+msgstr ""
+
+#: authentication/models.py:16
+#: main/templates/authentication/authentication.html:142
+#: main/templates/authentication/authentication.html:290
+msgid "Verification Code"
+msgstr ""
+
+#: authentication/models.py:17 main/models.py:20 main/models.py:60
+#: main/models.py:83 main/models.py:104
+msgid "Created"
+msgstr ""
+
+#: authentication/models.py:18
+msgid "Expires"
+msgstr ""
+
+#: authentication/models.py:19
+msgid "User UUID"
+msgstr ""
+
+#: authentication/models.py:20
+msgid "Verified"
+msgstr ""
+
+#: authentication/models.py:35
+msgid "Favorite Events"
+msgstr ""
+
+#: authentication/models.py:37
+msgid "The user's favorite events, pinned to the top of their event list"
+msgstr ""
+
+#: authentication/models.py:45
+msgid "Settings"
+msgstr ""
+
+#: main/models.py:10 main/models.py:94
+msgid "UUID"
+msgstr ""
+
+#: main/models.py:11 main/models.py:55 main/templates/admin/filters.html:153
+#: main/templates/admin/filters.html:394
+#: main/templates/advanced_data/filters.html:20
+#: main/templates/index/create_custom_event.html:34
+#: main/templates/index/create_custom_event.html:67
+#: main/templates/index/year_select.html:15
+msgid "Year"
+msgstr ""
+
+#: main/models.py:12 main/models.py:26 main/models.py:82
+#: main/templates/admin/filters.html:17 main/templates/admin/filters.html:68
+#: main/templates/admin/filters.html:348
+msgid "Event"
+msgstr ""
+
+#: main/models.py:14 main/models.py:58 main/templates/admin/filters.html:204
+msgid "Event Code"
+msgstr ""
+
+#: main/models.py:19 main/models.py:50 main/models.py:105
+#: main/templates/admin/filters.html:16
+msgid "Data"
+msgstr ""
+
+#: main/models.py:33 main/models.py:70
+msgid "User Created"
+msgstr ""
+
+#: main/models.py:36
+msgid "Username Created"
+msgstr ""
+
+#: main/models.py:39
+msgid "Team Number Created"
+msgstr ""
+
+#: main/models.py:41
+msgid "Account"
+msgstr ""
+
+#: main/models.py:56 main/templates/admin/filters.html:161
+#: main/templates/index/create_custom_event.html:28
+msgid "Name"
+msgstr ""
+
+#: main/models.py:63
+msgid "Custom Data"
+msgstr ""
+
+#: main/models.py:85
+msgid "Events Generated"
+msgstr ""
+
+#: main/models.py:96
+msgid "Nickname"
+msgstr ""
+
+#: main/models.py:102
+msgid "Pit Group"
+msgstr ""
+
+#: main/templates/admin/admin.html:44
 #: main/templates/index/authentication_box.html:47
 msgid "Admin Dashboard"
 msgstr ""
 
-#: main/templates/admin/admin.html:42
+#: main/templates/admin/admin.html:46
 msgid "Viewing as"
 msgstr ""
 
-#: main/templates/admin/admin.html:48
+#: main/templates/admin/admin.html:52
 #: main/templates/index/authentication_box.html:52
 msgid "Django Admin"
 msgstr ""
@@ -85,19 +202,6 @@ msgstr ""
 msgid "Select a type..."
 msgstr ""
 
-#: main/templates/admin/filters.html:16
-msgid "Data"
-msgstr ""
-
-#: main/templates/admin/filters.html:17 main/templates/admin/filters.html:68
-#: main/templates/admin/filters.html:348
-msgid "Event"
-msgstr ""
-
-#: main/templates/admin/filters.html:18 main/templates/admin/filters.html:109
-msgid "User"
-msgstr ""
-
 #: main/templates/admin/filters.html:19
 msgid "Pit"
 msgstr ""
@@ -147,21 +251,8 @@ msgstr ""
 msgid "Search for a year..."
 msgstr ""
 
-#: main/templates/admin/filters.html:153 main/templates/admin/filters.html:394
-#: main/templates/advanced_data/filters.html:20
-#: main/templates/index/create_custom_event.html:34
-#: main/templates/index/create_custom_event.html:67
-#: main/templates/index/year_select.html:15
-msgid "Year"
-msgstr ""
-
 #: main/templates/admin/filters.html:153
 msgid "Filter events by year"
-msgstr ""
-
-#: main/templates/admin/filters.html:161
-#: main/templates/index/create_custom_event.html:28
-msgid "Name"
 msgstr ""
 
 #: main/templates/admin/filters.html:161
@@ -170,10 +261,6 @@ msgstr ""
 
 #: main/templates/admin/filters.html:187
 msgid "Search for an event code..."
-msgstr ""
-
-#: main/templates/admin/filters.html:204
-msgid "Event Code"
 msgstr ""
 
 #: main/templates/admin/filters.html:204
@@ -194,12 +281,6 @@ msgstr ""
 
 #: main/templates/admin/filters.html:282
 msgid "Search team numbers..."
-msgstr ""
-
-#: main/templates/admin/filters.html:300
-#: main/templates/authentication/authentication.html:217
-#: main/templates/pits/pits.html:289
-msgid "Team Number"
 msgstr ""
 
 #: main/templates/admin/filters.html:300
@@ -443,11 +524,6 @@ msgid ""
 "message from %(host)s and enter the verification code below"
 msgstr ""
 
-#: main/templates/authentication/authentication.html:142
-#: main/templates/authentication/authentication.html:290
-msgid "Verification Code"
-msgstr ""
-
 #: main/templates/authentication/authentication.html:151
 #: main/templates/authentication/authentication.html:302
 msgid "Verify"
@@ -483,10 +559,6 @@ msgstr ""
 
 #: main/templates/authentication/authentication.html:210
 msgid "Enter display name and team number"
-msgstr ""
-
-#: main/templates/authentication/authentication.html:212
-msgid "Display Name"
 msgstr ""
 
 #: main/templates/authentication/authentication.html:239
