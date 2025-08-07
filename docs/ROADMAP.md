@@ -4,10 +4,6 @@ This document describes the roadmap for Open Scouting, and roughly when each fea
 ---
 
 ## To-Do
-### `v0.1.11-alpha`
-- [x] [#100](https://github.com/FRC-Team3484/open-scouting/issues/100) - Reorganize templates
-- [x] [#31](https://github.com/FRC-Team3484/open-scouting/issues/31) - Support multiple languages and localization
-
 ### `v1.0.0`
 - [ ] Update tests
 - [ ] [#56](https://github.com/FRC-Team3484/open-scouting/issues/56) - Demo pit scouting data is broken
@@ -21,6 +17,10 @@ This document describes the roadmap for Open Scouting, and roughly when each fea
 
 ---
 ## Completed
+### `v0.1.11-alpha`
+- [x] [#100](https://github.com/FRC-Team3484/open-scouting/issues/100) - Reorganize templates
+- [x] [#31](https://github.com/FRC-Team3484/open-scouting/issues/31) - Support multiple languages and localization
+
 ### `v0.1.10-alpha`
 - [x] [#34](https://github.com/FRC-Team3484/open-scouting/issues/34) - Add a notification queue
 - [x] [#35](https://github.com/FRC-Team3484/open-scouting/issues/35) - Show indicators on the menu button if there's any important messages to the user
