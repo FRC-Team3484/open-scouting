@@ -26,6 +26,11 @@
   }
 }
 
+/* Add small margin to icons */
+i {
+    @apply m-1;
+}
+
 /* UI Styles */
 .ui_button {
     @apply border-solid border-2 dark:border-slate-600 dark:bg-slate-700/80 dark:enabled:active:bg-slate-600/85 dark:hover:bg-slate-800/80 dark:text-white border-slate-300 bg-slate-100/80 hover:bg-slate-300/80 text-black rounded-xl py-2 px-8 transition backdrop-blur-lg my-2 disabled:scale-95 disabled:opacity-80;
