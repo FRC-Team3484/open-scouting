@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 
 <script src="{% static '/main/scripts/admin/filters.js' %}"></script>
 
@@ -22,7 +23,8 @@
         </p>
 
         <button class="ui_button_small mb-8" @click="clear_filters()">
-            <i class="ph-bold ph-trash"></i>{% translate "Clear Filters" %}</button>
+            <i class="ph-bold ph-trash"></i>{% translate "Clear Filters" %}
+        </button>
 
         <div x-show="type == 'data'" x-transition>
             <div class="flex flex-row gap-2 flex-wrap" x-ref="data_filters_event">
@@ -36,7 +38,8 @@
 
                 <button class="ui_button_small"
                         @click="data_filters.event.open = !data_filters.event.open">
-                    <i class="ph-bold ph-plus"></i>{% translate "Add" %}</button>
+                    <i class="ph-bold ph-plus"></i>{% translate "Add" %}
+                </button>
             </div>
             <div class="flex flex-col gap-2 bg-slate-200 dark:bg-slate-700 border-2 dark:border-slate-600 border-slate-300 rounded-lg p-4 overflow-y-scroll max-h-72 max-w-72 items-start z-5"
                  x-anchor="$refs.data_filters_event"
@@ -76,7 +79,8 @@
 
                 <button class="ui_button_small"
                         @click="data_filters.user.open = !data_filters.user.open">
-                    <i class="ph-bold ph-plus"></i>{% translate "Add" %}</button>
+                    <i class="ph-bold ph-plus"></i>{% translate "Add" %}
+                </button>
             </div>
             <div class="flex flex-col gap-2 bg-slate-200 dark:bg-slate-700 border-2 dark:border-slate-600 border-slate-300 rounded-lg p-4 overflow-y-scroll max-h-72 max-w-72 items-start z-5"
                  x-anchor="$refs.data_filters_user"
@@ -118,7 +122,8 @@
 
                 <button class="ui_button_small"
                         @click="event_filters.year.open = !event_filters.year.open">
-                    <i class="ph-bold ph-plus"></i>{% translate "Add" %}</button>
+                    <i class="ph-bold ph-plus"></i>{% translate "Add" %}
+                </button>
             </div>
             <div class="flex flex-col gap-2 bg-slate-200 dark:bg-slate-700 border-2 dark:border-slate-600 border-slate-300 rounded-lg p-4 overflow-y-scroll max-h-72 max-w-72 items-start z-5"
                  x-anchor="$refs.event_filters_year"
@@ -168,7 +173,8 @@
 
                 <button class="ui_button_small"
                         @click="event_filters.event_code.open = !event_filters.event_code.open">
-                    <i class="ph-bold ph-plus"></i>{% translate "Add" %}</button>
+                    <i class="ph-bold ph-plus"></i>{% translate "Add" %}
+                </button>
             </div>
             <div class="flex flex-col gap-2 bg-slate-200 dark:bg-slate-700 border-2 dark:border-slate-600 border-slate-300 rounded-lg p-4 overflow-y-scroll max-h-72 max-w-72 items-start z-5"
                  x-anchor="$refs.event_filters_event_code"
@@ -213,7 +219,8 @@
 
                 <button class="ui_button_small"
                         @click="user_filters.username.open = !user_filters.username.open">
-                    <i class="ph-bold ph-plus"></i>{% translate "Add" %}</button>
+                    <i class="ph-bold ph-plus"></i>{% translate "Add" %}
+                </button>
             </div>
 
             <!-- Username Dropdown -->
@@ -259,7 +266,8 @@
 
                 <button class="ui_button_small"
                         @click="user_filters.team_number.open = !user_filters.team_number.open">
-                    <i class="ph-bold ph-plus"></i>{% translate "Add" %}</button>
+                    <i class="ph-bold ph-plus"></i>{% translate "Add" %}
+                </button>
             </div>
 
             <!-- Team Number Dropdown -->
@@ -307,7 +315,8 @@
 
                 <button class="ui_button_small"
                         @click="pit_filters.event.open = !pit_filters.event.open">
-                    <i class="ph-bold ph-plus"></i>{% translate "Add" %}</button>
+                    <i class="ph-bold ph-plus"></i>{% translate "Add" %}
+                </button>
             </div>
 
             <!-- Event Dropdown -->
@@ -351,7 +360,8 @@
 
                 <button class="ui_button_small"
                         @click="pit_filters.year.open = !pit_filters.year.open">
-                    <i class="ph-bold ph-plus"></i>{% translate "Add" %}</button>
+                    <i class="ph-bold ph-plus"></i>{% translate "Add" %}
+                </button>
             </div>
 
             <!-- Year Dropdown -->
