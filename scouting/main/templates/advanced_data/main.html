@@ -1,0 +1,215 @@
+<!-- 
+    Handles the advanced data view, and displaying the data and charts for each team
+-->
+
+{% load static %}
+{% load i18n %}
+
+<script src="{% static '/main/scripts/advanced_data/advanced_data.js' %}"></script>
+
+<div class="flex flex-col w-full md:w-1/2 lg:w-2/3"
+     x-data="advanced_data"
+     x-init="init()">
+    <template x-for="teamEntry in data" :key="teamEntry.teamNumber">
+        <template x-if="Object.keys(teamEntry.data).length > 0">
+            <div class="flex flex-col px-4 py-2 dark:bg-slate-800 border-2 dark:border-slate-700 bg-slate-200 border-slate-300 rounded-lg mb-4 items-left"
+                 x-data="{ open: false }"
+                 @collapse_all.window="open = false">
+                <!-- Team Number -->
+                <div class="flex flex-row justify-between items-center cursor-pointer"
+                     @click="open = !open">
+                    <div class="flex flex-row items-center">
+                        <div class="rounded-md w-10 h-10 mr-4 bg-slate-200/80 dark:bg-slate-700/80 border-2 dark:border-slate-600 border-slate-300">
+                            <img :src="'https://www.thebluealliance.com/avatar/'+ year+ '/frc' + teamEntry.teamNumber + '.png'"
+                                 onerror="this.onerror=null;this.src='';this.style.display='none';"
+                                 class="w-full h-full rounded-md">
+                        </div>
+                        <p class="dark:text-white text-black text-sans text-2xl"
+                           x-text="teamEntry.teamNumber"></p>
+                    </div>
+
+                    <i class="ph-bold ph-caret-down dark:text-white text-black"
+                       x-show="open"></i>
+                    <i class="ph-bold ph-caret-up dark:text-white text-black" x-show="!open"></i>
+                </div>
+
+                <!-- Summary -->
+                <template x-if="open">
+                    <div x-show="open">
+                        <div class="mt-4 px-4 py-2 border-l-2 dark:border-slate-600 border-slate-200"
+                             x-data="{ open: true }"
+                             @collapse_all.window="open = false">
+                            <div class="flex flex-row justify-between items-center cursor-pointer"
+                                 @click="open = !open">
+                                <p class="dark:text-white text-black text-xl font-semibold">{% translate "Summary" %}</p>
+                                <i class="ph-bold ph-caret-down dark:text-white text-black"
+                                   x-show="open"></i>
+                                <i class="ph-bold ph-caret-up dark:text-white text-black" x-show="!open"></i>
+                            </div>
+
+                            <div x-show="open" x-collapse class="mt-2 text-sm">
+                                <!-- Averages for scores and misses -->
+                                <div class="mb-4">
+                                    <p class="text-md dark:text-white text-black font-semibold mb-2">{% translate "Score & Miss Averages" %}</p>
+                                    <ul class="ml-4 list-disc list-inside">
+                                        <template x-for="phase in ['auton']" :key="phase">
+                                            <template x-if="teamEntry.data[phase]">
+                                                <template x-for="(pieceData, pieceName) in teamEntry.data[phase]"
+                                                          :key="pieceName">
+                                                    <template x-for="(categoryData, categoryName) in pieceData" :key="categoryName">
+                                                        <template x-for="(fieldData, fieldName) in categoryData" :key="fieldName">
+                                                            <li class="dark:text-white text-black">
+                                                                <span class="font-medium"
+                                                                      x-text="`${phase.charAt(0).toUpperCase() + phase.slice(1)} - ${categoryName.charAt(0).toUpperCase() + categoryName.slice(1)} - ${fieldName.replace(/_/g, ' ').charAt(0).toUpperCase() + fieldName.replace(/_/g, ' ').slice(1)}`"></span>:
+                                                                <span class="ml-2"
+                                                                      :class="{ 'text-green-500': categoryName === 'score', 'text-red-500': categoryName === 'miss', 'dark:text-white text-black': categoryName !== 'score' && categoryName !== 'miss' }"
+                                                                      x-text="`${fieldData.average?.toFixed(2) ?? 'N/A'}`"></span>
+                                                            </li>
+                                                        </template>
+                                                    </template>
+                                                </template>
+                                            </template>
+                                        </template>
+                                    </ul>
+
+                                    <ul class="ml-4 list-disc list-inside mt-2">
+                                        <template x-for="phase in ['teleop']" :key="phase">
+                                            <template x-if="teamEntry.data[phase]">
+                                                <template x-for="(pieceData, pieceName) in teamEntry.data[phase]"
+                                                          :key="pieceName">
+                                                    <template x-for="(categoryData, categoryName) in pieceData" :key="categoryName">
+                                                        <template x-for="(fieldData, fieldName) in categoryData" :key="fieldName">
+                                                            <li class="dark:text-white text-black">
+                                                                <span class="font-medium"
+                                                                      x-text="`${phase.charAt(0).toUpperCase() + phase.slice(1)} - ${categoryName.charAt(0).toUpperCase() + categoryName.slice(1)} - ${fieldName.replace(/_/g, ' ').charAt(0).toUpperCase() + fieldName.replace(/_/g, ' ').slice(1)}`"></span>:
+                                                                <span class="ml-2"
+                                                                      :class="{ 'text-green-500': categoryName === 'score', 'text-red-500': categoryName === 'miss', 'dark:text-white text-black': categoryName !== 'score' && categoryName !== 'miss' }"
+                                                                      x-text="`${fieldData.average?.toFixed(2) ?? 'N/A'}`"></span>
+                                                            </li>
+                                                        </template>
+                                                    </template>
+                                                </template>
+                                            </template>
+                                        </template>
+                                    </ul>
+                                </div>
+
+                                <!-- Capability percentages -->
+                                <div>
+                                    <p class="text-md dark:text-white text-black font-semibold mb-2">{% translate "Capabilities" %}</p>
+                                    <ul class="ml-4 list-disc list-inside">
+                                        <template x-for="(capabilityValue, capabilityName) in teamEntry.data.capabilities"
+                                                  :key="capabilityName">
+                                            <li class="dark:text-white text-black">
+                                                <span class="font-medium"
+                                                      x-text="capabilityName.replace(/_/g, ' ').charAt(0).toUpperCase() + capabilityName.replace(/_/g, ' ').slice(1) + ':'"></span>
+                                                <template x-for="(percentage, key) in capabilityValue" :key="key">
+                                                    <span class="ml-2"
+                                                          :class="{ 'dark:text-gray-400/80 text-gray-600/80': key === 'N/A', 'text-green-500': key.toLowerCase() === 'true', 'text-red-500': key.toLowerCase() === 'false', 'dark:text-white text-black': key.toLowerCase() !== 'true' && key.toLowerCase() !== 'false' && key !== 'N/A' }"
+                                                          x-text="`${key.charAt(0).toUpperCase() + key.slice(1)}: ${Math.round(percentage * 100) / 100}%`"></span>
+                                                </template>
+                                            </li>
+                                        </template>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sections: Auton, Teleop, Capabilities, Other -->
+                        <template x-for="(section, sectionName) in teamEntry.data" :key="sectionName">
+                            <div class="mt-4 px-4 py-2 border-l-2 dark:border-slate-600 border-slate-200"
+                                 x-data="{ open: false }"
+                                 @collapse_all.window="open = false">
+                                <div class="flex flex-row justify-between items-center cursor-pointer"
+                                     @click="open = !open">
+                                    <p class="dark:text-white text-black text-xl font-semibold"
+                                       x-text="sectionName.charAt(0).toUpperCase() + sectionName.slice(1)"></p>
+                                    <i class="ph-bold ph-caret-down dark:text-white text-black"
+                                       x-show="open"></i>
+                                    <i class="ph-bold ph-caret-up dark:text-white text-black" x-show="!open"></i>
+                                </div>
+
+                                <div x-show="open" x-collapse>
+
+                                    <!-- Game Pieces (for Auton & Teleop) -->
+                                    <template x-if="sectionName === 'auton' || sectionName === 'teleop'">
+                                        <template x-for="(pieceData, pieceName) in section" :key="pieceName">
+                                            <div class="ml-4 mt-2 pl-2 border-l-2 dark:border-slate-600 border-slate-200">
+                                                <p class="dark:text-white text-black text-lg font-medium"
+                                                   x-text="pieceName.charAt(0).toUpperCase() + pieceName.slice(1)"></p>
+
+                                                <div class="ml-4">
+                                                    <!-- Iterate over 'score' and 'miss' -->
+                                                    <template x-for="(categoryData, categoryName) in pieceData" :key="categoryName">
+                                                        <div class="mt-2">
+                                                            <p class="dark:text-white text-black text-md font-semibold"
+                                                               x-text="categoryName.charAt(0).toUpperCase() + categoryName.slice(1)"></p>
+
+                                                            <div class="ml-4">
+                                                                <!-- Fun hack to trick Alpine.js into re-rendering this whole block (to make sure the charts update) -->
+                                                                <template x-for="(fieldData, fieldName) in categoryData"
+                                                                          :key="fieldName + JSON.stringify(fieldData.values)">
+                                                                    <div class="p-2 border dark:border-slate-700 border-slate-300 rounded-lg mb-2">
+                                                                        <p class="dark:text-white text-black text-md font-medium"
+                                                                           x-text="fieldName.replace(/_/g, ' ').charAt(0).toUpperCase() + fieldName.replace(/_/g, ' ').slice(1)">
+                                                                        </p>
+                                                                        <p class="dark:text-white text-black text-sm"
+                                                                           x-text="`Average: ${fieldData.average?.toFixed(2) ?? 'N/A'}`"></p>
+                                                                        <canvas x-init="create_line_chart($el, fieldData.values, fieldName, fieldData.stat_type)"></canvas>
+                                                                    </div>
+                                                                </template>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </template>
+
+                                    <!-- Capabilities (Pie Chart Representation) -->
+                                    <template x-if="sectionName === 'capabilities'">
+                                        <div class="ml-4 mt-2">
+                                            <!-- Fun hack to trick Alpine.js into re-rendering this whole block (to make sure the charts update) -->
+                                            <template x-for="(capabilityValue, capabilityName) in section"
+                                                      :key="capabilityName + JSON.stringify(capabilityValue)">
+                                                <div class="p-2 border dark:border-slate-700 border-slate-300 rounded-lg mb-2">
+                                                    <p class="dark:text-white text-black text-lg font-semibold"
+                                                       x-text="capabilityName.replace(/_/g, ' ').charAt(0).toUpperCase() + capabilityName.replace(/_/g, ' ').slice(1)"></p>
+                                                    <div class="flex flex-row h-full items-center">
+                                                        <div class="flex flex-col justify-center w-1/2">
+                                                            <ul class="ml-4 list-disc list-inside">
+                                                                <template x-for="(percentage, key) in capabilityValue" :key="key">
+                                                                    <li class="dark:text-white text-black text-sm"
+                                                                        x-text="`${key.charAt(0).toUpperCase() + key.slice(1)}: ${Math.round(percentage * 100) / 100}%`"></li>
+                                                                </template>
+                                                            </ul>
+                                                        </div>
+                                                        <div class="flex justify-center w-1/2">
+                                                            <canvas x-init="create_donut_chart($el, Object.values(capabilityValue), Object.keys(capabilityValue), capabilityName)"></canvas>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </template>
+
+                                    <!-- Other (List Representation) -->
+                                    <template x-if="sectionName === 'other'">
+                                        <div class="ml-4 mt-2">
+                                            <ul class="ml-4 list-disc list-inside">
+                                                <template x-for="(option, index) in section" :key="index">
+                                                    <li class="dark:text-white text-black text-md" x-text="option"></li>
+                                                </template>
+                                            </ul>
+                                        </div>
+                                    </template>
+
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+            </template>
+        </template>
+    </div>
+</div>

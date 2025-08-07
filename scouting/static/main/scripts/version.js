@@ -4,7 +4,7 @@ import semver from "https://esm.sh/semver";
  * prompt the user to clear their service worker cache to ensure all pages are up to date
  */
 
-const CLIENT_VERSION = "v0.1.10-alpha";
+const CLIENT_VERSION = "v0.1.11-alpha";
 async function get_server_version() {
 	if (!navigator.onLine) {
 		log(
@@ -66,15 +66,21 @@ get_server_version().then((server_version) => {
 				new CustomEvent("dialog_show", {
 					detail: {
 						event_name: "client_update",
-						title: "Client update available",
-						body: "You currently have old client files cached. It's recommended to clear your service worker cache to ensure all client side code is up to date. Do you wish to clear your cache now?",
+						title: gettext("Client update available"),
+						body: gettext(
+							"You currently have old client files cached. It's recommended to clear your service worker cache to ensure all client side code is up to date. Do you wish to clear your cache now?",
+						),
 						buttons: [
 							{
 								type: "confirm",
 								icon: "ph-bold ph-check",
-								text: "Clear cache",
+								text: gettext("Clear cache"),
 							},
-							{ type: "cancel", icon: "ph-bold ph-x", text: "Not now" },
+							{
+								type: "cancel",
+								icon: "ph-bold ph-x",
+								text: gettext("Not now"),
+							},
 						],
 					},
 				}),

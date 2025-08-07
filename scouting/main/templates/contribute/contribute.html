@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+{% block head_title %}Open Scouting | Contribute{% endblock %}
+
+{% block head_scripts %}{% endblock %}
+
+{% block stylesheets %}{% endblock %}
+
+{% block body %}
+    <script>
+        const SERVER_IP = `{{ SERVER_IP }}`;
+        const CSRF_TOKEN = `{{ csrf_token }}`;
+        const TBA_API_KEY = `{{ TBA_API_KEY }}`;
+        const DEMO = `{{ demo }}`;
+        const SEASON_FIELDS = `{{ season_fields|safe }}`;
+
+        const EVENT_NAME = `{{ event_name }}`;
+        const EVENT_CODE = `{{ event_code }}`;
+        const CUSTOM = `{{ custom }}`;
+        const YEAR = `{{ year }}`;
+    </script>
+
+    <div class="flex flex-col h-full w-screen items-center justify-center">
+
+        {% include "contribute/header.html" %}
+
+        <div class="lex flex-row w-full md:w-3/4 lg:w-2/3 mx-8 mb-4 py-2 dark:bg-green-800/70 bg-green-400/70 border-2 dark:border-green-700 border-green-500 bg-opacity-80 rounded-lg border-opacity-80 items-center justify-center"
+             x-data="submitted_check()"
+             x-show="show"
+             x-transition
+             x-cloak>
+            <div>
+                <p class="dark:text-white text-black text-sans text-center">
+                    <i class="ph-bold ph-check-circle"></i>{% translate "The data has been successfully submitted" %}
+                </p>
+            </div>
+        </div>
+
+        <script>
+            function submitted_check() {
+                return {
+                    show: false,
+
+                    init() {
+                        try {
+                            this.show = JSON.parse(
+                                new URL(window.location.href).searchParams.get("submitted").toLowerCase()
+                            );
+                        } catch {
+                            this.show = false;
+                        }
+                    }
+                }
+            }
+
+        </script>
+
+        <div class="lex flex-row w-full md:w-3/4 lg:w-2/3 mx-8 mb-4 py-2 dark:bg-orange-800/70 bg-orange-400/70 border-2 dark:border-orange-700 border-orange-500 bg-opacity-80 rounded-lg border-opacity-80 items-center justify-center"
+             x-data="submitted_offline_check()"
+             x-show="show"
+             x-transition
+             x-cloak>
+            <div>
+                <p class="dark:text-white text-black text-sans text-center">
+                    <i class="ph-bold ph-floppy-disk"></i>{% translate "The data has been successfully stored locally. It will be uploaded when you go online." %}
+                </p>
+            </div>
+        </div>
+
+        <script>
+            function submitted_offline_check() {
+                return {
+                    show: false,
+
+                    init() {
+                        try {
+                            this.show = JSON.parse(
+                                new URL(window.location.href).searchParams.get("submitted_offline").toLowerCase()
+                            );
+                        } catch {
+                            this.show = false;
+                        }
+                    }
+                }
+            }
+
+        </script>
+
+        <div class="lex flex-row w-full md:w-3/4 lg:w-2/3 mx-8 mb-4 py-2 dark:bg-purple-900/50 bg-purple-200/50 dark:border-purple-900/80 border-2 border-purple-500 bg-opacity-80 rounded-lg border-opacity-80 items-center justify-center"
+             x-data="demo_check()"
+             x-show="show"
+             x-transition
+             x-cloak>
+            <div>
+                <p class="dark:text-white text-black text-sans text-center">
+                    <i class="ph-bold ph-test-tube"></i>{% translate "The data isn't submitted to the server while you're in demo mode" %}
+                </p>
+            </div>
+        </div>
+
+        <script>
+        function demo_check() {
+        return {
+            show: false,
+
+            init() {
+                try {
+                    this.show = JSON.parse(
+                        new URL(window.location.href).searchParams.get("submitted_demo").toLowerCase()
+                    );
+                } catch {
+                    this.show = false;
+                }
+            }
+        }
+        }
+
+        </script>
+
+        {% include "contribute/team_information.html" %}
+
+        <script src="{% static '/main/scripts/contribute/field_manager.js' %}"></script>
+
+        <div class="w-full md:w-3/4 lg:w-2/3 mx-8" x-data="field_manager"></div>
+
+        <script src="{% static '/main/scripts/contribute/submit_manager.js' %}"></script>
+
+        <div class="flex flex-col w-full md:w-3/4 lg:w-2/3 mx-8 my-4 py-2 dark:bg-slate-800 bg-slate-200 border-2 dark:border-slate-700 border-slate-300 rounded-lg mb-4 items-center justify-center"
+             x-data="submit_manager()">
+            <div class="flex flex-row items-center">
+                <button class="ui_button mr-4" @click="submit_button()">
+                    <i class="ph-bold ph-check-circle"></i>{% translate "Submit" %}
+                </button>
+                <button class="ui_button_icon"
+                        x-ref="menu_button"
+                        @click="menu_open = !menu_open">
+                    <i class="ph-bold ph-dots-three"></i>
+                </button>
+                <div class="dark:bg-slate-700/60 bg-slate-200/60 border-2 dark:border-slate-600 border-slate-300 rounded-xl backdrop-blur-md flex flex-col p-4 z-10"
+                     x-show="menu_open"
+                     x-anchor.offset.10="$refs.menu_button"
+                     @click.outside="menu_open = false"
+                     x-transition>
+                    <button class="ui_button_small my-1! py-1! px-2! w-full! text-left!"
+                            @click="export_as_json">
+                        <i class="ph-bold ph-file-code"></i>{% translate "Export report as JSON" %}
+                    </button>
+                    <label class="ui_button_small flex flex-row items-center my-1! py-1! px-2! w-full!">
+                        <i class="ph-bold ph-upload-simple mr-1"></i>{% translate "Import JSON report" %}
+                        <input type="file"
+                               accept="application/json"
+                               style="display: none"
+                               @change="import_from_json"
+                               multiple>
+                    </label>
+                    <button class="ui_button_small my-1! py-1! px-2! w-full! text-left!"
+                            @click="reset">
+                        <i class="ph-bold ph-trash"></i>{% translate "Clear and reset" %}
+                    </button>
+                    <button class="ui_button_small my-1! py-1! px-2! w-full! text-left!"
+                            @click="save_report_offline">
+                        <i class="ph-bold ph-cloud-slash"></i>{% translate "Save report offline" %}
+                    </button>
+                </div>
+            </div>
+
+            <div x-show="missing_required_fields" x-transition>
+                <p class="text-sans dark:text-red-700 text-red-500 font-bold text-center">{% translate "Please fill out all of the required fields" %}</p>
+            </div>
+        </div>
+    {% endblock body %}
+
+    {% block scripts %}
+    {% endblock scripts %}

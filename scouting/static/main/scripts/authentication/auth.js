@@ -209,17 +209,21 @@ document.addEventListener("alpine:init", () => {
 			if (response.ok) {
 				response.json().then(async (json) => {
 					log("INFO", "Verification code is valid");
-					this.verification_code_success = "Your email has been verified!";
+					this.verification_code_success = gettext(
+						"Your email has been verified!",
+					);
 					this.create_account_page = 4;
 				});
 			} else {
 				response.json().then(async (json) => {
 					if (json.reason === "expired") {
-						this.verification_code_error =
-							"The verification code has expired. Use the 'Resend Code' to send a new one.";
+						this.verification_code_error = gettext(
+							"The verification code has expired. Use the 'Resend Code' to send a new one.",
+						);
 					} else if (json.reason === "does_not_exist") {
-						this.verification_code_error =
-							"The verification code is incorrect!";
+						this.verification_code_error = gettext(
+							"The verification code is incorrect!",
+						);
 					}
 				});
 			}
@@ -260,15 +264,15 @@ document.addEventListener("alpine:init", () => {
 			}
 
 			if (password_strength === 0) {
-				this.password_strength = "Poor Password";
+				this.password_strength = gettext("Poor Password");
 			} else if (password_strength === 1) {
-				this.password_strength = "Weak Password";
+				this.password_strength = gettext("Weak Password");
 			} else if (password_strength === 2) {
-				this.password_strength = "Okay Password";
+				this.password_strength = gettext("Okay Password");
 			} else if (password_strength === 3) {
-				this.password_strength = "Strong Password";
+				this.password_strength = gettext("Strong Password");
 			} else if (password_strength === 4) {
-				this.password_strength = "Very Strong Password";
+				this.password_strength = gettext("Very Strong Password");
 			} else {
 				this.password_strength = "";
 			}
@@ -280,10 +284,10 @@ document.addEventListener("alpine:init", () => {
 		check_password_visibility() {
 			if (this.$refs.create_password.type === "password") {
 				this.$refs.create_password.type = "text";
-				this.$refs.create_password_visibility_label.innerText = "Hide";
+				this.$refs.create_password_visibility_label.innerText = gettext("Hide");
 			} else {
 				this.$refs.create_password.type = "password";
-				this.$refs.create_password_visibility_label.innerText = "Show";
+				this.$refs.create_password_visibility_label.innerText = gettext("Show");
 			}
 		},
 
@@ -322,14 +326,17 @@ document.addEventListener("alpine:init", () => {
 					this.verification_code_success = "";
 
 					if (text === "username_exists") {
-						this.create_account_error =
-							"A user with that username already exists. Reload this page or press 'Start Over' to create an account with a different username";
+						this.create_account_error = gettext(
+							"A user with that username already exists. Reload this page or press 'Start Over' to create an account with a different username",
+						);
 					} else if (text === "error") {
-						this.create_account_error =
-							"There was an issue creating your account";
+						this.create_account_error = gettext(
+							"There was an issue creating your account",
+						);
 					} else {
-						this.create_account_error =
-							"There was an unknown issue creating your account";
+						this.create_account_error = gettext(
+							"There was an unknown issue creating your account",
+						);
 						log("ERROR", text);
 					}
 				});
@@ -358,11 +365,21 @@ document.addEventListener("alpine:init", () => {
 					new CustomEvent("dialog_show", {
 						detail: {
 							event_name: "sign_in",
-							title: "Signing in will clear page cache",
-							body: "You're currently offline. Signing in will reset any cached pages to make sure your user is actually signed in. Those pages will not be able to be cached again until you're online, so the site may not work properly if you proceed. Are you sure you want to sign in?",
+							title: gettext("Signing in will clear page cache"),
+							body: gettext(
+								"You're currently offline. Signing in will reset any cached pages to make sure your user is actually signed in. Those pages will not be able to be cached again until you're online, so the site may not work properly if you proceed. Are you sure you want to sign in?",
+							),
 							buttons: [
-								{ type: "confirm", icon: "ph-bold ph-check", text: "Sign in" },
-								{ type: "cancel", icon: "ph-bold ph-x", text: "Not now" },
+								{
+									type: "confirm",
+									icon: "ph-bold ph-check",
+									text: gettext("Sign in"),
+								},
+								{
+									type: "cancel",
+									icon: "ph-bold ph-x",
+									text: gettext("Not now"),
+								},
 							],
 						},
 					}),
@@ -398,11 +415,15 @@ document.addEventListener("alpine:init", () => {
 			} else {
 				response.text().then(async (text) => {
 					if (text === "incorrect_credentials") {
-						this.sign_in_error = "Your username or password is incorrect";
+						this.sign_in_error = gettext(
+							"Your username or password is incorrect",
+						);
 					} else if (text === "error") {
-						this.sign_in_error = "There was an issue signing you in";
+						this.sign_in_error = gettext("There was an issue signing you in");
 					} else {
-						this.sign_in_error = "There was an unknown issue signing you in";
+						this.sign_in_error = gettext(
+							"There was an unknown issue signing you in",
+						);
 					}
 				});
 			}
@@ -464,7 +485,9 @@ document.addEventListener("alpine:init", () => {
 					response.text().then(async (text) => {
 						log("WARNING", "Unable to send verification code");
 						this.sending_forgot_password = false;
-						this.forgot_password_error = "Unable to send verification code";
+						this.forgot_password_error = gettext(
+							"Unable to send verification code",
+						);
 					});
 				}
 			} else {
@@ -500,10 +523,13 @@ document.addEventListener("alpine:init", () => {
 			} else {
 				response.json().then(async (json) => {
 					if (json.reason === "expired") {
-						this.forgot_password_error =
-							"The verification code has expired. Use the 'Resend Code' to send a new one.";
+						this.forgot_password_error = gettext(
+							"The verification code has expired. Use the 'Resend Code' to send a new one.",
+						);
 					} else if (json.reason === "does_not_exist") {
-						this.forgot_password_error = "The verification code is incorrect!";
+						this.forgot_password_error = gettext(
+							"The verification code is incorrect!",
+						);
 					}
 				});
 			}
@@ -550,12 +576,17 @@ document.addEventListener("alpine:init", () => {
 			} else {
 				response.text().then(async (text) => {
 					if (text.reason === "expired") {
-						this.forgot_password_error =
-							"The verification code has expired. Use the 'Resend Code' to send a new one.";
+						this.forgot_password_error = gettext(
+							"The verification code has expired. Use the 'Resend Code' to send a new one.",
+						);
 					} else if (text.reason === "does_not_exist") {
-						this.forgot_password_error = "The verification code is incorrect!";
+						this.forgot_password_error = gettext(
+							"The verification code is incorrect!",
+						);
 					} else {
-						this.forgot_password_error = `Unable to change password: ${text}`;
+						this.forgot_password_error = gettext(
+							gettext("Unable to change password: %(error)s"),
+						).replace("%(error)s", text);
 					}
 				});
 			}

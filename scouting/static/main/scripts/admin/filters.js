@@ -120,8 +120,8 @@ document.addEventListener("alpine:init", () => {
 					window.dispatchEvent(
 						new CustomEvent("scouting_notification", {
 							detail: {
-								title: "Success",
-								message: "The admin operation was successful",
+								title: gettext("Success"),
+								message: gettext("The admin operation was successful"),
 								type: "success",
 								icon: "check-circle",
 							},
@@ -200,13 +200,15 @@ document.addEventListener("alpine:init", () => {
 					new CustomEvent("dialog_show", {
 						detail: {
 							event_name: "admin_warning",
-							title: "Actions made here are irreversible",
-							body: "By using this admin dashboard, be warned that any action you take is irreversible (deleting data, etc.). You will not be asked to confirm any actions beyond this dialog. Use caution when interacting on this page.",
+							title: gettext("Actions made here are irreversible"),
+							body: gettext(
+								"By using this admin dashboard, be warned that any action you take is irreversible (deleting data, etc.). You will not be asked to confirm any actions beyond this dialog. Use caution when interacting on this page.",
+							),
 							buttons: [
 								{
 									type: "confirm",
 									icon: "ph-bold ph-check",
-									text: "I understand",
+									text: gettext("I understand"),
 								},
 							],
 						},

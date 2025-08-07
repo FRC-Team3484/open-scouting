@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
+
 {% block head_title %}
     Open Scouting | Pit Scouting
 {% endblock head_title %}
@@ -27,58 +29,7 @@
 
     <div class="flex justify-center items-center flex-col w-screen">
 
-        <script src="{% static '/main/scripts/pits/header.js' %}"></script>
-
-        <div class="flex flex-row w-full md:w-3/4 lg:w-2/3 mx-8 my-4 py-2 dark:bg-slate-800 border-2 dark:border-slate-700 bg-slate-200 border-slate-300 rounded-lg mb-4 items-center justify-center"
-             x-data="header">
-            <img class="w-16 h-16 aspect-square m-2 hover:scale-110 transition-all ease-in-out active:scale-95"
-                 src="{% static '/main/images/icon_rounded.png' %}"
-                 @click="window.location.href = '{{ SERVER_IP }}'">
-
-            <div class="flex flex-col">
-                <div class="flex flex-row items-center">
-
-                    <button class="ui_button_icon mr-2"
-                            @click="page_dropdown = !page_dropdown"
-                            x-ref="page_button">
-                        <i class="ph-bold ph-dots-three"></i>
-                    </button>
-                    <div class="dark:bg-slate-700/60 bg-slate-200/60 border-2 dark:border-slate-600 border-slate-300 rounded-xl backdrop-blur-md flex flex-col p-4 z-10"
-                         x-show="page_dropdown"
-                         x-anchor.offset.10="$refs.page_button"
-                         x-transition>
-                        <button class="ui_button_small my-1! py-1! px-2! w-full! text-left!"
-                                @click="go_to_contribute">
-                            <i class="ph-bold ph-pencil"></i> Add Scouting Reports
-                        </button>
-                        <button class="ui_button_small my-1! py-1! px-2! w-full! text-left!"
-                                @click="go_to_advanced_data">
-                            <i class="ph-bold ph-hard-drives"></i> View Scouting Data
-                        </button>
-                        <button class="ui_button_small my-1! py-1! px-2! w-full! text-left!"
-                                @click="go_to_pits">
-                            <i class="ph-bold ph-garage"></i> Pit Scouting
-                        </button>
-                    </div>
-                    <p class="dark:text-white text-black text-sans text-2xl">Pit Scouting</p>
-                </div>
-
-                <div class="flex flex-row" x-show="!demo">
-                    <p class="dark:text-white text-black text-sans text-sm mx-1">Viewing pits for</p>
-                    <p class="dark:text-white text-black text-sans font-bold text-sm mx-1">{{ event_name }}</p>
-                    <p class="dark:text-white text-black text-sans text-sm mx-1">as</p>
-                    <p class="dark:text-white text-black text-sans font-bold text-sm mx-1">{{ username }}</p>
-                </div>
-
-                <div class="flex flex-col p-2 ml-2 mt-2 rounded-lg border-solid border-2 dark:border-slate-600 dark:bg-purple-900/50 border-slate-300 bg-purple-200/50"
-                     x-show="demo">
-                    <p class="dark:text-white text-black font-sans text-md ">
-                        <i class="ph-bold ph-test-tube"></i> Open Scouting is in demo mode
-                    </p>
-                    <p class="dark:text-white text-black font-sans text-sm">Any contributed data will not be saved to the server</p>
-                </div>
-            </div>
-        </div>
+        {% include "pits/header.html" %}
 
         <script src="{% static '/main/scripts/pits/pits.js' %}"></script>
 
@@ -88,28 +39,28 @@
                     <button class="ui_button_small m-1!"
                             :disabled="filter == 'all'"
                             @click="filter = 'all'; filter_pit_data(); get_pit_status()">
-                        <i class="ph-bold ph-selection-all"></i> View All Pits
+                        <i class="ph-bold ph-selection-all"></i>{% translate "View All Pits" %}
                     </button>
                     <button class="ui_button_small m-1!"
                             :disabled="filter == 'incomplete'"
                             @click="filter = 'incomplete'; filter_pit_data(); get_pit_status()">
-                        <i class="ph-bold ph-arrows-clockwise"></i> View Incomplete Pits
+                        <i class="ph-bold ph-arrows-clockwise"></i>{% translate "View Incomplete Pits" %}
                     </button>
                     <button class="ui_button_small m-1!"
                             :disabled="filter == 'no_data'"
                             @click="filter = 'no_data'; filter_pit_data(); get_pit_status()">
-                        <i class="ph-bold ph-x"></i> View Pits With No Data
+                        <i class="ph-bold ph-x"></i>{% translate "View Pits With No Data" %}
                     </button>
                     <button class="ui_button_small m-1!"
                             :disabled="filter == 'completed'"
                             @click="filter = 'completed'; filter_pit_data(); get_pit_status()">
-                        <i class="ph-bold ph-check"></i> View Completed Pits
+                        <i class="ph-bold ph-check"></i>{% translate "View Completed Pits" %}
                     </button>
                 </div>
 
                 <p x-show="pit_status.length > 0"
                    x-transition
-                   class="dark:text-white text-black text-sans text-md my-2 ml-2">Select a team number below to jump to that team in the list</p>
+                   class="dark:text-white text-black text-sans text-md my-2 ml-2">{% translate "Select a team number below to jump to that team in the list" %}</p>
 
                 <div class="flex flex-row flex-wrap mb-4">
                     <template x-for="pit in pit_status">
@@ -298,7 +249,7 @@
                                  @click.outside="custom_question_open = false">
                                 <button class="ui_button_small ml-4 mt-1"
                                         @click="custom_question_open = !custom_question_open">
-                                    <i class="ph-bold ph-plus-circle"></i> Add Custom Question
+                                    <i class="ph-bold ph-plus-circle"></i>{% translate "Add Custom Question" %}
                                 </button>
                                 <div class="flex flex-row"
                                      x-show="custom_question_open"
@@ -306,13 +257,13 @@
                                      x-data="{ question_input: '' }">
                                     <input class="ui_input mt-1 ml-4 w-1/2"
                                            type="text"
-                                           placeholder="Question"
+                                           placeholder="{% translate "Question" %}"
                                            x-ref="question_input"
                                            x-model="question_input">
                                     <button class="ui_button_small ml-2"
                                             :disabled="question_input == ''"
                                             @click="custom_question_open = false; submit_question($event, $refs.question_input)">
-                                        <i class="ph-bold ph-check"></i> Add
+                                        <i class="ph-bold ph-check"></i>{% translate "Add" %}
                                     </button>
                                 </div>
                             </div>
@@ -322,26 +273,26 @@
                 </template>
 
                 <div class="flex flex-col bg-slate-200/80 dark:bg-slate-700/80 border-2 dark:border-slate-600 border-slate-300 rounded-xl backdrop-blur-md p-4 mt-2 mb-4">
-                    <p class="dark:text-white text-black text-lg text-center">Is a team's pit not here yet?</p>
+                    <p class="dark:text-white text-black text-lg text-center">{% translate "Is a team's pit not here yet?" %}</p>
                     <div class="flex flex-col" x-data="{ add_pit_open: false }">
                         <button class="ui_button" @click="add_pit_open = !add_pit_open">
-                            <i class="ph-bold ph-plus-circle"></i> Add a pit
+                            <i class="ph-bold ph-plus-circle"></i>{% translate "Add a pit" %}
                         </button>
                         <div class="flex flex-col dark:bg-slate-700/80 bg-slate-200/80 border-2 dark:border-slate-600 border-slate-300 rounded-xl backdrop-blur-md p-4"
                              x-show="add_pit_open"
                              @click.outside="add_pit_open = false"
                              x-data="{ team_number_input: '' }"
                              x-collapse>
-                            <p class="dark:text-white text-black text-md text-center">Add a new pit</p>
+                            <p class="dark:text-white text-black text-md text-center">{% translate "Add a new pit" %}</p>
                             <input class="ui_input mt-1 w-full!"
                                    type="number"
-                                   placeholder="Team Number"
+                                   placeholder="{% translate "Team Number" %}"
                                    x-ref="team_number_input"
                                    x-model="team_number_input">
                             <button class="ui_button"
                                     @click="add_pit_open = false; submit_team($event, $refs.team_number_input)"
                                     :disabled="team_number_input == ''">
-                                <i class="ph-bold ph-check"></i> Add pit
+                                <i class="ph-bold ph-check"></i>{% translate "Add pit" %}
                             </button>
                         </div>
                     </div>
@@ -364,27 +315,27 @@
                     <p class="dark:text-white text-black mr-2 text-md md:text-md"
                        x-show="state == 'loading'"
                        x-transition:enter.delay.300ms>
-                        <i class="ph-bold ph-circle-notch animate-spin"></i> Fetching data from server...
+                        <i class="ph-bold ph-circle-notch animate-spin"></i>{% translate "Fetching data from server..." %}
                     </p>
                     <p class="text-red-500 mr-2 text-md md:text-md"
                        x-show="state == 'unsaved'"
                        x-transition:enter.delay.300ms>
-                        <i class="ph-bold ph-x"></i> Unsaved changes
+                        <i class="ph-bold ph-x"></i>{% translate "Unsaved changes" %}
                     </p>
                     <p class="text-green-500 mr-2 text-md md:text-md"
                        x-show="state == 'saved'"
                        x-transition:enter.delay.300ms>
-                        <i class="ph-bold ph-check"></i> Changes saved
+                        <i class="ph-bold ph-check"></i>{% translate "Changes saved" %}
                     </p>
                     <p class="text-blue-500 mr-2 text-md md:text-md"
                        x-show="state == 'syncing'"
                        x-transition:enter.delay.300ms>
-                        <i class="ph-bold ph-circle-notch animate-spin"></i> Syncing data...
+                        <i class="ph-bold ph-circle-notch animate-spin"></i>{% translate "Syncing data..." %}
                     </p>
                     <p class="text-orange-500 mr-2 text-md md:text-md"
                        x-show="state == 'offline'"
                        x-transition:enter.delay.300ms>
-                        <i class="ph-bold ph-warning"></i> Data saved offline
+                        <i class="ph-bold ph-warning"></i>{% translate "Data saved offline" %}
                     </p>
                 </div>
             </div>

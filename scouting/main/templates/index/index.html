@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block head_title %}
+    Open Scouting
+{% endblock head_title %}
+
+{% block head_scripts %}
+{% endblock head_scripts %}
+
+{% block stylesheets %}
+{% endblock stylesheets %}
+
+{% block body %}
+    {% get_current_language as CURRENT_LANGUAGE %}
+
+    <script>
+        const YEARS = JSON.parse(`{{ YEARS|safe }}`);
+        const SERVER_IP = `{{ SERVER_IP }}`;
+        const CSRF_TOKEN = `{{ csrf_token }}`;
+        const TBA_API_KEY = `{{ TBA_API_KEY }}`;
+        const ADMIN_PATH = `{{ ADMIN_IP }}`;
+
+        const DJANGO_LOCALE = "{{ CURRENT_LANGUAGE }}";
+    </script>
+
+    <script>
+        const user = new User();
+        window.user = user;
+
+        user.check_authentication_status().then(() => {
+            // Now the user is authenticated (or not)
+            user.load_settings().then(() => {
+                // Now settings are also loaded
+                window.dispatchEvent(new CustomEvent("user_ready", { detail: user }));
+            });
+        });
+    </script>
+
+    <div class="h-screen overflow-y-scroll" id="index">
+        <div class="flex min-h-screen justify-center items-center flex-col w-screen px-4">
+
+            {% include "index/header.html" %}
+
+            <script src="{% static '/main/scripts/index/index.js' %}"></script>
+
+            <div x-data="index" x-cloak>
+
+                {% include "index/authentication_box.html" %}
+
+                {% include "index/year_select.html" %}
+
+                {% include "index/events.html" %}
+
+                <div class="flex flex-col w-full mt-2"
+                     x-show="page == 4"
+                     x-data="{ contribute_open: false }"
+                     x-transition>
+                    <div class="flex flex-col justify-center items-center dark:bg-slate-800/80 bg-slate-200 rounded-lg border-2 dark:border-slate-700 border-slate-300 my-2 p-2 md:p-6">
+                        <p class="text-center dark:text-white text-black font-sans text-lg md:text-2xl mb-1 md:mb-4">
+                            <i class="ph-bold ph-sliders-horizontal"></i>{% translate "Event Actions" %}
+                        </p>
+
+                        <button class="ui_button" @click="get_header_data('contribute_separately')">
+                            <i class="ph-bold ph-pencil"></i>{% translate "Contribute" %}
+                        </button>
+                        <p class="dark:text-white text-black opacity-80 text-sm text-center">{% translate "Contribute data to the server" %}</p>
+
+                        <button class="ui_button" @click="get_header_data('advanced_data')">
+                            <i class="ph-bold ph-hard-drives"></i>{% translate "View data" %}
+                        </button>
+                        <p class="dark:text-white text-black opacity-80 text-sm text-center">{% translate "View data for this event in the advanced data view" %}</p>
+
+                        <button class="ui_button" @click="get_header_data('pit_scouting')">
+                            <i class="ph-bold ph-garage"></i>{% translate "Pit Scouting" %}
+                        </button>
+                        <p class="dark:text-white text-black opacity-80 text-sm text-center">{% translate "View or contribute pit scouting data for this event" %}</p>
+                    </div>
+
+                    <div class="flex flex-col justify-center items-center dark:bg-slate-800/80 bg-slate-200 rounded-lg border-2 dark:border-slate-700 border-slate-300 my-2 p-2 md:p-6">
+                        <p class="text-center dark:text-white text-black font-sans text-lg md:text-2xl mb-1 md:mb-4">
+                            <i class="ph-bold ph-export"></i>{% translate "Share a link to this event" %}
+                        </p>
+                        <p class="dark:text-white text-black opacity-80 text-sm text-center mb-6">
+                            {% translate "Sharing a link allows scouts to easily get to the correct event to quickly begin scouting" %}
+                        </p>
+
+                        <button class="ui_button" @click="get_link_data()">
+                            <i class="ph-bold ph-link"></i>{% translate "Copy Link" %}
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="absolute bottom-1 md:bottom-4 animate-bounce"
+                 x-data="scroll_indicator()"
+                 x-show="scroll_value == 0"
+                 x-transition>
+                <p class="text-center dark:text-white text-black text-md opacity-60 hover:opacity-100 active:opacity-100 transition-opacity text-sm md:text-md">
+                    <i class="ph-bold ph-mouse-scroll"></i>{% translate "Scroll for info" %}
+                </p>
+            </div>
+
+            <script>
+                function scroll_indicator() {
+                    return {
+                        scroll_value: 0,
+
+                        init() {
+                            document.querySelector("#index").addEventListener('scroll', (event) => {
+                                this.scroll_value = document.querySelector("#index").scrollTop;
+                            });
+                        }
+                    }
+                }
+            </script>
+
+            {% include "index/create_custom_event.html" %}
+        </div>
+
+        <!-- Features section -->
+        <div class="w-screen max-w-screen flex flex-col lg:flex-row justify-center items-center px-6 lg:px-24 overflow-hidden">
+            <div class="flex flex-col ml-0 lg:ml-12">
+                <p class="text-black dark:text-white font-sans text-2xl md:text-4xl">
+                    <i class="ph-bold ph-list-dashes"></i>{% translate "Features" %}
+                </p>
+                <p class="text-black dark:text-white font-sans text-md md:text-lg mb-4 opacity-80">
+                    {% translate "Open Scouting is an open source application for easier scouting at FIRST Robotics competitions" %}
+                </p>
+                <ul class="list-disc ml-4 text-black dark:text-white text-sm md:text-md">
+                    <li>{% translate "Gather pit scouting data" %}</li>
+                    <li>{% translate "Anyone can contribute data, and anyone can view it, no account needed" %}</li>
+                    <li>{% translate "Works offline in case of poor connection in the stands" %}</li>
+                    <li>{% translate "Uses The Blue Alliance to autofill data for faster scouting" %}</li>
+                    <li>{% translate "Create custom events if an event isn't in TBA" %}</li>
+                    <li>{% translate "Manually go offline in case of bad connection" %}</li>
+                    <li>{% translate "Demo mode to let scouts try out the app" %}</li>
+                    <li>{% translate "Share links to an event to start scouting as fast as possible" %}</li>
+                    <li>{% translate "Create an account to verify your scouting reports" %}</li>
+                </ul>
+
+            </div>
+            <div>
+                <img class="w-128 h-auto hidden sm:block"
+                     src="{% static '/main/images/mobile.png' %}">
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="w-screen max-w-screen flex flex-col justify-end items-left px-6 lg:px-24 pt-28 pb-8 lg:py-28 backdrop-blur-xs"
+             style="background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 15%, rgba(0, 0, 0, 0.4) 100%)"
+             x-data="">
+            <img class="height-auto w-72 hidden dark:block cursor-pointer hover:scale-105 active:scale-95 transition-all"
+                 src="{% static '/main/images/logo_light.png' %}"
+                 @click="document.querySelector('#index').scrollTo({top: 0, behavior: 'smooth'})">
+            <img class="height-auto w-72 dark:hidden block cursor-pointer hover:scale-105 active:scale-95 transition-all"
+                 src="{% static '/main/images/logo_dark.png' %}"
+                 @click="win=document.querySelector('#index').scrollTo({top: 0, behavior: 'smooth'})">
+            <div class="flex flex-col ml-8 mt-6">
+                <a class="text-black dark:text-white font-sans text-lg opacity-80 hover:opacity-100 active:opacity-100 transition-opacity font-bold"
+                   href="{{ SERVER_IP }}/authentication"><i class="ph-bold ph-lock"></i>{% translate "Log In" %}</a>
+            </div>
+            <div class="flex flex-col ml-8 mt-6">
+                <a class="text-black dark:text-white font-sans text-md opacity-80 hover:opacity-100 active:opacity-100 transition-opacity"
+                   href="https://github.com/FRC-Team3484/open-scouting"><i class="ph-bold ph-github-logo"></i>{% translate "Source Code" %}</a>
+                <a class="text-black dark:text-white font-sans text-md opacity-80 hover:opacity-100 active:opacity-100 transition-opacity"
+                   href="https://github.com/FRC-Team3484/open-scouting/issues"><i class="ph-bold ph-bug"></i>{% translate "Issues" %}</a>
+                <a class="text-black dark:text-white font-sans text-md opacity-80 hover:opacity-100 active:opacity-100 transition-opacity"
+                   href="https://github.com/FRC-Team3484/open-scouting/releases"><i class="ph-bold ph-app-window"></i>{% translate "Releases" %}</a>
+            </div>
+            <div class="flex flex-col ml-8 mt-6">
+                <a class="text-black dark:text-white font-sans text-md opacity-80 hover:opacity-100 active:opacity-100 transition-opacity"
+                   href="https://github.com/FRC-Team3484/open-scouting/tree/main/docs"><i class="ph-bold ph-newspaper"></i>{% translate "Documentation" %}</a>
+                <a class="text-black dark:text-white font-sans text-md opacity-80 hover:opacity-100 active:opacity-100 transition-opacity"
+                   href="https://github.com/FRC-Team3484/open-scouting/tree/development"><i class="ph-bold ph-hammer"></i>{% translate "Development Branch" %}</a>
+            </div>
+        </div>
+    </div>
+{% endblock body %}
+
+{% block scripts %}
+{% endblock scripts %}

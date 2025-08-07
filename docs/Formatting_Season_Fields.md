@@ -9,10 +9,13 @@ This page documents how the data in `season_fields.py` should be formatted and s
 You can view the current `season_fields.py` file [here](https://github.com/FRC-Team3484/open-scouting/blob/main/scouting/main/season_fields.py)
 
 ## Types of fields
+> ![NOTE]
+> The human-readable `name` parameter should be marked as translatable using `_("Value")`
+
 This section demonstrates what each of the available fields are and their parameters
 
 Every field needs at least seven parameters, `name`, `simple_name`, `type`, `required`, `stat_type` and `game_piece`
-- `name` indicates the display name of the field, this is the title over the field that appears in the `/submit` UI
+- `name` indicates the display name of the field, this is the title over the field that appears in the `/submit` UI. (The value of this should be marked as translatable, using `_("Value")`)
 - `simple_name` is the simple name of the field, that will be used as the key in the key value pair when the data is stored in the database
 - `type` should be one of the following types listed below. This indicates the type of field that is being created, and what data it will return
 - `required` indicates if the field is required to have contents to allow the form to be submitted. Setting this parameter to `True` should be kept to a minimum, to prevent frustration during scouting, and allowing for data to be kept empty if it's not needed
@@ -29,7 +32,7 @@ This field should be used for fields like the team number or match number
 
 ```json
 {
-    "name": "Team Number",
+    "name": _("Team Number"),
     "simple_name": "team_number",
     "type": "large_integer",
     "required": True,
@@ -47,7 +50,7 @@ This field should be used for any smaller integer values, like the number of sco
 
 ```json
 {
-    "name": "Speaker Shot",
+    "name": _("Speaker Shot"),
     "simple_name": "speaker_shot",
     "type": "integer",
     "default": 0,
@@ -70,7 +73,7 @@ This field should be used for any value that should be true or false, like if a 
 
 ```json
 {
-    "name": "Left Starting Zone",
+    "name": _("Left Starting Zone"),
     "simple_name": "left_starting_zone",
     "type": "boolean",
     "required": False,
@@ -88,7 +91,7 @@ This field allows the user to select multiple choices, for example if scouts wan
 
 ```json
 {
-    "name": "Shoot Distance",
+    "name": _("Shoot Distance"),
     "simple_name": "shoot_distance",
     "type": "multiple_choice",
     "choices": ["N/A", "Close", "Mid Field", "Far"],
@@ -107,7 +110,7 @@ This field allows the user to select a single choice from a list, in case scouts
 
 ```json
 {
-    "name": "Speaker Shot",
+    "name": _("Speaker Shot"),
     "simple_name": "speaker_shot",
     "type": "choice",
     "choices": ["N/A", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
@@ -120,16 +123,19 @@ This field allows the user to select a single choice from a list, in case scouts
 - `choices` indicates the list of choices that the scouts can select from. Scouts can only select one value for this field
 
 ## Creating Sections
+> ![NOTE]
+> The human-readable `section` parameter should be marked as translatable using `_("Value")`
+
 Sections are used to combine multiple fields into one block in the `/submit` UI. Sections can be nested inside of sections for further organization.
 
 The parameters to create a section are as follows:
-- `section` is the display name of the section. It's what appears in the title at the top of the section
+- `section` is the display name of the section. It's what appears in the title at the top of the section (The value of this should be marked as translatable, using `_("Value")`)
 - `simple_name` is the simple name of the section, it's used internally to render sections in the `/submit` UI
 - `fields` is a list of fields that are contained in the section. Any fields above can be used in this parameter to create a section with fields inside of it
 
 ```json
 {
-      "section": "Main",
+      "section": _("Main"),
       "simple_name": "main",
       "fields": [],
   },
@@ -141,11 +147,11 @@ An example section is below:
 
 ```json
 {
-    "section": "Main",
+    "section": _("Main"),
     "simple_name": "main",
     "fields": [
         {
-            "name": "Team Number",
+            "name": _("Team Number"),
             "simple_name": "team_number",
             "type": "large_integer",
             "required": True,
@@ -153,7 +159,7 @@ An example section is below:
             "game_piece": "",
         },
         {
-            "name": "Match Number",
+            "name": _("Match Number"),
             "simple_name": "match_number",
             "type": "large_integer",
             "required": True,

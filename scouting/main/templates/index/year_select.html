@@ -1,0 +1,34 @@
+{% load static %}
+{% load i18n %}
+
+<script src="{% static '/main/scripts/index/year_select.js' %}"></script>
+
+<div class="flex flex-col justify-center items-center dark:bg-slate-800/50 bg-slate-200/50 rounded-2xl p-4 border-2 dark:border-slate-700 border-slate-300 my-2"
+     x-data="year_select"
+     x-show="page == 2"
+     x-transition>
+    <p class="text-center dark:text-white text-black font-sans text-2xl mt-6 mb-4">
+        <i class="ph-bold ph-calendar-dots"></i>{% translate "Select year" %}
+    </p>
+
+    <select class="ui_input"
+            placeholder="{% translate "Year" %}"
+            x-ref="year"
+            @change="update_selected_year()">
+        <template x-for="year in YEARS" :key="year">
+            <option x-text="year"></option>
+        </template>
+    </select>
+
+    <div class="flex flex-row mt-2">
+        <p class="dark:text-white text-black font-sans text-md font-bold px-1"
+           x-text="number_of_events"></p>
+        <p class="dark:text-white text-black font-sans text-md font px-0.5"
+           x-text="number_of_events == 1 ? 'event' : 'events'"></p>
+        <p class="dark:text-white text-black font-sans text-md font px-0.5">{% translate "with data this year" %}</p>
+    </div>
+
+    <button class="ui_button" @click="next()">
+        <i class="ph-bold ph-arrow-circle-right"></i>{% translate "Next" %}
+    </button>
+</div>

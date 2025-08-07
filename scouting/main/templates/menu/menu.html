@@ -1,0 +1,257 @@
+{% load static %}
+{% load i18n %}
+
+<script src="{% static '/main/scripts/menu/menu.js' %}"></script>
+
+<div x-data="menu">
+    <div class="flex flex-row fixed bottom-4 right-4 md:bottom-2 md:right-2 justify-end w-auto items-center">
+        <div class="md:bottom-4 md:right-4 dark:text-white text-black text-xl md:text-3xl p-1 md:p-2 rounded-full backdrop-blur-md hover:scale-110 active:scale-95 transition-all w-10 h-10 md:w-16 md:h-16 flex flex-row items-center justify-center border-2"
+             :class="{'dark:bg-slate-700/80 dark:border-slate-600 bg-slate-200/80 border-slate-300': !offline_reports && !offline_pit_scouting && !storage_warning, 'bg-orange-200/50 dark:bg-orange-800/50 dark:border-orange-700 border-orange-300': offline_reports || offline_pit_scouting || storage_warning}"
+             x-show="!open"
+             @click="open = true"
+             t-transition>
+            <i x-show="!(offline_reports || offline_pit_scouting || storage_warning)"
+               class="ph-bold ph-list"></i>
+            <i x-show="offline_reports" class="ph-bold ph-cloud-arrow-up"></i>
+            <i x-show="offline_pit_scouting" class="ph-bold ph-cloud-arrow-up"></i>
+            <i x-show="storage_warning" class="ph-bold ph-warning-circle"></i>
+        </div>
+    </div>
+
+    <div x-show="open"
+         class="flex flex-col fixed bottom-0 z-10 inset-x-0 mx-auto bg-slate-200/80 dark:bg-slate-700/80 border-2 dark:border-slate-600 border-slate-300 rounded-t-2xl backdrop-blur-md w-screen md:w-3/4 lg:w-1/2 h-3/4 md:min-h-1/2 overflow-y-auto p-4"
+         x-transition:enter="transform transition ease-out duration-300"
+         x-transition:enter-start="translate-y-full opacity-0"
+         x-transition:enter-end="translate-y-0 opacity-100"
+         x-transition:leave="transform transition ease-out duration-300"
+         x-transition:leave-start="translate-y-0 opacity-100"
+         x-transition:leave-end="translate-y-full opacity-0"
+         @developer_open.window="setTimeout(() => $el.scrollTo({ top: $el.scrollHeight, behavior: 'smooth' }), 500);"
+         x-cloak>
+
+        <div class="flex flex-row justify-between items-center w-full border-b-2 dark:border-slate-600 border-slate-300 px-6 py-4">
+            <div class="flex flex-row">
+                <div class="flex flex-row dark:text-white text-black items-center text-xl font-bold"
+                     x-data="menu_clock()">
+                    <i class="ph-bold ph-clock mr-1"></i>
+                    <p x-text="hour"></p>
+                    <p class="animate-pulse">:</p>
+                    <p x-text="minute"></p>
+                </div>
+
+                <script>
+                    function menu_clock() {
+                        return {
+                            hour: 0,
+                            minute: 0,
+    
+                            update_time() {
+                                let now = new Date();
+                                this.hour = now.toLocaleTimeString('en-US', { hour: '2-digit', hour12: true }).split(':')[0].replace(" PM", "").replace(" AM", "");
+                                this.minute = now.getMinutes() < 10 ? '0' + now.getMinutes() : now.getMinutes();
+
+                                return now;
+                            },
+    
+                            init() {    
+                                let seconds_until_next_minute = 60 - this.update_time().getSeconds();
+                                setTimeout(() => {
+                                    this.update_time();
+    
+                                    setInterval(() => {
+                                        this.update_time();
+                                    }, 60000);
+                                }, seconds_until_next_minute * 1000);
+                            }
+                        }
+                    }
+                </script>
+
+                <div class="flex flex-row items-center dark:text-white text-black text-md mx-1 ml-2">
+                    <i class="ph-bold ph-wifi-high" x-show="!offline"></i>
+                    <i class="ph-bold ph-wifi-slash" x-show="offline"></i>
+                </div>
+            </div>
+
+            <button class="ui_button_icon" @click="open = false">
+                <i class="ph-bold ph-x"></i>
+            </button>
+        </div>
+
+        <div class="grid-cols-2 grid gap-x-2 gap-y-2 pt-6">
+            <button class="dark:text-black text-white dark:bg-slate-200/80 bg-slate-700/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:text-white active:text-black dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-600 dark:hover:bg-slate-100 text-center text-md duration-300"
+                    @click="toggle_dark_mode()">
+                <i class="ph-bold ph-moon" x-show="dark_mode" x-transition></i> <i class="ph-bold ph-sun" x-show="!dark_mode" x-transition></i>
+                <p x-show="dark_mode">{% translate "Light Mode" %}</p>
+                <p x-show="!dark_mode">{% translate "Dark Mode" %}</p>
+            </button>
+            <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"
+                    @click="toggle_offline_manual()">
+                <i class="ph-bold ph-wifi-slash" x-show="offline_manual" x-transition></i> <i class="ph-bold ph-wifi-high" x-show="!offline_manual" x-transition></i>
+                <p x-show="offline_manual">{% translate "Go Online" %}</p>
+                <p x-show="!offline_manual">{% translate "Go Offline" %}</p>
+            </button>
+        </div>
+
+        <div class="grid-cols-2 grid gap-x-2 gap-y-2 pt-6">
+            <a href="{{ SERVER_IP }}"
+               class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"><i class="ph-bold ph-house"></i>{% translate "Home" %}</a>
+            <!-- TODO: Update these links when repo moves -->
+            <a href="https://github.com/FRC-Team3484/open-scouting"
+               class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"><i class="ph-bold ph-github-logo"></i>{% translate "Source Code" %}</a>
+            <a href="https://github.com/FRC-Team3484/open-scouting/releases"
+               class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"><i class="ph-bold ph-notebook"></i>{% translate "Changelog" %}</a>
+            <a href="https://github.com/FRC-Team3484/open-scouting/issues"
+               class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"><i class="ph-bold ph-bug"></i>{% translate "Report a Bug" %}</a>
+        </div>
+
+        <div class="flex flex-col pt-6 w-full">
+            <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"
+                    @click="language_open = !language_open">
+                <i class="ph-bold ph-globe" x-show="!language_open"></i><i class="ph-bold ph-x" x-show="language_open"></i>{% translate "Language" %}
+            </button>
+        </div>
+
+        <div class="flex flex-col w-full dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg p-2 mt-6 pl-4"
+             x-transition
+             x-show="language_open">
+            <p class="dark:text-white text-black text-lg text-sans font-bold">{% translate "Select Language" %}</p>
+            {% get_current_language as CURRENT_LANGUAGE %}
+            {% get_available_languages as LANGUAGES %}
+            {% get_language_info_list for LANGUAGES as languages %}
+
+            <div class="flex flex-row flex-wrap gap-2 mt-2">
+                {% for language in languages %}
+                    <button class="ui_button_small {% if language.code == CURRENT_LANGUAGE %}opacity-50 pointer-events-none{% endif %}"
+                            @click="set_language('{{ language.code }}')">{{ language.name }}</button>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div x-show="offline_reports"
+             class="flex flex-col mt-6 px-6 w-full bg-orange-200/50 dark:bg-orange-800/50 backdrop-blur-md dark:border-orange-700 border-orange-300 border-2 rounded-lg py-4"
+             x-transition>
+            <div class="flex flex-row">
+                <i class="ph-bold ph-cloud-arrow-up dark:text-white text-black text-4xl mr-2"></i>
+                <div class="flex flex-col">
+                    <p class="dark:text-white text-black text-lg text-sans font-bold">{% translate "Upload scouting reports" %}</p>
+                    <p class="dark:text-white text-black text-md text-sans">
+                        {% translate "While you were offline, some reports were saved locally. You should upload them to ensure that they've been saved to the server." %}
+                    </p>
+                </div>
+            </div>
+
+            <button class="ui_button" @click="upload_offline_reports()">
+                <i class="ph-bold ph-cloud-arrow-up"></i>{% translate "Upload" %}
+            </button>
+        </div>
+
+        <div x-show="offline_pit_scouting"
+             class="flex flex-col mt-6 px-6 w-full bg-orange-200/50 dark:bg-orange-800/50 backdrop-blur-md dark:border-orange-700 border-orange-300 border-2 rounded-lg py-4"
+             x-transition>
+            <div class="flex flex-row">
+                <i class="ph-bold ph-cloud-arrow-up dark:text-white text-black text-4xl mr-2"></i>
+                <div class="flex flex-col">
+                    <p class="dark:text-white text-black text-lg text-sans font-bold">{% translate "Upload pit scouting data" %}</p>
+                    <p class="dark:text-white text-black text-md text-sans">
+                        {% translate "While you were offline, some pit scouting data was saved locally. You should upload them to ensure that they've been saved to the server." %}
+                    </p>
+                </div>
+            </div>
+
+            <button class="ui_button" @click="upload_offline_pit_scouting()">
+                <i class="ph-bold ph-cloud-arrow-up"></i>{% translate "Upload" %}
+            </button>
+        </div>
+
+        <div class="flex flex-col pt-6 w-full">
+            <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"
+                    @click="mrbc_open = true">
+                <i class="ph-bold ph-seal-check"></i>{% translate "Check Backed Up Scouting Reports" %}
+            </button>
+        </div>
+
+        <div class="flex flex-col pt-6 w-full">
+            <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"
+                    @click="storage_open = true">
+                <i class="ph-bold ph-floppy-disk"></i>{% translate "Manage Storage" %}
+            </button>
+
+            <p x-show="storage_warning"
+               class="text-orange-500 font-bold ml-auto mr-auto mt-1">{% translate "Low Storage remaining" %}</p>
+        </div>
+
+        <div class="flex flex-col pt-6 w-full">
+            <button @click="credits_open = !credits_open"
+                    class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md w-full duration-300">
+                <i x-show="!credits_open" class="ph-bold ph-heart"></i> <i x-show="credits_open" class="ph-bold ph-x"></i>{% translate "Credits" %}
+            </button>
+
+            <div x-show="credits_open" x-collapse class="mx-6">
+                <p class="dark:text-white text-black text-md pt-2">
+                    {% translate "Created by" %}<a href="https://www.thebluealliance.com/team/3484"
+   class="dark:text-blue-400 text-blue-600 dark:hover:text-blue-500 hover:text-blue-700 transition-colors">{% translate "3484 Short Circuit" %}</a>
+                </p>
+                <p class="dark:text-white text-black text-md pt-2">
+                    {% translate "Powered by" %}<a href="https://www.thebluealliance.com"
+   class="dark:text-blue-400 text-blue-600 dark:hover:text-blue-500 hover:text-blue-700 transition-colors">{% translate "The Blue Alliance" %}</a>
+                </p>
+            </div>
+        </div>
+
+        <div class="flex flex-col pt-6 w-full">
+            <button @click="developer_open = !developer_open; if (developer_open) $dispatch('developer_open', developer_open)"
+                    class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md w-full duration-300">
+                <i x-show="!developer_open" class="ph-bold ph-bug"></i> <i x-show="developer_open" class="ph-bold ph-x"></i>{% translate "Developer Settings" %}
+            </button>
+
+            <div x-show="developer_open"
+                 x-collapse
+                 class="grid=cols-2 grid gap-x-2 gap-y-2 pt-6 mx-6">
+                <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"
+                        @click="logs_open = true">
+                    <i class="ph-bold ph-notebook"></i>{% translate "View logs" %}
+                </button>
+                <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"
+                        @click="clear_database()">
+                    <i class="ph-bold ph-trash"></i>{% translate "Clear saved match reports, pit scouting data, and backups" %}
+                </button>
+                <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"
+                        @click="toggle_service_worker_mode()"
+                        x-show="service_worker_cache_first">
+                    <i class="ph-bold ph-network"></i>{% translate "Network-first service worker" %}
+                </button>
+                <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"
+                        @click="toggle_service_worker_mode()"
+                        x-show="!service_worker_cache_first">
+                    <i class="ph-bold ph-database"></i>{% translate "Cache-first service worker" %}
+                </button>
+                <button class="dark:text-white text-black dark:bg-slate-700/80 bg-slate-200/80 backdrop-blur-md dark:border-slate-600 border-slate-300 border-2 rounded-lg py-4 hover:scale-103 active:scale-95 dark:active:bg-slate-800/60 active:bg-slate-300 transition-all hover:bg-slate-100 dark:hover:bg-slate-600 text-center text-md duration-300"
+                        @click="clear_service_worker_cache()">
+                    <i class="ph-bold ph-trash"></i>{% translate "Clear service worker cache" %}
+                </button>
+            </div>
+        </div>
+
+        <p class="dark:text-white text-black text-md opacity-50 text-center mt-2"
+           x-text="version"></p>
+    </div>
+
+    <div x-show="open"
+         @click="open = false"
+         class="z-5 fixed w-screen h-screen top-0 left-0 bg-black/20 backdrop-blur-lg"
+         x-transition:enter="transition-all ease-in-out duration-300"
+         x-transition:leave="transition-all ease-in-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         x-cloak></div>
+
+    {% include 'menu/menu_report_backup_check.html' %}
+
+    {% include 'menu/logs.html' %}
+
+    {% include 'menu/storage.html' %}
+
+</div>

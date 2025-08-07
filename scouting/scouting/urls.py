@@ -18,6 +18,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
+from django.views.decorators.cache import cache_page
+
+from django.conf.urls.i18n import i18n_patterns
+from django.views.i18n import JavaScriptCatalog
 
 import main.views
 
@@ -27,6 +31,14 @@ urlpatterns = [
     path("analytics/", include("analytics.urls")),
     path(
         f"{settings.ADMIN_PATH.rstrip('/')}/ui/", main.views.admin_ui, name="admin_ui"
+    ),
+    path("i18n/", include("django.conf.urls.i18n")),
+    path(
+        "jsi18n/",
+        cache_page(86400, key_prefix="jsi18n-%s" % settings.SERVER_VERSION)(
+            JavaScriptCatalog.as_view()
+        ),
+        name="javascript-catalog",
     ),
     path(settings.ADMIN_PATH, admin.site.urls),
 ]

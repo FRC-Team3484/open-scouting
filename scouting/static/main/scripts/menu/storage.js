@@ -40,11 +40,19 @@ document.addEventListener("alpine:init", () => {
 				new CustomEvent("dialog_show", {
 					detail: {
 						event_name: "clear_backups",
-						title: "Are you sure you want to clear your report backups?",
-						body: "This will permanently delete all of your report backups and cannot be undone. Are you sure you want to continue?",
+						title: gettext(
+							"Are you sure you want to clear your report backups?",
+						),
+						body: gettext(
+							"This will permanently delete all of your report backups and cannot be undone. Are you sure you want to continue?",
+						),
 						buttons: [
-							{ type: "confirm", icon: "ph-bold ph-check", text: "Clear" },
-							{ type: "cancel", icon: "ph-bold ph-x", text: "Cancel" },
+							{
+								type: "confirm",
+								icon: "ph-bold ph-check",
+								text: gettext("Clear"),
+							},
+							{ type: "cancel", icon: "ph-bold ph-x", text: gettext("Cancel") },
 						],
 					},
 				}),
@@ -56,12 +64,19 @@ document.addEventListener("alpine:init", () => {
 				new CustomEvent("dialog_show", {
 					detail: {
 						event_name: "clear_offline_reports",
-						title:
+						title: gettext(
 							"Are you sure you want to clear your offline scouting reports?",
-						body: "This will permanently delete all of your scouting reports that were not yet uploaded to the server, and this action cannot be undone. Are you sure you want to continue?",
+						),
+						body: gettext(
+							"This will permanently delete all of your scouting reports that were not yet uploaded to the server, and this action cannot be undone. Are you sure you want to continue?",
+						),
 						buttons: [
-							{ type: "confirm", icon: "ph-bold ph-check", text: "Clear" },
-							{ type: "cancel", icon: "ph-bold ph-x", text: "Cancel" },
+							{
+								type: "confirm",
+								icon: "ph-bold ph-check",
+								text: gettext("Clear"),
+							},
+							{ type: "cancel", icon: "ph-bold ph-x", text: gettext("Cancel") },
 						],
 					},
 				}),
@@ -73,11 +88,19 @@ document.addEventListener("alpine:init", () => {
 				new CustomEvent("dialog_show", {
 					detail: {
 						event_name: "clear_pit_scouting",
-						title: "Are you sure you want to clear your pit scouting data?",
-						body: "This will permanently delete all of your local pit scouting data, some of which may be unsaved. This action cannot be undone. Are you sure you want to continue?",
+						title: gettext(
+							"Are you sure you want to clear your pit scouting data?",
+						),
+						body: gettext(
+							"This will permanently delete all of your local pit scouting data, some of which may be unsaved. This action cannot be undone. Are you sure you want to continue?",
+						),
 						buttons: [
-							{ type: "confirm", icon: "ph-bold ph-check", text: "Clear" },
-							{ type: "cancel", icon: "ph-bold ph-x", text: "Cancel" },
+							{
+								type: "confirm",
+								icon: "ph-bold ph-check",
+								text: gettext("Clear"),
+							},
+							{ type: "cancel", icon: "ph-bold ph-x", text: gettext("Cancel") },
 						],
 					},
 				}),
@@ -105,9 +128,10 @@ document.addEventListener("alpine:init", () => {
 				window.dispatchEvent(
 					new CustomEvent("scouting_notification", {
 						detail: {
-							title: "Low storage space",
-							message:
+							title: gettext("Low storage space"),
+							message: gettext(
 								"Open Scouting is running low on storage that is allocated to it",
+							),
 							type: "warning",
 							icon: "warning",
 						},
