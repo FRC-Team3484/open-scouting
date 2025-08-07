@@ -7,6 +7,11 @@ ENV OPEN_SCOUTING_PRODUCTION 1
 
 WORKDIR /usr/src/app
 
+RUN apt-get update \
+    && apt-get install -y gettext \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY entrypoint.sh .
 RUN chmod +x entrypoint.sh
 
