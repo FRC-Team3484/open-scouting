@@ -77,10 +77,11 @@
                             </div>
                             <div class="flex flex-row">
                                 <p class="dark:text-white text-black font-sans font-light"
-                                   x-text="event.start_date"></p>
+                                   x-text="event.start_date ? luxon.DateTime.fromISO(event.start_date) .setLocale(DJANGO_LOCALE) .toLocaleString(luxon.DateTime.DATE_MED) : ''">
+                                </p>
                                 <p class="dark:text-white text-black font-sans font-light mx-1">-</p>
                                 <p class="dark:text-white text-black font-sans font-light"
-                                   x-text="event.end_date"></p>
+                                   x-text="event.end_date ? luxon.DateTime.fromISO(event.end_date) .setLocale(DJANGO_LOCALE) .toLocaleString(luxon.DateTime.DATE_MED) : ''"></p>
                             </div>
                         </div>
 
@@ -135,10 +136,11 @@
                             </div>
                             <div class="flex flex-row">
                                 <p class="dark:text-white text-black font-sans font-light"
-                                   x-text="event.start_date"></p>
+                                   x-text="event.start_date ? luxon.DateTime.fromISO(event.start_date) .setLocale(DJANGO_LOCALE) .toLocaleString(luxon.DateTime.DATE_MED) : ''">
+                                </p>
                                 <p class="dark:text-white text-black font-sans font-light mx-1">-</p>
                                 <p class="dark:text-white text-black font-sans font-light"
-                                   x-text="event.end_date"></p>
+                                   x-text="event.end_date ? luxon.DateTime.fromISO(event.end_date) .setLocale(DJANGO_LOCALE) .toLocaleString(luxon.DateTime.DATE_MED) : ''"></p>
                             </div>
                         </div>
                     </div>
@@ -178,10 +180,11 @@
                             </div>
                             <div class="flex flex-row">
                                 <p class="dark:text-white text-black font-sans font-light"
-                                   x-text="event.start_date"></p>
+                                   x-text="event.start_date ? luxon.DateTime.fromISO(event.start_date) .setLocale(DJANGO_LOCALE) .toLocaleString(luxon.DateTime.DATE_MED) : ''">
+                                </p>
                                 <p class="dark:text-white text-black font-sans font-light mx-1">-</p>
                                 <p class="dark:text-white text-black font-sans font-light"
-                                   x-text="event.end_date"></p>
+                                   x-text="event.end_date ? luxon.DateTime.fromISO(event.end_date) .setLocale(DJANGO_LOCALE) .toLocaleString(luxon.DateTime.DATE_MED) : ''"></p>
                             </div>
                         </div>
 
