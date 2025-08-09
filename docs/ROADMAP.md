@@ -7,10 +7,11 @@ This document describes the roadmap for Open Scouting, and roughly when each fea
 ### `v1.0.0`
 - [x] Update tests
 - [x] [#56](https://github.com/FRC-Team3484/open-scouting/issues/56) - Demo pit scouting data is broken
-- [ ] [#11](https://github.com/FRC-Team3484/open-scouting/issues/11) - Handle missing headers
+- [x] [#11](https://github.com/FRC-Team3484/open-scouting/issues/11) - Handle missing headers
 - [ ] [#107](https://github.com/FRC-Team3484/open-scouting/issues/107) - Index page boxes transition at the same time
 - [ ] [#108](https://github.com/FRC-Team3484/open-scouting/issues/108) - Favorite events not working in production
 - [ ] [#109](https://github.com/FRC-Team3484/open-scouting/issues/109) - Team information box on the contribute page overwrites team number if no valid team number is found
+- [ ] [#114](https://github.com/FRC-Team3484/open-scouting/issues/114) - Make pit scouting questions translatable
 
 ### `v1.1.0`
 - [ ] [#103](https://github.com/FRC-Team3484/open-scouting/issues/103) - Add an API
