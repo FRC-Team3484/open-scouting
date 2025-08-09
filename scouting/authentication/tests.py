@@ -1,5 +1,5 @@
 from django.test import TestCase, Client
-from authentication.models import User, Profile, VerificationCode
+from authentication.models import User, Profile, VerificationCode, Settings
 from django.utils import timezone
 
 import uuid
@@ -197,6 +197,7 @@ class CreateAccountTest(TestCase):
             "display_name": "test",
             "team_number": "test",
             "uuid": self.uuid,
+            "verify": True,
         }
 
         response = self.client.post(
@@ -239,3 +240,73 @@ class GetAuthenticationStatusTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response["Content-Type"], "application/json")
         self.assertEqual(response.json()["authenticated"], True)
+
+
+class SaveProfileTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+        self.user = User.objects.create_user("test", "test", "test")
+        self.user.save()
+
+        profile = Profile(user=self.user, display_name="test", team_number="1234")
+        profile.save()
+
+    def test_save_profile(self):
+        data = {
+            "user_id": self.user.id,
+            "display_name": "test",
+            "team_number": "1234",
+        }
+
+        response = self.client.post(
+            "/authentication/save_profile", data, content_type="application/json"
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+
+class GetUserSettingsTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+        self.user = User.objects.create_user("test", "test", "test")
+        self.user.save()
+
+        profile = Profile(user=self.user, display_name="test", team_number="1234")
+        profile.save()
+
+        settings = Settings(user=self.user)
+        settings.save()
+
+    def test_get_user_settings(self):
+        self.client.login(username="test", password="test")
+
+        response = self.client.post("/authentication/get_user_settings")
+
+        self.assertEqual(response.status_code, 200)
+
+
+class SetUserSettingsTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+        self.user = User.objects.create_user("test", "test", "test")
+        self.user.save()
+
+        profile = Profile(user=self.user, display_name="test", team_number="1234")
+        profile.save()
+
+        settings = Settings(user=self.user)
+        settings.save()
+
+    def test_set_user_settings(self):
+        self.client.login(username="test", password="test")
+
+        data = [{"key": "favorite_events", "value": "test"}]
+
+        response = self.client.post(
+            "/authentication/set_user_settings", data, content_type="application/json"
+        )
+
+        self.assertEqual(response.status_code, 200)

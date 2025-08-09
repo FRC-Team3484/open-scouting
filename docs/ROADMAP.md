@@ -5,7 +5,7 @@ This document describes the roadmap for Open Scouting, and roughly when each fea
 
 ## To-Do
 ### `v1.0.0`
-- [ ] Update tests
+- [x] Update tests
 - [ ] [#56](https://github.com/FRC-Team3484/open-scouting/issues/56) - Demo pit scouting data is broken
 - [ ] [#11](https://github.com/FRC-Team3484/open-scouting/issues/11) - Handle missing headers
 - [ ] [#107](https://github.com/FRC-Team3484/open-scouting/issues/107) - Index page boxes transition at the same time
