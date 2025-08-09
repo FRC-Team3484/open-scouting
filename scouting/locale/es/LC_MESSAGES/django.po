@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: v0.1.11-alpha\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-09 16:41+0000\n"
+"POT-Creation-Date: 2025-08-09 19:01+0000\n"
 "PO-Revision-Date: 2025-08-05 12:29-0400\n"
 "Last-Translator: nfoert <nfoert@proton.me>\n"
 "Language-Team: Spanish\n"
@@ -134,6 +134,98 @@ msgstr ""
 
 #: main/models.py:102
 msgid "Pit Group"
+msgstr ""
+
+#: main/pit_scouting_questions.py:8 main/pit_scouting_questions.py:93
+msgid "What is your drivetrain?"
+msgstr ""
+
+#: main/pit_scouting_questions.py:15
+msgid "Can your robot score in the amp?"
+msgstr ""
+
+#: main/pit_scouting_questions.py:21
+msgid "Can your robot score in the trap?"
+msgstr ""
+
+#: main/pit_scouting_questions.py:27
+msgid "Can your robot score in the speaker?"
+msgstr ""
+
+#: main/pit_scouting_questions.py:33
+msgid "Does your robot climb?"
+msgstr ""
+
+#: main/pit_scouting_questions.py:39
+msgid "How does your robot score in the trap?"
+msgstr ""
+
+#: main/pit_scouting_questions.py:45
+msgid "Does your robot have a variable angle launcher?"
+msgstr ""
+
+#: main/pit_scouting_questions.py:51
+msgid "Where does your robot usually shoot from?"
+msgstr ""
+
+#: main/pit_scouting_questions.py:57
+msgid "Do you have autons?"
+msgstr ""
+
+#: main/pit_scouting_questions.py:63
+msgid "If so, how many pieces can you score in auton?"
+msgstr ""
+
+#: main/pit_scouting_questions.py:69
+msgid "Do you go to the midfield during auton?"
+msgstr ""
+
+#: main/pit_scouting_questions.py:75
+msgid "What are your start positions in auton? (A, B, C, or D)"
+msgstr ""
+
+#: main/pit_scouting_questions.py:81 main/pit_scouting_questions.py:143
+msgid "How often do you meet in build season?"
+msgstr ""
+
+#: main/pit_scouting_questions.py:100
+msgid "Can your robot score coral in the reef?"
+msgstr ""
+
+#: main/pit_scouting_questions.py:106
+msgid "Can your robot remove algae from the reef?"
+msgstr ""
+
+#: main/pit_scouting_questions.py:112
+msgid "Can your robot score algae in the net?"
+msgstr ""
+
+#: main/pit_scouting_questions.py:118
+msgid "Can your robot score algae in the processor?"
+msgstr ""
+
+#: main/pit_scouting_questions.py:124
+msgid "Can your robot climb?"
+msgstr ""
+
+#: main/pit_scouting_questions.py:131
+msgid "Do you have autos?"
+msgstr ""
+
+#: main/pit_scouting_questions.py:137
+msgid "If so, how many pieces can you score in auto?"
+msgstr ""
+
+#: main/pit_scouting_questions.py:149
+msgid "Which CAD software do you use?"
+msgstr ""
+
+#: main/pit_scouting_questions.py:155
+msgid "How long does your team strategize for?"
+msgstr ""
+
+#: main/pit_scouting_questions.py:162
+msgid "How long does it take before you're building and assembling your robot?"
 msgstr ""
 
 #: main/season_fields.py:48
