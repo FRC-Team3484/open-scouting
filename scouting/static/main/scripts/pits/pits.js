@@ -488,30 +488,41 @@ document.addEventListener("alpine:init", () => {
 		 * Also doesn't let the page be closed with unsaved changes
 		 */
 		init() {
-			// Delay by 100ms to make sure globalThis.offline is defined by menu
-			setTimeout(async () => {
-				if (globalThis.offline === false) {
-					// Get pit data and master list of questions from server, and save in IndexedDB
+			if (!new URLSearchParams(window.location.search).has("demo")) {
+				// Delay by 100ms to make sure globalThis.offline is defined by menu
+				setTimeout(async () => {
+					if (globalThis.offline === false) {
+						// Get pit data and master list of questions from server, and save in IndexedDB
 
-					await this.sync_pit_data();
-					await this.get_master_questions();
-				}
-			}, 100);
+						await this.sync_pit_data();
+						await this.get_master_questions();
+					}
+				}, 100);
 
-			window.addEventListener("beforeunload", (event) => {
-				if (this.state !== "saved") {
-					event.preventDefault();
-					event.returnValue = "";
-					return "";
-				}
-			});
+				window.addEventListener("beforeunload", (event) => {
+					if (this.state !== "saved") {
+						event.preventDefault();
+						event.returnValue = "";
+						return "";
+					}
+				});
 
-			const urlParams = new URLSearchParams(window.location.search);
-			const event_name = urlParams.get("event_name");
-			const event_code = urlParams.get("event_code");
-			const year = Number(urlParams.get("year"));
+				const urlParams = new URLSearchParams(window.location.search);
+				const event_name = urlParams.get("event_name");
+				const event_code = urlParams.get("event_code");
+				const year = Number(urlParams.get("year"));
 
-			const pit_scouting_observable = Dexie.liveQuery(() =>
+				const pit_scouting_observable = Dexie.liveQuery(() =>
+					db.pit_scouting
+						.filter(
+							(pit) =>
+								pit.event_name === event_name &&
+								pit.event_code === event_code &&
+								pit.year === year,
+						)
+						.toArray(),
+				);
+
 				db.pit_scouting
 					.filter(
 						(pit) =>
@@ -519,40 +530,66 @@ document.addEventListener("alpine:init", () => {
 							pit.event_code === event_code &&
 							pit.year === year,
 					)
-					.toArray(),
-			);
+					.toArray()
+					.then((data) => {
+						this.pit_data = data.sort((a, b) => a.team_number - b.team_number);
+						this.get_pit_status();
+						this.filter_pit_data();
+					});
 
-			db.pit_scouting
-				.filter(
-					(pit) =>
-						pit.event_name === event_name &&
-						pit.event_code === event_code &&
-						pit.year === year,
-				)
-				.toArray()
-				.then((data) => {
-					this.pit_data = data.sort((a, b) => a.team_number - b.team_number);
-					this.get_pit_status();
-					this.filter_pit_data();
+				const subscription = pit_scouting_observable.subscribe({
+					next: (result) => {
+						this.pit_data = result.sort(
+							(a, b) => a.team_number - b.team_number,
+						);
+						this.filter_pit_data();
+					},
+					error: (error) => {
+						log("ERROR", "Error subscribing to pit scouting db", error);
+					},
 				});
 
-			const subscription = pit_scouting_observable.subscribe({
-				next: (result) => {
-					this.pit_data = result.sort((a, b) => a.team_number - b.team_number);
-					this.filter_pit_data();
-				},
-				error: (error) => {
-					log("ERROR", "Error subscribing to pit scouting db", error);
-				},
+				setInterval(() => {
+					this.sync_pit_data();
+				}, 10000);
+
+				setInterval(() => {
+					this.check_for_unsaved_changes();
+				}, 500);
+			} else {
+				log("INFO", "Pit scouting is in demo mode");
+				this.state = "demo";
+
+				setTimeout(() => {
+					window.dispatchEvent(
+						new CustomEvent("dialog_show", {
+							detail: {
+								event_name: "pit_scouting_demo",
+								title: gettext("Pit scouting is not avaliable in demo mode"),
+								body: gettext(
+									"Unfortunately, this feature is not currently available in demo mode",
+								),
+								buttons: [
+									{
+										type: "confirm",
+										icon: "ph-bold ph-house",
+										text: "Go home",
+									},
+								],
+							},
+						}),
+					);
+				}, 100);
+			}
+
+			window.addEventListener("dialog_confirm", (event) => {
+				const { event_name } = event.detail;
+
+				if (event_name === "pit_scouting_demo") {
+					event.stopImmediatePropagation();
+					window.location.href = "/";
+				}
 			});
-
-			setInterval(() => {
-				this.sync_pit_data();
-			}, 10000);
-
-			setInterval(() => {
-				this.check_for_unsaved_changes();
-			}, 500);
 		},
 	}));
 });

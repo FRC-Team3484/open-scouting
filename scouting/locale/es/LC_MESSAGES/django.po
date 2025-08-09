@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: v0.1.11-alpha\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-07 15:05+0000\n"
+"POT-Creation-Date: 2025-08-09 16:41+0000\n"
 "PO-Revision-Date: 2025-08-05 12:29-0400\n"
 "Last-Translator: nfoert <nfoert@proton.me>\n"
 "Language-Team: Spanish\n"
@@ -1418,24 +1418,28 @@ msgstr ""
 msgid "Add pit"
 msgstr ""
 
-#: main/templates/pits/pits.html:318
+#: main/templates/pits/pits.html:319
 msgid "Fetching data from server..."
 msgstr ""
 
-#: main/templates/pits/pits.html:323
+#: main/templates/pits/pits.html:324
 msgid "Unsaved changes"
 msgstr ""
 
-#: main/templates/pits/pits.html:328
+#: main/templates/pits/pits.html:329
 msgid "Changes saved"
 msgstr ""
 
-#: main/templates/pits/pits.html:333
+#: main/templates/pits/pits.html:334
 msgid "Syncing data..."
 msgstr ""
 
-#: main/templates/pits/pits.html:338
+#: main/templates/pits/pits.html:339
 msgid "Data saved offline"
+msgstr ""
+
+#: main/templates/pits/pits.html:344
+msgid "Demo mode"
 msgstr ""
 
 #: main/templates/profile/profile.html:50
