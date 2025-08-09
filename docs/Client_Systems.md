@@ -15,8 +15,8 @@ Notifications are shown at the top right of the screen, and can be used to provi
 Send a notification using a JavaScript event, on any page that inherits from `base.html`
 
 Parameters for the event details:
-- `title` - The title of the notification
-- `message` - The message text of the notification
+- `title` - The title of the notification (Should be marked as translatable using `gettext`)
+- `message` - The message text of the notification (Should be marked as translatable using `gettext`)
 - `type` - The type of the notification, can be `info`, `success`, `warning` or `error`
 - `icon` - The icon to display on the notification, as a Phosphor Icon, minus the `ph-` part
 
@@ -24,8 +24,8 @@ Parameters for the event details:
 window.dispatchEvent(
     new CustomEvent("scouting_notification", {
         detail: {
-            title: "Event autofilled",
-            message: "Autofilled the event and year from the provided link data",
+            title: gettext("Event autofilled"),
+            message: gettext("Autofilled the event and year from the provided link data"),
             type: "info",
             icon: "lightning",
         },
@@ -58,8 +58,8 @@ Create a dialog using a JavaScript event, on any page that has the dialog compon
 
 Parameters for the event details:
 - `event_name` - Used later to receive events from buttons clicked for a specific dialog
-- `title` - The title text of the dialog
-- `body` - The body text of the dialog
+- `title` - The title text of the dialog (Should be marked as translatable using `gettext`)
+- `body` - The body text of the dialog (Should be marked as translatable using `gettext`)
 - `buttons` - An array of the buttons to display on the dialog
     - Buttons take several parameters:
         - `type` - Can be `confirm`, `cancel`, or `close`. Returns different events based on the type
@@ -72,8 +72,8 @@ window.dispatchEvent(
     new CustomEvent("dialog_show", {
         detail: {
             event_name: "sign_out",
-            title: "Signing out will clear page cache",
-            body: "You're currently offline. Signing out will reset any cached pages to make sure your user is actually signed in. Those pages will not be able to be cached again until you're online, so the site may not work properly if you proceed. Are you sure you want to sign out?",
+            title: gettext("Signing out will clear page cache"),
+            body: gettext("You're currently offline. Signing out will reset any cached pages to make sure your user is actually signed in. Those pages will not be able to be cached again until you're online, so the site may not work properly if you proceed. Are you sure you want to sign out?"),
             buttons: [
                 { type: "confirm", icon: "ph-bold ph-check", text: "Sign out" },
                 { type: "cancel", icon: "ph-bold ph-x", text: "Not now" },

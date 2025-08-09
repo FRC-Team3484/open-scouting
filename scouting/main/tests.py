@@ -1,7 +1,7 @@
 from django.test import TestCase, Client
 from django.conf import settings
 from authentication.models import User, Profile
-from main.models import Data, Event, PitGroup
+from main.models import Data, Event, PitGroup, Pit
 
 import uuid
 import json
@@ -95,6 +95,27 @@ class ServiceWorkerPageTest(TestCase):
         response = self.client.get("/sw.js")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response["Content-Type"], "application/javascript")
+
+
+class AdminUiPageTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+        user = User.objects.create_user(
+            "test", "test", "test", is_superuser=True, is_staff=True
+        )
+
+        profile = Profile(user=user, display_name="test", team_number="1234")
+        profile.save()
+
+    def test_admin_ui_anonymous(self):
+        response = self.client.get("/admin/ui")
+        self.assertEqual(response.status_code, 302)
+
+    def test_admin_ui_authenticated(self):
+        self.client.login(username="test", password="test")
+        response = self.client.get("/admin/ui")
+        self.assertEqual(response.status_code, 301)
 
 
 class SubmitTest(TestCase):
@@ -606,11 +627,14 @@ class UpdatePit(TestCase):
 
     def test_update_pit(self):
         data = {
+            "uuid": uuid.uuid4().hex,
             "event_name": "test",
             "event_code": "test",
             "year": 2024,
             "custom": False,
-            "data": json.dumps([]),
+            "team_number": 3484,
+            "nickname": "test",
+            "questions": json.dumps([]),
         }
 
         response = self.client.post(
@@ -658,7 +682,7 @@ class GetTeamsWithFilters(TestCase):
         self.assertEqual(response["Content-Type"], "application/json")
 
         response_json = json.loads(response.content)
-        self.assertEqual(len(response_json), 0)
+        self.assertEqual(len(response_json), 1)
 
 
 class GetEventsWithFilters(TestCase):
@@ -713,15 +737,8 @@ class GetDataFromQuery(TestCase):
         event.save()
 
         data = Data(year=2024, event="test", event_code="test")
-        data.data = [
-            {
-                "name": "team_number",
-                "type": "large_integer",
-                "value": "1234",
-                "stat_type": "ignore",
-                "game_piece": "",
-            }
-        ]
+        data.team_number = 1234
+        data.data = []
         data.save()
 
     def test_get_data_from_query(self):
@@ -760,3 +777,215 @@ class GetVersion(TestCase):
 
         response_json = json.loads(response.content)
         self.assertEqual(response_json["version"], settings.SERVER_VERSION)
+
+
+class GetAdminData(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+        event = Event(year=2024, name="test", event_code="test")
+        event.save()
+
+        data = Data(year=2024, event="test", event_code="test")
+        data.data = [
+            {
+                "name": "team_number",
+                "type": "large_integer",
+                "value": "1234",
+                "stat_type": "ignore",
+                "game_piece": "",
+            }
+        ]
+        data.save()
+
+        user = User.objects.create_user("test", "test", "test")
+        user.is_superuser = True
+        user.save()
+
+        profile = Profile(user=user, display_name="test", team_number="1234")
+        profile.save()
+
+        pit_group = PitGroup(event=event, events_generated=True)
+        pit_group.save()
+
+        pit = Pit(team_number="1234", pit_group=pit_group)
+        pit.save()
+
+    def test_get_admin_data_anonymous(self):
+        response = self.client.post(
+            "/get_admin_data", {"type": "data"}, content_type="application/json"
+        )
+        self.assertEqual(
+            response.status_code, 302
+        )  # 302 because the user is redirected to the login form
+
+    def test_get_admin_data_authenticated(self):
+        self.client.login(username="test", password="test")
+
+        response = self.client.post(
+            "/get_admin_data", {"type": "data"}, content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response["Content-Type"], "application/json")
+        response_json = json.loads(response.content)
+        self.assertEqual(len(response_json["data"]), 1)
+
+        response = self.client.post(
+            "/get_admin_data", {"type": "events"}, content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response["Content-Type"], "application/json")
+        response_json = json.loads(response.content)
+        self.assertEqual(len(response_json["events"]), 1)
+
+        response = self.client.post(
+            "/get_admin_data", {"type": "users"}, content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response["Content-Type"], "application/json")
+        response_json = json.loads(response.content)
+        self.assertEqual(len(response_json["users"]), 1)
+
+        response = self.client.post(
+            "/get_admin_data", {"type": "pits"}, content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response["Content-Type"], "application/json")
+        response_json = json.loads(response.content)
+        self.assertEqual(len(response_json["pits"]), 1)
+
+
+class DoAdminOperation(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.data_uuid = uuid.uuid4().hex
+        self.pit_uuid = uuid.uuid4().hex
+
+        user = User.objects.create_user("superuser", "superuser", "superuser")
+        user.is_superuser = True
+        user.save()
+
+        event = Event(year=2024, name="test", event_code="test")
+        event.save()
+
+        data = Data(year=2024, event="test", event_code="test", uuid=self.data_uuid)
+        data.data = [
+            {
+                "name": "team_number",
+                "type": "large_integer",
+                "value": "1234",
+                "stat_type": "ignore",
+                "game_piece": "",
+            }
+        ]
+        data.save()
+
+        user = User.objects.create_user("test", "test", "test")
+        self.user_uuid = user.id
+        user.save()
+
+        profile = Profile(user=user, display_name="test", team_number="1234")
+        profile.save()
+
+        pit_group = PitGroup(event=event, events_generated=True)
+        pit_group.save()
+
+        pit = Pit(team_number="1234", pit_group=pit_group, uuid=self.pit_uuid)
+        pit.save()
+
+    def test_do_admin_operation_anonymous(self):
+        response = self.client.post(
+            "/do_admin_operation",
+            {"type": "data", "operation": "delete", "data": self.data_uuid},
+            content_type="application/json",
+        )
+        self.assertEqual(
+            response.status_code, 302
+        )  # 302 because the user is redirected to the login form
+
+    def test_do_admin_operation_authenticated(self):
+        self.client.login(username="superuser", password="superuser")
+
+        response = self.client.post(
+            "/do_admin_operation",
+            {"type": "data", "operation": "delete", "data": {"uuid": self.data_uuid}},
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response["Content-Type"], "text/html; charset=utf-8")
+        self.assertEqual(response.content.decode("utf-8"), "Success")
+
+        response = self.client.post(
+            "/do_admin_operation",
+            {
+                "type": "event",
+                "operation": "delete_all_data",
+                "data": {"event_code": "test", "year": 2024},
+            },
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response["Content-Type"], "text/html; charset=utf-8")
+        self.assertEqual(response.content.decode("utf-8"), "Success")
+
+        response = self.client.post(
+            "/do_admin_operation",
+            {
+                "type": "event",
+                "operation": "delete_all_pits",
+                "data": {"event_code": "test", "year": 2024},
+            },
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response["Content-Type"], "text/html; charset=utf-8")
+        self.assertEqual(response.content.decode("utf-8"), "Success")
+
+        response = self.client.post(
+            "/do_admin_operation",
+            {
+                "type": "event",
+                "operation": "delete",
+                "data": {"event_code": "test", "year": 2024},
+            },
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response["Content-Type"], "text/html; charset=utf-8")
+        self.assertEqual(response.content.decode("utf-8"), "Success")
+
+        response = self.client.post(
+            "/do_admin_operation",
+            {"type": "user", "operation": "ban", "data": {"uuid": self.user_uuid}},
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response["Content-Type"], "text/html; charset=utf-8")
+        self.assertEqual(response.content.decode("utf-8"), "Success")
+
+        response = self.client.post(
+            "/do_admin_operation",
+            {"type": "user", "operation": "unban", "data": {"uuid": self.user_uuid}},
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response["Content-Type"], "text/html; charset=utf-8")
+        self.assertEqual(response.content.decode("utf-8"), "Success")
+
+        response = self.client.post(
+            "/do_admin_operation",
+            {"type": "user", "operation": "delete", "data": {"uuid": self.user_uuid}},
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response["Content-Type"], "text/html; charset=utf-8")
+        self.assertEqual(response.content.decode("utf-8"), "Success")
+
+        response = self.client.post(
+            "/do_admin_operation",
+            {"type": "pit", "operation": "delete", "data": {"uuid": self.pit_uuid}},
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response["Content-Type"], "text/html; charset=utf-8")
+        self.assertEqual(response.content.decode("utf-8"), "Success")

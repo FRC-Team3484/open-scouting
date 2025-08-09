@@ -100,6 +100,15 @@ document.addEventListener("alpine:init", () => {
 			this.no_events = this.filtered_events.length === 0;
 			this.no_custom_events = this.custom_filtered_events.length === 0;
 
+			// TODO: This should probably be removed eventually
+			// Compatibility fix for settings being an empty object in production in some cases
+			if (!Array.isArray(await user.get_setting("favorite_events"))) {
+				await user.set_setting("favorite_events", []);
+				await user.save_settings();
+				log("INFO", "Fixed favorite_events setting");
+				window.location.reload();
+			}
+
 			// 💛 Filter favorite events (TBA + custom)
 			const favorites = (await user.get_setting("favorite_events")) || [];
 

@@ -200,7 +200,16 @@ def contribute(request):
         "demo": request.GET.get("demo", "unknown"),
     }
 
-    return render(request, "contribute/contribute.html", context)
+    if (
+        "username" in request.GET
+        and "team_number" in request.GET
+        and "event_name" in request.GET
+        and "event_code" in request.GET
+        and "year" in request.GET
+    ):
+        return render(request, "contribute/contribute.html", context)
+    else:
+        return index(request)
 
 
 def pits(request):
@@ -228,7 +237,17 @@ def pits(request):
         "demo": request.GET.get("demo", "unknown"),
     }
 
-    return render(request, "pits/pits.html", context)
+    if (
+        "username" in request.GET
+        and "team_number" in request.GET
+        and "event_name" in request.GET
+        and "event_code" in request.GET
+        and "year" in request.GET
+    ):
+        return render(request, "pits/pits.html", context)
+
+    else:
+        return index(request)
 
 
 def advanced_data(request):

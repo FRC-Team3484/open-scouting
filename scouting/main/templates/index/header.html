@@ -6,7 +6,7 @@
 <div x-data="header">
     <div class="flex flex-col justify-center items-center"
          x-show="basic"
-         x-transition
+         x-transition:enter.delay.300ms
          x-cloak>
         <img class="w-full md:w-1/2 xl:w-2/6 px-10 hidden dark:block"
              src="{% static '/main/images/logo_light.png' %}">
@@ -25,7 +25,7 @@
     </div>
     <div class="flex flex-row dark:bg-slate-800 dark:border-slate-700 bg-slate-200 border-slate-300 border-2 rounded-lg w-full px-6 justify-center items-center py-4 mt-6"
          x-show="!basic"
-         x-transition
+         x-transition:enter.delay.300ms
          x-cloak>
         <img class="w-16 h-16 aspect-square m-2 hover:scale-110 transition-all ease-in-out active:scale-95"
              src="{% static '/main/images/icon_rounded.png' %}"

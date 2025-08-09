@@ -309,7 +309,8 @@
                         <i class="ph-bold ph-arrow-line-up"></i>
                     </button>
                     <button class="ui_button_icon mr-2 w-8! h-8! md:w-12! md:h-12!"
-                            @click="sync_pit_data">
+                            @click="sync_pit_data"
+                            x-show="state != 'demo'">
                         <i class="ph-bold ph-arrows-clockwise"></i>
                     </button>
                     <p class="dark:text-white text-black mr-2 text-md md:text-md"
@@ -336,6 +337,11 @@
                        x-show="state == 'offline'"
                        x-transition:enter.delay.300ms>
                         <i class="ph-bold ph-warning"></i>{% translate "Data saved offline" %}
+                    </p>
+                    <p class="text-purple-500 mr-2 text-md md:text-md"
+                       x-show="state == 'demo'"
+                       x-transition:enter.delay.300ms>
+                        <i class="ph-bold ph-test-tube"></i>{% translate "Demo mode" %}
                     </p>
                 </div>
             </div>
