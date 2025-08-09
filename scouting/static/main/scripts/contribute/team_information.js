@@ -111,11 +111,13 @@ document.addEventListener("alpine:init", () => {
 				}
 			}
 
-			window.dispatchEvent(
-				new CustomEvent("set_team_number", {
-					detail: { team_number: this.team_to_watch },
-				}),
-			);
+			if (this.team_to_watch) {
+				window.dispatchEvent(
+					new CustomEvent("set_team_number", {
+						detail: { team_number: this.team_to_watch },
+					}),
+				);
+			}
 		},
 
 		/**
