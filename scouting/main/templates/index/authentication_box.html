@@ -6,7 +6,7 @@
 <div class="flex flex-col"
      x-data="authentication_box"
      x-show="page == 1"
-     x-transition>
+     x-transition:enter.delay.300ms>
 
     <div x-show="!authenticated">
         <button class="ui_button w-full" @click="sign_in()">

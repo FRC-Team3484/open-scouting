@@ -7,7 +7,7 @@
 <div class="flex flex-col justify-center items-center dark:bg-slate-800/50 bg-slate-200/50 rounded-2xl p-4 border-2 dark:border-slate-700 border-slate-300 my-2"
      x-data="events"
      x-show="page == 3"
-     x-transition>
+     x-transition:enter.delay.300ms>
     <p class="text-center dark:text-white text-black font-sans text-2xl my-4">
         <i class="ph-bold ph-calendar-blank"></i>{% translate "Select event" %}
     </p>
