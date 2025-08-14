@@ -105,8 +105,7 @@ document.addEventListener("alpine:init", () => {
 			if (!Array.isArray(await user.get_setting("favorite_events"))) {
 				await user.set_setting("favorite_events", []);
 				await user.save_settings();
-				log("INFO", "Fixed favorite_events setting");
-				window.location.reload();
+				log("INFO", "Fixed favorite_events setting. Reload to finish");
 			}
 
 			// 💛 Filter favorite events (TBA + custom)
