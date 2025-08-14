@@ -18,7 +18,7 @@ import environ
 from django.utils.translation import gettext_lazy as _
 
 # Change this before publishing a new release!
-SERVER_VERSION = "v1.0.0"
+SERVER_VERSION = "v1.0.1"
 
 env = environ.Env(
     interpolate=True,
