@@ -4,7 +4,8 @@ import semver from "https://esm.sh/semver";
  * prompt the user to clear their service worker cache to ensure all pages are up to date
  */
 
-const CLIENT_VERSION = "v1.0.0";
+const CLIENT_VERSION = "v1.0.1";
+
 async function get_server_version() {
 	if (!navigator.onLine) {
 		log(
