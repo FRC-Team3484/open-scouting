@@ -7,9 +7,14 @@ This document describes the roadmap for Open Scouting, and roughly when each fea
 ### `v1.1.0`
 - [ ] [#103](https://github.com/FRC-Team3484/open-scouting/issues/103) - Add an API
 - [ ] [#112](https://github.com/FRC-Team3484/open-scouting/issues/112) - In season fields, make the choice field use a tuple for each choice
+- [ ] [#116](https://github.com/FRC-Team3484/open-scouting/issues/116) - Admin page analytics count failed bot requests as page visits
+- [ ] [#111](https://github.com/FRC-Team3484/open-scouting/issues/111) - Update the create custom event dialog
 
 ---
 ## Completed
+### `v1.0.1`
+- [x] Fixed issue caused when fixing #108
+
 ### `v1.0.0`
 - [x] Update tests
 - [x] [#56](https://github.com/FRC-Team3484/open-scouting/issues/56) - Demo pit scouting data is broken
