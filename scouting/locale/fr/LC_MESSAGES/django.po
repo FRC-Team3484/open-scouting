@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-10 13:43+0000\n"
+"POT-Creation-Date: 2025-09-10 18:26+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -183,47 +183,71 @@ msgstr ""
 msgid "What are your start positions in auton? (A, B, C, or D)"
 msgstr ""
 
-#: main/pit_scouting_questions.py:81 main/pit_scouting_questions.py:143
+#: main/pit_scouting_questions.py:81 main/pit_scouting_questions.py:151
 msgid "How often do you meet in build season?"
 msgstr ""
 
-#: main/pit_scouting_questions.py:100
+#: main/pit_scouting_questions.py:97
+msgid "Swerve"
+msgstr ""
+
+#: main/pit_scouting_questions.py:98
+msgid "Tank"
+msgstr ""
+
+#: main/pit_scouting_questions.py:99
+msgid "Other"
+msgstr ""
+
+#: main/pit_scouting_questions.py:104
 msgid "Can your robot score coral in the reef?"
 msgstr ""
 
-#: main/pit_scouting_questions.py:106
+#: main/pit_scouting_questions.py:110
 msgid "Can your robot remove algae from the reef?"
 msgstr ""
 
-#: main/pit_scouting_questions.py:112
+#: main/pit_scouting_questions.py:116
 msgid "Can your robot score algae in the net?"
 msgstr ""
 
-#: main/pit_scouting_questions.py:118
+#: main/pit_scouting_questions.py:122
 msgid "Can your robot score algae in the processor?"
 msgstr ""
 
-#: main/pit_scouting_questions.py:124
+#: main/pit_scouting_questions.py:128
 msgid "Can your robot climb?"
 msgstr ""
 
-#: main/pit_scouting_questions.py:131
+#: main/pit_scouting_questions.py:132
+msgid "No"
+msgstr ""
+
+#: main/pit_scouting_questions.py:133 main/season_fields.py:457
+msgid "Shallow Cage"
+msgstr ""
+
+#: main/pit_scouting_questions.py:134 main/season_fields.py:458
+msgid "Deep Cage"
+msgstr ""
+
+#: main/pit_scouting_questions.py:139
 msgid "Do you have autos?"
 msgstr ""
 
-#: main/pit_scouting_questions.py:137
+#: main/pit_scouting_questions.py:145
 msgid "If so, how many pieces can you score in auto?"
 msgstr ""
 
-#: main/pit_scouting_questions.py:149
+#: main/pit_scouting_questions.py:157
 msgid "Which CAD software do you use?"
 msgstr ""
 
-#: main/pit_scouting_questions.py:155
+#: main/pit_scouting_questions.py:163
 msgid "How long does your team strategize for?"
 msgstr ""
 
-#: main/pit_scouting_questions.py:162
+#: main/pit_scouting_questions.py:170
 msgid "How long does it take before you're building and assembling your robot?"
 msgstr ""
 
@@ -399,14 +423,6 @@ msgstr ""
 
 #: main/season_fields.py:456
 msgid "Barge Zone"
-msgstr ""
-
-#: main/season_fields.py:457
-msgid "Shallow Cage"
-msgstr ""
-
-#: main/season_fields.py:458
-msgid "Deep Cage"
 msgstr ""
 
 #: main/season_fields.py:465

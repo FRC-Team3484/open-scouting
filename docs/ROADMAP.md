@@ -10,7 +10,7 @@ This document describes the roadmap for Open Scouting, and roughly when each fea
 - [x] [#116](https://github.com/FRC-Team3484/open-scouting/issues/116) - Admin page analytics count failed bot requests as page visits
 - [ ] [#111](https://github.com/FRC-Team3484/open-scouting/issues/111) - Update the create custom event dialog
 - [x] [#118](https://github.com/FRC-Team3484/open-scouting/issues/118) - Move the years arrays to be in settings.py
-- [ ] [#119](https://github.com/FRC-Team3484/open-scouting/issues/119) - Create a custom createsupseruser management command
+- [x] [#119](https://github.com/FRC-Team3484/open-scouting/issues/119) - Create a custom createsupseruser management command
 
 ---
 ## Completed
