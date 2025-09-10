@@ -18,8 +18,7 @@ import uuid
 from urllib.parse import unquote, urlparse, parse_qs
 import requests
 
-# TODO: This is a duplicate of a similar array in models.py, I don't know if there's a good way to make these into one array
-YEARS = ["2024", "2025"]
+YEARS = [year for _, year in settings.YEARS]
 
 DATE_FORMAT = "%Y-%m-%d"
 

@@ -15,10 +15,10 @@ These steps should be followed as early in the season as possible, preferably on
 - Add a new year to the `pit_scouting_questions.py` file. Follow [Formatting Pit Scouting Questions](./Formatting_Pit_Scouting_Questions.md) for how to do this. Simplify the amount of questions for scouts to ask to make the pit scouting process as easy as possible.
 - This step is optional, simply creating an empty list in the `pit_scouting_questions.py` file will work, however scouts will have to manually enter all of the questions as custom questions when they scout instead, which is not recommended
 
-## 3. Update `views.py` and `models.py`
+## 3. Update `views.py` and `settings.py`
 - Navigate to `/main/views.py`
-  - Add the new year to the `YEARS` array
-- Navigate to `/main/models.py`
+  - Add the new year to the `get_pit_scouting_questions_from_year` function, by creating a new conditional for serving the pit scouting questions
+- Navigate to `/main/settings.py`
   - Add the new year to the `YEARS` array as a tuple, just match with the years that are already in this array
 
 Open Scouting should now be updated to the new season! You should navigate around and ensure that everything is working as expected

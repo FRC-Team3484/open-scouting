@@ -2,13 +2,11 @@ from django.db import models
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
-YEARS = [(2024, "2024"), (2025, "2025")]
-
 
 # Stores individual contributed data for each year and event
 class Data(models.Model):
     uuid = models.UUIDField(null=True, blank=True, verbose_name=_("UUID"))
-    year = models.IntegerField(choices=YEARS, verbose_name=_("Year"))
+    year = models.IntegerField(choices=settings.YEARS, verbose_name=_("Year"))
     event = models.CharField(max_length=999, verbose_name=_("Event"))
     event_code = models.CharField(
         max_length=99, blank=True, verbose_name=_("Event Code")
@@ -52,7 +50,7 @@ class Data(models.Model):
 
 # Represents an event in a year
 class Event(models.Model):
-    year = models.IntegerField(choices=YEARS, verbose_name=_("Year"))
+    year = models.IntegerField(choices=settings.YEARS, verbose_name=_("Year"))
     name = models.CharField(max_length=999, verbose_name=_("Name"))
     event_code = models.CharField(
         max_length=99, blank=True, verbose_name=_("Event Code")
