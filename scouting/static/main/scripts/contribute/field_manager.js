@@ -131,8 +131,8 @@ document.addEventListener("alpine:init", () => {
 				// Add choices as options
 				for (const choice of field.choices) {
 					const option = document.createElement("option");
-					option.value = choice;
-					option.text = choice;
+					option.value = choice[1];
+					option.text = choice[0];
 					field_element.appendChild(option);
 				}
 
@@ -153,8 +153,8 @@ document.addEventListener("alpine:init", () => {
 				// Add multiple choices as options
 				for (const choice of field.choices) {
 					const option = document.createElement("option");
-					option.value = choice;
-					option.text = choice;
+					option.value = choice[1];
+					option.text = choice[0];
 					field_element.appendChild(option);
 				}
 			} else if (field.type === "text") {

@@ -94,7 +94,12 @@ This field allows the user to select multiple choices, for example if scouts wan
     "name": _("Shoot Distance"),
     "simple_name": "shoot_distance",
     "type": "multiple_choice",
-    "choices": ["N/A", "Close", "Mid Field", "Far"],
+    "choices": [
+        (_("N/A"), "N/A"),
+        (_("Close"), "close"),
+        (_("Mid Field"), "mid_field"),
+        (_("Far"), "far"),
+    ],    
     "required": False,
     "stat_type": "capability",
     "game_piece": "",
@@ -102,6 +107,7 @@ This field allows the user to select multiple choices, for example if scouts wan
 ```
 
 - `choices` indicates the list of choices that the scouts can select from. Scouts can select more than one value fpr this field
+    - This should be a list of tuples where the first item is the translatable pretty name, and the second item is the simple name
 
 ### `choice`
 This field allows the user to select a single choice from a list, in case scouts wanted to indicate something like if the team got any penalties or scored
@@ -110,17 +116,23 @@ This field allows the user to select a single choice from a list, in case scouts
 
 ```json
 {
-    "name": _("Speaker Shot"),
-    "simple_name": "speaker_shot",
+    "name": _("End Location"),
+    "simple_name": "end_location",
     "type": "choice",
-    "choices": ["N/A", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+    "choices": [
+        (_("N/A"), "N/A"),
+        (_("Barge Zone"), "barge_zone"),
+        (_("Shallow Cage"), "shallow_cage"),
+        (_("Deep Cage"), "deep_cage"),
+    ],
     "required": False,
-    "stat_type": "score",
-    "game_piece": "note",
+    "stat_type": "capability",
+    "game_piece": "",
 },
 ```
 
 - `choices` indicates the list of choices that the scouts can select from. Scouts can only select one value for this field
+    - This should be a list of tuples where the first item is the translatable pretty name, and the second item is the simple name
 
 ## Creating Sections
 > ![NOTE]

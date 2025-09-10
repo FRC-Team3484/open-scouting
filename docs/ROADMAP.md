@@ -6,10 +6,11 @@ This document describes the roadmap for Open Scouting, and roughly when each fea
 ## To-Do
 ### `v1.1.0`
 - [ ] [#103](https://github.com/FRC-Team3484/open-scouting/issues/103) - Add an API
-- [ ] [#112](https://github.com/FRC-Team3484/open-scouting/issues/112) - In season fields, make the choice field use a tuple for each choice
+- [x] [#112](https://github.com/FRC-Team3484/open-scouting/issues/112) - In season fields, make the choice field use a tuple for each choice
 - [x] [#116](https://github.com/FRC-Team3484/open-scouting/issues/116) - Admin page analytics count failed bot requests as page visits
 - [ ] [#111](https://github.com/FRC-Team3484/open-scouting/issues/111) - Update the create custom event dialog
 - [x] [#118](https://github.com/FRC-Team3484/open-scouting/issues/118) - Move the years arrays to be in settings.py
+- [ ] [#119](https://github.com/FRC-Team3484/open-scouting/issues/119) - Create a custom createsupseruser management command
 
 ---
 ## Completed

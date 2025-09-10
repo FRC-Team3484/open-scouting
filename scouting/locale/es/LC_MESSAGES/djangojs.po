@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-09 16:41+0000\n"
+"POT-Creation-Date: 2025-09-10 13:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -118,7 +118,7 @@ msgid "Sign in"
 msgstr ""
 
 #: static/main/scripts/authentication/auth.js:381
-#: static/main/scripts/profile/profile.js:33 static/main/scripts/version.js:82
+#: static/main/scripts/profile/profile.js:33 static/main/scripts/version.js:83
 msgid "Not now"
 msgstr ""
 
@@ -327,17 +327,17 @@ msgstr ""
 msgid "Are you sure you want to close the page? You have unsaved changes."
 msgstr ""
 
-#: static/main/scripts/version.js:69
+#: static/main/scripts/version.js:70
 msgid "Client update available"
 msgstr ""
 
-#: static/main/scripts/version.js:71
+#: static/main/scripts/version.js:72
 msgid ""
 "You currently have old client files cached. It's recommended to clear your "
 "service worker cache to ensure all client side code is up to date. Do you "
 "wish to clear your cache now?"
 msgstr ""
 
-#: static/main/scripts/version.js:77
+#: static/main/scripts/version.js:78
 msgid "Clear cache"
 msgstr ""

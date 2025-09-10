@@ -88,15 +88,19 @@ document.addEventListener("alpine:init", () => {
 						field.getAttribute("scouting_type") === "multiple_choice"
 					) {
 						value = field.value;
+						pretty_value = field.options[field.selectedIndex].text;
 					}
 
 					const data_field = {
 						name: field.getAttribute("x-ref"),
 						type: field.getAttribute("scouting_type"),
 						value: value,
+						pretty_value: pretty_value,
 						stat_type: field.getAttribute("scouting_stat_type"),
 						game_piece: field.getAttribute("scouting_game_piece"),
 					};
+
+					console.log(pretty_value);
 
 					data.push(data_field);
 				}
