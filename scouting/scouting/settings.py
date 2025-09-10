@@ -96,6 +96,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "rest_framework_api_key",
+    "drf_spectacular",
 ]
 
 MIDDLEWARE = [
@@ -210,7 +211,20 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Django REST framework
 
 REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",  # optional, for UI
+    ],
     "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework_api_key.permissions.HasAPIKey",
-    ]
+        "rest_framework.permissions.IsAuthenticated",  # baseline
+    ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+
+# DRF Spectacular
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Open Scouting API",
+    "DESCRIPTION": "An open source application for easier scouting at FIRST Robotics competitions",
+    "VERSION": SERVER_VERSION,
+    "SERVE_INCLUDE_SCHEMA": False,
 }
