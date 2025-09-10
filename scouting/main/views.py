@@ -17,7 +17,6 @@ from datetime import datetime
 import uuid
 from urllib.parse import unquote, urlparse, parse_qs
 import requests
-import deepdiff
 
 # TODO: This is a duplicate of a similar array in models.py, I don't know if there's a good way to make these into one array
 YEARS = ["2024", "2025"]
