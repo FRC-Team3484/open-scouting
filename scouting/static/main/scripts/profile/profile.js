@@ -2,6 +2,7 @@ document.addEventListener("alpine:init", () => {
 	Alpine.data("profile", () => ({
 		editing: false,
 		settings: false,
+		api: false,
 		user_id: "",
 		display_name: "",
 		team_number: "",

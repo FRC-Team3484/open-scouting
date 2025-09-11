@@ -43,7 +43,7 @@
     <div class="flex flex-col md:flex-row min-h-screen w-screen items-center justify-center gap-4"
          x-data="profile"
          x-init="user_id = USER_ID; display_name = DISPLAY_NAME; team_number = TEAM_NUMBER; init();">
-        <div class="flex flex-col gap-2">
+        <div class="flex flex-col gap-2 justify-end">
             <!-- <div class="border-2 border-slate-600/80 rounded-full w-32 h-32 aspect-square"></div> -->
 
             <button class="ui_button_small !w-full" @click="window.location.href = '/'">
@@ -58,7 +58,7 @@
 
         <div class="flex flex-col gap-2 overflow-y-scroll">
             <div class="flex flex-col gap-2"
-                 x-show="!editing && !settings"
+                 x-show="!editing && !settings && !api"
                  x-transition:enter.delay.300ms>
                 <p class="dark:text-white text-black font-sans text-2xl text-left">
                     <i class="ph-bold ph-user-circle"></i>{% translate "Profile" %}
@@ -83,6 +83,10 @@
 
                     <button class="ui_button_small" @click="settings = true">
                         <i class="ph-bold ph-pencil"></i>{% translate "Change Settings" %}
+                    </button>
+
+                    <button class="ui_button_small" @click="api = true">
+                        <i class="ph-bold ph-pencil"></i>{% translate "API Keys" %}
                     </button>
                 </div>
             </div>
@@ -171,6 +175,31 @@
                     </button>
 
                     <button class="ui_button_small" @click="settings = false">
+                        <i class="ph-bold ph-x-circle"></i>{% translate "Cancel Changes" %}
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-2 overflow-y-scroll"
+                 x-show="api"
+                 x-transition:enter.delay.300ms>
+
+                <p class="dark:text-white text-black font-sans text-2xl text-left">
+                    <i class="ph-bold ph-pencil"></i>{% translate "API Keys" %}
+                </p>
+                <p class="dark:text-white text-black font-sans text-md text-left opacity-80 mb-2">Create and manage API keys</p>
+
+                <button class="ui_button_small" @click="window.location.href = '/api/'">
+                    <i class="ph-bold ph-book"></i>{% translate "API Docs" %}
+                </button>
+
+                <div class="flex flex-row gap-2">
+                    <button class="ui_button_small"
+                            @click="user.save_settings(true); api = false">
+                        <i class="ph-bold ph-check-circle"></i>{% translate "Save Changes" %}
+                    </button>
+
+                    <button class="ui_button_small" @click="api = false">
                         <i class="ph-bold ph-x-circle"></i>{% translate "Cancel Changes" %}
                     </button>
                 </div>
