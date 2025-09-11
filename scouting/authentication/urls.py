@@ -28,4 +28,7 @@ urlpatterns = [
     path("save_profile", views.save_profile, name="save_profile"),
     path("get_user_settings", views.get_user_settings, name="get_user_settings"),
     path("set_user_settings", views.set_user_settings, name="set_user_settings"),
+    path("get_api_keys", views.get_api_keys, name="get_api_keys"),
+    path("create_api_key", views.create_api_key, name="create_api_key"),
+    path("revoke_api_key", views.revoke_api_key, name="revoke_api_key"),
 ]
