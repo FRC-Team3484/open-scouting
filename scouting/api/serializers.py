@@ -5,13 +5,13 @@ from main.models import Data, Event, Pit
 class DataSerializer(serializers.ModelSerializer):
     class Meta:
         model = Data
-        fields = "__all__"
+        exclude = ["user_created", "username_created", "team_number_created", "account"]
 
 
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
-        fields = "__all__"
+        exclude = ["user_created"]
 
 
 class PitSerializer(serializers.ModelSerializer):
