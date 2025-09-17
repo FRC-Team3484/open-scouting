@@ -82,6 +82,7 @@ class PitGroup(models.Model):
     events_generated = models.BooleanField(
         default=False, verbose_name=_("Events Generated")
     )
+    year = models.IntegerField(choices=settings.YEARS, verbose_name=_("Year"))
 
     def __str__(self):
         return f"{self.event.name}'s pits"
