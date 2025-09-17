@@ -26,7 +26,6 @@ from django.views.i18n import JavaScriptCatalog
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularSwaggerView,
-    SpectacularRedocView,
 )
 
 import main.views

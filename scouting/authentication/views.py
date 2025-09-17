@@ -553,7 +553,6 @@ def create_api_key(request):
 
         api_key, key = UserAPIKey.objects.create_key(user=user, name=body["name"])
         api_key.expiry_date = timezone.now() + timedelta(days=int(body["expires"]))
-
         api_key.save()
 
         return JsonResponse({"key": key, "expires": api_key.expiry_date}, safe=False)

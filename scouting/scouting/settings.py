@@ -209,16 +209,16 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Django REST framework
-
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.SessionAuthentication",  # optional, for UI
-    ],
+    "DEFAULT_AUTHENTICATION_CLASSES": [],
     "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticated",  # baseline
+        "api.permissions.HasUserAPIKey",
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
+
+# DRF API Key
+API_KEY_CUSTOM_HEADER = "HTTP_X_API_KEY"
 
 
 # DRF Spectacular
@@ -226,5 +226,14 @@ SPECTACULAR_SETTINGS = {
     "TITLE": "Open Scouting API",
     "DESCRIPTION": "An open source application for easier scouting at FIRST Robotics competitions",
     "VERSION": SERVER_VERSION,
-    "SERVE_INCLUDE_SCHEMA": False,
+    "APPEND_COMPONENTS": {
+        "securitySchemes": {
+            "ApiKeyAuth": {
+                "type": "apiKey",
+                "in": "header",
+                "name": "X-Api-Key",
+            }
+        }
+    },
+    "SECURITY": [{"ApiKeyAuth": []}],
 }
