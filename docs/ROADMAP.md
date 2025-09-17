@@ -4,6 +4,10 @@ This document describes the roadmap for Open Scouting, and roughly when each fea
 ---
 
 ## To-Do
+*Nothing currently planned*
+
+---
+## Completed
 ### `v1.1.0`
 - [x] [#103](https://github.com/FRC-Team3484/open-scouting/issues/103) - Add an API
 - [x] [#112](https://github.com/FRC-Team3484/open-scouting/issues/112) - In season fields, make the choice field use a tuple for each choice
@@ -12,8 +16,6 @@ This document describes the roadmap for Open Scouting, and roughly when each fea
 - [x] [#118](https://github.com/FRC-Team3484/open-scouting/issues/118) - Move the years arrays to be in settings.py
 - [x] [#119](https://github.com/FRC-Team3484/open-scouting/issues/119) - Create a custom createsupseruser management command
 
----
-## Completed
 ### `v1.0.1`
 - [x] Fixed issue caused when fixing #108
 
