@@ -1,36 +1,9 @@
 document.addEventListener("alpine:init", () => {
 	Alpine.data("create_custom_event", () => ({
 		shown: false,
-		YEARS: YEARS.reverse(),
+		YEARS: YEARS,
 		selected_year: null,
 		able_to_submit: false,
-
-		update_date_fields(e) {
-			this.selected_year = e.target.value;
-
-			this.$refs.date_begins.min = `${this.selected_year}-01-01`;
-			this.$refs.date_begins.max = `${this.selected_year}-12-31`;
-			this.$refs.date_ends.min = `${this.selected_year}-01-01`;
-			this.$refs.date_ends.max = `${this.selected_year}-12-31`;
-		},
-
-		check_date_fields() {
-			let date_begins_value = new Date(
-				Date.parse(this.$refs.date_begins.value),
-			);
-			let date_ends_value = new Date(Date.parse(this.$refs.date_ends.value));
-			let valid = false;
-
-			if (!this.$refs.date_begins.checkValidity()) {
-				this.$refs.date_begins.value = `${this.selected_year}-${date_begins_value.getMonth()}-${date_begins_value.getDate()}`;
-			}
-
-			if (!this.$refs.date_ends.checkValidity()) {
-				this.$refs.date_ends.value = `${this.selected_year}-${date_begins_value.getMonth()}-${date_begins_value.getDate()}`;
-			}
-
-			this.check_fields();
-		},
 
 		check_fields() {
 			if (
