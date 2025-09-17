@@ -1,12 +1,20 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny
+from rest_framework.pagination import PageNumberPagination
+from drf_spectacular.utils import extend_schema, OpenApiResponse
 from django.shortcuts import get_object_or_404
 from django.conf import settings
 
 from main.models import Data, Event, PitGroup, Pit
-
 from .permissions import HasUserAPIKey
+from .serializers import (
+    DataSerializer,
+    EventSerializer,
+    PitSerializer,
+    TeamNumberSerializer,
+)
 
 
 class StatusView(APIView):
@@ -26,18 +34,17 @@ class StatusView(APIView):
         )
 
 
-class EventListView(APIView):
+class EventListView(ListAPIView):
     """
-    Returns all events for a given year
+    Returns all events for a given year (paginated)
     """
 
+    serializer_class = EventSerializer
     permission_classes = [HasUserAPIKey]
+    pagination_class = PageNumberPagination
 
-    def get(self, request, year):
-        events = Event.objects.filter(year=year).values(
-            "event_code", "name", "custom", "custom_data"
-        )
-        return Response(events)
+    def get_queryset(self):
+        return Event.objects.filter(year=self.kwargs["year"])
 
 
 class EventDetailView(APIView):
@@ -66,112 +73,117 @@ class EventDetailView(APIView):
         )
 
 
-class EventDataView(APIView):
+class EventDataView(ListAPIView):
     """
-    Returns all data for a given event
+    Returns all data for a given event (paginated)
     """
 
+    serializer_class = DataSerializer
     permission_classes = [HasUserAPIKey]
+    pagination_class = PageNumberPagination
 
-    def get(self, request, year, event_code):
-        qs = Data.objects.filter(year=year, event_code=event_code)
-        return Response(list(qs.values()))
+    def get_queryset(self):
+        return Data.objects.filter(
+            year=self.kwargs["year"], event_code=self.kwargs["event_code"]
+        )
 
 
-class EventPitView(APIView):
+class EventPitView(ListAPIView):
     """
-    Returns all pits for a given event
+    Returns all pits for a given event (paginated)
     """
 
+    serializer_class = PitSerializer
     permission_classes = [HasUserAPIKey]
+    pagination_class = PageNumberPagination
 
-    def get(self, request, year, event_code):
-        event = get_object_or_404(Event, year=year, event_code=event_code)
+    def get_queryset(self):
+        event = get_object_or_404(
+            Event, year=self.kwargs["year"], event_code=self.kwargs["event_code"]
+        )
         pit_group = PitGroup.objects.filter(event=event).first()
-        qs = Pit.objects.filter(pit_group=pit_group)
-        return Response(list(qs.values()))
+        return Pit.objects.filter(pit_group=pit_group)
 
 
-class DataYearView(APIView):
+class DataYearView(ListAPIView):
     """
-    Returns all data for a given year
+    Returns all data for a given year (paginated)
     """
 
+    serializer_class = DataSerializer
     permission_classes = [HasUserAPIKey]
+    pagination_class = PageNumberPagination
 
-    def get(self, request, year):
-        qs = Data.objects.filter(year=year)
-        return Response(list(qs.values()))
+    def get_queryset(self):
+        return Data.objects.filter(year=self.kwargs["year"])
 
 
-class DataTeamView(APIView):
+class DataTeamView(ListAPIView):
     """
-    Returns all data for a given team
+    Returns all data for a given team (paginated)
     """
 
+    serializer_class = DataSerializer
     permission_classes = [HasUserAPIKey]
+    pagination_class = PageNumberPagination
 
-    def get(self, request, year, team_number):
-        qs = Data.objects.filter(year=year, team_number=team_number)
-        return Response(list(qs.values()))
-
-
-class PitYearView(APIView):
-    """
-    Returns all pits for a given year
-    """
-
-    permission_classes = [HasUserAPIKey]
-
-    def get(self, request, year):
-        events = list(Event.objects.filter(year=year).values_list("id", flat=True))
-        pit_groups = list(
-            PitGroup.objects.filter(event__in=events).values_list("id", flat=True)
+    def get_queryset(self):
+        return Data.objects.filter(
+            year=self.kwargs["year"], team_number=self.kwargs["team_number"]
         )
-        pits = list(Pit.objects.filter(pit_group__in=pit_groups).values())
-        return Response(pits)
 
 
-class PitTeamView(APIView):
+class PitYearView(ListAPIView):
     """
-    Returns all pits for a given team
+    Returns all pits for a given year (paginated)
     """
 
+    serializer_class = PitSerializer
     permission_classes = [HasUserAPIKey]
+    pagination_class = PageNumberPagination
 
-    def get(self, request, year, team_number):
-        events = list(Event.objects.filter(year=year).values_list("id", flat=True))
-        pit_groups = list(
-            PitGroup.objects.filter(event__in=events).values_list("id", flat=True)
-        )
-        pits = list(
-            Pit.objects.filter(
-                pit_group__in=pit_groups, team_number=team_number
-            ).values()
-        )
-        return Response(pits)
+    def get_queryset(self):
+        events = Event.objects.filter(year=self.kwargs["year"])
+        pit_groups = PitGroup.objects.filter(event__in=events)
+        return Pit.objects.filter(pit_group__in=pit_groups)
 
 
-class TeamYearView(APIView):
+class PitTeamView(ListAPIView):
     """
-    Returns all team numbers for a given year
+    Returns all pits for a given team (paginated)
     """
 
+    serializer_class = PitSerializer
     permission_classes = [HasUserAPIKey]
+    pagination_class = PageNumberPagination
 
-    def get(self, request, year):
-        team_numbers = list(
-            Data.objects.filter(year=year)
-            .values_list("team_number", flat=True)
+    def get_queryset(self):
+        events = Event.objects.filter(year=self.kwargs["year"])
+        pit_groups = PitGroup.objects.filter(event__in=events)
+        return Pit.objects.filter(
+            pit_group__in=pit_groups, team_number=self.kwargs["team_number"]
+        )
+
+
+class TeamYearView(ListAPIView):
+    """
+    Returns all team numbers for a given year (paginated)
+    """
+
+    serializer_class = TeamNumberSerializer
+    permission_classes = [HasUserAPIKey]
+    pagination_class = PageNumberPagination
+
+    def get_queryset(self):
+        return (
+            Data.objects.filter(year=self.kwargs["year"])
+            .values("team_number")
             .distinct()
         )
-        return Response(team_numbers)
 
 
 class TeamDetailView(APIView):
-    """
-    Returns data and pit count for a given team
-    """
+    """Returns data and pit count for a given team"""
 
     permission_classes = [HasUserAPIKey]
 
@@ -181,6 +193,7 @@ class TeamDetailView(APIView):
         pit_count = Pit.objects.filter(
             pit_group=pit_group, team_number=team_number
         ).count()
+
         return Response(
             {
                 "team_number": team_number,
@@ -190,26 +203,32 @@ class TeamDetailView(APIView):
         )
 
 
-class TeamDataView(APIView):
+class TeamDataView(ListAPIView):
     """
-    Returns all data for a given team
+    Returns all data for a given team (paginated)
     """
 
+    serializer_class = DataSerializer
     permission_classes = [HasUserAPIKey]
+    pagination_class = PageNumberPagination
 
-    def get(self, request, year, team_number):
-        qs = Data.objects.filter(year=year, team_number=team_number)
-        return Response(list(qs.values()))
+    def get_queryset(self):
+        return Data.objects.filter(
+            year=self.kwargs["year"], team_number=self.kwargs["team_number"]
+        )
 
 
-class TeamPitView(APIView):
+class TeamPitView(ListAPIView):
     """
-    Returns all pits for a given team
+    Returns all pits for a given team (paginated)
     """
 
+    serializer_class = PitSerializer
     permission_classes = [HasUserAPIKey]
+    pagination_class = PageNumberPagination
 
-    def get(self, request, year, team_number):
-        pit_group = PitGroup.objects.filter(year=year).first()
-        qs = Pit.objects.filter(pit_group=pit_group, team_number=team_number)
-        return Response(list(qs.values()))
+    def get_queryset(self):
+        pit_group = PitGroup.objects.filter(year=self.kwargs["year"]).first()
+        return Pit.objects.filter(
+            pit_group=pit_group, team_number=self.kwargs["team_number"]
+        )

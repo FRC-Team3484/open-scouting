@@ -215,6 +215,8 @@ REST_FRAMEWORK = {
         "api.permissions.HasUserAPIKey",
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 100,  # or whatever default you want
 }
 
 # DRF API Key
