@@ -6,8 +6,7 @@
 
   **An open source application for easier scouting at FIRST Robotics competitions**
 
-  **[Live Server](https://206.189.255.232/) ● [Releases](https://github.com/FRC-Team3484/open-scouting/releases) ● [Issues](https://github.com/FRC-Team3484/open-scouting/issues) ● [Development branch](https://github.com/FRC-Team3484/open-scouting/tree/development)**
-
+  **[Live Server](https://206.189.255.232/) ● [Releases](https://github.com/FRC-Team3484/open-scouting/releases) ● [Issues](https://github.com/FRC-Team3484/open-scouting/issues) ● [Development branch](https://github.com/FRC-Team3484/open-scouting/tree/development) ● [API Docs](https://206.189.255.232/api)**
 </div>
 
 <div align="center">
@@ -34,6 +33,7 @@
 - Supports collaborative pit scouting from multiple scouts or other teams
 - View match data in an advanced data view that supports team summaries, charts, and sorting and filtering the data by team and by score values
 - Scouts can create an account to be able to favorite events and verify their scouting reports, but accounts are optional
+- A [read API](#read-api) is provided, to allow developers to build apps and run analysis based on collected data
 
 ## Installation
 - Follow the steps in [Development Installation](./docs/Development_Installation.md) for how to get Open Scouting up and running locally for development or contributing
@@ -58,3 +58,15 @@ Additionally, help translating Open Scouting is also always welcome! Please see 
 
 ## To-Do
 Please see the [roadmap](/docs/ROADMAP.md) for the currently planned out things that need to be completed. Additionally, see the [issues page](https://github.com/FRC-Team3484/open-scouting/issues) for any current bugs or features that need implemented, but aren't officially scheduled.
+
+## Read API
+API schema information are auto generated and available [here](https://206.189.255.232/api). 
+
+API requests should be made to `/api/v1/<route>` on the live server
+
+An API Key is specified using the `X-Api-Key` header in requests
+```
+X-Api-Key: <Your API key>
+```
+
+You can create an API Key upon creating an account on the server, navigating to the [profile page](https://206.189.255.232/profile), and clicking on the `API Keys` section.
