@@ -131,7 +131,10 @@ document.addEventListener("alpine:init", () => {
 				const { data } = event.detail;
 
 				this.data = data;
+
+				console.log(this.data)
 			});
+
 
 			setTimeout(() => {
 				if (globalThis.offline) {

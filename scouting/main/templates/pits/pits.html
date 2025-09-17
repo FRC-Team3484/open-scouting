@@ -165,7 +165,7 @@
                                                 <template x-if="question.type == 'choice'">
                                                     <select class="ui_input max-h-8!">
                                                         <template x-for="choice in question.choices">
-                                                            <option x-text="choice"></option>
+                                                            <option x-text="choice[0]" :value="choice[1]"></option>
                                                         </template>
                                                     </select>
                                                 </template>
@@ -220,7 +220,7 @@
                                                 <template x-if="question.type == 'choice'">
                                                     <select class="ui_input max-h-8!">
                                                         <template x-for="choice in question.choices">
-                                                            <option x-text="choice"></option>
+                                                            <option x-text="choice[0]" :value="choice[1]"></option>
                                                         </template>
                                                     </select>
                                                 </template>

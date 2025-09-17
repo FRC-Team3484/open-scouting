@@ -93,7 +93,11 @@ reefscape = [
         "text": _("What is your drivetrain?"),
         "simple_name": "drivetrain",
         "type": "choice",
-        "choices": ["Swerve", "Tank", "Other"],
+        "choices": [
+            (_("Swerve"), "swerve"),
+            (_("Tank"), "tank"),
+            (_("Other"), "other"),
+        ],
         "answers": [],
     },
     {
@@ -124,7 +128,11 @@ reefscape = [
         "text": _("Can your robot climb?"),
         "simple_name": "climb",
         "type": "choice",
-        "choices": ["No", "Shallow Cage", "Deep Cage"],
+        "choices": [
+            (_("No"), "no"),
+            (_("Shallow Cage"), "shallow_cage"),
+            (_("Deep Cage"), "deep_cage"),
+        ],
         "answers": [],
     },
     {

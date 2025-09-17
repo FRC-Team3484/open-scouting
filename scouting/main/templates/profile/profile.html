@@ -43,7 +43,7 @@
     <div class="flex flex-col md:flex-row min-h-screen w-screen items-center justify-center gap-4"
          x-data="profile"
          x-init="user_id = USER_ID; display_name = DISPLAY_NAME; team_number = TEAM_NUMBER; init();">
-        <div class="flex flex-col gap-2">
+        <div class="flex flex-col gap-2 justify-end">
             <!-- <div class="border-2 border-slate-600/80 rounded-full w-32 h-32 aspect-square"></div> -->
 
             <button class="ui_button_small !w-full" @click="window.location.href = '/'">
@@ -58,7 +58,7 @@
 
         <div class="flex flex-col gap-2 overflow-y-scroll">
             <div class="flex flex-col gap-2"
-                 x-show="!editing && !settings"
+                 x-show="!editing && !settings && !api"
                  x-transition:enter.delay.300ms>
                 <p class="dark:text-white text-black font-sans text-2xl text-left">
                     <i class="ph-bold ph-user-circle"></i>{% translate "Profile" %}
@@ -83,6 +83,10 @@
 
                     <button class="ui_button_small" @click="settings = true">
                         <i class="ph-bold ph-pencil"></i>{% translate "Change Settings" %}
+                    </button>
+
+                    <button class="ui_button_small" @click="api = true">
+                        <i class="ph-bold ph-pencil"></i>{% translate "API Keys" %}
                     </button>
                 </div>
             </div>
@@ -172,6 +176,103 @@
 
                     <button class="ui_button_small" @click="settings = false">
                         <i class="ph-bold ph-x-circle"></i>{% translate "Cancel Changes" %}
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-2 overflow-y-scroll"
+                 x-show="api"
+                 x-transition:enter.delay.300ms>
+
+                <p class="dark:text-white text-black font-sans text-2xl text-left">
+                    <i class="ph-bold ph-pencil"></i>{% translate "API Keys" %}
+                </p>
+                <p class="dark:text-white text-black font-sans text-md text-left opacity-80 mb-2">Create and manage API keys</p>
+
+                <a class="ui_button_small"
+                   href="/api"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    <i class="ph-bold ph-book"></i>{% translate "API Docs" %}
+                </a>
+
+                <template x-if="api_keys.length > 0">
+                    <table class="table-auto w-full my-4">
+                        <thead>
+                            <tr>
+                                <th class="dark:text-white text-black text-sans text-md text-left px-2">{% translate "Name" %}</th>
+                                <th class="dark:text-white text-black text-sans text-md text-left px-2">{% translate "Expires" %}</th>
+                                <th class="dark:text-white text-black text-sans text-md text-left px-2">{% translate "Actions" %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template x-for="key in api_keys" :key="key.id">
+                                <tr class="my-2" :class="{'opacity-50 dark:text-slate-400': key.revoked}">
+                                    <td class="dark:text-white text-black text-sans text-md px-2"
+                                        x-text="key.name"></td>
+                                    <td class="dark:text-white text-black text-sans text-md px-2"
+                                        x-text="(key.expires ? new Intl.DateTimeFormat('en-US', {timeStyle: 'short', dateStyle: 'short'}).format(new Date(key.expires.replace('Z', '+00:00'))) : 'No Expiry')">
+                                    </td>
+                                    <td class="dark:text-white text-black text-sans text-md px-2">
+                                        <template x-if="key.revoked">
+                                            <span class="text-black dark:text-white opacity-50 italic">{% translate "Revoked or expired" %}</span>
+                                        </template>
+                                        <template x-if="!key.revoked">
+                                            <button class="ui_button_small"
+                                                    @click="api_key_to_revoke = key.id; prompt_revoke();">
+                                                <i class="ph-bold ph-trash"></i>{% translate "Revoke" %}
+                                            </button>
+                                        </template>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </template>
+
+                <template x-if="api_keys.length === 0">
+                    <p class="dark:text-white text-black text-sans text-md">{% translate "No API Keys" %}</p>
+                </template>
+
+                <button class="ui_button_small"
+                        @click="api_creating = true"
+                        x-show="!api_creating">
+                    <i class="ph-bold ph-plus"></i>{% translate "New API Key" %}
+                </button>
+
+                <div class="flex flex-col"
+                     x-show="api_creating"
+                     x-transition:enter.delay.300ms>
+                    <input class="ui_input"
+                           type="text"
+                           placeholder="{% translate 'Name' %}"
+                           x-model="api_name">
+                    <p class="dark:text-white text-black font-sans text-sm text-left opacity-80 mb-2">{% translate "The human readable name of the API key" %}</p>
+                    <select class="ui_input" x-model="api_expiry">
+                        <option value="7">{% translate "1 Week" %}</option>
+                        <option value="30">{% translate "1 Month" %}</option>
+                        <option value="365">{% translate "1 Year" %}</option>
+                        <option value="0">{% translate "No Expiry" %}</option>
+                    </select>
+                    <p class="dark:text-white text-black font-sans text-sm text-left opacity-80 mb-2">{% translate "The expiry of the API key" %}</p>
+
+                    <div class="flex flex-row gap-2">
+                        <button class="ui_button_small"
+                                @click="create_api_key(); api_creating = false"
+                                :disabled="!api_name">
+                            <i class="ph-bold ph-check-circle"></i>{% translate "Create" %}
+                        </button>
+                        <button class="ui_button_small" @click="api_creating = false">
+                            <i class="ph-bold ph-check-circle"></i>{% translate "Cancel" %}
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex flex-row gap-2"
+                     x-show="!api_creating"
+                     x-transition:enter.delay.300ms>
+                    <button class="ui_button_small" @click="api = false">
+                        <i class="ph-bold ph-arrow-left"></i>{% translate "Back" %}
                     </button>
                 </div>
             </div>

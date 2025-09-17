@@ -23,12 +23,20 @@ from django.views.decorators.cache import cache_page
 from django.conf.urls.i18n import i18n_patterns
 from django.views.i18n import JavaScriptCatalog
 
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularSwaggerView,
+)
+
 import main.views
 
 urlpatterns = [
     path("", include("main.urls")),
     path("authentication/", include("authentication.urls")),
     path("analytics/", include("analytics.urls")),
+    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+    path("api/", SpectacularSwaggerView.as_view(url_name="schema")),
+    path("api/v1/", include("api.urls")),
     path(
         f"{settings.ADMIN_PATH.rstrip('/')}/ui/", main.views.admin_ui, name="admin_ui"
     ),

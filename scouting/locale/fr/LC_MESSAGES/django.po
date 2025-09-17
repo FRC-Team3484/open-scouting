@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-09 19:01+0000\n"
+"POT-Creation-Date: 2025-09-11 21:58+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,8 +28,8 @@ msgstr ""
 msgid "Display Name"
 msgstr ""
 
-#: authentication/models.py:9 main/models.py:17 main/models.py:95
-#: main/season_fields.py:52 main/templates/admin/filters.html:300
+#: authentication/models.py:9 main/models.py:15 main/models.py:93
+#: main/season_fields.py:55 main/templates/admin/filters.html:300
 #: main/templates/authentication/authentication.html:217
 #: main/templates/pits/pits.html:289
 msgid "Team Number"
@@ -41,12 +41,12 @@ msgstr ""
 msgid "Verification Code"
 msgstr ""
 
-#: authentication/models.py:17 main/models.py:20 main/models.py:60
-#: main/models.py:83 main/models.py:104
+#: authentication/models.py:17 main/models.py:18 main/models.py:58
+#: main/models.py:81 main/models.py:102
 msgid "Created"
 msgstr ""
 
-#: authentication/models.py:18
+#: authentication/models.py:18 main/templates/profile/profile.html:204
 msgid "Expires"
 msgstr ""
 
@@ -70,11 +70,11 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: main/models.py:10 main/models.py:94
+#: main/models.py:8 main/models.py:92
 msgid "UUID"
 msgstr ""
 
-#: main/models.py:11 main/models.py:55 main/templates/admin/filters.html:153
+#: main/models.py:9 main/models.py:53 main/templates/admin/filters.html:153
 #: main/templates/admin/filters.html:394
 #: main/templates/advanced_data/filters.html:20
 #: main/templates/index/create_custom_event.html:34
@@ -83,55 +83,57 @@ msgstr ""
 msgid "Year"
 msgstr ""
 
-#: main/models.py:12 main/models.py:26 main/models.py:82
+#: main/models.py:10 main/models.py:24 main/models.py:80
 #: main/templates/admin/filters.html:17 main/templates/admin/filters.html:68
 #: main/templates/admin/filters.html:348
 msgid "Event"
 msgstr ""
 
-#: main/models.py:14 main/models.py:58 main/templates/admin/filters.html:204
+#: main/models.py:12 main/models.py:56 main/templates/admin/filters.html:204
 msgid "Event Code"
 msgstr ""
 
-#: main/models.py:19 main/models.py:50 main/models.py:105
+#: main/models.py:17 main/models.py:48 main/models.py:103
 #: main/templates/admin/filters.html:16
 msgid "Data"
 msgstr ""
 
-#: main/models.py:33 main/models.py:70
+#: main/models.py:31 main/models.py:68
 msgid "User Created"
 msgstr ""
 
-#: main/models.py:36
+#: main/models.py:34
 msgid "Username Created"
 msgstr ""
 
-#: main/models.py:39
+#: main/models.py:37
 msgid "Team Number Created"
 msgstr ""
 
-#: main/models.py:41
+#: main/models.py:39
 msgid "Account"
 msgstr ""
 
-#: main/models.py:56 main/templates/admin/filters.html:161
+#: main/models.py:54 main/templates/admin/filters.html:161
 #: main/templates/index/create_custom_event.html:28
+#: main/templates/profile/profile.html:203
+#: main/templates/profile/profile.html:248
 msgid "Name"
 msgstr ""
 
-#: main/models.py:63
+#: main/models.py:61
 msgid "Custom Data"
 msgstr ""
 
-#: main/models.py:85
+#: main/models.py:83
 msgid "Events Generated"
 msgstr ""
 
-#: main/models.py:96
+#: main/models.py:94
 msgid "Nickname"
 msgstr ""
 
-#: main/models.py:102
+#: main/models.py:100
 msgid "Pit Group"
 msgstr ""
 
@@ -183,183 +185,297 @@ msgstr ""
 msgid "What are your start positions in auton? (A, B, C, or D)"
 msgstr ""
 
-#: main/pit_scouting_questions.py:81 main/pit_scouting_questions.py:143
+#: main/pit_scouting_questions.py:81 main/pit_scouting_questions.py:151
 msgid "How often do you meet in build season?"
 msgstr ""
 
-#: main/pit_scouting_questions.py:100
+#: main/pit_scouting_questions.py:97
+msgid "Swerve"
+msgstr ""
+
+#: main/pit_scouting_questions.py:98
+msgid "Tank"
+msgstr ""
+
+#: main/pit_scouting_questions.py:99
+msgid "Other"
+msgstr ""
+
+#: main/pit_scouting_questions.py:104
 msgid "Can your robot score coral in the reef?"
 msgstr ""
 
-#: main/pit_scouting_questions.py:106
+#: main/pit_scouting_questions.py:110
 msgid "Can your robot remove algae from the reef?"
 msgstr ""
 
-#: main/pit_scouting_questions.py:112
+#: main/pit_scouting_questions.py:116
 msgid "Can your robot score algae in the net?"
 msgstr ""
 
-#: main/pit_scouting_questions.py:118
+#: main/pit_scouting_questions.py:122
 msgid "Can your robot score algae in the processor?"
 msgstr ""
 
-#: main/pit_scouting_questions.py:124
+#: main/pit_scouting_questions.py:128
 msgid "Can your robot climb?"
 msgstr ""
 
-#: main/pit_scouting_questions.py:131
+#: main/pit_scouting_questions.py:132
+msgid "No"
+msgstr ""
+
+#: main/pit_scouting_questions.py:133 main/season_fields.py:457
+msgid "Shallow Cage"
+msgstr ""
+
+#: main/pit_scouting_questions.py:134 main/season_fields.py:458
+msgid "Deep Cage"
+msgstr ""
+
+#: main/pit_scouting_questions.py:139
 msgid "Do you have autos?"
 msgstr ""
 
-#: main/pit_scouting_questions.py:137
+#: main/pit_scouting_questions.py:145
 msgid "If so, how many pieces can you score in auto?"
 msgstr ""
 
-#: main/pit_scouting_questions.py:149
+#: main/pit_scouting_questions.py:157
 msgid "Which CAD software do you use?"
 msgstr ""
 
-#: main/pit_scouting_questions.py:155
+#: main/pit_scouting_questions.py:163
 msgid "How long does your team strategize for?"
 msgstr ""
 
-#: main/pit_scouting_questions.py:162
+#: main/pit_scouting_questions.py:170
 msgid "How long does it take before you're building and assembling your robot?"
 msgstr ""
 
-#: main/season_fields.py:48
+#: main/season_fields.py:51
 msgid "Main"
 msgstr ""
 
-#: main/season_fields.py:60
+#: main/season_fields.py:63
 msgid "Match Number"
 msgstr ""
 
-#: main/season_fields.py:68
+#: main/season_fields.py:71
 msgid "Match Type"
 msgstr ""
 
-#: main/season_fields.py:92 main/season_fields.py:265
+#: main/season_fields.py:75 main/season_fields.py:201 main/season_fields.py:455
+#: main/season_fields.py:469 main/season_fields.py:485
+#: main/season_fields.py:501
+msgid "N/A"
+msgstr ""
+
+#: main/season_fields.py:76
+msgid "Qualification Match"
+msgstr ""
+
+#: main/season_fields.py:77
+msgid "Playoff Match"
+msgstr ""
+
+#: main/season_fields.py:78
+msgid "Practice Match"
+msgstr ""
+
+#: main/season_fields.py:79
+msgid "Other Match"
+msgstr ""
+
+#: main/season_fields.py:95 main/season_fields.py:273
 msgid "Auton"
 msgstr ""
 
-#: main/season_fields.py:96 main/season_fields.py:128
+#: main/season_fields.py:99 main/season_fields.py:131
 msgid "Speaker Shot"
 msgstr ""
 
-#: main/season_fields.py:107
+#: main/season_fields.py:110
 msgid "Amp Shot"
 msgstr ""
 
-#: main/season_fields.py:120 main/season_fields.py:345
+#: main/season_fields.py:123 main/season_fields.py:353
 msgid "Teleop"
 msgstr ""
 
-#: main/season_fields.py:124
+#: main/season_fields.py:127
 msgid "Speaker"
 msgstr ""
 
-#: main/season_fields.py:139
+#: main/season_fields.py:142
 msgid "Speaker Misses"
 msgstr ""
 
-#: main/season_fields.py:152
+#: main/season_fields.py:155
 msgid "Amp"
 msgstr ""
 
-#: main/season_fields.py:156
+#: main/season_fields.py:159
 msgid "Amp Shots"
 msgstr ""
 
-#: main/season_fields.py:167
+#: main/season_fields.py:170
 msgid "Amp Misses"
 msgstr ""
 
-#: main/season_fields.py:182 main/season_fields.py:417
+#: main/season_fields.py:185 main/season_fields.py:425
 msgid "Extra Information"
 msgstr ""
 
-#: main/season_fields.py:186 main/season_fields.py:269
+#: main/season_fields.py:189 main/season_fields.py:277
 msgid "Left Starting Zone"
 msgstr ""
 
-#: main/season_fields.py:194
+#: main/season_fields.py:197
 msgid "Shoot Distance"
 msgstr ""
 
+#: main/season_fields.py:202
+msgid "Close"
+msgstr ""
+
 #: main/season_fields.py:203
-msgid "Floor Pickup"
+msgid "Mid Field"
+msgstr ""
+
+#: main/season_fields.py:204
+msgid "Far"
 msgstr ""
 
 #: main/season_fields.py:211
-msgid "Climb"
+msgid "Floor Pickup"
 msgstr ""
 
 #: main/season_fields.py:219
+msgid "Climb"
+msgstr ""
+
+#: main/season_fields.py:227
 msgid "Scored Trap"
 msgstr ""
 
-#: main/season_fields.py:227 main/season_fields.py:430
+#: main/season_fields.py:235 main/season_fields.py:443
 msgid "Feeder Station Pickup"
 msgstr ""
 
-#: main/season_fields.py:235
+#: main/season_fields.py:243
 msgid "Moved During Auto"
 msgstr ""
 
-#: main/season_fields.py:245 main/season_fields.py:504
+#: main/season_fields.py:253 main/season_fields.py:522
 msgid "Additional Notes"
 msgstr ""
 
-#: main/season_fields.py:249 main/season_fields.py:508
+#: main/season_fields.py:257 main/season_fields.py:526
 msgid "Additional Notes or Comments"
 msgstr ""
 
-#: main/season_fields.py:277 main/season_fields.py:349
+#: main/season_fields.py:285 main/season_fields.py:357
 msgid "Coral Scored in Reef"
 msgstr ""
 
-#: main/season_fields.py:288 main/season_fields.py:360
+#: main/season_fields.py:296 main/season_fields.py:368
 msgid "Coral Dropped"
 msgstr ""
 
-#: main/season_fields.py:299 main/season_fields.py:371
+#: main/season_fields.py:307 main/season_fields.py:379
 msgid "Algae Removed"
 msgstr ""
 
-#: main/season_fields.py:310 main/season_fields.py:382
+#: main/season_fields.py:318 main/season_fields.py:390
 msgid "Algae Scored in Net"
 msgstr ""
 
-#: main/season_fields.py:321 main/season_fields.py:393
+#: main/season_fields.py:329 main/season_fields.py:401
 msgid "Algae Scored in Processor"
 msgstr ""
 
-#: main/season_fields.py:332 main/season_fields.py:404
+#: main/season_fields.py:340 main/season_fields.py:412
 msgid "Algae Score Failed"
 msgstr ""
 
-#: main/season_fields.py:421
+#: main/season_fields.py:429
 msgid "Coral Levels"
 msgstr ""
 
-#: main/season_fields.py:438
+#: main/season_fields.py:433
+msgid "Level 1"
+msgstr ""
+
+#: main/season_fields.py:434
+msgid "Level 2"
+msgstr ""
+
+#: main/season_fields.py:435
+msgid "Level 3"
+msgstr ""
+
+#: main/season_fields.py:436
+msgid "Level 4"
+msgstr ""
+
+#: main/season_fields.py:451
 msgid "End Location"
 msgstr ""
 
-#: main/season_fields.py:447
+#: main/season_fields.py:456
+msgid "Barge Zone"
+msgstr ""
+
+#: main/season_fields.py:465
 msgid "Driver Skill"
 msgstr ""
 
-#: main/season_fields.py:463
+#: main/season_fields.py:470 main/season_fields.py:486
+msgid "1 - Poor"
+msgstr ""
+
+#: main/season_fields.py:471 main/season_fields.py:487
+msgid "2 - Okay"
+msgstr ""
+
+#: main/season_fields.py:472 main/season_fields.py:488
+msgid "3 - Decent"
+msgstr ""
+
+#: main/season_fields.py:473 main/season_fields.py:489
+msgid "4 - Good"
+msgstr ""
+
+#: main/season_fields.py:474 main/season_fields.py:490
+msgid "5 - Great"
+msgstr ""
+
+#: main/season_fields.py:481
 msgid "Defense"
 msgstr ""
 
-#: main/season_fields.py:479
+#: main/season_fields.py:497
 msgid "Penalities"
 msgstr ""
 
-#: main/season_fields.py:494
+#: main/season_fields.py:502
+msgid "Minor Foul"
+msgstr ""
+
+#: main/season_fields.py:503
+msgid "Major Foul"
+msgstr ""
+
+#: main/season_fields.py:504
+msgid "Yellow Card"
+msgstr ""
+
+#: main/season_fields.py:505
+msgid "Red Card"
+msgstr ""
+
+#: main/season_fields.py:512
 msgid "Robot was damaged and/or disabled during the match"
 msgstr ""
 
@@ -381,44 +497,48 @@ msgstr ""
 msgid "Page view analytics"
 msgstr ""
 
-#: main/templates/admin/analytics.html:26
+#: main/templates/admin/analytics.html:25
 msgid "Last hour"
 msgstr ""
 
-#: main/templates/admin/analytics.html:32
+#: main/templates/admin/analytics.html:31
 msgid "Last 12 hours"
 msgstr ""
 
-#: main/templates/admin/analytics.html:38
+#: main/templates/admin/analytics.html:37
 msgid "Last 24 hours"
 msgstr ""
 
-#: main/templates/admin/analytics.html:44
+#: main/templates/admin/analytics.html:43
 msgid "Last 3 days"
 msgstr ""
 
-#: main/templates/admin/analytics.html:50
+#: main/templates/admin/analytics.html:49
 msgid "Last 7 days"
 msgstr ""
 
-#: main/templates/admin/analytics.html:56
+#: main/templates/admin/analytics.html:55
 msgid "Last month"
 msgstr ""
 
-#: main/templates/admin/analytics.html:62
+#: main/templates/admin/analytics.html:61
 msgid "Last 3 months"
 msgstr ""
 
-#: main/templates/admin/analytics.html:68
+#: main/templates/admin/analytics.html:67
 msgid "Last 6 months"
 msgstr ""
 
-#: main/templates/admin/analytics.html:74
+#: main/templates/admin/analytics.html:73
 msgid "Last year"
 msgstr ""
 
-#: main/templates/admin/analytics.html:80
+#: main/templates/admin/analytics.html:79
 msgid "All time"
+msgstr ""
+
+#: main/templates/admin/analytics.html:83
+msgid "Pages loaded that were cached on the client are not shown here"
 msgstr ""
 
 #: main/templates/admin/filters.html:11
@@ -782,6 +902,7 @@ msgstr ""
 
 #: main/templates/authentication/authentication.html:195
 #: main/templates/menu/menu_report_backup_check.html:70
+#: main/templates/profile/profile.html:266
 msgid "Cancel"
 msgstr ""
 
@@ -975,7 +1096,7 @@ msgstr ""
 
 #: main/templates/index/authentication_box.html:42
 #: main/templates/profile/profile.html:81
-#: main/templates/profile/profile.html:94
+#: main/templates/profile/profile.html:98
 msgid "Edit Profile"
 msgstr ""
 
@@ -1554,50 +1675,111 @@ msgid "Team Number:"
 msgstr ""
 
 #: main/templates/profile/profile.html:85
-#: main/templates/profile/profile.html:125
+#: main/templates/profile/profile.html:129
 msgid "Change Settings"
 msgstr ""
 
-#: main/templates/profile/profile.html:97
-#: main/templates/profile/profile.html:99
+#: main/templates/profile/profile.html:89
+#: main/templates/profile/profile.html:188
+msgid "API Keys"
+msgstr ""
+
+#: main/templates/profile/profile.html:101
+#: main/templates/profile/profile.html:103
 msgid "Display name"
 msgstr ""
 
-#: main/templates/profile/profile.html:103
-#: main/templates/profile/profile.html:105
+#: main/templates/profile/profile.html:107
+#: main/templates/profile/profile.html:109
 msgid "Team number"
-msgstr ""
-
-#: main/templates/profile/profile.html:111
-#: main/templates/profile/profile.html:170
-msgid "Save Changes"
 msgstr ""
 
 #: main/templates/profile/profile.html:115
 #: main/templates/profile/profile.html:174
+msgid "Save Changes"
+msgstr ""
+
+#: main/templates/profile/profile.html:119
+#: main/templates/profile/profile.html:178
 msgid "Cancel Changes"
+msgstr ""
+
+#: main/templates/profile/profile.html:196
+msgid "API Docs"
+msgstr ""
+
+#: main/templates/profile/profile.html:205
+msgid "Actions"
+msgstr ""
+
+#: main/templates/profile/profile.html:218
+msgid "Revoked or expired"
+msgstr ""
+
+#: main/templates/profile/profile.html:223
+msgid "Revoke"
+msgstr ""
+
+#: main/templates/profile/profile.html:234
+msgid "No API Keys"
+msgstr ""
+
+#: main/templates/profile/profile.html:240
+msgid "New API Key"
+msgstr ""
+
+#: main/templates/profile/profile.html:250
+msgid "The human readable name of the API key"
+msgstr ""
+
+#: main/templates/profile/profile.html:252
+msgid "1 Week"
+msgstr ""
+
+#: main/templates/profile/profile.html:253
+msgid "1 Month"
+msgstr ""
+
+#: main/templates/profile/profile.html:254
+msgid "1 Year"
+msgstr ""
+
+#: main/templates/profile/profile.html:255
+msgid "No Expiry"
+msgstr ""
+
+#: main/templates/profile/profile.html:257
+msgid "The expiry of the API key"
+msgstr ""
+
+#: main/templates/profile/profile.html:263
+msgid "Create"
+msgstr ""
+
+#: main/templates/profile/profile.html:275
+msgid "Back"
 msgstr ""
 
 #: main/templates/server_message.html:10
 msgid "Server Message"
 msgstr ""
 
-#: scouting/settings.py:183
+#: scouting/settings.py:191
 msgid "English"
 msgstr ""
 
-#: scouting/settings.py:184
+#: scouting/settings.py:192
 msgid "Spanish"
 msgstr ""
 
-#: scouting/settings.py:185
+#: scouting/settings.py:193
 msgid "French"
 msgstr ""
 
-#: scouting/settings.py:186
+#: scouting/settings.py:194
 msgid "German"
 msgstr ""
 
-#: scouting/settings.py:187
+#: scouting/settings.py:195
 msgid "Italian"
 msgstr ""

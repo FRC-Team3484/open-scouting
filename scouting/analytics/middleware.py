@@ -16,6 +16,7 @@ class PageViewMiddleware:
             and "text/html" in response.get("Content-Type", "")
             and request.headers.get("X-Requested-With") != "XMLHttpRequest"
             and not request.headers.get("Service-Worker-Navigation-Preload")
+            and response.status_code == 200
         ):
             PageView.objects.create(url=request.path)
 

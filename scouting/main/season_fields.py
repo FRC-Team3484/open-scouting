@@ -1,15 +1,18 @@
 from django.utils.translation import gettext_lazy as _
 from django.utils.functional import Promise
+from django.utils.encoding import force_str
 import copy
 
 
 def force_str_in_dict(obj):
     """Recursively convert lazy translation objects to regular strings in dicts/lists."""
     if isinstance(obj, Promise):
-        return str(obj)
+        return force_str(obj)
     elif isinstance(obj, dict):
         return {key: force_str_in_dict(value) for key, value in obj.items()}
     elif isinstance(obj, list):
+        return [force_str_in_dict(item) for item in obj]
+    elif isinstance(obj, (list, tuple)):
         return [force_str_in_dict(item) for item in obj]
     else:
         return obj
@@ -69,11 +72,11 @@ main = [
                 "simple_name": "match_type",
                 "type": "choice",
                 "choices": [
-                    "N/A",
-                    "Qualification Match",
-                    "Playoff Match",
-                    "Practice Match",
-                    "Other Match",
+                    (_("N/A"), "N/A"),
+                    (_("Qualification Match"), "qualification_match"),
+                    (_("Playoff Match"), "playoff_match"),
+                    (_("Practice Match"), "practice_match"),
+                    (_("Other Match"), "other_match"),
                 ],
                 "required": False,
                 "stat_type": "ignore",
@@ -194,7 +197,12 @@ crescendo = [
                 "name": _("Shoot Distance"),
                 "simple_name": "shoot_distance",
                 "type": "multiple_choice",
-                "choices": ["N/A", "Close", "Mid Field", "Far"],
+                "choices": [
+                    (_("N/A"), "N/A"),
+                    (_("Close"), "close"),
+                    (_("Mid Field"), "mid_field"),
+                    (_("Far"), "far"),
+                ],
                 "required": False,
                 "stat_type": "capability",
                 "game_piece": "",
@@ -421,7 +429,12 @@ reefscape = [
                 "name": _("Coral Levels"),
                 "simple_name": "coral_levels",
                 "type": "multiple_choice",
-                "choices": ["Level 1", "Level 2", "Level 3", "Level 4"],
+                "choices": [
+                    (_("Level 1"), "level_1"),
+                    (_("Level 2"), "level_2"),
+                    (_("Level 3"), "level_3"),
+                    (_("Level 4"), "level_4"),
+                ],
                 "required": False,
                 "stat_type": "capability",
                 "game_piece": "",
@@ -438,7 +451,12 @@ reefscape = [
                 "name": _("End Location"),
                 "simple_name": "end_location",
                 "type": "choice",
-                "choices": ["N/A", "Barge Zone", "Shallow Cage", "Deep Cage"],
+                "choices": [
+                    (_("N/A"), "N/A"),
+                    (_("Barge Zone"), "barge_zone"),
+                    (_("Shallow Cage"), "shallow_cage"),
+                    (_("Deep Cage"), "deep_cage"),
+                ],
                 "required": False,
                 "stat_type": "capability",
                 "game_piece": "",
@@ -448,12 +466,12 @@ reefscape = [
                 "simple_name": "driver_skill",
                 "type": "choice",
                 "choices": [
-                    "N/A",
-                    "1 - Poor",
-                    "2 - Okay",
-                    "3 - Decent",
-                    "4 - Good",
-                    "5 - Great",
+                    (_("N/A"), "N/A"),
+                    (_("1 - Poor"), "1_poor"),
+                    (_("2 - Okay"), "2_okay"),
+                    (_("3 - Decent"), "3_decent"),
+                    (_("4 - Good"), "4_good"),
+                    (_("5 - Great"), "5_great"),
                 ],
                 "required": False,
                 "stat_type": "capability",
@@ -464,12 +482,12 @@ reefscape = [
                 "simple_name": "defense",
                 "type": "choice",
                 "choices": [
-                    "N/A",
-                    "1 - Poor",
-                    "2 - Okay",
-                    "3 - Decent",
-                    "4 - Good",
-                    "5 - Great",
+                    (_("N/A"), "N/A"),
+                    (_("1 - Poor"), "1_poor"),
+                    (_("2 - Okay"), "2_okay"),
+                    (_("3 - Decent"), "3_decent"),
+                    (_("4 - Good"), "4_good"),
+                    (_("5 - Great"), "5_great"),
                 ],
                 "required": False,
                 "stat_type": "capability",
@@ -480,11 +498,11 @@ reefscape = [
                 "simple_name": "penalities",
                 "type": "choice",
                 "choices": [
-                    "N/A",
-                    "Minor Foul",
-                    "Major Foul",
-                    "Yellow Card",
-                    "Red Card",
+                    (_("N/A"), "N/A"),
+                    (_("Minor Foul"), "minor_foul"),
+                    (_("Major Foul"), "major_foul"),
+                    (_("Yellow Card"), "yellow_card"),
+                    (_("Red Card"), "red_card"),
                 ],
                 "required": False,
                 "stat_type": "capability",
