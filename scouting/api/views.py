@@ -10,6 +10,10 @@ from .permissions import HasUserAPIKey
 
 
 class StatusView(APIView):
+    """
+    Returns server version, season, and years
+    """
+
     permission_classes = [AllowAny]
 
     def get(self, request):
@@ -23,6 +27,10 @@ class StatusView(APIView):
 
 
 class EventListView(APIView):
+    """
+    Returns all events for a given year
+    """
+
     permission_classes = [HasUserAPIKey]
 
     def get(self, request, year):
@@ -33,6 +41,10 @@ class EventListView(APIView):
 
 
 class EventDetailView(APIView):
+    """
+    Returns event information, as well as data and pit count for a given event
+    """
+
     permission_classes = [HasUserAPIKey]
 
     def get(self, request, year, event_code):
@@ -55,6 +67,10 @@ class EventDetailView(APIView):
 
 
 class EventDataView(APIView):
+    """
+    Returns all data for a given event
+    """
+
     permission_classes = [HasUserAPIKey]
 
     def get(self, request, year, event_code):
@@ -63,6 +79,10 @@ class EventDataView(APIView):
 
 
 class EventPitView(APIView):
+    """
+    Returns all pits for a given event
+    """
+
     permission_classes = [HasUserAPIKey]
 
     def get(self, request, year, event_code):
@@ -73,6 +93,10 @@ class EventPitView(APIView):
 
 
 class DataYearView(APIView):
+    """
+    Returns all data for a given year
+    """
+
     permission_classes = [HasUserAPIKey]
 
     def get(self, request, year):
@@ -81,6 +105,10 @@ class DataYearView(APIView):
 
 
 class DataTeamView(APIView):
+    """
+    Returns all data for a given team
+    """
+
     permission_classes = [HasUserAPIKey]
 
     def get(self, request, year, team_number):
@@ -89,6 +117,10 @@ class DataTeamView(APIView):
 
 
 class PitYearView(APIView):
+    """
+    Returns all pits for a given year
+    """
+
     permission_classes = [HasUserAPIKey]
 
     def get(self, request, year):
@@ -101,6 +133,10 @@ class PitYearView(APIView):
 
 
 class PitTeamView(APIView):
+    """
+    Returns all pits for a given team
+    """
+
     permission_classes = [HasUserAPIKey]
 
     def get(self, request, year, team_number):
@@ -117,6 +153,10 @@ class PitTeamView(APIView):
 
 
 class TeamYearView(APIView):
+    """
+    Returns all team numbers for a given year
+    """
+
     permission_classes = [HasUserAPIKey]
 
     def get(self, request, year):
@@ -129,6 +169,10 @@ class TeamYearView(APIView):
 
 
 class TeamDetailView(APIView):
+    """
+    Returns data and pit count for a given team
+    """
+
     permission_classes = [HasUserAPIKey]
 
     def get(self, request, year, team_number):
@@ -147,6 +191,10 @@ class TeamDetailView(APIView):
 
 
 class TeamDataView(APIView):
+    """
+    Returns all data for a given team
+    """
+
     permission_classes = [HasUserAPIKey]
 
     def get(self, request, year, team_number):
@@ -155,6 +203,10 @@ class TeamDataView(APIView):
 
 
 class TeamPitView(APIView):
+    """
+    Returns all pits for a given team
+    """
+
     permission_classes = [HasUserAPIKey]
 
     def get(self, request, year, team_number):
