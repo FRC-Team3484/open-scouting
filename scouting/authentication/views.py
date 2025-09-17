@@ -10,6 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from . import email
 from authentication.models import Profile, VerificationCode, Settings
 from main.views import index
+from api.models import UserAPIKey
 
 import random
 from datetime import timedelta
@@ -491,6 +492,91 @@ def set_user_settings(request):
                     setattr(settings, obj["key"], obj["value"])
 
                 settings.save()
+
+        return HttpResponse("success", status=200)
+    else:
+        return HttpResponse("Request is not a POST request!", status=501)
+
+
+def get_api_keys(request):
+    """
+    Gets the api keys for a user
+
+    Returns:
+        The api keys for the user
+    """
+    if request.method == "POST":
+        if not request.user.is_authenticated:
+            return HttpResponse("Not authenticated", status=401)
+
+        user = User.objects.filter(id=request.user.id).first()
+
+        api_keys = UserAPIKey.objects.filter(user=user)
+        api_keys_list = []
+
+        for key in api_keys:
+            api_keys_list.append(
+                {
+                    "id": key.id,
+                    "name": key.name,
+                    "expires": key.expiry_date,
+                    "revoked": key.revoked,
+                }
+            )
+
+        return JsonResponse(api_keys_list, safe=False)
+    else:
+        return HttpResponse("Request is not a POST request!", status=501)
+
+
+def create_api_key(request):
+    """
+    Creates an api key for a user
+
+    Body:
+        name: The name of the key
+        expires: The expiration date and time of the key
+
+    Returns:
+        The api key
+    """
+    if request.method == "POST":
+        if not request.user.is_authenticated:
+            return HttpResponse("Not authenticated", status=401)
+
+        try:
+            body = json.loads(request.body)
+        except KeyError:
+            return HttpResponse(request, "No body found in request", status=400)
+
+        user = User.objects.filter(id=request.user.id).first()
+
+        api_key, key = UserAPIKey.objects.create_key(user=user, name=body["name"])
+        api_key.expiry_date = timezone.now() + timedelta(days=int(body["expires"]))
+        api_key.save()
+
+        return JsonResponse({"key": key, "expires": api_key.expiry_date}, safe=False)
+    else:
+        return HttpResponse("Request is not a POST request!", status=501)
+
+
+def revoke_api_key(request):
+    """
+    Revokes an api key for a user
+
+    Body:
+        id: The id of the key
+    """
+    if request.method == "POST":
+        if not request.user.is_authenticated:
+            return HttpResponse("Not authenticated", status=401)
+
+        try:
+            body = json.loads(request.body)
+        except KeyError:
+            return HttpResponse(request, "No body found in request", status=400)
+
+        UserAPIKey.objects.filter(id=body["id"], user=request.user).update(revoked=True)
 
         return HttpResponse("success", status=200)
     else:

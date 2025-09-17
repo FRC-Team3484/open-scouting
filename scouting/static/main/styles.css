@@ -630,6 +630,9 @@
   .grow {
     flex-grow: 1;
   }
+  .table-auto {
+    table-layout: auto;
+  }
   .origin-center {
     transform-origin: center;
   }
@@ -2005,6 +2008,11 @@
   .dark\:text-red-700 {
     &:where(.dark, .dark *) {
       color: var(--color-red-700);
+    }
+  }
+  .dark\:text-slate-400 {
+    &:where(.dark, .dark *) {
+      color: var(--color-slate-400);
     }
   }
   .dark\:text-white {

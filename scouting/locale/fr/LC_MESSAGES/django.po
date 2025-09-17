@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-10 18:26+0000\n"
+"POT-Creation-Date: 2025-09-11 21:58+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,7 +46,7 @@ msgstr ""
 msgid "Created"
 msgstr ""
 
-#: authentication/models.py:18
+#: authentication/models.py:18 main/templates/profile/profile.html:204
 msgid "Expires"
 msgstr ""
 
@@ -116,6 +116,8 @@ msgstr ""
 
 #: main/models.py:54 main/templates/admin/filters.html:161
 #: main/templates/index/create_custom_event.html:28
+#: main/templates/profile/profile.html:203
+#: main/templates/profile/profile.html:248
 msgid "Name"
 msgstr ""
 
@@ -900,6 +902,7 @@ msgstr ""
 
 #: main/templates/authentication/authentication.html:195
 #: main/templates/menu/menu_report_backup_check.html:70
+#: main/templates/profile/profile.html:266
 msgid "Cancel"
 msgstr ""
 
@@ -1093,7 +1096,7 @@ msgstr ""
 
 #: main/templates/index/authentication_box.html:42
 #: main/templates/profile/profile.html:81
-#: main/templates/profile/profile.html:94
+#: main/templates/profile/profile.html:98
 msgid "Edit Profile"
 msgstr ""
 
@@ -1672,50 +1675,111 @@ msgid "Team Number:"
 msgstr ""
 
 #: main/templates/profile/profile.html:85
-#: main/templates/profile/profile.html:125
+#: main/templates/profile/profile.html:129
 msgid "Change Settings"
 msgstr ""
 
-#: main/templates/profile/profile.html:97
-#: main/templates/profile/profile.html:99
+#: main/templates/profile/profile.html:89
+#: main/templates/profile/profile.html:188
+msgid "API Keys"
+msgstr ""
+
+#: main/templates/profile/profile.html:101
+#: main/templates/profile/profile.html:103
 msgid "Display name"
 msgstr ""
 
-#: main/templates/profile/profile.html:103
-#: main/templates/profile/profile.html:105
+#: main/templates/profile/profile.html:107
+#: main/templates/profile/profile.html:109
 msgid "Team number"
-msgstr ""
-
-#: main/templates/profile/profile.html:111
-#: main/templates/profile/profile.html:170
-msgid "Save Changes"
 msgstr ""
 
 #: main/templates/profile/profile.html:115
 #: main/templates/profile/profile.html:174
+msgid "Save Changes"
+msgstr ""
+
+#: main/templates/profile/profile.html:119
+#: main/templates/profile/profile.html:178
 msgid "Cancel Changes"
+msgstr ""
+
+#: main/templates/profile/profile.html:196
+msgid "API Docs"
+msgstr ""
+
+#: main/templates/profile/profile.html:205
+msgid "Actions"
+msgstr ""
+
+#: main/templates/profile/profile.html:218
+msgid "Revoked or expired"
+msgstr ""
+
+#: main/templates/profile/profile.html:223
+msgid "Revoke"
+msgstr ""
+
+#: main/templates/profile/profile.html:234
+msgid "No API Keys"
+msgstr ""
+
+#: main/templates/profile/profile.html:240
+msgid "New API Key"
+msgstr ""
+
+#: main/templates/profile/profile.html:250
+msgid "The human readable name of the API key"
+msgstr ""
+
+#: main/templates/profile/profile.html:252
+msgid "1 Week"
+msgstr ""
+
+#: main/templates/profile/profile.html:253
+msgid "1 Month"
+msgstr ""
+
+#: main/templates/profile/profile.html:254
+msgid "1 Year"
+msgstr ""
+
+#: main/templates/profile/profile.html:255
+msgid "No Expiry"
+msgstr ""
+
+#: main/templates/profile/profile.html:257
+msgid "The expiry of the API key"
+msgstr ""
+
+#: main/templates/profile/profile.html:263
+msgid "Create"
+msgstr ""
+
+#: main/templates/profile/profile.html:275
+msgid "Back"
 msgstr ""
 
 #: main/templates/server_message.html:10
 msgid "Server Message"
 msgstr ""
 
-#: scouting/settings.py:187
+#: scouting/settings.py:191
 msgid "English"
 msgstr ""
 
-#: scouting/settings.py:188
+#: scouting/settings.py:192
 msgid "Spanish"
 msgstr ""
 
-#: scouting/settings.py:189
+#: scouting/settings.py:193
 msgid "French"
 msgstr ""
 
-#: scouting/settings.py:190
+#: scouting/settings.py:194
 msgid "German"
 msgstr ""
 
-#: scouting/settings.py:191
+#: scouting/settings.py:195
 msgid "Italian"
 msgstr ""

@@ -87,12 +87,16 @@ INSTALLED_APPS = [
     "main",
     "authentication",
     "analytics",
+    "api",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "rest_framework",
+    "rest_framework_api_key",
+    "drf_spectacular",
 ]
 
 MIDDLEWARE = [
@@ -203,3 +207,35 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Django REST framework
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "api.permissions.HasUserAPIKey",
+    ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 100,  # or whatever default you want
+}
+
+# DRF API Key
+API_KEY_CUSTOM_HEADER = "HTTP_X_API_KEY"
+
+
+# DRF Spectacular
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Open Scouting API",
+    "DESCRIPTION": "An open source application for easier scouting at FIRST Robotics competitions",
+    "VERSION": SERVER_VERSION,
+    "APPEND_COMPONENTS": {
+        "securitySchemes": {
+            "ApiKeyAuth": {
+                "type": "apiKey",
+                "in": "header",
+                "name": "X-Api-Key",
+            }
+        }
+    },
+    "SECURITY": [{"ApiKeyAuth": []}],
+}
