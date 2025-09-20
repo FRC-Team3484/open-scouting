@@ -6,18 +6,12 @@
 
   **An open source application for easier scouting at FIRST Robotics competitions**
 
-  **[Live Server](https://206.189.255.232/) ● [Releases](https://github.com/FRC-Team3484/open-scouting/releases) ● [Issues](https://github.com/FRC-Team3484/open-scouting/issues) ● [Development branch](https://github.com/FRC-Team3484/open-scouting/tree/development) ● [API Docs](https://206.189.255.232/api)**
-</div>
-
-<div align="center">
-
-  ![Open Scouting screenshot on a phone and tablet](repo/images/mobile.png)
-
+  **[Live Server](https://206.189.255.232/) ● [Releases](https://github.com/FRC-Team3484/open-scouting/releases) ● [Issues](https://github.com/FRC-Team3484/open-scouting/issues) ● [Development branch](https://github.com/FRC-Team3484/open-scouting/tree/development)**
 </div>
 
 <p align="center">
   <a href="https://skillicons.dev">
-    <img src="https://skillicons.dev/icons?i=django,python,html,css,js,tailwind,alpinejs" />
+    <img src="https://skillicons.dev/icons?i=fastapi,svelte,tailwindcss,vite" />
   </a>
 </p>
 
@@ -33,12 +27,10 @@
 - Supports collaborative pit scouting from multiple scouts or other teams
 - View match data in an advanced data view that supports team summaries, charts, and sorting and filtering the data by team and by score values
 - Scouts can create an account to be able to favorite events and verify their scouting reports, but accounts are optional
-- A [read API](#read-api) is provided, to allow developers to build apps and run analysis based on collected data
 
 ## Installation
 - Follow the steps in [Development Installation](./docs/Development_Installation.md) for how to get Open Scouting up and running locally for development or contributing
 - Follow the steps in [Production Installation](./docs/Production_Installation.md) for how to get Open Scouting installed on a server for production use
-
 
 ## Contributing
 Contributions are welcome to this project! Please see the [issues](https://github.com/FRC-Team3484/open-scouting/issues) page or the [roadmap](/docs/ROADMAP.md) for any current bugs or features that need implemented. Features in the roadmap should be prioritized over features as an issue, although any help is always appreciated.
@@ -53,20 +45,5 @@ Next, create a new branch and implement your changes. You can install this proje
 
 Eventually, `development` will be merged into `main` and your changes will be released into production with a new release. Thanks for your contribution!
 
-### Translations
-Additionally, help translating Open Scouting is also always welcome! Please see [Contributing Translations](/docs/Contributing_Translations.md) for more information
-
 ## To-Do
 Please see the [roadmap](/docs/ROADMAP.md) for the currently planned out things that need to be completed. Additionally, see the [issues page](https://github.com/FRC-Team3484/open-scouting/issues) for any current bugs or features that need implemented, but aren't officially scheduled.
-
-## Read API
-API schema information are auto generated and available [here](https://206.189.255.232/api). 
-
-API requests should be made to `/api/v1/<route>` on the live server
-
-An API Key is specified using the `X-Api-Key` header in requests
-```
-X-Api-Key: <Your API key>
-```
-
-You can create an API Key upon creating an account on the server, navigating to the [profile page](https://206.189.255.232/profile), and clicking on the `API Keys` section.

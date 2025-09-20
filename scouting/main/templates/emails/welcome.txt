@@ -1,5 +1,0 @@
-Hello {{ username }},
-
-Welcome to Open Scouting! Creating an account now allows you to verify your scouting data. It also gives you access to the ability to save your settings across multiple devices.
-
-Thank you for your interest in Open Scouting!

@@ -1,7 +1,0 @@
-Hello {{ username }},
-
-Please enter the following code in your browser to finish creating your account
-
-{{ verification_code }}
-
-Thank you for the interest in Open Scouting!
