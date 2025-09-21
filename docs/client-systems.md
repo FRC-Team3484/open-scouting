@@ -4,6 +4,7 @@ This document lists the various client side systems that are avaliable to aid in
 
 - [Dialog](#dialog)
 - [Toast](#toasts)
+- [Database](#database)
 
 
 ## Dialog
@@ -48,4 +49,17 @@ Toasts can be shown to the user
 toast("Example toast", { description: "This is a description" })
 ```
 
-See the [full Svelte Sonner docs](https://svelte-sonner.vercel.app/) for more options
+See the full Svelte Sonner docs [here](https://svelte-sonner.vercel.app/) for more options
+
+## Database
+You can access the client database using a global db instance
+
+```html
+<script lang="ts">
+  import { db } from '$lib/db';
+
+  // Use dexie.js from this, like db.open(), ect.
+</script>
+```
+
+See the full Dexie.js docs [here](https://dexie.org/)

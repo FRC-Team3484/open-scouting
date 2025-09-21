@@ -41,6 +41,7 @@
 		"vite-plugin-pwa": "^1.0.3"
 	},
 	"dependencies": {
+		"dexie": "^4.2.0",
 		"mode-watcher": "^1.1.0"
 	}
 }
