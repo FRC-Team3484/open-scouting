@@ -3,6 +3,7 @@
 This document lists the various client side systems that are avaliable to aid in development.
 
 - [Dialog](#dialog)
+- [Toast](#toasts)
 
 
 ## Dialog
@@ -39,3 +40,12 @@ A simple alert dialog that is presented to the user
     {/snippet}
 </Dialog>
 ```
+
+## Toasts
+Toasts can be shown to the user
+
+```js
+toast("Example toast", { description: "This is a description" })
+```
+
+See the [full Svelte Sonner docs](https://svelte-sonner.vercel.app/) for more options
