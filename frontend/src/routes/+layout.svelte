@@ -4,6 +4,7 @@
 	import { pwaInfo } from 'virtual:pwa-info'; // gives you the manifest link tag
 
 	import favicon from '$lib/assets/favicon.svg';
+	import { ModeWatcher } from "mode-watcher";
 
 	let { children } = $props();
 
@@ -34,5 +35,7 @@
 	<link rel="icon" href={favicon} />
 	{@html webManifest}
 </svelte:head>
+
+<ModeWatcher></ModeWatcher>
 
 {@render children?.()}
