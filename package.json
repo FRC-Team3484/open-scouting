@@ -1,0 +1,5 @@
+{
+  "devDependencies": {
+    "@vite-pwa/sveltekit": "^1.0.0"
+  }
+}
