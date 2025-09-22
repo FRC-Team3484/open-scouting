@@ -1,14 +1,31 @@
 from tortoise import fields
 from tortoise.models import Model
 
+# Authentication
 class User(Model):
     id = fields.IntField(pk=True)
     username = fields.CharField(max_length=255, unique=True)
     email = fields.CharField(max_length=255, unique=True)
-    display_name = fields.CharField(max_length=255)
     hashed_password = fields.CharField(max_length=255)
     is_superuser = fields.BooleanField(default=False)
     created_at = fields.DatetimeField(auto_now_add=True)
 
     def __str__(self):
         return self.username
+
+class Profile(Model):
+    id = fields.IntField(pk=True)
+    user = fields.ForeignKeyField("models.User", related_name="profiles")
+    display_name = fields.CharField(max_length=255)
+    team_number = fields.IntField(null=True)
+
+    def __str__(self):
+        return self.user
+
+class Organization(Model):
+    id = fields.IntField(pk=True)
+    name = fields.CharField(max_length=255, null=False)
+    label = fields.CharField(max_length=512)
+    description = fields.TextField(null=True)
+    users = fields.ManyToManyField("models.User", related_name="organizations")
+    # TODO: Add custom fields for the organization
