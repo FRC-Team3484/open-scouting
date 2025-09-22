@@ -1,6 +1,6 @@
 # Client Systems
 
-This document lists the various client side systems that are avaliable to aid in development.
+This document lists the various client side systems that are available to aid in development.
 
 - [Dialog](#dialog)
 - [Toast](#toasts)
@@ -63,3 +63,11 @@ You can access the client database using a global db instance
 ```
 
 See the full Dexie.js docs [here](https://dexie.org/)
+
+## UI
+You can add new components using the `shadcn-svelte` cli
+
+```
+cd frontend
+npx shadcd-svelte@latest add
+```
