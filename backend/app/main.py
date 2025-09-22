@@ -1,28 +1,28 @@
 import os
-from fastapi import FastAPI, Depends
-from sqlmodel import SQLModel, Session, create_engine, Field, select, Column, String
-
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./dev.db")
-
-# Engine creation
-if DATABASE_URL.startswith("sqlite"):
-    engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
-else:
-    engine = create_engine(DATABASE_URL)
-
-# Models
-# ...
+from fastapi import FastAPI
+from tortoise.contrib.fastapi import register_tortoise
 
 app = FastAPI()
-
-# @app.on_event("startup")
-# def on_startup():
-
-# Dependency for DB session
-def get_session():
-    with Session(engine) as session:
-        yield session
 
 @app.get("/")
 def read_root():
     return {"msg": "Hello World"}
+
+# Register Tortoise ORM
+register_tortoise(
+    app,
+    db_url=os.getenv("DATABASE_URL", "sqlite://dev.db"),
+    modules={"models": ["app.models"]},
+    generate_schemas=False,
+    add_exception_handlers=True,
+)
+
+TORTOISE_ORM = {
+    "connections": {"default": os.getenv("DATABASE_URL", "sqlite://dev.db")},
+    "apps": {
+        "models": {
+            "models": ["app.models", "aerich.models"],
+            "default_connection": "default",
+        },
+    },
+}
