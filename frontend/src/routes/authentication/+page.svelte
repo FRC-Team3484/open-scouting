@@ -3,10 +3,11 @@
     import Logo from "$lib/components/generic/Logo.svelte";
     import Button from "$lib/components/ui/button/button.svelte";
     import * as Card from "$lib/components/ui/card/index.js";
+    import * as Alert from "$lib/components/ui/alert/index.js";
     import Input from "$lib/components/ui/input/input.svelte";
     import Label from "$lib/components/ui/label/label.svelte";
     import Separator from "$lib/components/ui/separator/separator.svelte";
-    import { ArrowRight, Lock, Plus } from "phosphor-svelte";
+    import { ArrowRight, Info, Lock, Plus } from "phosphor-svelte";
 
     let page: "signin" | "signup" = "signin";
     let message: string | null = null;
@@ -34,6 +35,13 @@
         <Logo text={false} />
         <p class="text-2xl font-bold">Authentication</p>
 
+        {#if message}
+            <Alert.Root>
+                <Info weight="bold" />
+                <Alert.Title>{message}</Alert.Title>
+            </Alert.Root>
+        {/if}
+
         {#if page === "signin"}
             <form class="flex flex-col gap-4 w-full" on:submit={handleSubmit}>
                 <Card.Root class="w-full">
@@ -52,7 +60,7 @@
 
                     <Card.Footer class="gap-2">
                         <Button type="submit"><ArrowRight weight="bold" /> Sign In</Button>
-                        <Button variant="ghost" type="button" on:click={() => page = "signup"}>
+                        <Button variant="ghost" type="button" onclick={() => page = "signup"}>
                             <Plus weight="bold" /> Create Account
                         </Button>
                     </Card.Footer>
@@ -91,16 +99,12 @@
 
                     <Card.Footer class="gap-2">
                         <Button type="submit"><ArrowRight weight="bold" /> Create Account</Button>
-                        <Button variant="ghost" type="button" on:click={() => page = "signin"}>
+                        <Button variant="ghost" type="button" onclick={() => page = "signin"}>
                             <Lock weight="bold" /> Sign In
                         </Button>
                     </Card.Footer>
                 </Card.Root>
             </form>
-        {/if}
-
-        {#if message}
-            <p class="text-center text-sm text-gray-600">{message}</p>
         {/if}
     </div>
 </div>
