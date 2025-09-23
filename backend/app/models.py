@@ -29,3 +29,5 @@ class Organization(Model):
     description = fields.TextField(null=True)
     users = fields.ManyToManyField("models.User", related_name="organizations")
     # TODO: Add custom fields for the organization
+
+# TODO: Will need OrganizationMember class, so members can have roles
