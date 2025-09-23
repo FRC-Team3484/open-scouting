@@ -107,6 +107,14 @@ async def read_items(current_user: User = Depends(get_current_user), response_mo
     users = await User.all()
     return users
 
+@app.delete("/users/delete/{username}")
+async def delete_user(username: str, current_user: User = Depends(get_current_user)):
+    user = await User.get_or_none(username=username)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    await user.delete()
+    return {"message": "User deleted"}
+
 @app.get("/auth/validate")
 async def validate_user(current_user: User = Depends(get_current_user), response_model_exclude={"hashed_password"}):
     return current_user
