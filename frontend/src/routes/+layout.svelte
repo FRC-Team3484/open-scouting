@@ -7,16 +7,12 @@
 	import { ModeWatcher } from "mode-watcher";
 	import { Toaster } from "$lib/components/ui/sonner";
 
-	import { validateTokenOnline } from '$lib/user';
-
 	let { children } = $props();
 
 	// put the <link rel="manifest"> into the head
 	let webManifest = pwaInfo ? pwaInfo.webManifest.linkTag : '';
 
 	onMount(async () => {
-		await validateTokenOnline();
-
 		if (!pwaInfo) return; // plugin not active, skip
 			try {
 			// dynamic import so this only runs in the browser (no SSR trouble)

@@ -1,7 +1,7 @@
 import { PUBLIC_FAST_API_URL } from "$env/static/public";
 
 async function validateTokenOnline() {
-    const token = localStorage.getItem("auth_token");
+    const token = localStorage.getItem("access_token");
     if (!token) {
         console.log("No token found");
         return;
@@ -13,9 +13,9 @@ async function validateTokenOnline() {
 
     if (res.ok) {
         const data = await res.json();
-        console.log("Validated:", data);
+        return data;
     } else {
-        console.log("error");
+        return;
     }
 }
 

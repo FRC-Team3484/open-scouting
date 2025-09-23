@@ -8,6 +8,9 @@
     import Label from "$lib/components/ui/label/label.svelte";
     import Separator from "$lib/components/ui/separator/separator.svelte";
     import { ArrowRight, Info, Lock, Plus } from "phosphor-svelte";
+	import { onMount } from "svelte";
+	import { validateTokenOnline } from "$lib/user";
+	import { toast } from "svelte-sonner";
 
     let page: "signin" | "signup" = "signin";
     let message: string | null = null;
@@ -19,10 +22,13 @@
         const form = e.currentTarget as HTMLFormElement;
         const formData = new FormData(form);
 
-        const endpoint = page === "signin" ? "/auth/signin" : "/auth/signup";
+        const endpoint = page === "signin" ? "/token" : "/auth/signup";
         const res = await fetch(API_URL + endpoint, {
             method: "POST",
-            body: formData,
+            body: `username=${formData.get("username")}&password=${formData.get("password")}`,
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
         });
 
         const data = await res.json();
@@ -35,6 +41,13 @@
             }
         }
     }
+
+    onMount(async () => {
+        if (await validateTokenOnline()) {
+            toast.success("You are already signed in, redirecting...");
+            window.location.href = "/";
+        }
+    })
 </script>
 
 <div class="flex flex-col gap-4 w-screen h-screen items-center justify-center">
