@@ -72,7 +72,10 @@ async def signup(
     except IntegrityError:
         raise HTTPException(status_code=400, detail="Username or email already exists")
 
-    return {"success": True, "message": f"Account created for {username}"}
+    user = await User.get_or_none(username=username)
+
+    access_token = create_access_token(data={"sub": str(user.id)})
+    return {"access_token": access_token, "token_type": "bearer"}
 
 @app.post("/token")
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
@@ -99,6 +102,11 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
 
 
 # Example protected route
-@app.get("/items/")
-async def read_items(current_user: User = Depends(get_current_user)):
-    return {"message": f"Hello {current_user.username}"}
+@app.get("/users/")
+async def read_items(current_user: User = Depends(get_current_user), response_model_exclude={"hashed_password"}):
+    users = await User.all()
+    return users
+
+@app.get("/auth/validate")
+async def validate_user(current_user: User = Depends(get_current_user), response_model_exclude={"hashed_password"}):
+    return current_user

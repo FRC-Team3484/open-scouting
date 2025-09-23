@@ -7,28 +7,32 @@
 	import { ModeWatcher } from "mode-watcher";
 	import { Toaster } from "$lib/components/ui/sonner";
 
+	import { validateTokenOnline } from '$lib/user';
+
 	let { children } = $props();
 
 	// put the <link rel="manifest"> into the head
 	let webManifest = pwaInfo ? pwaInfo.webManifest.linkTag : '';
 
 	onMount(async () => {
-			if (!pwaInfo) return; // plugin not active, skip
-				try {
-				// dynamic import so this only runs in the browser (no SSR trouble)
-				const { registerSW } = await import('virtual:pwa-register');
-				registerSW({
-					immediate: true, // register immediately
-					onRegistered(r) {
-					console.log('SW registered:', r);
-					},
-					onRegisterError(err) {
-					console.error('SW registration error:', err);
-					}
-				});
-				} catch (err) {
-				console.error('failed to register SW', err);
-			}
+		await validateTokenOnline();
+
+		if (!pwaInfo) return; // plugin not active, skip
+			try {
+			// dynamic import so this only runs in the browser (no SSR trouble)
+			const { registerSW } = await import('virtual:pwa-register');
+			registerSW({
+				immediate: true, // register immediately
+				onRegistered(r) {
+				console.log('SW registered:', r);
+				},
+				onRegisterError(err) {
+				console.error('SW registration error:', err);
+				}
+			});
+			} catch (err) {
+			console.error('failed to register SW', err);
+		}
 	});
 </script>
 

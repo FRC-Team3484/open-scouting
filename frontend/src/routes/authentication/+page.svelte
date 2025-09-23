@@ -26,7 +26,14 @@
         });
 
         const data = await res.json();
-        message = data.message;
+        message = data.message ?? data.detail;
+
+        if (res.ok) {
+            if (data.access_token) {
+                localStorage.setItem("access_token", data.access_token);
+                window.location.href = "/";
+            }
+        }
     }
 </script>
 
@@ -36,7 +43,7 @@
         <p class="text-2xl font-bold">Authentication</p>
 
         {#if message}
-            <Alert.Root>
+            <Alert.Root variant="destructive">
                 <Info weight="bold" />
                 <Alert.Title>{message}</Alert.Title>
             </Alert.Root>
