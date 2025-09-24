@@ -69,5 +69,5 @@ You can add new components using the `shadcn-svelte` cli
 
 ```
 cd frontend
-npx shadcd-svelte@latest add
+npx shadcn-svelte@latest add
 ```
