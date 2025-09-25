@@ -27,7 +27,10 @@ class Organization(Model):
     name = fields.CharField(max_length=255, null=False)
     label = fields.CharField(max_length=512)
     description = fields.TextField(null=True)
-    users = fields.ManyToManyField("models.User", related_name="organizations")
-    # TODO: Add custom fields for the organization
+    users = fields.ManyToManyField("models.OrganizationMember", related_name="organizations")
 
-# TODO: Will need OrganizationMember class, so members can have roles
+class OrganizationMember(Model):
+    id = fields.IntField(pk=True)
+    organization = fields.ForeignKeyField("models.Organization", related_name="members")
+    user = fields.ForeignKeyField("models.User", related_name="organizations")
+    role = fields.CharField(max_length=255) # member, admin
