@@ -7,7 +7,7 @@
     import * as Select from "$lib/components/ui/select/index.js";
 
 	import { ArrowRight, ArrowLeft, Building, SignOut, SignIn } from "phosphor-svelte";
-	import { signOut, validateTokenOnline } from "$lib/user";
+	import { signOut, validateTokenOnline } from "$lib/utls/user";
 	import { onMount } from "svelte";
 
     let user;

@@ -5,7 +5,9 @@ This document lists the various client side systems that are available to aid in
 - [Dialog](#dialog)
 - [Toast](#toasts)
 - [Database](#database)
-
+- [UI](#ui)
+- [User Management](#user-managment)
+- [API Requests](#api-requests)
 
 ## Dialog
 A simple alert dialog that is presented to the user
@@ -56,7 +58,7 @@ You can access the client database using a global db instance
 
 ```html
 <script lang="ts">
-  import { db } from '$lib/db';
+  import { db } from '$lib/utils/db';
 
   // Use dexie.js from this, like db.open(), ect.
 </script>
@@ -71,3 +73,25 @@ You can add new components using the `shadcn-svelte` cli
 cd frontend
 npx shadcn-svelte@latest add
 ```
+
+## User Managment
+The client can manage the currently authenticated user using `user.ts`
+
+```html
+<script lang="ts">
+    import { onMount } from "svelte";
+    import { validateTokenOnline, signOut } from '$lib/utils/user';
+
+    let user;
+
+    onMount(async () => {
+        user = await validateTokenOnline(); // If the user is authenticated and their token is valid, returns their user details
+
+        await signOut(); // Signs the user out
+    });
+
+</script>
+```
+
+## API Requests
+Requests can be made to the backend using `api.ts`

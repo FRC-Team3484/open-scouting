@@ -9,7 +9,7 @@
     import Separator from "$lib/components/ui/separator/separator.svelte";
     import { ArrowRight, Info, Lock, Plus } from "phosphor-svelte";
 	import { onMount } from "svelte";
-	import { validateTokenOnline } from "$lib/user";
+	import { validateTokenOnline } from "$lib/utls/user";
 	import { toast } from "svelte-sonner";
 
     let page: "signin" | "signup" = "signin";
