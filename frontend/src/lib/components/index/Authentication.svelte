@@ -9,14 +9,26 @@
 	import { ArrowRight, ArrowLeft, Building, SignOut, SignIn } from "phosphor-svelte";
 	import { signOut, validateTokenOnline } from "$lib/utls/user";
 	import { onMount } from "svelte";
+	import { apiFetch } from "$lib/utls/api";
 
-    let user;
+    let user = null;
+    let organizations = null;
 
-    let value = "item-1";
+    let organization_value = "default";
 
     onMount(async () => {
-        user = await validateTokenOnline();
-    })
+        try {
+            user = await validateTokenOnline();
+            if (user) {
+                const response = await apiFetch(`/organization/me/list`, {
+                    token: await localStorage.getItem("access_token"),
+                });
+                organizations = response;
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    });
 
     export let handleNavigate: (next: string) => void;
 </script>
@@ -52,23 +64,33 @@
 
             <Card.Content class="flex flex-col gap-2">
                 {#if user}
-                    <p>Signed in as <strong>{user.username}</strong></p>
+                    <p class="text-lg">Signed in as <strong>{user.username}</strong></p>
 
-                    <p class="text-lg">Organizations</p>
-                    <p class="text-muted-foreground text-sm">Organizations allow you to use custom match and pit scouting questions specific for your team</p>
+                    {#if organizations === null}
+                        <!-- TODO: Loading indicator -->
+                    {:else if organizations.length === 0}
 
-                    <Label for="organization">Organization</Label>
-                    <Select.Root type="single" name="organization" id="organization" bind:value>
-                        <Select.Trigger>
-                            {value}
-                        </Select.Trigger>
-                        <Select.Content>
-                            <Select.Item value="item-1">Item 1 <span class="text-muted-foreground">Primary</span></Select.Item>
-                            <Select.Item value="item-2">Item 2</Select.Item>
-                            <Select.Item value="item-3">Item 3</Select.Item>
-                        </Select.Content>
-                    </Select.Root>
+                    {:else}
+                        <div class="flex flex-row gap-2 items-center">
+                            <div class="flex flex-col gap-2">
+                                <p>Organization</p>
+                                <p class="text-muted-foreground text-sm">Organizations allow you to use custom match and pit scouting questions specific for your team</p>
+                            </div>
 
+                            <Select.Root type="single" name="organization" id="organization" bind:organization_value>
+                                <Select.Trigger>
+                                    {organization_value}
+                                </Select.Trigger>
+                                <Select.Content>
+                                    <Select.Label>Organizations</Select.Label>
+                                    <Select.Item value="default" label="Default" />
+                                    {#each organizations as organization}
+                                        <Select.Item value={organization.name} label={organization.label} />
+                                    {/each}
+                                </Select.Content>
+                            </Select.Root>
+                        </div>
+                    {/if}
                 {:else}
                     <p>Not signed in</p>
                 {/if}

@@ -126,9 +126,19 @@ async def create_organization(name: str = Form(...), label: str = Form(...), des
     await OrganizationMember.create(organization=organization, user=current_user, role="admin")
     return organization
 
-@app.get("/organization/list")
+@app.get("/organization/all/list")
 async def get_organizations(current_user: User = Depends(get_current_user), response_model_exclude={"hashed_password"}):
     organizations = await Organization.all()
+    return organizations
+
+@app.get("/organization/me/list")
+async def get_user_organizations(current_user: User = Depends(get_current_user), response_model_exclude={"hashed_password"}):
+    user = await User.get_or_none(id=current_user.id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    organization_members = await OrganizationMember.filter(user=user)
+    organizations = await Organization.filter(id__in=[m.organization_id for m in organization_members])
+
     return organizations
 
 @app.get("/organization/{organization_id}")
