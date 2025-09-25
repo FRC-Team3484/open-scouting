@@ -6,8 +6,8 @@
     import * as Avatar from "$lib/components/ui/avatar/index.js";
     import * as Select from "$lib/components/ui/select/index.js";
 
-	import { ArrowRight, ArrowLeft, Building } from "phosphor-svelte";
-	import { validateTokenOnline } from "$lib/user";
+	import { ArrowRight, ArrowLeft, Building, SignOut, SignIn } from "phosphor-svelte";
+	import { signOut, validateTokenOnline } from "$lib/user";
 	import { onMount } from "svelte";
 
     let user;
@@ -25,7 +25,7 @@
     <Button onclick={() => handleNavigate("welcome")} class="max-w-fit" variant="ghost"><ArrowLeft weight="bold" /> Start Over</Button>
 
     <div class="flex flex-col md:flex-row gap-4">
-        <Card.Root class="max-w-128 p-4">
+        <Card.Root class="max-w-128 p-4 min-w-64">
             <Card.Header>
                 <Card.Title>Continue Without Account</Card.Title>
                 <Card.Description>Use Open Scouting without an account</Card.Description>
@@ -44,7 +44,7 @@
             </Card.Footer>
         </Card.Root>
 
-        <Card.Root class="max-w-128 p-4">
+        <Card.Root class="max-w-128 p-4 min-w-64">
             <Card.Header>
                 <Card.Title>Authentication</Card.Title>
                 <Card.Description>Sign in or create an account to use Open Scouting with</Card.Description>
@@ -74,8 +74,12 @@
                 {/if}
             </Card.Content>
 
-            <Card.Footer class="flex flex-col gap-2">
+            <Card.Footer class="flex flex-row gap-2">
                 {#if user}
+                    <Button variant="outline" onclick={async () => {await signOut(); window.location.reload()}}>
+                        <SignOut weight="bold" />
+                        Sign Out
+                    </Button>
                     <Button>
                         <Avatar.Root>
                             <!-- TODO: Actually load avatar from user account -->
@@ -83,9 +87,11 @@
                             <Avatar.Fallback>SC</Avatar.Fallback>
                         </Avatar.Root>
                         
-                        Continue as {user.username} <ArrowRight weight="bold" /></Button>
+                        Continue as {user.username} <ArrowRight weight="bold" />
+                    </Button>
+                {:else}
+                    <Button href="/authentication">Sign In <SignIn weight="bold" /></Button>
                 {/if}
-
             </Card.Footer>
         </Card.Root>
     </div>

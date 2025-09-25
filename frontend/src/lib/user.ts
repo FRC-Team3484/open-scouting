@@ -19,4 +19,8 @@ async function validateTokenOnline() {
     }
 }
 
-export { validateTokenOnline };
+async function signOut() {
+    localStorage.removeItem("access_token");
+}
+
+export { validateTokenOnline, signOut };
