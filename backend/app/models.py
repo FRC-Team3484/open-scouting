@@ -27,10 +27,11 @@ class Organization(Model):
     name = fields.CharField(max_length=255, null=False)
     label = fields.CharField(max_length=512)
     description = fields.TextField(null=True)
-    users = fields.ManyToManyField("models.OrganizationMember", related_name="organizations")
+    created_at = fields.DatetimeField(auto_now_add=True)
 
 class OrganizationMember(Model):
     id = fields.IntField(pk=True)
     organization = fields.ForeignKeyField("models.Organization", related_name="members")
     user = fields.ForeignKeyField("models.User", related_name="organizations")
     role = fields.CharField(max_length=255) # member, admin
+    created_at = fields.DatetimeField(auto_now_add=True)

@@ -10,7 +10,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from tortoise.contrib.fastapi import register_tortoise
 from tortoise.exceptions import IntegrityError
 
-from app.models import User, Profile
+from app.models import User, Profile, Organization, OrganizationMember
 from app.auth import get_password_hash, verify_password, create_access_token, decode_access_token
 
 # Setup
@@ -118,3 +118,38 @@ async def delete_user(username: str, current_user: User = Depends(get_current_us
 @app.get("/auth/validate")
 async def validate_user(current_user: User = Depends(get_current_user), response_model_exclude={"hashed_password"}):
     return current_user
+
+# Organizations
+@app.post("/organization/create")
+async def create_organization(name: str = Form(...), label: str = Form(...), description: str = Form(...), current_user: User = Depends(get_current_user)):
+    organization = await Organization.create(name=name, label=label, description=description)
+    await OrganizationMember.create(organization=organization, user=current_user, role="admin")
+    return organization
+
+@app.get("/organization/list")
+async def get_organizations(current_user: User = Depends(get_current_user), response_model_exclude={"hashed_password"}):
+    organizations = await Organization.all()
+    return organizations
+
+@app.get("/organization/{organization_id}")
+async def get_organization(organization_id: int, current_user: User = Depends(get_current_user), response_model_exclude={"hashed_password"}):
+    organization = await Organization.get_or_none(id=organization_id)
+    if not organization:
+        raise HTTPException(status_code=404, detail="Organization not found")
+    return organization
+
+@app.delete("/organization/delete/{organization_id}")
+async def delete_organization(organization_id: int, current_user: User = Depends(get_current_user)):
+    organization = await Organization.get_or_none(id=organization_id)
+    if not organization:
+        raise HTTPException(status_code=404, detail="Organization not found")
+    await organization.delete()
+    return {"message": "Organization deleted"}
+
+@app.get("/organization/{organization_id}/members")
+async def get_organization_members(organization_id: int, current_user: User = Depends(get_current_user), response_model_exclude={"hashed_password"}):
+    organization = await Organization.get_or_none(id=organization_id)
+    if not organization:
+        raise HTTPException(status_code=404, detail="Organization not found")
+    members = await OrganizationMember.filter(organization=organization)
+    return members
