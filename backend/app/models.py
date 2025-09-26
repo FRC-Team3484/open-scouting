@@ -3,7 +3,7 @@ from tortoise.models import Model
 
 # Authentication
 class User(Model):
-    id = fields.IntField(pk=True)
+    uuid = fields.UUIDField(pk=True)
     username = fields.CharField(max_length=255, unique=True)
     email = fields.CharField(max_length=255, unique=True)
     hashed_password = fields.CharField(max_length=255)
@@ -14,7 +14,7 @@ class User(Model):
         return self.username
 
 class Profile(Model):
-    id = fields.IntField(pk=True)
+    uuid = fields.UUIDField(pk=True)
     user = fields.ForeignKeyField("models.User", related_name="profiles")
     display_name = fields.CharField(max_length=255)
     team_number = fields.IntField(null=True)
@@ -23,14 +23,14 @@ class Profile(Model):
         return self.user
 
 class Organization(Model):
-    id = fields.IntField(pk=True)
+    uuid = fields.UUIDField(pk=True)
     name = fields.CharField(max_length=255, null=False)
     label = fields.CharField(max_length=512)
     description = fields.TextField(null=True)
     created_at = fields.DatetimeField(auto_now_add=True)
 
 class OrganizationMember(Model):
-    id = fields.IntField(pk=True)
+    uuid = fields.UUIDField(pk=True)
     organization = fields.ForeignKeyField("models.Organization", related_name="members")
     user = fields.ForeignKeyField("models.User", related_name="organizations")
     role = fields.CharField(max_length=255) # member, admin

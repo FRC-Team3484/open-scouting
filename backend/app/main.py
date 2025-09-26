@@ -74,7 +74,7 @@ async def signup(
 
     user = await User.get_or_none(username=username)
 
-    access_token = create_access_token(data={"sub": str(user.id)})
+    access_token = create_access_token(data={"sub": str(user.uuid)})
     return {"access_token": access_token, "token_type": "bearer"}
 
 @app.post("/token")
@@ -86,7 +86,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
             detail="Invalid username or password",
         )
 
-    access_token = create_access_token(data={"sub": str(user.id)})
+    access_token = create_access_token(data={"sub": str(user.uuid)})
     return {"access_token": access_token, "token_type": "bearer"}
 
 # Dependency to get current user
@@ -95,7 +95,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
     if not payload:
         raise HTTPException(status_code=401, detail="Invalid or expired token")
 
-    user = await User.get_or_none(id=int(payload.get("sub")))
+    user = await User.get_or_none(uuid=payload.get("sub"))
     if not user:
         raise HTTPException(status_code=401, detail="User not found")
     return user
@@ -133,32 +133,32 @@ async def get_organizations(current_user: User = Depends(get_current_user), resp
 
 @app.get("/organization/me/list")
 async def get_user_organizations(current_user: User = Depends(get_current_user), response_model_exclude={"hashed_password"}):
-    user = await User.get_or_none(id=current_user.id)
+    user = await User.get_or_none(uuid=current_user.uuid)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     organization_members = await OrganizationMember.filter(user=user)
-    organizations = await Organization.filter(id__in=[m.organization_id for m in organization_members])
+    organizations = await Organization.filter(uuid__in=[m.organization_id for m in organization_members])
 
     return organizations
 
-@app.get("/organization/{organization_id}")
-async def get_organization(organization_id: int, current_user: User = Depends(get_current_user), response_model_exclude={"hashed_password"}):
-    organization = await Organization.get_or_none(id=organization_id)
+@app.get("/organization/{organization_uuid}")
+async def get_organization(organization_uuid: str, current_user: User = Depends(get_current_user), response_model_exclude={"hashed_password"}):
+    organization = await Organization.get_or_none(uuid=organization_uuid)
     if not organization:
         raise HTTPException(status_code=404, detail="Organization not found")
     return organization
 
-@app.delete("/organization/delete/{organization_id}")
-async def delete_organization(organization_id: int, current_user: User = Depends(get_current_user)):
-    organization = await Organization.get_or_none(id=organization_id)
+@app.delete("/organization/delete/{organization_uuid}")
+async def delete_organization(organization_uuid: str, current_user: User = Depends(get_current_user)):
+    organization = await Organization.get_or_none(uuid=organization_uuid)
     if not organization:
         raise HTTPException(status_code=404, detail="Organization not found")
     await organization.delete()
     return {"message": "Organization deleted"}
 
-@app.get("/organization/{organization_id}/members")
-async def get_organization_members(organization_id: int, current_user: User = Depends(get_current_user), response_model_exclude={"hashed_password"}):
-    organization = await Organization.get_or_none(id=organization_id)
+@app.get("/organization/{organization_uuid}/members")
+async def get_organization_members(organization_uuid: str, current_user: User = Depends(get_current_user), response_model_exclude={"hashed_password"}):
+    organization = await Organization.get_or_none(uuid=organization_uuid)
     if not organization:
         raise HTTPException(status_code=404, detail="Organization not found")
     members = await OrganizationMember.filter(organization=organization)
