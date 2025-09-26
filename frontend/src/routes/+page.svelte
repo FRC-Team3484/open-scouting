@@ -2,7 +2,7 @@
 	import Welcome from "$lib/components/index/Welcome.svelte";
 	import Authentication from "$lib/components/index/Authentication.svelte";
 
-	let page = $state("welcome");
+	let page = $state("auth");
 
 	function handleNavigate(next) {
 		page = next;

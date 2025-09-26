@@ -10,11 +10,12 @@
 	import { signOut, validateTokenOnline } from "$lib/utls/user";
 	import { onMount } from "svelte";
 	import { apiFetch } from "$lib/utls/api";
+	import Skeleton from "../ui/skeleton/skeleton.svelte";
 
     let user = null;
     let organizations = null;
 
-    let organization_value = "default";
+    let organization_value = {"name":"default", "id":"0", "label":"None"};
 
     onMount(async () => {
         try {
@@ -63,11 +64,13 @@
             </Card.Header>
 
             <Card.Content class="flex flex-col gap-2">
-                {#if user}
+                {#if user === null}
+                    <Skeleton class="w-1/2" />
+                {:else if user}
                     <p class="text-lg">Signed in as <strong>{user.username}</strong></p>
 
                     {#if organizations === null}
-                        <!-- TODO: Loading indicator -->
+                        <Skeleton class="w-1/2" />
                     {:else if organizations.length === 0}
 
                     {:else}
@@ -77,15 +80,15 @@
                                 <p class="text-muted-foreground text-sm">Organizations allow you to use custom match and pit scouting questions specific for your team</p>
                             </div>
 
-                            <Select.Root type="single" name="organization" id="organization" bind:organization_value>
+                            <Select.Root type="single" name="organization" id="organization" bind:value={organization_value}>
                                 <Select.Trigger>
-                                    {organization_value}
+                                    {organization_value.label}
                                 </Select.Trigger>
                                 <Select.Content>
                                     <Select.Label>Organizations</Select.Label>
-                                    <Select.Item value="default" label="Default" />
+                                    <Select.Item value={{"name":"default", "id":"0", "label":"None"}} label="None" />
                                     {#each organizations as organization}
-                                        <Select.Item value={organization.name} label={organization.label} />
+                                        <Select.Item value={{"name":organization.name, "id":organization.id, "label":organization.label}} label={organization.label} />
                                     {/each}
                                 </Select.Content>
                             </Select.Root>
