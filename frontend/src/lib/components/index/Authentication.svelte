@@ -35,8 +35,6 @@
 </script>
 
 <div class="flex flex-col gap-4">
-    <Button onclick={() => handleNavigate("welcome")} class="max-w-fit" variant="ghost"><ArrowLeft weight="bold" /> Start Over</Button>
-
     <div class="flex flex-col md:flex-row gap-4">
         <Card.Root class="max-w-128 p-4 min-w-64">
             <Card.Header>
