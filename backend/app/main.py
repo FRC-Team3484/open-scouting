@@ -46,6 +46,17 @@ TORTOISE_ORM = {
     },
 }
 
+# Utility Functions
+async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
+    payload = decode_access_token(token)
+    if not payload:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+
+    user = await User.get_or_none(uuid=payload.get("sub"))
+    if not user:
+        raise HTTPException(status_code=401, detail="User not found")
+    return user
+
 # Routes
 #    Auth
 @app.post("/auth/signup")
@@ -89,19 +100,6 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     access_token = create_access_token(data={"sub": str(user.uuid)})
     return {"access_token": access_token, "token_type": "bearer"}
 
-# Dependency to get current user
-async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
-    payload = decode_access_token(token)
-    if not payload:
-        raise HTTPException(status_code=401, detail="Invalid or expired token")
-
-    user = await User.get_or_none(uuid=payload.get("sub"))
-    if not user:
-        raise HTTPException(status_code=401, detail="User not found")
-    return user
-
-
-# Example protected route
 @app.get("/users/")
 async def read_items(current_user: User = Depends(get_current_user), response_model_exclude={"hashed_password"}):
     users = await User.all()
@@ -119,7 +117,7 @@ async def delete_user(username: str, current_user: User = Depends(get_current_us
 async def validate_user(current_user: User = Depends(get_current_user), response_model_exclude={"hashed_password"}):
     return current_user
 
-# Organizations
+#    Organizations
 @app.post("/organization/create")
 async def create_organization(name: str = Form(...), label: str = Form(...), description: str = Form(...), current_user: User = Depends(get_current_user)):
     organization = await Organization.create(name=name, label=label, description=description)
@@ -127,7 +125,7 @@ async def create_organization(name: str = Form(...), label: str = Form(...), des
     return organization
 
 @app.get("/organization/all/list")
-async def get_organizations(current_user: User = Depends(get_current_user), response_model_exclude={"hashed_password"}):
+async def get_organizations():
     organizations = await Organization.all()
     return organizations
 
@@ -142,7 +140,7 @@ async def get_user_organizations(current_user: User = Depends(get_current_user),
     return organizations
 
 @app.get("/organization/{organization_uuid}")
-async def get_organization(organization_uuid: str, current_user: User = Depends(get_current_user), response_model_exclude={"hashed_password"}):
+async def get_organization(organization_uuid: str):
     organization = await Organization.get_or_none(uuid=organization_uuid)
     if not organization:
         raise HTTPException(status_code=404, detail="Organization not found")
@@ -164,13 +162,14 @@ async def get_organization_members(organization_uuid: str, current_user: User = 
     members = await OrganizationMember.filter(organization=organization)
     return members
 
+#    Seasons
 @app.get("/seasons")
-async def get_seasons(current_user: User = Depends(get_current_user), response_model_exclude={"hashed_password"}):
+async def get_seasons():
     seasons = await Season.all()
     return seasons
 
 @app.get("/seasons/active")
-async def get_active_season(current_user: User = Depends(get_current_user), response_model_exclude={"hashed_password"}):
+async def get_active_season():
     season = await Season.get_or_none(active=True)
     return season
 
