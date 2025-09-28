@@ -3,15 +3,17 @@
 	import Authentication from "$lib/components/index/Authentication.svelte";
 	import Header from "$lib/components/index/Header.svelte";
 	import Year from "$lib/components/index/Year.svelte";
+	import Events from "$lib/components/index/Events.svelte";
+	
 
-	let page = $state("year"); // welcome, auth, year, events, action
+	let page = $state("events"); // welcome, auth, year, events, action
 
 	let user = $state({
 		username: "",
 		team_number: 0,
 		uuid: ""
 	});
-	let year = $state(0);
+	let year = $state(2025);
 
 	function handleNavigate(nextPage: string): void {
 		page = nextPage;
@@ -44,6 +46,12 @@
 		<Authentication handleNavigate={handleNavigate} setUser={setUser}/>
 
 	{:else if page === "year"}
+		<!-- 2 - Year -->
 		<Year handleNavigate={handleNavigate} setYear={setYear}/>
+
+	{:else if page === "events"}
+		<!-- 3 - Events -->
+		<Events handleNavigate={handleNavigate} year={year}/>
+
 	{/if}
 </div>
