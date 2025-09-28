@@ -10,7 +10,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from tortoise.contrib.fastapi import register_tortoise
 from tortoise.exceptions import IntegrityError
 
-from app.models import User, Profile, Organization, OrganizationMember
+from app.models import User, Profile, Organization, OrganizationMember, Season
 from app.auth import get_password_hash, verify_password, create_access_token, decode_access_token
 
 # Setup
@@ -163,3 +163,18 @@ async def get_organization_members(organization_uuid: str, current_user: User = 
         raise HTTPException(status_code=404, detail="Organization not found")
     members = await OrganizationMember.filter(organization=organization)
     return members
+
+@app.get("/seasons")
+async def get_seasons(current_user: User = Depends(get_current_user), response_model_exclude={"hashed_password"}):
+    seasons = await Season.all()
+    return seasons
+
+@app.get("/seasons/active")
+async def get_active_season(current_user: User = Depends(get_current_user), response_model_exclude={"hashed_password"}):
+    season = await Season.get_or_none(active=True)
+    return season
+
+@app.post("/seasons/create")
+async def create_season(year: int = Form(...), label: str = Form(...), active: bool = Form(...), current_user: User = Depends(get_current_user)):
+    season = await Season.create(year=year, label=label, active=active)
+    return season

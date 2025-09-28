@@ -35,3 +35,19 @@ class OrganizationMember(Model):
     user = fields.ForeignKeyField("models.User", related_name="organizations")
     role = fields.CharField(max_length=255) # member, admin
     created_at = fields.DatetimeField(auto_now_add=True)
+
+# Main
+class Season(Model):
+    uuid = fields.UUIDField(pk=True)
+    year = fields.IntField()
+    label = fields.CharField(max_length=255)
+    active = fields.BooleanField(default=True)
+    created_at = fields.DatetimeField(auto_now_add=True)
+
+    # Deactivate all other seasons if this one is saved as active
+    async def save(self, *args, **kwargs):
+        if self.active:
+            await Season.filter(active=True).exclude(uuid=self.uuid).update(active=False)
+
+        await super().save(*args, **kwargs)
+
