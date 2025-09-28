@@ -4,7 +4,7 @@
 
     import Logo from "../generic/Logo.svelte";
 
-    export let handleNavigate: (next: string) => void;
+    export let handleNavigate: (nextPage: string) => void;
 </script>
 
 <div class="flex flex-col gap-4 items-center">

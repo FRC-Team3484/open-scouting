@@ -13,8 +13,8 @@
 	import { apiFetch } from "$lib/utls/api";
 	import Skeleton from "../ui/skeleton/skeleton.svelte";
 
-    let user = null;
-    let organizations = null;
+    let user: any = null;
+    let organizations: any = null;
 
     let organization_value = {"name":"default", "id":"0", "label":"None"};
 
@@ -32,7 +32,8 @@
         }
     });
 
-    export let handleNavigate: (next: string) => void;
+    export let handleNavigate: (nextPage: string) => void;
+    export let setUser: (username: string, team_number: number, uuid: string) => void;
 </script>
 
 <div class="flex flex-col gap-4">
@@ -59,11 +60,11 @@
                     </Card.Content>
 
                     <Card.Footer>
-                        <Button><ArrowRight weight="bold" /> Continue</Button>
+                        <Button onclick={() => setUser(document.getElementById("username").value, parseInt(document.getElementById("team_number").value), null)}><ArrowRight weight="bold" /> Continue</Button>
                     </Card.Footer>
                 </Card.Root>
             </Tabs.Content>
-            
+
             <Tabs.Content value="auth">
                 <Card.Root class="max-w-128 p-4 min-w-64">
                     <Card.Header>
@@ -113,7 +114,7 @@
                                 <SignOut weight="bold" />
                                 Sign Out
                             </Button>
-                            <Button>
+                            <Button onclick={() => setUser(user.username, user.team_number, user.uuid)}>
                                 <Avatar.Root>
                                     <!-- TODO: Actually load avatar from user account -->
                                     <Avatar.Image src={`https://github.com/${user.username}.png`} alt={user.username} />
@@ -129,8 +130,5 @@
                 </Card.Root>
             </Tabs.Content>
         </Tabs.Root>
-        
-
-        
     </div>
 </div>

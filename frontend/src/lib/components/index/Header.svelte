@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { fade, slide } from "svelte/transition";
+
     import * as Card from "$lib/components/ui/card";
 	import { ArrowDown, ArrowLeft, ArrowUp } from "phosphor-svelte";
 	import Logo from "../generic/Logo.svelte";
@@ -9,7 +11,31 @@
     let details = false;
     let progress = 1;
 
-    export let handleNavigate: (next: string) => void;
+    export let handleNavigate: (nextPage: string) => void;
+    export let page: string;
+    export let user: any;
+
+    $: {
+        switch (page) {
+            case "welcome":
+                progress = 0;
+                break;
+            case "auth":
+                progress = 1;
+                break;
+            case "year":
+                progress = 2;
+                break;
+            case "events":
+                progress = 3;
+                break;
+            case "action":
+                progress = 4;
+                break;
+            default:
+                progress = 1;
+        }
+    }
 </script>
 
 <Card.Card class="w-full">
@@ -26,7 +52,7 @@
                 <Separator orientation="vertical" class="min-h-16" />
 
                 <div class="flex flex-col gap-2">
-                    <p class="text-md">Step <strong>1 of 4</strong></p>
+                    <p class="text-md">Step <strong>{progress} of 4</strong></p>
                     <Progress value={progress} max={4} />
                     <Button onclick={() => details = !details} class="max-w-fit" variant="ghost">
                         <div class="flex items-center">
@@ -38,12 +64,21 @@
             </div>
 
             {#if details}
-                <div class="flex flex-col gap-2">
+                <div class="flex flex-col gap-2" transition:slide>
                     <div class="flex flex-row gap-4 items-center">
                         <p class="text-lg text-muted-foreground">Details</p>
                         <Separator orientation="horizontal" class="!w-3/4"/>
                     </div>
-                    <p>User: </p>
+                    <div class="flex flex-row gap-2">
+                        <p>User: </p>
+                        <p class="font-bold">{user.username}</p>
+                        <p class="font-mono">{user.team_number}</p>
+                        {#if user.uuid}
+                            <p class="text-sm text-muted-foreground">Authenticated</p>
+                        {:else}
+                            <p class="text-sm text-muted-foreground">Not Authenticated</p>
+                        {/if}
+                    </div>
                     <p>Year: </p>
                     <p>Event: </p>
                 </div>
