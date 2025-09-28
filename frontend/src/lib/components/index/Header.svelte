@@ -14,6 +14,7 @@
     export let handleNavigate: (nextPage: string) => void;
     export let page: string;
     export let user: any;
+    export let year: number;
 
     $: {
         switch (page) {
@@ -38,7 +39,7 @@
     }
 </script>
 
-<Card.Card class="w-full">
+<Card.Card class="w-auto">
     <Card.Content>
         <div class="flex flex-col gap-2">
             <div class="flex flex-row gap-4 items-center">
@@ -79,7 +80,7 @@
                             <p class="text-sm text-muted-foreground">Not Authenticated</p>
                         {/if}
                     </div>
-                    <p>Year: </p>
+                    <p>Year: {year}</p>
                     <p>Event: </p>
                 </div>
             {/if}

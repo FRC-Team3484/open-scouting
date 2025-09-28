@@ -60,7 +60,7 @@
                     </Card.Content>
 
                     <Card.Footer>
-                        <Button onclick={() => setUser(document.getElementById("username").value, parseInt(document.getElementById("team_number").value), null)}><ArrowRight weight="bold" /> Continue</Button>
+                        <Button onclick={() => {setUser(document.getElementById("username").value, parseInt(document.getElementById("team_number").value), null); handleNavigate("year")}}><ArrowRight weight="bold" /> Continue</Button>
                     </Card.Footer>
                 </Card.Root>
             </Tabs.Content>
@@ -114,7 +114,7 @@
                                 <SignOut weight="bold" />
                                 Sign Out
                             </Button>
-                            <Button onclick={() => setUser(user.username, user.team_number, user.uuid)}>
+                            <Button onclick={() => {setUser(user.username, user.team_number, user.uuid); handleNavigate("year")}}>
                                 <Avatar.Root>
                                     <!-- TODO: Actually load avatar from user account -->
                                     <Avatar.Image src={`https://github.com/${user.username}.png`} alt={user.username} />
