@@ -10,6 +10,8 @@
 	import Separator from "../ui/separator/separator.svelte";
 	import { ArrowSquareOut, SquaresFour, Star } from "phosphor-svelte";
 	import Badge from "../ui/badge/badge.svelte";
+	import Skeleton from "../ui/skeleton/skeleton.svelte";
+	import ScrollArea from "../ui/scroll-area/scroll-area.svelte";
 
     export let handleNavigate: (nextPage: string) => void;
     export let year: number;
@@ -51,9 +53,34 @@
                     <Tabs.Trigger value="favorite"><Star weight="bold" /> Favorite Events</Tabs.Trigger>
                 </Tabs.List>
                 <Tabs.Content value="all">
-                    <div class="flex flex-col gap-2 overflow-y-scroll max-h-[calc(100vh-32rem)]">
+                    <ScrollArea class="flex flex-col overflow-y-scroll max-h-[calc(100vh-32rem)]">
+                        {#if events == null}
+                            {#each [0, 1, 2] as _}
+                                <div class="flex flex-col gap-2 my-2">
+                                    <div class="flex flex-row gap-2">
+                                        <Skeleton class="h-5 w-8" />
+                                        <Skeleton class="h-5 w-48" />
+                                        <Skeleton class="h-5 w-8" />
+                                    </div>
+
+                                    <div class="flex flex-row gap-2">
+                                        <Skeleton class="h-5 w-16" />
+                                        <Skeleton class="h-5 w-16" />
+                                        <Skeleton class="h-5 w-8" />
+                                    </div>
+
+                                    <div class="flex flex-row gap-2">
+                                        <Skeleton class="h-5 w-16" />
+                                        <Skeleton class="h-5 w-16" />
+                                    </div>
+                                </div>
+                            {/each}
+
+                        {:else if events.length == 0}
+                            <p>No events found</p>
+                        {:else}
                             {#each events as event}
-                                <Card.Root class="max-w-128 p-4 min-w-64">
+                                <Card.Root class="max-w-128 p-4 min-w-64 my-2">
                                     <Card.Content>
                                         <div class="flex flex-col gap-2">
                                             <div class="flex flex-row gap-2">
@@ -78,7 +105,8 @@
                                     </Card.Content>
                                 </Card.Root>
                             {/each}
-                        </div>
+                        {/if}
+                    </ScrollArea>
                 </Tabs.Content>
                 <Tabs.Content value="favorite">
                 
