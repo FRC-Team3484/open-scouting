@@ -10,7 +10,7 @@
 	import { ArrowRight, ArrowLeft, Building, SignOut, SignIn } from "phosphor-svelte";
 	import { signOut, validateTokenOnline } from "$lib/utls/user";
 	import { onMount } from "svelte";
-	import { apiFetch } from "$lib/utls/api";
+	import { apiFetch, theBlueAllianceApiFetch } from "$lib/utls/api";
 	import Skeleton from "../ui/skeleton/skeleton.svelte";
 
     let user: any = null;

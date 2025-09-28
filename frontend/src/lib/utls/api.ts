@@ -48,3 +48,9 @@ export async function apiFetch<T = any>(
 		return (response.text() as unknown) as T;
 	}
 }
+
+export async function theBlueAllianceApiFetch<T = any>(url: string) {
+	const response = await fetch(`/api/tba/${url}`);
+	return response.json() as Promise<T>;
+}
+

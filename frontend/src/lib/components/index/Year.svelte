@@ -18,7 +18,6 @@
         if (active_year) {
             selected_year = {year: active_year.year, label: active_year.label, uuid: active_year.uuid};
         }
-        console.log(years);
     });
 
     export let handleNavigate: (nextPage: string) => void;
