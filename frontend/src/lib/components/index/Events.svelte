@@ -13,11 +13,13 @@
 	import Skeleton from "../ui/skeleton/skeleton.svelte";
 	import ScrollArea from "../ui/scroll-area/scroll-area.svelte";
 	import Button from "../ui/button/button.svelte";
+	import { getUserSetting, getUserSettings, setUserSetting } from "$lib/utls/user";
 
     export let handleNavigate: (nextPage: string) => void;
     export let year: number;
 
     let events: any = null;
+    let favorite_events: [] = [];
 
     onMount(async () => {
         try {
@@ -26,6 +28,10 @@
         } catch (error) {
             console.error(error);
         }
+
+        const settings = await getUserSetting("favorite_events").then(async (data) => {
+            favorite_events = data;
+        });
     });
 
     function selectEvent(e: MouseEvent, eventData) {

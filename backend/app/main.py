@@ -4,7 +4,7 @@ from datetime import timedelta
 from pydantic import BaseModel
 from typing import Annotated
 
-from fastapi import FastAPI, Form, Depends, HTTPException, status
+from fastapi import FastAPI, Form, Depends, HTTPException, status, Body
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from tortoise.contrib.fastapi import register_tortoise
@@ -125,7 +125,7 @@ async def get_user_settings(current_user: User = Depends(get_current_user), resp
     return settings
 
 @app.post("/users/me/update_settings")
-async def update_user_settings(favorite_events: list = Form(...), current_user: User = Depends(get_current_user)):
+async def update_user_settings(settings_data: dict = Body(...), current_user: User = Depends(get_current_user)):
     user = await User.get_or_none(uuid=current_user.uuid)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -134,7 +134,12 @@ async def update_user_settings(favorite_events: list = Form(...), current_user: 
     if not settings:
         settings = await Settings.create(user=user)
 
-    settings.favorite_events = favorite_events
+    for key, value in settings_data.items():
+        if hasattr(settings, key):
+            setattr(settings, key, value)
+        else:
+            print(f"Warning: ignoring unknown setting key '{key}'")
+
     await settings.save()
     return settings
 

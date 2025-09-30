@@ -75,23 +75,19 @@ npx shadcn-svelte@latest add
 ```
 
 ## User Managment
-The client can manage the currently authenticated user using `user.ts`
+The client can manage the currently authenticated user using `$lib/utils/user.ts`
 
-```html
-<script lang="ts">
-    import { onMount } from "svelte";
-    import { validateTokenOnline, signOut } from '$lib/utils/user';
+- `validateTokenOnline()` - If the user is authenticated and has a valid token, returns the user's data
+- `signOut()` - Signs the user out by deleting the access token from the client
+- `getUserSettings()` - Returns all the settings for the user
+- `setUserSettings(settings)` - Updates all the settings for the user
+    - `settings` - The dictionary of settings, hopefully edited based off of the result of `getUserSettings()`
+- `getUserSetting(key)` - Returns the value of a specific setting for the user
+    - `key` - The key of the specific setting
+- `setUserSetting(key, value)` - Sets a specific setting to a certain value
+    - `key` - The key of the specific setting
+    - `value` - The value to set the setting to
 
-    let user;
-
-    onMount(async () => {
-        user = await validateTokenOnline(); // If the user is authenticated and their token is valid, returns their user details
-
-        await signOut(); // Signs the user out
-    });
-
-</script>
-```
 
 ## API Requests
 Requests can be made to the backend using `api.ts`
