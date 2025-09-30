@@ -10,7 +10,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from tortoise.contrib.fastapi import register_tortoise
 from tortoise.exceptions import IntegrityError
 
-from app.models import User, Profile, Organization, OrganizationMember, Season
+from app.models import User, Profile, Organization, OrganizationMember, Season, Settings
 from app.auth import get_password_hash, verify_password, create_access_token, decode_access_token
 
 # Setup
@@ -112,6 +112,31 @@ async def delete_user(username: str, current_user: User = Depends(get_current_us
         raise HTTPException(status_code=404, detail="User not found")
     await user.delete()
     return {"message": "User deleted"}
+
+@app.get("/users/me/get_settings")
+async def get_user_settings(current_user: User = Depends(get_current_user), response_model_exclude={"hashed_password"}):
+    user = await User.get_or_none(uuid=current_user.uuid)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    settings = await Settings.get_or_none(user=user)
+
+    if not settings:
+        settings = await Settings.create(user=user)
+    return settings
+
+@app.post("/users/me/update_settings")
+async def update_user_settings(favorite_events: list = Form(...), current_user: User = Depends(get_current_user)):
+    user = await User.get_or_none(uuid=current_user.uuid)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    settings = await Settings.get_or_none(user=user)
+
+    if not settings:
+        settings = await Settings.create(user=user)
+
+    settings.favorite_events = favorite_events
+    await settings.save()
+    return settings
 
 @app.get("/auth/validate")
 async def validate_user(current_user: User = Depends(get_current_user), response_model_exclude={"hashed_password"}):

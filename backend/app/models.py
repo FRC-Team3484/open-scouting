@@ -36,6 +36,11 @@ class OrganizationMember(Model):
     role = fields.CharField(max_length=255) # member, admin
     created_at = fields.DatetimeField(auto_now_add=True)
 
+class Settings(Model):
+    uuid = fields.UUIDField(pk=True)
+    user = fields.ForeignKeyField("models.User", related_name="settings")
+    favorite_events = fields.JSONField(null=True, default=list)
+
 # Main
 class Season(Model):
     uuid = fields.UUIDField(pk=True)
