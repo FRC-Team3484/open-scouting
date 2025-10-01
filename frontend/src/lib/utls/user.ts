@@ -45,9 +45,7 @@ async function getUserSetting(key) {
 
 async function setUserSetting(key, value) {
     let settings = await getUserSettings();
-    console.log(settings);
     settings[key] = value;
-    console.log(settings);
     await setUserSettings(settings);
 }
 

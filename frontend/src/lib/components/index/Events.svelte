@@ -14,6 +14,8 @@
 	import ScrollArea from "../ui/scroll-area/scroll-area.svelte";
 	import Button from "../ui/button/button.svelte";
 	import { getUserSetting, getUserSettings, setUserSetting } from "$lib/utls/user";
+	import { get } from "svelte/store";
+	import EventList from "./events/EventList.svelte";
 
     export let handleNavigate: (nextPage: string) => void;
     export let year: number;
@@ -29,17 +31,25 @@
             console.error(error);
         }
 
-        const settings = await getUserSetting("favorite_events").then(async (data) => {
-            favorite_events = data;
-        });
+        favorite_events = await getUserSetting("favorite_events") ?? [];
     });
 
     function selectEvent(e: MouseEvent, eventData) {
         console.log("clicked", eventData);
     }
 
-    function favoriteEvent(e: MouseEvent, eventData) {
-        console.log("fav", eventData)
+    async function favoriteEvent(e: MouseEvent, eventData) {
+        const key = `${eventData.year}_${eventData.event_code}`;
+
+        if (favorite_events.includes(key)) {
+            favorite_events = favorite_events.filter(k => k !== key); // reassignment
+        } else {
+            favorite_events = [...favorite_events, key]; // reassignment
+        }
+
+        console.log(favorite_events);
+
+        await setUserSetting("favorite_events", favorite_events);
     }
 </script>
 
@@ -67,66 +77,10 @@
                     <Tabs.Trigger value="favorite"><Star weight="bold" /> Favorite Events</Tabs.Trigger>
                 </Tabs.List>
                 <Tabs.Content value="all">
-                    <ScrollArea>
-                        <div class="flex flex-col overflow-y-scroll max-h-[calc(100vh-32rem)]">
-                            {#if events == null}
-                                {#each [0, 1, 2] as _}
-                                    <div class="flex flex-col gap-2 my-4">
-                                        <div class="flex flex-row gap-2">
-                                            <Skeleton class="h-5 w-8" />
-                                            <Skeleton class="h-5 w-48" />
-                                            <Skeleton class="h-5 w-8" />
-                                        </div>
-                                        <div class="flex flex-row gap-2">
-                                            <Skeleton class="h-5 w-16" />
-                                            <Skeleton class="h-5 w-16" />
-                                            <Skeleton class="h-5 w-8" />
-                                        </div>
-                                        <div class="flex flex-row gap-2">
-                                            <Skeleton class="h-5 w-16" />
-                                            <Skeleton class="h-5 w-16" />
-                                        </div>
-                                    </div>
-                                {/each}
-                            {:else if events.length == 0}
-                                <p>No events found</p>
-                            {:else}
-                                {#each events as event}
-                                    <Card.Root class="w-full max-w-128 min-w-64 my-2">
-                                        <Card.Content>
-                                            <div class="flex flex-row gap-2 justify-between">
-                                                <div class="flex flex-col gap-2">
-                                                    <div class="flex flex-row gap-2">
-                                                        <Badge variant="secondary" class="max-h-5"><ArrowSquareOut weight="bold" />TBA</Badge>
-                                                        <p class="font-bold">{event.name}</p>
-                                                        <p class="font-mono text-muted-foreground">{event.event_code}</p>
-                                                    </div>
-                                                    <div class="flex flex-row gap-2">
-                                                        <p>{event.event_type_string}</p>
-                                                        <p>-</p>
-                                                        <p>{event.city},</p>
-                                                        <p>{event.country}</p>
-                                                    </div>
-                                                    <div class="flex flex-row gap-2">
-                                                        <p class="text-sm">{event.start_date}</p>
-                                                        <p class="text-sm">-</p>
-                                                        <p class="text-sm">{event.end_date}</p>
-                                                    </div>
-                                                    <div class="flex flex-row gap-2">
-                                                        <Button variant="ghost" size="icon" onclick={(e) => favoriteEvent(e, event)}><Star weight="bold" /></Button>
-                                                        <Button variant="outline" onclick={(e) => selectEvent(e, event)}><ArrowRight weight="bold" /> Continue</Button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </Card.Content>
-                                    </Card.Root>
-                                {/each}
-                            {/if}
-                        </div>
-                    </ScrollArea>
+                    <EventList events={events} favorite_events={favorite_events} selectEvent={selectEvent} favoriteEvent={favoriteEvent} />
                 </Tabs.Content>
                 <Tabs.Content value="favorite">
-                
+                    <EventList events={events} favorite_events={favorite_events} selectEvent={selectEvent} favoriteEvent={favoriteEvent} favorites={true} />
                 </Tabs.Content>
             </Tabs.Root>
         </div>
