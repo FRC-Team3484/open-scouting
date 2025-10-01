@@ -8,20 +8,28 @@
 	import Checkbox from "../ui/checkbox/checkbox.svelte";
 	import Label from "../ui/label/label.svelte";
 	import Separator from "../ui/separator/separator.svelte";
-	import { ArrowRight, ArrowSquareOut, Mouse, SquaresFour, Star } from "phosphor-svelte";
-	import Badge from "../ui/badge/badge.svelte";
-	import Skeleton from "../ui/skeleton/skeleton.svelte";
-	import ScrollArea from "../ui/scroll-area/scroll-area.svelte";
-	import Button from "../ui/button/button.svelte";
-	import { getUserSetting, getUserSettings, setUserSetting } from "$lib/utls/user";
-	import { get } from "svelte/store";
+	import { SquaresFour, Star } from "phosphor-svelte";
+	import { getUserSetting, setUserSetting } from "$lib/utls/user";
 	import EventList from "./events/EventList.svelte";
 
-    export let handleNavigate: (nextPage: string) => void;
-    export let year: number;
+    let { handleNavigate, year } = $props();
 
-    let events: any = null;
-    let favorite_events: [] = [];
+    let events = $state<any | null>(null);
+    let favorite_events: [] = $state([]);
+
+    let search = $state("");
+    let showPastEvents = $state(false);
+
+    let filteredEvents = $derived(events?.filter(event => {
+        const searchValue = search.toLowerCase();
+        const eventName = event.name.toLowerCase();
+        const eventCode = event.event_code.toLowerCase();
+
+        return (
+            (eventName.includes(searchValue) || eventCode.includes(searchValue)) &&
+            (showPastEvents || event.start_date >= new Date().toISOString())
+        );
+    }));
 
     onMount(async () => {
         try {
@@ -47,8 +55,6 @@
             favorite_events = [...favorite_events, key]; // reassignment
         }
 
-        console.log(favorite_events);
-
         await setUserSetting("favorite_events", favorite_events);
     }
 </script>
@@ -62,10 +68,10 @@
     <Card.Content>
         <div class="flex flex-col gap-2">
             <Label for="search">Search for an event</Label>
-            <Input id="search" type="text" placeholder="Search"/>
+            <Input id="search" type="text" placeholder="Search" bind:value={search}/>
             
             <div class="flex flex-row gap-2">
-                <Checkbox id="show_past_events" />
+                <Checkbox id="show_past_events" bind:checked={showPastEvents}/>
                 <Label for="show_past_events">Include past events</Label>
             </div>
 
@@ -77,10 +83,10 @@
                     <Tabs.Trigger value="favorite"><Star weight="bold" /> Favorite Events</Tabs.Trigger>
                 </Tabs.List>
                 <Tabs.Content value="all">
-                    <EventList events={events} favorite_events={favorite_events} selectEvent={selectEvent} favoriteEvent={favoriteEvent} />
+                    <EventList events={filteredEvents} favorite_events={favorite_events} selectEvent={selectEvent} favoriteEvent={favoriteEvent} />
                 </Tabs.Content>
                 <Tabs.Content value="favorite">
-                    <EventList events={events} favorite_events={favorite_events} selectEvent={selectEvent} favoriteEvent={favoriteEvent} favorites={true} />
+                    <EventList events={filteredEvents} favorite_events={favorite_events} selectEvent={selectEvent} favoriteEvent={favoriteEvent} favorites={true} />
                 </Tabs.Content>
             </Tabs.Root>
         </div>
