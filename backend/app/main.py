@@ -9,6 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from tortoise.contrib.fastapi import register_tortoise
 from tortoise.exceptions import IntegrityError
+from tortoise.contrib.pydantic import pydantic_model_creator
 
 from app.models import User, Profile, Organization, OrganizationMember, Season, Settings
 from app.auth import get_password_hash, verify_password, create_access_token, decode_access_token
@@ -45,6 +46,9 @@ TORTOISE_ORM = {
         },
     },
 }
+
+# Model Schemas
+UserOut = pydantic_model_creator(User, name="UserOut", exclude=["hashed_password"])
 
 # Utility Functions
 async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
@@ -101,7 +105,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     return {"access_token": access_token, "token_type": "bearer"}
 
 @app.get("/users/")
-async def read_items(current_user: User = Depends(get_current_user), response_model_exclude={"hashed_password"}):
+async def read_items(current_user: User = Depends(get_current_user), response_model=UserOut):
     users = await User.all()
     return users
 
@@ -114,7 +118,7 @@ async def delete_user(username: str, current_user: User = Depends(get_current_us
     return {"message": "User deleted"}
 
 @app.get("/users/me/get_settings")
-async def get_user_settings(current_user: User = Depends(get_current_user), response_model_exclude={"hashed_password"}):
+async def get_user_settings(current_user: User = Depends(get_current_user), response_model=UserOut):
     user = await User.get_or_none(uuid=current_user.uuid)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -144,7 +148,7 @@ async def update_user_settings(settings_data: dict = Body(...), current_user: Us
     return settings
 
 @app.get("/auth/validate")
-async def validate_user(current_user: User = Depends(get_current_user), response_model_exclude={"hashed_password"}):
+async def validate_user(current_user: User = Depends(get_current_user), response_model=UserOut):
     return current_user
 
 #    Organizations
@@ -160,7 +164,7 @@ async def get_organizations():
     return organizations
 
 @app.get("/organization/me/list")
-async def get_user_organizations(current_user: User = Depends(get_current_user), response_model_exclude={"hashed_password"}):
+async def get_user_organizations(current_user: User = Depends(get_current_user)):
     user = await User.get_or_none(uuid=current_user.uuid)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -185,7 +189,7 @@ async def delete_organization(organization_uuid: str, current_user: User = Depen
     return {"message": "Organization deleted"}
 
 @app.get("/organization/{organization_uuid}/members")
-async def get_organization_members(organization_uuid: str, current_user: User = Depends(get_current_user), response_model_exclude={"hashed_password"}):
+async def get_organization_members(organization_uuid: str, current_user: User = Depends(get_current_user)):
     organization = await Organization.get_or_none(uuid=organization_uuid)
     if not organization:
         raise HTTPException(status_code=404, detail="Organization not found")
