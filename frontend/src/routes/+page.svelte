@@ -4,9 +4,10 @@
 	import Header from "$lib/components/index/Header.svelte";
 	import Year from "$lib/components/index/Year.svelte";
 	import Events from "$lib/components/index/Events.svelte";
+	import Action from "$lib/components/index/Action.svelte";
 	
 
-	let page = $state("events"); // welcome, auth, year, events, action
+	let page = $state("action"); // welcome, auth, year, events, action
 
 	let user = $state({
 		username: "",
@@ -69,7 +70,7 @@
 	{:else if page === "action"}
 		<!-- 4 - Action -->
 
-		
+		<Action />
 
 	{/if}
 </div>

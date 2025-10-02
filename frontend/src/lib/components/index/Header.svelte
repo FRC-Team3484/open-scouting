@@ -33,6 +33,7 @@
                 break;
             case "action":
                 progress = 4;
+                details = true;
                 break;
             default:
                 progress = 1;
@@ -54,8 +55,8 @@
                 <Separator orientation="vertical" class="min-h-16" />
 
                 <div class="flex flex-col gap-2">
-                    <p class="text-md">Step <strong>{progress} of 5</strong></p>
-                    <Progress value={progress} max={5} />
+                    <p class="text-md">Step <strong>{progress} of 4</strong></p>
+                    <Progress value={progress} max={4} />
                     <Button onclick={() => details = !details} class="max-w-fit" variant="ghost">
                         <div class="flex items-center">
                             <ArrowDown weight="bold" class="transform transition-transform duration-200 ease-in-out {details ? 'rotate-180' : 'rotate-0'}" />
