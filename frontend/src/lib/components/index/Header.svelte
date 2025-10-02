@@ -15,6 +15,7 @@
     export let page: string;
     export let user: any;
     export let year: number;
+    export let event: any;
 
     $: {
         switch (page) {
@@ -53,8 +54,8 @@
                 <Separator orientation="vertical" class="min-h-16" />
 
                 <div class="flex flex-col gap-2">
-                    <p class="text-md">Step <strong>{progress} of 4</strong></p>
-                    <Progress value={progress} max={4} />
+                    <p class="text-md">Step <strong>{progress} of 5</strong></p>
+                    <Progress value={progress} max={5} />
                     <Button onclick={() => details = !details} class="max-w-fit" variant="ghost">
                         <div class="flex items-center">
                             <ArrowDown weight="bold" class="transform transition-transform duration-200 ease-in-out {details ? 'rotate-180' : 'rotate-0'}" />
@@ -81,7 +82,11 @@
                         {/if}
                     </div>
                     <p>Year: {year}</p>
-                    <p>Event: </p>
+                    <div class="flex flex-row gap-2">
+                        <p>Event: </p>
+                        <p class="font-bold">{event.name}</p>
+                        <p class="font-mono">{event.event_code}</p>
+                    </div>
                 </div>
             {/if}
         </div>

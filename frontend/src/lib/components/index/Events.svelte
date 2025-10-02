@@ -12,7 +12,7 @@
 	import { getUserSetting, setUserSetting } from "$lib/utls/user";
 	import EventList from "./events/EventList.svelte";
 
-    let { handleNavigate, year } = $props();
+    let { handleNavigate, year, setEvent } = $props();
 
     let events = $state<any | null>(null);
     let favorite_events: [] = $state([]);
@@ -41,10 +41,6 @@
 
         favorite_events = await getUserSetting("favorite_events") ?? [];
     });
-
-    function selectEvent(e: MouseEvent, eventData) {
-        console.log("clicked", eventData);
-    }
 
     async function favoriteEvent(e: MouseEvent, eventData) {
         const key = `${eventData.year}_${eventData.event_code}`;
@@ -83,10 +79,10 @@
                     <Tabs.Trigger value="favorite"><Star weight="bold" /> Favorite Events</Tabs.Trigger>
                 </Tabs.List>
                 <Tabs.Content value="all">
-                    <EventList events={filteredEvents} favorite_events={favorite_events} selectEvent={selectEvent} favoriteEvent={favoriteEvent} />
+                    <EventList events={filteredEvents} favorite_events={favorite_events} handleNavigate={handleNavigate} setEvent={setEvent} favoriteEvent={favoriteEvent} favorites={false} />
                 </Tabs.Content>
                 <Tabs.Content value="favorite">
-                    <EventList events={filteredEvents} favorite_events={favorite_events} selectEvent={selectEvent} favoriteEvent={favoriteEvent} favorites={true} />
+                    <EventList events={filteredEvents} favorite_events={favorite_events} handleNavigate={handleNavigate} setEvent={setEvent} favoriteEvent={favoriteEvent} favorites={true} />
                 </Tabs.Content>
             </Tabs.Root>
         </div>

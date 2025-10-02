@@ -8,7 +8,8 @@
 
     export let events: any = null;
     export let favorite_events: [] = [];
-    export let selectEvent: (e: MouseEvent, eventData) => void;
+    export let handleNavigate: (nextPage: string) => void;
+    export let setEvent: (event_code: string, year: number, name: string) => void;
     export let favoriteEvent: (e: MouseEvent, eventData) => void;
     export let favorites = false;
 
@@ -72,7 +73,7 @@
                                     {:else}
                                         <Button variant="ghost" size="icon" onclick={(e) => favoriteEvent(e, event)}><Star weight="bold" /></Button>
                                     {/if}
-                                    <Button variant="outline" onclick={(e) => selectEvent(e, event)}><ArrowRight weight="bold" /> Continue</Button>
+                                    <Button variant="outline" onclick={(e) => {setEvent(event.event_code, event.year, event.name); handleNavigate("action")}}><ArrowRight weight="bold" /> Continue</Button>
                                 </div>
                             </div>
                         </div>

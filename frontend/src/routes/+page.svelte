@@ -14,6 +14,11 @@
 		uuid: ""
 	});
 	let year = $state(2025);
+	let selected_event = $state({
+		event_code: "",
+		year: 0,
+		name: ""
+	});
 
 	function handleNavigate(nextPage: string): void {
 		page = nextPage;
@@ -30,11 +35,19 @@
 	function setYear(newYear: number): void {
 		year = newYear;
 	}
+
+	function setEvent(event_code: string, year: number, name: string): void {
+		selected_event = {
+			event_code: event_code,
+			year: year,
+			name: name
+		}
+	}
 </script>
 
 <div class="flex flex-col justify-center items-center h-screen gap-4">
 	{#if page !== "welcome"}
-		<Header handleNavigate={handleNavigate} page={page} user={user} year={year}/>
+		<Header handleNavigate={handleNavigate} page={page} user={user} year={year} event={selected_event}/>
 	{/if}
 
 	{#if page === "welcome"}
@@ -51,7 +64,12 @@
 
 	{:else if page === "events"}
 		<!-- 3 - Events -->
-		<Events handleNavigate={handleNavigate} year={year}/>
+		<Events handleNavigate={handleNavigate} year={year} setEvent={setEvent}/>
+
+	{:else if page === "action"}
+		<!-- 4 - Action -->
+
+		
 
 	{/if}
 </div>
