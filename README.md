@@ -1,19 +1,13 @@
-<div align="center">
+<img src="repo/images/icon.png" align="right" width="128" />
 
-  ![Open Scouting logo](repo/images/icon.png)
+# Open Scouting
+**An open source application for easier scouting at FIRST Robotics competitions**
 
-  <h1>Open Scouting</h1>
+**[Live Server](https://206.189.255.232/) ● [Releases](https://github.com/FRC-Team3484/open-scouting/releases) ● [Issues](https://github.com/FRC-Team3484/open-scouting/issues) ● [Development branch](https://github.com/FRC-Team3484/open-scouting/tree/development)**
 
-  **An open source application for easier scouting at FIRST Robotics competitions**
-
-  **[Live Server](https://206.189.255.232/) ● [Releases](https://github.com/FRC-Team3484/open-scouting/releases) ● [Issues](https://github.com/FRC-Team3484/open-scouting/issues) ● [Development branch](https://github.com/FRC-Team3484/open-scouting/tree/development)**
-</div>
-
-<p align="center">
-  <a href="https://skillicons.dev">
-    <img src="https://skillicons.dev/icons?i=fastapi,svelte,tailwindcss,vite" />
-  </a>
-</p>
+<a href="https://skillicons.dev">
+  <img src="https://skillicons.dev/icons?i=fastapi,svelte,tailwindcss,vite" />
+</a>
 
 
 ## Features
