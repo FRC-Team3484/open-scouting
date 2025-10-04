@@ -6,6 +6,7 @@
 	import favicon from '$lib/assets/favicon.svg';
 	import { ModeWatcher } from "mode-watcher";
 	import { Toaster } from "$lib/components/ui/sonner";
+	import Menu from "$lib/components/menu/Menu.svelte";
 
 	let { children } = $props();
 
@@ -39,5 +40,6 @@
 
 <ModeWatcher></ModeWatcher>
 <Toaster position="top-right" closeButton/>
+<Menu />
 
 {@render children?.()}

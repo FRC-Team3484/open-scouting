@@ -7,14 +7,14 @@
 	import Action from "$lib/components/index/Action.svelte";
 	
 
-	let page = $state("action"); // welcome, auth, year, events, action
+	let page = $state("welcome"); // welcome, auth, year, events, action
 
 	let user = $state({
 		username: "",
 		team_number: 0,
 		uuid: ""
 	});
-	let year = $state(2025);
+	let year = $state(0);
 	let selected_event = $state({
 		event_code: "",
 		year: 0,
