@@ -8,3 +8,8 @@
 <div class="flex flex-col justify-center items-center h-screen gap-4">
 	<Welcome />
 </div>
+
+
+<div class="flex flex-col justify-center items-center h-screen gap-4">
+	<Welcome />
+</div>

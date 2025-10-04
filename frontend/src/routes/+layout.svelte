@@ -7,6 +7,7 @@
 	import { ModeWatcher } from "mode-watcher";
 	import { Toaster } from "$lib/components/ui/sonner";
 	import Menu from "$lib/components/menu/Menu.svelte";
+	import NavBar from "$lib/components/generic/NavBar.svelte";
 
 	let { children } = $props();
 
@@ -38,6 +39,7 @@
 	{@html webManifest}
 </svelte:head>
 
+<NavBar></NavBar>
 <ModeWatcher></ModeWatcher>
 <Toaster position="top-right" closeButton/>
 <Menu />
