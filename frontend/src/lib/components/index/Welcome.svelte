@@ -3,8 +3,6 @@
     import { GithubLogo, Bug, Rocket, ArrowRight } from "phosphor-svelte";
 
     import Logo from "../generic/Logo.svelte";
-
-    export let handleNavigate: (nextPage: string) => void;
 </script>
 
 <div class="flex flex-col gap-4 items-center">
@@ -18,5 +16,5 @@
         <Button variant="outline" href="https://github.com/FRC-Team3484/open-scouting/releases"><Rocket weight="bold" /> Releases</Button>
     </div>
 
-    <Button onclick={() => handleNavigate("auth")}><ArrowRight weight="bold" /> Get Started</Button>
+    <Button href="/start"><ArrowRight weight="bold" /> Get Started</Button>
 </div>

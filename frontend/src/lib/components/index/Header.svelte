@@ -19,9 +19,6 @@
 
     $: {
         switch (page) {
-            case "welcome":
-                progress = 0;
-                break;
             case "auth":
                 progress = 1;
                 break;
@@ -45,11 +42,11 @@
     <Card.Content>
         <div class="flex flex-col gap-2">
             <div class="flex flex-row gap-4 items-center">
-                <Logo text={false} style="small" />
+                <Logo text={false} style="small" href="/"/>
 
                 <div class="flex flex-col gap-2">
                     <p class="text-lg font-bold font-mono">Open Scouting</p>
-                    <Button onclick={() => handleNavigate("welcome")} class="max-w-fit" variant="ghost"><ArrowLeft weight="bold" /> Start Over</Button>
+                    <Button onclick={() => handleNavigate("auth")} class="max-w-fit" variant="ghost"><ArrowLeft weight="bold" /> Start Over</Button>
                 </div>
 
                 <Separator orientation="vertical" class="min-h-16" />
