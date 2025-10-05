@@ -39,9 +39,11 @@
 	{@html webManifest}
 </svelte:head>
 
-<NavBar></NavBar>
-<ModeWatcher></ModeWatcher>
-<Toaster position="top-right" closeButton/>
-<Menu />
-
-{@render children?.()}
+<div class="p-2">
+	<NavBar></NavBar>
+	<ModeWatcher></ModeWatcher>
+	<Toaster position="top-right" closeButton/>
+	<Menu />
+	
+	{@render children?.()}
+</div>

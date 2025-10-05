@@ -15,9 +15,9 @@
                 src={icon_rounded}
                 alt="Logo"
                 class={
-                    style === "tiny" ? "w-12 h-12"
-                    : style === "small" ? "w-16 h-16"
-                    : "w-24 h-24"
+                    style === "tiny" ? "w-12 h-12 aspect-square"
+                    : style === "small" ? "w-16 h-16 aspect-square"
+                    : "w-24 h-24 aspect-square"
                 }
             />
         </a>
@@ -26,9 +26,9 @@
             src={icon_rounded}
             alt="Logo"
             class={
-                    style === "tiny" ? "w-12 h-12"
-                    : style === "small" ? "w-16 h-16"
-                    : "w-24 h-24"
+                    style === "tiny" ? "w-12 h-12 aspect-square"
+                    : style === "small" ? "w-16 h-16 aspect-square"
+                    : "w-24 h-24 aspect-square"
                 }
         />
     {/if}

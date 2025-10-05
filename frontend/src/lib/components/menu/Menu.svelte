@@ -9,8 +9,8 @@
 
 <Drawer.Root shouldScaleBackground={false}>
     <Drawer.Trigger class="absolute bottom-2 right-2">
-        <Button variant="outline" class="!aspect-square !rounded-full !w-16 !h-16">
-            <List weight="bold" class="!w-8 !h-8"/>
+        <Button variant="outline" class="!aspect-square !rounded-full md:!w-16 md:!h-16 !w-10 !h-10 backdrop-blur-lg">
+            <List weight="bold" class="md:!w-8 md:!h-8 !w-6 !h-6"/>
         </Button>
     </Drawer.Trigger>
     <Drawer.Content class="h-auto lg:mx-64 border-1 p-4 pb-16">

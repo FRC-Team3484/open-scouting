@@ -12,7 +12,7 @@
     </Card.Header>
 
     <Card.Content>
-        <div class="flex flex-col gap-4 px-20">
+        <div class="flex flex-col gap-4 md:px-20">
             <Button variant="default" id="match"><Binoculars weight="bold" /> Match Scouting</Button>
             <Label for="match">Contribute data by watching matches at competition</Label>
             
