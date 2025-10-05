@@ -45,8 +45,8 @@
 	<Toaster position="top-right" closeButton />
 	<Menu />
 
-	<!-- The main content area -->
-	<main class="flex-1">
+	<!-- Pad the top for navigation bar -->
+	<main class="flex-1 pt-24 md:pt-28">
 		{@render children?.()}
 	</main>
 </div>

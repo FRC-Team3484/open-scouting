@@ -8,7 +8,7 @@
 </script>
 
 <Drawer.Root shouldScaleBackground={false}>
-    <Drawer.Trigger class="absolute bottom-2 right-2">
+    <Drawer.Trigger class="fixed bottom-2 right-2">
         <Button variant="outline" class="!aspect-square !rounded-full md:!w-16 md:!h-16 !w-10 !h-10 backdrop-blur-lg">
             <List weight="bold" class="md:!w-8 md:!h-8 !w-6 !h-6"/>
         </Button>
