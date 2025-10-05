@@ -56,3 +56,33 @@ class Season(Model):
 
         await super().save(*args, **kwargs)
 
+class GamePiece(Model):
+    uuid = fields.UUIDField(pk=True)
+    season = fields.ForeignKeyField("models.Season", related_name="game_pieces")
+    name = fields.CharField(max_length=255)
+    label = fields.CharField(max_length=255)
+    created_at = fields.DatetimeField(auto_now_add=True)
+
+class MatchScoutingField(Model):
+    uuid = fields.UUIDField(pk=True)
+    season = fields.ForeignKeyField("models.Season", related_name="fields")
+    name = fields.CharField(max_length=255)
+    label = fields.CharField(max_length=255)
+    field_type = fields.CharField(max_length=255) # string, large_number, small_number, boolean, choice, multiple_choice
+    stat_type = fields.CharField(max_length=255) # auton_score, auton_miss, teleop_score, teleop_miss, capability, other, ignore
+    game_piece = fields.ForeignKeyField("models.GamePiece", related_name="fields", null=True) # needed if stat_type is score or miss
+    required = fields.BooleanField(default=False)
+    options = fields.JSONField(null=True, default=dict) # For integer maximum and minimums, choices, etc.
+    order = fields.IntField(default=0) # The order the field should appear in the frontend or section
+    organization = fields.ForeignKeyField("models.Organization", related_name="scouting_fields", null=True) # Optional, used if the field is specific to an organization
+    created_at = fields.DatetimeField(auto_now_add=True)
+
+class MatchScoutingSection(Model):
+    uuid = fields.UUIDField(pk=True)
+    season = fields.ForeignKeyField("models.Season", related_name="sections")
+    name = fields.CharField(max_length=255)
+    label = fields.CharField(max_length=255)
+    order = fields.IntField(default=0) # The order the section should appear in the frontend
+    scouting_fields = fields.ManyToManyField("models.MatchScoutingField", related_name="sections") # The fields in the section
+    organization = fields.ForeignKeyField("models.Organization", related_name="scouting_sections", null=True) # Optional, used if the section is specific to an organization
+    created_at = fields.DatetimeField(auto_now_add=True)
