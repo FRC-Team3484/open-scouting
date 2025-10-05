@@ -5,6 +5,7 @@
 	import Year from "$lib/components/index/Year.svelte";
 	import Events from "$lib/components/index/Events.svelte";
 	import Action from "$lib/components/index/Action.svelte";
+	import PageContainer from "$lib/components/layout/PageContainer.svelte";
 	
 
 	let page = $state("auth"); // auth, year, events, action
@@ -46,7 +47,7 @@
 	}
 </script>
 
-<div class="flex flex-col justify-center items-center min-h-[calc(100vh-4rem)] py-12 sm:py-16 text-center gap-8">
+<PageContainer>
     <Header handleNavigate={handleNavigate} page={page} user={user} year={year} event={selected_event}/>
 		
 	{#if page === "auth"}
@@ -67,4 +68,4 @@
 		<Action />
 
 	{/if}
-</div>
+</PageContainer>

@@ -1,5 +1,7 @@
 <script lang="ts">
-
+	import PageContainer from "$lib/components/layout/PageContainer.svelte";
 </script>
 
-<p>Admin</p>
+<PageContainer>
+    <p>Admin</p>
+</PageContainer>

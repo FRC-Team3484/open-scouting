@@ -39,11 +39,14 @@
 	{@html webManifest}
 </svelte:head>
 
-<div class="mx-auto max-w-screen-lg px-4">
-	<NavBar></NavBar>
-	<ModeWatcher></ModeWatcher>
-	<Toaster position="top-right" closeButton/>
+<div class="min-h-screen flex flex-col">
+	<NavBar />
+	<ModeWatcher />
+	<Toaster position="top-right" closeButton />
 	<Menu />
-	
-	{@render children?.()}
+
+	<!-- The main content area -->
+	<main class="flex-1">
+		{@render children?.()}
+	</main>
 </div>

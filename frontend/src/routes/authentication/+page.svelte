@@ -11,6 +11,7 @@
 	import { onMount } from "svelte";
 	import { validateTokenOnline } from "$lib/utls/user";
 	import { toast } from "svelte-sonner";
+	import PageContainer from "$lib/components/layout/PageContainer.svelte";
 
     let page: "signin" | "signup" = "signin";
     let message: string | null = null;
@@ -50,7 +51,7 @@
     })
 </script>
 
-<div class="flex flex-col gap-4 w-screen h-screen items-center justify-center">
+<PageContainer>
     <div class="flex flex-col w-full md:w-1/2 items-center gap-4">
         <Logo text={false} />
         <p class="text-2xl font-bold">Authentication</p>
@@ -127,4 +128,4 @@
             </form>
         {/if}
     </div>
-</div>
+</PageContainer>
