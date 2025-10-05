@@ -46,7 +46,7 @@
 	}
 </script>
 
-<div class="flex flex-col justify-center items-center h-screen gap-4">
+<div class="flex flex-col justify-center items-center min-h-[calc(100vh-4rem)] py-12 sm:py-16 text-center gap-8">
     <Header handleNavigate={handleNavigate} page={page} user={user} year={year} event={selected_event}/>
 		
 	{#if page === "auth"}

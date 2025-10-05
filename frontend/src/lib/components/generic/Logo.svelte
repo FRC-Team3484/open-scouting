@@ -2,13 +2,15 @@
     import icon_rounded from "$lib/assets/icon_rounded.png"
 
     type Style = "tiny" | "small" | "normal";
+    type alignment = "column" | "row" | "auto";
 
     export let text: boolean = true;
     export let style: Style = "normal";
     export let href: string | null = null;
+    export let alignment: alignment = "auto";
 </script>
 
-<div class="flex flex-row gap-4 items-center">
+<div class={`flex items-center ${alignment === "auto" ? "flex-col md:flex-row" : (alignment === "row" ? "flex-row" : "flex-col")} gap-4`}>
     {#if href}
         <a href={href} class="hover:scale-105 transition-transform">
             <img

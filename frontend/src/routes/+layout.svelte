@@ -39,7 +39,7 @@
 	{@html webManifest}
 </svelte:head>
 
-<div class="p-2">
+<div class="mx-auto max-w-screen-lg px-4">
 	<NavBar></NavBar>
 	<ModeWatcher></ModeWatcher>
 	<Toaster position="top-right" closeButton/>
