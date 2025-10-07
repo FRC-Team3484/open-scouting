@@ -147,6 +147,15 @@ async def update_user_settings(settings_data: dict = Body(...), current_user: Us
     await settings.save()
     return settings
 
+@app.post("/users/me/set_superuser")
+async def set_superuser(current_user: User = Depends(get_current_user)):
+    user = await User.get_or_none(uuid=current_user.uuid)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    user.is_superuser = True
+    await user.save()
+    return user
+
 @app.get("/auth/validate")
 async def validate_user(current_user: User = Depends(get_current_user), response_model=UserOut):
     return current_user
@@ -244,7 +253,7 @@ async def get_season_fields(season_uuid: str):
     return fields
 
 @app.post("/fields/season/{season_uuid}/create")
-async def create_season_field(season_uuid: str = Form(...), name: str = Form(...), label: str = Form(...), field_type: str = Form(...), stat_type: str = Form(...), game_piece_uuid: str = Form(...), required: bool = Form(...), options: dict = Form(...), order: int = Form(...), organization_uuid: str = Form(...), current_user: User = Depends(get_current_user)):
+async def create_season_field(season_uuid: str, name: str = Form(...), label: str = Form(...), field_type: str = Form(...), stat_type: str = Form(...), game_piece_uuid: str = Form(...), required: bool = Form(...), options: dict = Form(...), order: int = Form(...), organization_uuid: str = Form(...), current_user: User = Depends(get_current_user)):
     season = await Season.get_or_none(uuid=season_uuid)
     if not season:
         raise HTTPException(status_code=404, detail="Season not found")
@@ -258,7 +267,7 @@ async def create_season_field(season_uuid: str = Form(...), name: str = Form(...
     return field
 
 @app.post("/fields/season/{season_uuid}/edit/{field_uuid}")
-async def edit_season_field(season_uuid: str = Form(...), field_uuid: str = Form(...), name: str = Form(...), label: str = Form(...), field_type: str = Form(...), stat_type: str = Form(...), game_piece_uuid: str = Form(...), required: bool = Form(...), options: dict = Form(...), order: int = Form(...), organization_uuid: str = Form(...), current_user: User = Depends(get_current_user)):
+async def edit_season_field(season_uuid: str, field_uuid: str, name: str = Form(...), label: str = Form(...), field_type: str = Form(...), stat_type: str = Form(...), game_piece_uuid: str = Form(...), required: bool = Form(...), options: dict = Form(...), order: int = Form(...), organization_uuid: str = Form(...), current_user: User = Depends(get_current_user)):
     season = await Season.get_or_none(uuid=season_uuid)
     if not season:
         raise HTTPException(status_code=404, detail="Season not found")
@@ -293,7 +302,7 @@ async def get_season_sections(season_uuid: str):
     return sections
 
 @app.post("/sections/season/{season_uuid}/create")
-async def create_season_section(season_uuid: str = Form(...), name: str = Form(...), label: str = Form(...), order: int = Form(...), scouting_field_uuids: List[str] = Form(...), current_user: User = Depends(get_current_user)):
+async def create_season_section(season_uuid: str, name: str = Form(...), label: str = Form(...), order: int = Form(...), scouting_field_uuids: List[str] = Form(...), current_user: User = Depends(get_current_user)):
     season = await Season.get_or_none(uuid=season_uuid)
     if not season:
         raise HTTPException(status_code=404, detail="Season not found")
@@ -301,7 +310,7 @@ async def create_season_section(season_uuid: str = Form(...), name: str = Form(.
     return section
 
 @app.post("/sections/season/{season_uuid}/edit/{section_uuid}")
-async def edit_season_section(season_uuid: str = Form(...), section_uuid: str = Form(...), name: str = Form(...), label: str = Form(...), order: int = Form(...), scouting_field_uuids: List[str] = Form(...), current_user: User = Depends(get_current_user)):
+async def edit_season_section(season_uuid: str, section_uuid: str, name: str = Form(...), label: str = Form(...), order: int = Form(...), scouting_field_uuids: List[str] = Form(...), current_user: User = Depends(get_current_user)):
     season = await Season.get_or_none(uuid=season_uuid)
     if not season:
         raise HTTPException(status_code=404, detail="Season not found")
