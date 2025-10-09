@@ -1,14 +1,8 @@
 <script lang="ts">
-    import {
-        AlertDialog,
-        AlertDialogContent,
-        AlertDialogTitle,
-        AlertDialogDescription,
-        AlertDialogCancel,
-        AlertDialogAction,
-        AlertDialogFooter
-    } from "$lib/components/ui/alert-dialog";
+    import { Description, Title } from "../ui/alert";
+import * as AlertDialog from "../ui/alert-dialog";
 	import type { Snippet } from "svelte";
+	import Alert from "../ui/alert/alert.svelte";
 
     export let open: boolean = false;
     export let title: string = "";
@@ -23,29 +17,31 @@
     export let contents: Snippet | null = null;
 </script>
 
-<AlertDialog bind:open>
-    <AlertDialogContent>
-        <AlertDialogTitle>{title}</AlertDialogTitle>
-        <AlertDialogDescription>{description}</AlertDialogDescription>
+<AlertDialog.Root bind:open>
+    <AlertDialog.Content>
+        <AlertDialog.Header>
+            <AlertDialog.Title>{title}</AlertDialog.Title>
+            <AlertDialog.Description>{description}</AlertDialog.Description>
+        </AlertDialog.Header>
 
         {#if contents}
             {@render contents()}
         {/if}
 
         {#if buttons}
-            <AlertDialogFooter>
+            <AlertDialog.Footer>
                 {#each buttons as button}
                     {#if button.variant === "cancel"}
-                        <AlertDialogCancel on:click={button.onClick}>
-                            {button.label}
-                        </AlertDialogCancel>
+                        <AlertDialog.Cancel>
+                            <button on:click={button.onClick}>{button.label}</button>
+                        </AlertDialog.Cancel>
                     {:else}
-                        <AlertDialogAction on:click={button.onClick}>
-                            {button.label}
-                        </AlertDialogAction>
+                        <AlertDialog.Action>
+                            <button on:click={button.onClick}>{button.label}</button>
+                        </AlertDialog.Action>
                     {/if}
                 {/each}
-            </AlertDialogFooter>
+            </AlertDialog.Footer>
         {/if}
-    </AlertDialogContent>
-</AlertDialog>
+    </AlertDialog.Content>
+</AlertDialog.Root>
