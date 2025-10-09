@@ -4,7 +4,8 @@
     import Button from "../ui/button/button.svelte";
 	import Dialog from "../generic/Dialog.svelte";
 
-    let operations = [{name: "", description: "", data: {}, operation: ""}]; // {name: "", description: "", data: {}, operation: ""}
+    export let operations: {name: string, description: string, operation: string, data: any}[] = [];
+    export let addOperation: (name: string, description: string, operation: string, data: any) => void;
 
     let showApplyDialog = false;
     let showClearDialog = false;
@@ -24,6 +25,10 @@
 
         showClearDialog = false;
     }
+
+    function deleteOperation(index: number) {
+        operations = operations.filter((_, i) => i !== index);
+    }
 </script>
 
 <Card.Root class="w-auto min-w-64 mt-4">
@@ -39,7 +44,7 @@
                     <Button variant="destructive" onclick={() => {showClearDialog = true}}><X weight="bold"/> Clear</Button>
                 </div>
 
-                {#each operations as operation}
+                {#each operations as operation, i}
                     <div class="flex flex-row gap-2 justify-between items-center border-1 border-accent rounded-lg p-2">
                         <div class="flex flex-row gap-2 items-center flex-wrap text-left">
                             <p>{operation.name}</p>
@@ -47,7 +52,7 @@
                         </div>
 
                         <div class="flex flex-row gap-2">
-                            <Button variant="destructive" size="icon" onclick={() => {operations = operations.filter(op => op.name !== operation.name)}}><X weight="bold"/></Button>
+                            <Button variant="destructive" size="icon" onclick={() => {deleteOperation(i)}}><X weight="bold"/></Button>
                         </div>
                     </div>
                 {/each}
