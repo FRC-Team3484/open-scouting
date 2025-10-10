@@ -6,8 +6,6 @@
 	import Separator from "../ui/separator/separator.svelte";
     import Button from "../ui/button/button.svelte";
 
-    export let addOperation: (name: string, description: string, operation: string, data: any) => void;
-
     let seasons = [];
 
     onMount(async () => {
@@ -33,7 +31,7 @@
                             <p>{season.year}</p>
                             <p>{season.label}</p>
                             <Separator orientation="vertical" />
-                            <Button size="icon" variant="destructive" onclick={() => addOperation(`Delete season ${season.year}`, `Delete season ${season.year}`, `delete_season`, season)}><X weight="bold"/></Button>
+                            <Button size="icon" variant="destructive" onclick={() => {}}><X weight="bold"/></Button>
                         </div>
                     </Card.Content>
                 </Card.Root>

@@ -12,7 +12,6 @@
 
     let user = null;
     let page = $state("start");
-    let operations = $state([]);
 
     onMount(async () => {
         user = await validateTokenOnline();
@@ -24,10 +23,6 @@
 
     function handleNavigate(nextPage: string): void {
         page = nextPage;
-    }
-
-    function addOperation(name: string, description: string, operation: string, data: any): void {
-        operations = [...operations, {name, description, operation, data}];
     }
 </script>
 
@@ -56,8 +51,6 @@
 
     {:else if page === "seasons"}
         <AdminHeader handleNavigate={handleNavigate}/>
-        <SeasonsManager addOperation={addOperation} />
+        <SeasonsManager />
     {/if}
-
-    <OperationManager bind:operations addOperation={addOperation} />
 </PageContainer>
