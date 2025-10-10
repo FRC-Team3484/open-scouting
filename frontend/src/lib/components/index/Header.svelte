@@ -12,7 +12,7 @@
     let progress = 1;
 
     export let handleNavigate: (nextPage: string) => void;
-    export let page: string;
+export let page: string;
     export let user: any;
     export let year: number;
     export let event: any;

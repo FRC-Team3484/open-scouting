@@ -13,6 +13,7 @@
     })
 </script>
 
+
 <Card.Root class="w-auto min-w-64">
     <Card.Header>
         <Card.Title>Seasons</Card.Title>
