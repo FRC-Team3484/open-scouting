@@ -11,16 +11,27 @@
 
     import CustomDialog from "../generic/Dialog.svelte";
 	import Checkbox from "../ui/checkbox/checkbox.svelte";
+	import { toast } from "svelte-sonner";
 
     let seasons = [];
 
     let showDeleteDialog = false;
     let selectedSeason = null;
 
-    function deleteSeason() {
+    async function deleteSeason() {
         showDeleteDialog = false;
-        console.log("ACTION")
-        console.log(selectedSeason)
+        try {
+            await apiFetch(`/seasons/delete/${selectedSeason.uuid}`, {
+                method: "DELETE",
+                token: localStorage.getItem("access_token")
+            });
+
+            toast.success("Season deleted", { duration: 5000 });
+            await fetchSeasons();
+        } catch (error) {
+            console.error(error);
+        }
+        
     }
 
     async function addSeason(e: Event) {
@@ -34,17 +45,19 @@
         body.append("label", formData.get("label")!.toString());
         body.append("active", formData.get("active") ? "true" : "false");
 
-        console.log(body);
+        try {
+            await apiFetch(`/seasons/create`, {
+                method: "POST",
+                data: body,  // URLSearchParams sends application/x-www-form-urlencoded
+                token: localStorage.getItem("access_token")
+            });
 
-        const res = await apiFetch(`/seasons/create`, {
-            method: "POST",
-            data: body,  // URLSearchParams sends application/x-www-form-urlencoded
-            token: localStorage.getItem("access_token")
-        });
-
-        await fetchSeasons();
+            toast.success("Season created", { duration: 5000 });
+            await fetchSeasons();
+        } catch (error) {
+            console.error(error);
+        }
     }
-
 
     async function fetchSeasons() {
         seasons = await apiFetch(`/seasons`);

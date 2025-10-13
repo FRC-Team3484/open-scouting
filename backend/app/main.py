@@ -221,6 +221,14 @@ async def create_season(year: int = Form(...), label: str = Form(...), active: b
     season = await Season.create(year=year, label=label, active=active)
     return season
 
+@app.delete("/seasons/delete/{season_uuid}")
+async def delete_season(season_uuid: str, current_user: User = Depends(get_current_user)):
+    season = await Season.get_or_none(uuid=season_uuid)
+    if not season:
+        raise HTTPException(status_code=404, detail="Season not found")
+    await season.delete()
+    return {"message": "Season deleted"}
+
 #    Game Pieces
 @app.get("/gamepieces")
 async def get_gamepieces():
