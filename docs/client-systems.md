@@ -16,32 +16,21 @@ A simple alert dialog that is presented to the user
 <script lang="ts">
     import Dialog from "$lib/components/generic/Dialog.svelte";
     
-    let showDialog = true;
+    let show_warning_dialog = true;
 
-     function handleCancel() {
-        showDialog = false;
-        // Additional cancel logic...
-    }
-
-    function handleAction() {
-        showDialog = false;
-        // Additional action logic...
+    function closeWarningDialog(): void {
+        show_warning_dialog = false;
     }
 </script>
 
-<Dialog
-    bind:open={showDialog}
-    title="Dialog"
-    description="This is an example dialog."
-    buttons={[
-        { label: "Cancel", variant: "cancel", onClick: handleCancel },
-        { label: "Action", variant: "action", onClick: handleAction },
-    ]}
->
-    {#snippet contents()}
-        <p>This is the dialog's contents.</p>
-    {/snippet}
-</Dialog>
+<Dialog 
+    open={show_warning_dialog} 
+    title="Open Scouting Administration" 
+    description="By continuing, understand that changes made here are irreversible, and may cause unintended consequences. Know what you're doing and proceed with caution." 
+    cancel_text=""
+    submit_text="Continue"
+    onSubmit={closeWarningDialog}
+/>
 ```
 
 ## Toasts
