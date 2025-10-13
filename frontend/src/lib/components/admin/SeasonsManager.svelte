@@ -6,8 +6,11 @@
 	import Separator from "../ui/separator/separator.svelte";
     import Button from "../ui/button/button.svelte";
     import * as Dialog from "../ui/dialog/index.js";
+    import * as Field from "../ui/field/index.js";
+    import Input from "../ui/input/input.svelte";
 
     import CustomDialog from "../generic/Dialog.svelte";
+	import Checkbox from "../ui/checkbox/checkbox.svelte";
 
     let seasons = [];
 
@@ -20,8 +23,35 @@
         console.log(selectedSeason)
     }
 
-    onMount(async () => {
+    async function addSeason(e: Event) {
+        e.preventDefault();
+        const form = e.currentTarget as HTMLFormElement;
+        const formData = new FormData(form);
+
+        // Convert checkbox and ensure everything is a string
+        const body = new URLSearchParams();
+        body.append("year", formData.get("year")!.toString());
+        body.append("label", formData.get("label")!.toString());
+        body.append("active", formData.get("active") ? "true" : "false");
+
+        console.log(body);
+
+        const res = await apiFetch(`/seasons/create`, {
+            method: "POST",
+            data: body,  // URLSearchParams sends application/x-www-form-urlencoded
+            token: localStorage.getItem("access_token")
+        });
+
+        await fetchSeasons();
+    }
+
+
+    async function fetchSeasons() {
         seasons = await apiFetch(`/seasons`);
+    }
+
+    onMount(async () => {
+        await fetchSeasons();
     });
 </script>
 
@@ -59,9 +89,36 @@
                     <Dialog.Title>Add Season</Dialog.Title>
                     <Dialog.Description>Create a new season</Dialog.Description>
 
-                    <form method="post">
+                    <form method="post" on:submit={addSeason}>
+                        <Field.Group>
+                            <Field.Set>
+                                <Field.Field>
+                                    <Field.Label>Year</Field.Label>
+                                    <Input type="number" name="year" defaultValue={new Date().getFullYear()} required />
+                                </Field.Field>
+                                <Field.Field>
+                                    <Field.Label>Label</Field.Label>
+                                    <Input type="text" name="label" required />
+                                </Field.Field>
+
+                                <Field.Field orientation="horizontal">
+                                    <Checkbox id="active" checked name="active"/>
+                                    <Field.Content>
+                                        <Field.Label for="active">
+                                            Make active season
+                                        </Field.Label>
+                                        <Field.Description>
+                                            Make this season the active (default) season. The other seasons will be deactivated.
+                                        </Field.Description>
+                                    </Field.Content>
+                                </Field.Field>
+                            </Field.Set>
+                        </Field.Group>
+
                         <Dialog.Footer>
-                            <Button>Submit</Button>
+                            <Dialog.Close>
+                                <Button type="submit">Submit</Button>
+                            </Dialog.Close>
                         </Dialog.Footer>
                     </form>
                     

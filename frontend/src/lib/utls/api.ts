@@ -13,7 +13,7 @@ export async function apiFetch<T = any>(
 	let body: BodyInit | undefined;
 	let contentType: string | undefined;
 
-	if (data instanceof FormData) {
+	if (data instanceof FormData || data instanceof URLSearchParams) {
 		body = data;
 	} else if (data !== undefined) {
 		body = JSON.stringify(data);
