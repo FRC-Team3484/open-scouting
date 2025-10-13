@@ -64,7 +64,7 @@
     open={show_warning_dialog} 
     title="Open Scouting Administration" 
     description="By continuing, understand that changes made here are irreversible, and may cause unintended consequences. Know what you're doing and proceed with caution." 
-    buttons={[
-        { label: "I Understand", variant: "cancel", onClick: closeWarningDialog },
-    ]}
+    cancel_text=""
+    submit_text="Continue"
+    onSubmit={closeWarningDialog}
 />
