@@ -5,14 +5,15 @@
 	import ThemeSwitcherIcon from "../generic/ThemeSwitcherIcon.svelte";
 	import Separator from "../ui/separator/separator.svelte";
 	import { toggleMode, mode } from "mode-watcher";
+
+    let menu_open = false;
 </script>
 
-<Drawer.Root shouldScaleBackground={false}>
-    <Drawer.Trigger class="fixed bottom-2 right-2">
-        <Button variant="outline" class="!aspect-square !rounded-full md:!w-16 md:!h-16 !w-10 !h-10 backdrop-blur-lg">
-            <List weight="bold" class="md:!w-8 md:!h-8 !w-6 !h-6"/>
-        </Button>
-    </Drawer.Trigger>
+<Button variant="outline" class="fixed bottom-2 right-2 !aspect-square !rounded-full md:!w-16 md:!h-16 !w-10 !h-10 backdrop-blur-lg" onclick={() => menu_open = true}>
+    <List weight="bold" class="md:!w-8 md:!h-8 !w-6 !h-6"/>
+</Button>
+
+<Drawer.Root shouldScaleBackground={false} bind:open={menu_open}>
     <Drawer.Content class="h-auto lg:mx-64 border-1 p-4 pb-16">
         <div class="flex flex-col gap-4 mt-4">
             <div class="flex flex-row gap-4 justify-between items-center">
