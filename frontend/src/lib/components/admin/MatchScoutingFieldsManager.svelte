@@ -1,0 +1,48 @@
+<script lang="ts">
+    import * as Card from "$lib/components/ui/card/index.js";
+    import * as Select from "$lib/components/ui/select/index.js";
+	import { onMount } from "svelte";
+
+	import MatchScoutingFields from "../generic/MatchScoutingFields.svelte";
+	import { apiFetch } from "$lib/utls/api";
+
+    let seasons = [];
+    let season_value = {};
+
+    async function get_seasons() {
+        seasons = await apiFetch(`/seasons`);
+        season_value = {label: seasons[0].label, uuid: seasons[0].uuid};
+    }
+
+    onMount(async () => {
+        get_seasons();
+    })
+
+</script>
+
+<Card.Root class="w-auto min-w-64 mb-4">
+
+    <Card.Header>
+        <Card.Title>Match Scouting Fields</Card.Title>
+        <Card.Description>Manage match scouting fields for a season</Card.Description>
+    </Card.Header>
+
+    <Card.Content>
+        <div class="flex flex-row gap-2 flex-wrap items-center">
+            <p>Season</p>
+            <Select.Root type="single" name="season" id="season" bind:value={season_value}>
+                <Select.Trigger>
+                    {season_value.label}
+                </Select.Trigger>
+                <Select.Content>
+                    <Select.Label>Seasons</Select.Label>
+                    {#each seasons as season}
+                        <Select.Item value={{"label":season.label, "uuid":season.uuid}} label={season.label} />
+                    {/each}
+                </Select.Content>
+            </Select.Root>
+        </div>
+    </Card.Content>
+</Card.Root>
+
+<MatchScoutingFields season_uuid={season_value.uuid} editable={true} />

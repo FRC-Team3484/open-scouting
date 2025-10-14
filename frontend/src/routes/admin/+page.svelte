@@ -9,6 +9,7 @@
 	import SeasonsManager from "$lib/components/admin/SeasonsManager.svelte";
 	import AdminHeader from "$lib/components/admin/AdminHeader.svelte";
 	import Dialog from "$lib/components/generic/Dialog.svelte";
+	import MatchScoutingFieldsManager from "$lib/components/admin/MatchScoutingFieldsManager.svelte";
 
     let user = null;
     let page = $state("start");
@@ -43,7 +44,7 @@
                 <div class="flex flex-col gap-4">
                     <Button id="seasons" onclick={() => page = "seasons"}>Manage Seasons</Button>
                     <Separator orientation="horizontal" />
-                    <Button disabled>Manage Match Scouting Fields</Button>
+                    <Button onclick={() => page = "match_fields"}>Manage Match Scouting Fields</Button>
                     <Button disabled>Manage Pit Scouting Questions</Button>
                     <Separator orientation="horizontal" />
                     <Button disabled>Manage Users</Button>
@@ -57,6 +58,10 @@
     {:else if page === "seasons"}
         <AdminHeader handleNavigate={handleNavigate}/>
         <SeasonsManager />
+
+    {:else if page === "match_fields"}
+        <AdminHeader handleNavigate={handleNavigate}/>
+        <MatchScoutingFieldsManager />
     {/if}
 </PageContainer>
 
