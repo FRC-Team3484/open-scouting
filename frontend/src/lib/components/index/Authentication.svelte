@@ -16,7 +16,7 @@
     let user: any = null;
     let organizations: any = null;
 
-    let organization_value = {"name":"default", "id":"0", "label":"None"};
+    let organization_value = {"name":"default", "id":"0"};
 
     onMount(async () => {
         try {
@@ -91,13 +91,13 @@
 
                                     <Select.Root type="single" name="organization" id="organization" bind:value={organization_value}>
                                         <Select.Trigger>
-                                            {organization_value.label}
+                                            {organization_value.name}
                                         </Select.Trigger>
                                         <Select.Content>
                                             <Select.Label>Organizations</Select.Label>
-                                            <Select.Item value={{"name":"default", "id":"0", "label":"None"}} label="None" />
+                                            <Select.Item value={{"name":"default", "id":"0"}} label="None" />
                                             {#each organizations as organization}
-                                                <Select.Item value={{"name":organization.name, "id":organization.id, "label":organization.label}} label={organization.label} />
+                                                <Select.Item value={{"name":organization.name, "id":organization.id}} label={organization.name} />
                                             {/each}
                                         </Select.Content>
                                     </Select.Root>

@@ -8,7 +8,7 @@
 	import { ArrowRight } from "phosphor-svelte";
 
     let years: any = null;
-    let selected_year = {year: null, label: null, uuid: null};
+    let selected_year = {year: null, name: null, uuid: null};
 
     onMount(async () => {
         const response = await apiFetch(`/seasons`);
@@ -16,7 +16,7 @@
         years = response;
         const active_year = years.find(year => year.active);
         if (active_year) {
-            selected_year = {year: active_year.year, label: active_year.label, uuid: active_year.uuid};
+            selected_year = {year: active_year.year, name: active_year.name, uuid: active_year.uuid};
         }
     });
 
@@ -39,7 +39,7 @@
             <Select.Content>
                 <Select.Label>Seasons</Select.Label>
                 {#each years as year}
-                    <Select.Item value={{"year":year.year, "label":year.label, "uuid":year.uuid}} label={year.year} />
+                    <Select.Item value={{"year":year.year, "name":year.name, "uuid":year.uuid}} label={year.year} />
                 {/each}
             </Select.Content>
         </Select.Root>

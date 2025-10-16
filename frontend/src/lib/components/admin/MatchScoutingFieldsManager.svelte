@@ -11,7 +11,7 @@
 
     async function get_seasons() {
         seasons = await apiFetch(`/seasons`);
-        season_value = {label: seasons[0].label, uuid: seasons[0].uuid};
+        season_value = {name: seasons[0].name, uuid: seasons[0].uuid};
     }
 
     onMount(async () => {
@@ -32,12 +32,12 @@
             <p>Season</p>
             <Select.Root type="single" name="season" id="season" bind:value={season_value}>
                 <Select.Trigger>
-                    {season_value.label}
+                    {season_value.name}
                 </Select.Trigger>
                 <Select.Content>
                     <Select.Label>Seasons</Select.Label>
                     {#each seasons as season}
-                        <Select.Item value={{"label":season.label, "uuid":season.uuid}} label={season.label} />
+                        <Select.Item value={{"name":season.name, "uuid":season.uuid}} label={season.name} />
                     {/each}
                 </Select.Content>
             </Select.Root>

@@ -67,7 +67,7 @@
                                         <Field.Label>Field Type</Field.Label>
                                             <Select.Root type="single" name="field_type" label="Field Type" required>
                                                 <Select.Trigger>
-                                                    {field_type_value.label}
+                                                    {field_type_value.name}
                                                 </Select.Trigger>
                                                 <Select.Content>
                                                     <Select.Label>Field Type</Select.Label>
