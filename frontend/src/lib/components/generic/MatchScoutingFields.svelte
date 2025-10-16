@@ -2,7 +2,7 @@
 	import { apiFetch } from "$lib/utls/api";
 	import { onMount } from "svelte";
 	import Skeleton from "../ui/skeleton/skeleton.svelte";
-	import { FolderPlus, PlusCircle } from "phosphor-svelte";
+	import { FolderPlus, PlusCircle, X } from "phosphor-svelte";
     import * as Card from "$lib/components/ui/card/index.js";
     import * as Dialog from "$lib/components/ui/dialog/index.js";
 	import Button from "../ui/button/button.svelte";
@@ -13,8 +13,29 @@
 	import Checkbox from "../ui/checkbox/checkbox.svelte";
 
     let fields = [];
-    let field_type_value = {"name": "string", "label": "String"};
-    let stat_type_value = {"name": "auton_score", "label": "Auton Score"};
+
+    const fieldTypes = [
+        { name: "string", label: "String" },
+        { name: "large_number", label: "Large Number" },
+        { name: "small_number", label: "Small Number" },
+        { name: "boolean", label: "Boolean" },
+        { name: "choice", label: "Choice" },
+        { name: "multiple_choice", label: "Multiple Choice" },
+    ];
+    let selectedFieldType = "string";
+    const statTypes = [
+        { name: "auton_score", label: "Auton Score" },
+        { name: "auton_miss", label: "Auton Miss" },
+        { name: "teleop_score", label: "Teleop Score" },
+        { name: "teleop_miss", label: "Teleop Miss" },
+        { name: "capability", label: "Cabability" },
+        { name: "other", label: "Other" },
+        { name: "ignore", label: "Ignore" },
+    ];
+    let selectedStatType = "auton_score";
+
+    type ChoiceType = {id: string; name: string; label: string }[];
+    let choices: ChoiceType[] = [];
 
     export let season_uuid: string = "";
     export let editable: boolean = false;
@@ -45,7 +66,7 @@
                             <Button><PlusCircle weight="bold" /> Add Field</Button>
                         </Dialog.Trigger>
 
-                        <Dialog.Content>
+                        <Dialog.Content class="overflow-y-scroll max-h-[calc(100vh-2rem)]">
                             <Dialog.Header>
                                 <Dialog.Title>Add Field</Dialog.Title>
                                 <Dialog.Description>Create a new field</Dialog.Description>
@@ -65,18 +86,15 @@
                                 <Field.Group class="gap-4">
                                     <Field.Set class="flex flex-col gap-2">
                                         <Field.Label>Field Type</Field.Label>
-                                            <Select.Root type="single" name="field_type" label="Field Type" required>
-                                                <Select.Trigger>
-                                                    {field_type_value.name}
+                                            <Select.Root type="single" name="field_type" label="Field Type" required bind:value={selectedFieldType}>
+                                                 <Select.Trigger>
+                                                    {fieldTypes.find(t => t.name === selectedFieldType)?.label}
                                                 </Select.Trigger>
                                                 <Select.Content>
                                                     <Select.Label>Field Type</Select.Label>
-                                                    <Select.Item value={{"name":"string", "label":"String"}} label="String" />
-                                                    <Select.Item value={{"name":"large_number", "label":"Large Number"}} label="Large Number" />
-                                                    <Select.Item value={{"name":"small_number", "label":"Small Number"}} label="Small Number" />
-                                                    <Select.Item value={{"name":"boolean", "label":"Boolean"}} label="Boolean" />
-                                                    <Select.Item value={{"name":"choice", "label":"Choice"}} label="Choice" />
-                                                    <Select.Item value={{"name":"multiple_choice", "label":"Multiple Choice"}} label="Multiple Choice" />
+                                                    {#each fieldTypes as type}
+                                                        <Select.Item value={type.name} label={type.label} />
+                                                    {/each}
                                                 </Select.Content>
                                             </Select.Root>
                                         <Field.Description>Define the type of field</Field.Description>
@@ -84,19 +102,15 @@
 
                                     <Field.Set class="flex flex-col gap-2">
                                         <Field.Label>Stat Type</Field.Label>
-                                            <Select.Root type="single" name="stat_type" label="Stat Type" required>
+                                            <Select.Root type="single" name="stat_type" label="Stat Type" required bind:value={selectedStatType}>
                                                 <Select.Trigger>
-                                                    {stat_type_value.label}
+                                                    {statTypes.find(t => t.name === selectedStatType)?.label}
                                                 </Select.Trigger>
                                                 <Select.Content>
                                                     <Select.Label>Stat Type</Select.Label>
-                                                    <Select.Item value={{"name":"auton_score", "label":"Auton Score"}} label="Auton Score" />
-                                                    <Select.Item value={{"name":"auton_miss", "label":"Auton Miss"}} label="Auton Miss" />
-                                                    <Select.Item value={{"name":"teleop_score", "label":"Teleop Score"}} label="Teleop Score" />
-                                                    <Select.Item value={{"name":"teleop_miss", "label":"Teleop Miss"}} label="Teleop Miss" />
-                                                    <Select.Item value={{"name":"capability", "label":"Capability"}} label="Capability" />
-                                                    <Select.Item value={{"name":"other", "label":"Other"}} label="Other" />
-                                                    <Select.Item value={{"name":"ignore", "label":"Ignore"}} label="Ignore" />
+                                                    {#each statTypes as type}
+                                                        <Select.Item value={type.name} label={type.label} />
+                                                    {/each}
                                                 </Select.Content>
                                             </Select.Root>
                                         <Field.Description>Define the type of field</Field.Description>
@@ -109,7 +123,6 @@
                                     </Field.Set>
 
                                     <Field.Set class="flex flex-col gap-2">
-                                        <Field.Label>Required</Field.Label>
                                         <Field.Field orientation="horizontal">
                                             <Checkbox id="required" name="required"/>
                                             <Field.Content>
@@ -124,15 +137,48 @@
                                     </Field.Set>
                                 </Field.Group>
 
-                                <Separator />
+                                {#if selectedFieldType === "choice" || selectedFieldType === "multiple_choice"}
+                                    <Separator />
 
-                                <Field.Group class="gap-4">
-                                    <Field.Set class="flex flex-col gap-2">
-                                        <Field.Label>Options</Field.Label>
-                                        <Input type="text" name="options" label="Options" required />
-                                        <Field.Description>Used for choice, multiple_choice, and small_number fields. Used to specify various options, like the choices for a choice field, or the minimum and maximum value for a small_number field</Field.Description>
-                                    </Field.Set>
-                                </Field.Group>
+                                    <Field.Group class="gap-4">
+                                        <Field.Set class="flex flex-col gap-2">
+                                            <Field.Label>Choices</Field.Label>
+                                            {#each choices as choice, i (choice.id)}
+                                                <div class="flex flex-row gap-2 items-center">
+                                                    <Input type="text" name={`choices.${i}.name`} label="Name" placeholder="Simple Name" required />
+                                                    <Input type="text" name={`choices.${i}.label`} label="Label" placeholder="Label" required />
+                                                    <Button variant="destructive" type="button" onclick={() => choices = choices.filter((_, j) => j !== i)}>
+                                                        <X weight="bold" />
+                                                    </Button>
+                                                </div>
+                                            {/each}
+
+                                            <Button type="button" onclick={() => choices = [...choices, {id: crypto.randomUUID(), name: "", label: ""}]}><PlusCircle weight="bold" />Add Choice</Button>
+                                        </Field.Set>
+                                    </Field.Group>
+
+                                {:else if selectedFieldType === "small_number"}
+                                    <Separator />
+
+                                    <Field.Group class="gap-4">
+                                        <Field.Set class="flex flex-col gap-2">
+                                            <Field.Label>Minimum</Field.Label>
+                                            <Input type="number" name="minimum" label="Minimum" required />
+                                            <Field.Description>Used for small_number fields. The minimum value for the field</Field.Description>
+                                        </Field.Set>
+                                        <Field.Set class="flex flex-col gap-2">
+                                            <Field.Label>Max</Field.Label>
+                                            <Input type="number" name="max" label="Max" required />
+                                            <Field.Description>Used for small_number fields. The maximum value for the field</Field.Description>
+                                        </Field.Set>
+                                        <Field.Set class="flex flex-col gap-2">
+                                            <Field.Label>Default</Field.Label>
+                                            <Input type="number" name="default" label="Default" required />
+                                            <Field.Description>Used for small_number fields. The default value for the field</Field.Description>
+                                        </Field.Set>
+                                    </Field.Group>
+
+                                {/if}
                             </form>
 
                             <Dialog.Footer>
