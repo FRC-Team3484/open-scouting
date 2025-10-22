@@ -162,8 +162,8 @@ async def validate_user(current_user: User = Depends(get_current_user), response
 
 #    Organizations
 @app.post("/organization/create")
-async def create_organization(name: str = Form(...), label: str = Form(...), description: str = Form(...), current_user: User = Depends(get_current_user)):
-    organization = await Organization.create(name=name, label=label, description=description)
+async def create_organization(name: str = Form(...), description: str = Form(...), current_user: User = Depends(get_current_user)):
+    organization = await Organization.create(name=name, description=description)
     await OrganizationMember.create(organization=organization, user=current_user, role="admin")
     return organization
 
@@ -217,8 +217,8 @@ async def get_active_season():
     return season
 
 @app.post("/seasons/create")
-async def create_season(year: int = Form(...), label: str = Form(...), active: bool = Form(...), current_user: User = Depends(get_current_user)):
-    season = await Season.create(year=year, label=label, active=active)
+async def create_season(year: int = Form(...), name: str = Form(...), active: bool = Form(...), current_user: User = Depends(get_current_user)):
+    season = await Season.create(year=year, name=name, active=active)
     return season
 
 @app.delete("/seasons/delete/{season_uuid}")
@@ -236,11 +236,11 @@ async def get_gamepieces():
     return gamepieces
 
 @app.post("/gamepieces/create")
-async def create_gamepiece(season_uuid: str = Form(...), name: str = Form(...), label: str = Form(...), current_user: User = Depends(get_current_user)):
+async def create_gamepiece(season_uuid: str = Form(...), name: str = Form(...), current_user: User = Depends(get_current_user)):
     season = await Season.get_or_none(uuid=season_uuid)
     if not season:
         raise HTTPException(status_code=404, detail="Season not found")
-    gamepiece = await GamePiece.create(season=season, name=name, label=label)
+    gamepiece = await GamePiece.create(season=season, name=name)
     return gamepiece
 
 @app.get("/gamepieces/season/{season_uuid}")
@@ -261,7 +261,7 @@ async def get_season_fields(season_uuid: str):
     return fields
 
 @app.post("/fields/season/{season_uuid}/create")
-async def create_season_field(season_uuid: str, name: str = Form(...), label: str = Form(...), field_type: str = Form(...), stat_type: str = Form(...), game_piece_uuid: str = Form(...), required: bool = Form(...), options: list = Form(...), order: int = Form(...), organization_uuid: str = Form(...), current_user: User = Depends(get_current_user)):
+async def create_season_field(season_uuid: str, name: str = Form(...), field_type: str = Form(...), stat_type: str = Form(...), game_piece_uuid: str = Form(...), required: bool = Form(...), options: list = Form(...), order: int = Form(...), organization_uuid: str = Form(...), current_user: User = Depends(get_current_user)):
     season = await Season.get_or_none(uuid=season_uuid)
     if not season:
         raise HTTPException(status_code=404, detail="Season not found")
@@ -271,11 +271,11 @@ async def create_season_field(season_uuid: str, name: str = Form(...), label: st
     organization = await Organization.get_or_none(uuid=organization_uuid)
     if not organization:
         raise HTTPException(status_code=404, detail="Organization not found")
-    field = await MatchScoutingField.create(season=season, name=name, label=label, field_type=field_type, stat_type=stat_type, game_piece=game_piece, required=required, options=options, order=order, organization=organization)
+    field = await MatchScoutingField.create(season=season, name=name, field_type=field_type, stat_type=stat_type, game_piece=game_piece, required=required, options=options, order=order, organization=organization)
     return field
 
 @app.post("/fields/season/{season_uuid}/edit/{field_uuid}")
-async def edit_season_field(season_uuid: str, field_uuid: str, name: str = Form(...), label: str = Form(...), field_type: str = Form(...), stat_type: str = Form(...), game_piece_uuid: str = Form(...), required: bool = Form(...), options: list = Form(...), order: int = Form(...), organization_uuid: str = Form(...), current_user: User = Depends(get_current_user)):
+async def edit_season_field(season_uuid: str, field_uuid: str, name: str = Form(...), field_type: str = Form(...), stat_type: str = Form(...), game_piece_uuid: str = Form(...), required: bool = Form(...), options: list = Form(...), order: int = Form(...), organization_uuid: str = Form(...), current_user: User = Depends(get_current_user)):
     season = await Season.get_or_none(uuid=season_uuid)
     if not season:
         raise HTTPException(status_code=404, detail="Season not found")
@@ -289,7 +289,6 @@ async def edit_season_field(season_uuid: str, field_uuid: str, name: str = Form(
     if not organization:
         raise HTTPException(status_code=404, detail="Organization not found")
     field.name = name
-    field.label = label
     field.field_type = field_type
     field.stat_type = stat_type
     field.game_piece = game_piece
@@ -310,11 +309,11 @@ async def get_season_sections(season_uuid: str):
     return sections
 
 @app.post("/sections/season/{season_uuid}/create")
-async def create_season_section(season_uuid: str, name: str = Form(...), label: str = Form(...), order: int = Form(...), scouting_field_uuids: List[str] = Form(...), current_user: User = Depends(get_current_user)):
+async def create_season_section(season_uuid: str, name: str = Form(...), order: int = Form(...), scouting_field_uuids: List[str] = Form(...), current_user: User = Depends(get_current_user)):
     season = await Season.get_or_none(uuid=season_uuid)
     if not season:
         raise HTTPException(status_code=404, detail="Season not found")
-    section = await MatchScoutingSection.create(season=season, name=name, label=label, order=order)
+    section = await MatchScoutingSection.create(season=season, name=name, order=order)
     return section
 
 @app.post("/sections/season/{season_uuid}/edit/{section_uuid}")
