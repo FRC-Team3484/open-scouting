@@ -14,6 +14,8 @@
 	import { get } from "svelte/store";
 
     let fields = [];
+    let gamePieces = [];
+    let selectedGamePiece = null;
 
     const fieldTypes = [
         { name: "string", label: "String" },
@@ -64,6 +66,8 @@
         body.append("order", "0");
         body.append("organization_uuid", "");
 
+        console.log(body)
+
         try {
             const response = await apiFetch(`/fields/season/${season_uuid}/create`, {
                 method: "POST",
@@ -77,8 +81,14 @@
         }
     }
 
+    async function getGamePieces() {
+        gamePieces = await apiFetch(`/gamepieces/season/${season_uuid}`);
+        selectedGamePiece = gamePieces[0];
+    }
+
     onMount(async () => {
         get_fields();
+        getGamePieces();
     });
 </script>
 
@@ -148,7 +158,17 @@
 
                                     <Field.Set class="flex flex-col gap-2">
                                         <Field.Label>Game Piece</Field.Label>
-                                        <Input type="text" name="game_piece" label="Game Piece" required />
+                                        <Select.Root type="single" name="game_piece" label="Game Piece" required bind:value={selectedGamePiece}>
+                                            <Select.Trigger>
+                                                {gamePieces.find(t => t.uuid === selectedGamePiece)?.name}
+                                            </Select.Trigger>
+                                            <Select.Content>
+                                                <Select.Label>Game Piece</Select.Label>
+                                                {#each gamePieces as game_piece}
+                                                    <Select.Item value={game_piece.uuid} label={game_piece.name} />
+                                                {/each}
+                                            </Select.Content>
+                                        </Select.Root>
                                         <Field.Description>Used when stat_type is a score or a miss, represents the game piece used for that stat</Field.Description>
                                     </Field.Set>
 

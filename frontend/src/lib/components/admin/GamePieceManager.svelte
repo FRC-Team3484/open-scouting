@@ -45,6 +45,9 @@
     }
 
     onMount(async () => {
+        while (!season_uuid) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
         getGamePieces();
     })
 </script>
