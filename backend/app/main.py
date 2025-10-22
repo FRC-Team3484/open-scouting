@@ -276,9 +276,13 @@ async def create_season_field(season_uuid: str, name: str = Form(...), field_typ
     game_piece = await GamePiece.get_or_none(uuid=game_piece_uuid)
     if not game_piece:
         raise HTTPException(status_code=404, detail="Game piece not found")
-    organization = await Organization.get_or_none(uuid=organization_uuid)
-    if not organization:
-        raise HTTPException(status_code=404, detail="Organization not found")
+    if organization_uuid != "":
+        organization = await Organization.get_or_none(uuid=organization_uuid)
+        if not organization:
+            raise HTTPException(status_code=404, detail="Organization not found")
+    else:
+        organization = None
+
     field = await MatchScoutingField.create(season=season, name=name, field_type=field_type, stat_type=stat_type, game_piece=game_piece, required=required, options=options, order=order, organization=organization)
     return field
 
