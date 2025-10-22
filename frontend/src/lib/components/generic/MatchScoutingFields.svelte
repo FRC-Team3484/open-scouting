@@ -88,8 +88,6 @@
         <Skeleton class="w-128 h-32" />
         <Skeleton class="w-128 h-32" />
     {:else}
-        <Separator />
-
         <Card.Root class="w-auto min-w-64">
             <Card.Content>
                 <div class="flex flex-col gap-4">

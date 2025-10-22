@@ -5,6 +5,8 @@
 
 	import MatchScoutingFields from "../generic/MatchScoutingFields.svelte";
 	import { apiFetch } from "$lib/utls/api";
+	import GamePieceManager from "./GamePieceManager.svelte";
+	import Separator from "../ui/separator/separator.svelte";
 
     let seasons = [];
     let season_value = {};
@@ -45,4 +47,10 @@
     </Card.Content>
 </Card.Root>
 
-<MatchScoutingFields season_uuid={season_value.uuid} editable={true} />
+<div class="flex flex-col gap-4">
+    <GamePieceManager season_uuid={season_value.uuid} />
+
+    <Separator />
+
+    <MatchScoutingFields season_uuid={season_value.uuid} editable={true} />
+</div>
