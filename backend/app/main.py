@@ -251,6 +251,14 @@ async def get_season_gamepieces(season_uuid: str):
     gamepieces = await GamePiece.filter(season=season)
     return gamepieces
 
+@app.delete("/gamepieces/delete/{gamepiece_uuid}")
+async def delete_gamepiece(gamepiece_uuid: str, current_user: User = Depends(get_current_user)):
+    gamepiece = await GamePiece.get_or_none(uuid=gamepiece_uuid)
+    if not gamepiece:
+        raise HTTPException(status_code=404, detail="Game piece not found")
+    await gamepiece.delete()
+    return {"message": "Game piece deleted"}
+
 #    Match Scouting Fields
 @app.get("/fields/season/{season_uuid}")
 async def get_season_fields(season_uuid: str):
