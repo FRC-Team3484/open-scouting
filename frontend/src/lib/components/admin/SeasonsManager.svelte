@@ -45,6 +45,8 @@
         body.append("label", formData.get("label")!.toString());
         body.append("active", formData.get("active") ? "true" : "false");
 
+        console.log(body)
+
         try {
             await apiFetch(`/seasons/create`, {
                 method: "POST",

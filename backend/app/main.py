@@ -261,7 +261,7 @@ async def get_season_fields(season_uuid: str):
     return fields
 
 @app.post("/fields/season/{season_uuid}/create")
-async def create_season_field(season_uuid: str, name: str = Form(...), label: str = Form(...), field_type: str = Form(...), stat_type: str = Form(...), game_piece_uuid: str = Form(...), required: bool = Form(...), options: dict = Form(...), order: int = Form(...), organization_uuid: str = Form(...), current_user: User = Depends(get_current_user)):
+async def create_season_field(season_uuid: str, name: str = Form(...), label: str = Form(...), field_type: str = Form(...), stat_type: str = Form(...), game_piece_uuid: str = Form(...), required: bool = Form(...), options: list = Form(...), order: int = Form(...), organization_uuid: str = Form(...), current_user: User = Depends(get_current_user)):
     season = await Season.get_or_none(uuid=season_uuid)
     if not season:
         raise HTTPException(status_code=404, detail="Season not found")
@@ -275,7 +275,7 @@ async def create_season_field(season_uuid: str, name: str = Form(...), label: st
     return field
 
 @app.post("/fields/season/{season_uuid}/edit/{field_uuid}")
-async def edit_season_field(season_uuid: str, field_uuid: str, name: str = Form(...), label: str = Form(...), field_type: str = Form(...), stat_type: str = Form(...), game_piece_uuid: str = Form(...), required: bool = Form(...), options: dict = Form(...), order: int = Form(...), organization_uuid: str = Form(...), current_user: User = Depends(get_current_user)):
+async def edit_season_field(season_uuid: str, field_uuid: str, name: str = Form(...), label: str = Form(...), field_type: str = Form(...), stat_type: str = Form(...), game_piece_uuid: str = Form(...), required: bool = Form(...), options: list = Form(...), order: int = Form(...), organization_uuid: str = Form(...), current_user: User = Depends(get_current_user)):
     season = await Season.get_or_none(uuid=season_uuid)
     if not season:
         raise HTTPException(status_code=404, detail="Season not found")

@@ -11,6 +11,7 @@
 	import Input from "../ui/input/input.svelte";
 	import * as Select from "$lib/components/ui/select/index.js";
 	import Checkbox from "../ui/checkbox/checkbox.svelte";
+	import { get } from "svelte/store";
 
     let fields = [];
 
@@ -42,7 +43,38 @@
 
     async function get_fields() {
         if (!season_uuid) return;
+        fields = [];
         fields = await apiFetch(`/fields/season/${season_uuid}`);
+    }
+
+    async function createField(event: Event) {
+        event.preventDefault();
+
+        const form = event.currentTarget as HTMLFormElement;
+        const formData = new FormData(form);
+
+        const body = new FormData();
+        body.append("name", formData.get("name")!.toString());
+        body.append("field_type", formData.get("field_type")!.toString());
+        body.append("stat_type", formData.get("stat_type")!.toString());
+        body.append("game_piece_uuid", formData.get("game_piece")!.toString());
+        body.append("required", formData.get("required") ? "true" : "false");
+        body.append("options", JSON.stringify(choices));
+        body.append("label", formData.get("name")!.toString());
+        body.append("order", "0");
+        body.append("organization_uuid", "");
+
+        try {
+            const response = await apiFetch(`/fields/season/${season_uuid}/create`, {
+                method: "POST",
+                data: body,
+                token: localStorage.getItem("access_token")
+            });
+
+            get_fields();
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     onMount(async () => {
@@ -179,11 +211,11 @@
                                     </Field.Group>
 
                                 {/if}
-                            </form>
 
-                            <Dialog.Footer>
-                                <Button type="submit">Create</Button>
-                            </Dialog.Footer>
+                                <Dialog.Footer>
+                                    <Button type="submit">Create</Button>
+                                </Dialog.Footer>
+                            </form>
                         </Dialog.Content>
                     </Dialog.Root>
 

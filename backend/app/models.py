@@ -69,7 +69,7 @@ class MatchScoutingField(Model):
     stat_type = fields.CharField(max_length=255) # auton_score, auton_miss, teleop_score, teleop_miss, capability, other, ignore
     game_piece = fields.ForeignKeyField("models.GamePiece", related_name="fields", null=True) # needed if stat_type is score or miss
     required = fields.BooleanField(default=False)
-    options = fields.JSONField(null=True, default=dict) # For integer maximum and minimums, choices, etc.
+    options = fields.JSONField(null=True, default=list) # For integer maximum and minimums, choices, etc.
     order = fields.IntField(default=0) # The order the field should appear in the frontend or section
     organization = fields.ForeignKeyField("models.Organization", related_name="scouting_fields", null=True) # Optional, used if the field is specific to an organization
     created_at = fields.DatetimeField(auto_now_add=True)
