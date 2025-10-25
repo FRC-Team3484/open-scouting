@@ -58,7 +58,7 @@
         fields = await apiFetch(`/fields/season/${season_uuid}`);
 
         fields = fields.map(field => {
-            if (field.field_type === "choice" || field.field_type === "multiple_choice") {
+            if (field.field_type === "choice" || field.field_type === "multiple_choice" || field.field_type === "small_number") {
                 const raw = field.options?.[0];
                 try {
                     // Parse only if it's a valid JSON string
@@ -88,10 +88,19 @@
         body.append("stat_type", formData.get("stat_type")!.toString());
         body.append("game_piece_uuid", formData.get("game_piece")!.toString());
         body.append("required", formData.get("required") ? "true" : "false");
-        body.append("options", JSON.stringify(choices));
         body.append("label", formData.get("name")!.toString());
         body.append("order", "0");
         body.append("organization_uuid", "");
+
+        if (formData.get("field_type") === "choice" || formData.get("field_type") === "multiple_choice") {
+            body.append("options", JSON.stringify(choices));
+        } else if (formData.get("field_type") === "small_number") {
+            const options = JSON.parse(formData.get("options") || "{}");
+            options.minimum = formData.get("minimum")!.toString();
+            options.maximum = formData.get("maximum")!.toString();
+            options.default = formData.get("default")!.toString();
+            body.append("options", JSON.stringify(options));
+        }
 
         console.log(body)
 
@@ -248,7 +257,7 @@
                                         </Field.Set>
                                         <Field.Set class="flex flex-col gap-2">
                                             <Field.Label>Max</Field.Label>
-                                            <Input type="number" name="max" label="Max" required />
+                                            <Input type="number" name="maximum" label="Maximum" required />
                                             <Field.Description>Used for small_number fields. The maximum value for the field</Field.Description>
                                         </Field.Set>
                                         <Field.Set class="flex flex-col gap-2">
