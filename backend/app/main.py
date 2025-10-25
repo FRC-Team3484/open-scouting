@@ -311,6 +311,14 @@ async def edit_season_field(season_uuid: str, field_uuid: str, name: str = Form(
     await field.save()
     return field
 
+@app.delete("/fields/delete/{field_uuid}")
+async def delete_field(field_uuid: str, current_user: User = Depends(get_current_user)):
+    field = await MatchScoutingField.get_or_none(uuid=field_uuid)
+    if not field:
+        raise HTTPException(status_code=404, detail="Field not found")
+    await field.delete()
+    return {"message": "Field deleted"}
+
 #    Match Scouting Sections
 @app.get("/sections/season/{season_uuid}")
 async def get_season_sections(season_uuid: str):
@@ -346,3 +354,11 @@ async def edit_season_section(season_uuid: str, section_uuid: str, name: str = F
             await section.scouting_fields.add(field)
     await section.save()
     return section
+
+@app.delete("/sections/delete/{section_uuid}")
+async def delete_section(section_uuid: str, current_user: User = Depends(get_current_user)):
+    section = await MatchScoutingSection.get_or_none(uuid=section_uuid)
+    if not section:
+        raise HTTPException(status_code=404, detail="Section not found")
+    await section.delete()
+    return {"message": "Section deleted"}
