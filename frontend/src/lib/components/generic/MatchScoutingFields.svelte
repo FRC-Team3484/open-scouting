@@ -2,7 +2,7 @@
 	import { apiFetch } from "$lib/utls/api";
 	import { onMount } from "svelte";
 	import Skeleton from "../ui/skeleton/skeleton.svelte";
-	import { FolderPlus, PlusCircle, X } from "phosphor-svelte";
+	import { ArrowLeft, ArrowRight, FolderPlus, Minus, Pencil, Plus, PlusCircle, Trash, X } from "phosphor-svelte";
     import * as Card from "$lib/components/ui/card/index.js";
     import * as Dialog from "$lib/components/ui/dialog/index.js";
 	import Button from "../ui/button/button.svelte";
@@ -12,6 +12,15 @@
 	import * as Select from "$lib/components/ui/select/index.js";
 	import Checkbox from "../ui/checkbox/checkbox.svelte";
 	import { get } from "svelte/store";
+	import { Root } from "../ui/alert";
+	import { Trigger } from "../ui/alert-dialog";
+	import { json } from "@sveltejs/kit";
+	import StringField from "./fields/StringField.svelte";
+	import LargeNumberField from "./fields/LargeNumberField.svelte";
+	import SmallNumberField from "./fields/SmallNumberField.svelte";
+	import BooleanField from "./fields/BooleanField.svelte";
+	import ChoiceField from "./fields/ChoiceField.svelte";
+	import MultipleChoiceField from "./fields/MultipleChoiceField.svelte";
 
     let fields = [];
     let gamePieces = [];
@@ -43,10 +52,28 @@
     export let season_uuid: string = "";
     export let editable: boolean = false;
 
-    async function get_fields() {
+    async function getFields() {
         if (!season_uuid) return;
         fields = [];
         fields = await apiFetch(`/fields/season/${season_uuid}`);
+
+        fields = fields.map(field => {
+            if (field.field_type === "choice" || field.field_type === "multiple_choice") {
+                const raw = field.options?.[0];
+                try {
+                    // Parse only if it's a valid JSON string
+                    if (typeof raw === "string") {
+                        field.options = JSON.parse(raw);
+                    }
+                } catch (err) {
+                    console.error("Error parsing field options:", field.name, raw, err);
+                    field.options = [];
+                }
+            }
+            return field;
+        });
+
+        console.log(fields);
     }
 
     async function createField(event: Event) {
@@ -75,7 +102,7 @@
                 token: localStorage.getItem("access_token")
             });
 
-            get_fields();
+            getFields();
         } catch (error) {
             console.error(error);
         }
@@ -87,7 +114,10 @@
     }
 
     onMount(async () => {
-        get_fields();
+        while (!season_uuid) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        getFields();
         getGamePieces();
     });
 </script>
@@ -258,7 +288,19 @@
         </Card.Root>
 
         {#each fields as field}
-            <p>field</p>
+            {#if field.field_type === "string"}
+                <StringField field={field} editable={editable} getFields={getFields}/>
+            {:else if field.field_type === "large_number"}
+                <LargeNumberField field={field} editable={editable} getFields={getFields}/>
+            {:else if field.field_type === "small_number"}
+                <SmallNumberField field={field} editable={editable} getFields={getFields}/>
+            {:else if field.field_type === "boolean"}
+                <BooleanField field={field} editable={editable} getFields={getFields}/>
+            {:else if field.field_type === "choice"}
+                <ChoiceField field={field} editable={editable} getFields={getFields}/>
+            {:else if field.field_type === "multiple_choice"}
+                <MultipleChoiceField field={field} editable={editable} getFields={getFields}/>
+            {/if}
         {/each}
     {/if}
 </div>
