@@ -195,21 +195,23 @@
                                         <Field.Description>Define the type of field</Field.Description>
                                     </Field.Set>
 
-                                    <Field.Set class="flex flex-col gap-2">
-                                        <Field.Label>Game Piece</Field.Label>
-                                        <Select.Root type="single" name="game_piece" label="Game Piece" required bind:value={selectedGamePiece}>
-                                            <Select.Trigger>
-                                                {gamePieces.find(t => t.uuid === selectedGamePiece)?.name}
-                                            </Select.Trigger>
-                                            <Select.Content>
-                                                <Select.Label>Game Piece</Select.Label>
-                                                {#each gamePieces as game_piece}
-                                                    <Select.Item value={game_piece.uuid} label={game_piece.name} />
-                                                {/each}
-                                            </Select.Content>
-                                        </Select.Root>
-                                        <Field.Description>Used when stat_type is a score or a miss, represents the game piece used for that stat</Field.Description>
-                                    </Field.Set>
+                                    {#if selectedStatType === "auton_score" || selectedStatType === "auton_miss" || selectedStatType === "teleop_score" || selectedStatType === "teleop_miss"}
+                                        <Field.Set class="flex flex-col gap-2">
+                                            <Field.Label>Game Piece</Field.Label>
+                                            <Select.Root type="single" name="game_piece" label="Game Piece" required bind:value={selectedGamePiece}>
+                                                <Select.Trigger>
+                                                    {gamePieces.find(t => t.uuid === selectedGamePiece)?.name}
+                                                </Select.Trigger>
+                                                <Select.Content>
+                                                    <Select.Label>Game Piece</Select.Label>
+                                                    {#each gamePieces as game_piece}
+                                                        <Select.Item value={game_piece.uuid} label={game_piece.name} />
+                                                    {/each}
+                                                </Select.Content>
+                                            </Select.Root>
+                                            <Field.Description>Used when stat_type is a score or a miss, represents the game piece used for that stat</Field.Description>
+                                        </Field.Set>
+                                    {/if}
 
                                     <Field.Set class="flex flex-col gap-2">
                                         <Field.Field orientation="horizontal">
@@ -228,7 +230,6 @@
 
                                 {#if selectedFieldType === "choice" || selectedFieldType === "multiple_choice"}
                                     <Separator />
-                                    <!-- TODO: FIx this so it actually adds the name to the options list -->
                                     <Field.Group class="gap-4">
                                         <Field.Set class="flex flex-col gap-2">
                                             <Field.Label>Choices</Field.Label>
