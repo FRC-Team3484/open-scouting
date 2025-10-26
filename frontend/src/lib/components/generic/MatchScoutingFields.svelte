@@ -46,7 +46,7 @@
     ];
     let selectedStatType = "auton_score";
 
-    type ChoiceType = {id: string; name: string; label: string }[];
+    type ChoiceType = {id: string; name: string }[];
     let choices: ChoiceType[] = [];
 
     export let season_uuid: string = "";
@@ -228,21 +228,29 @@
 
                                 {#if selectedFieldType === "choice" || selectedFieldType === "multiple_choice"}
                                     <Separator />
-
+                                    <!-- TODO: FIx this so it actually adds the name to the options list -->
                                     <Field.Group class="gap-4">
                                         <Field.Set class="flex flex-col gap-2">
                                             <Field.Label>Choices</Field.Label>
+                                            <div class="flex flex-row gap-2 items-center">
+                                                <Input id="choice_name" type="text" placeholder="Choice Name" />
+                                            </div>
+
+                                            <Button type="button" onclick={() => {
+                                                choices = [...choices, {id: crypto.randomUUID(), name: document.getElementById("choice_name").value}]
+                                                ; document.getElementById("choice_name").value = ""
+                                                }}>
+                                                <PlusCircle weight="bold" />Add Choice
+                                            </Button>
+
                                             {#each choices as choice, i (choice.id)}
-                                                <div class="flex flex-row gap-2 items-center">
-                                                    <Input type="text" name={`choices.${i}.name`} label="Name" placeholder="Simple Name" required />
-                                                    <Input type="text" name={`choices.${i}.label`} label="Label" placeholder="Label" required />
+                                                <div class="flex flex-row gap-2 items-center justify-between">
+                                                    <p>{choice.name}</p>
                                                     <Button variant="destructive" type="button" onclick={() => choices = choices.filter((_, j) => j !== i)}>
                                                         <X weight="bold" />
                                                     </Button>
                                                 </div>
                                             {/each}
-
-                                            <Button type="button" onclick={() => choices = [...choices, {id: crypto.randomUUID(), name: "", label: ""}]}><PlusCircle weight="bold" />Add Choice</Button>
                                         </Field.Set>
                                     </Field.Group>
 
