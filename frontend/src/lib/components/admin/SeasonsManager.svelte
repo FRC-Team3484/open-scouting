@@ -34,15 +34,16 @@
         
     }
 
-    async function addSeason(e: Event) {
-        e.preventDefault();
-        const form = e.currentTarget as HTMLFormElement;
+    async function addSeason(event: Event) {
+        event.preventDefault();
+
+        const form = event.currentTarget as HTMLFormElement;
         const formData = new FormData(form);
 
         // Convert checkbox and ensure everything is a string
-        const body = new URLSearchParams();
+        const body = new FormData();
         body.append("year", formData.get("year")!.toString());
-        body.append("label", formData.get("label")!.toString());
+        body.append("name", formData.get("name")!.toString());
         body.append("active", formData.get("active") ? "true" : "false");
 
         console.log(body)
@@ -50,7 +51,7 @@
         try {
             await apiFetch(`/seasons/create`, {
                 method: "POST",
-                data: body,  // URLSearchParams sends application/x-www-form-urlencoded
+                data: body,
                 token: localStorage.getItem("access_token")
             });
 
@@ -112,8 +113,8 @@
                                     <Input type="number" name="year" defaultValue={new Date().getFullYear()} required />
                                 </Field.Field>
                                 <Field.Field>
-                                    <Field.Label>Label</Field.Label>
-                                    <Input type="text" name="label" required />
+                                    <Field.Label>Name</Field.Label>
+                                    <Input type="text" name="name" required />
                                 </Field.Field>
 
                                 <Field.Field orientation="horizontal">
