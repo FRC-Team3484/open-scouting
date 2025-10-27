@@ -63,6 +63,7 @@ class GamePiece(Model):
 
 class MatchScoutingField(Model):
     uuid = fields.UUIDField(pk=True)
+    section = fields.ForeignKeyField("models.MatchScoutingSection", related_name="fields", null=True)
     season = fields.ForeignKeyField("models.Season", related_name="fields")
     name = fields.CharField(max_length=255)
     field_type = fields.CharField(max_length=255) # string, large_number, small_number, boolean, choice, multiple_choice
@@ -79,6 +80,6 @@ class MatchScoutingSection(Model):
     season = fields.ForeignKeyField("models.Season", related_name="sections")
     name = fields.CharField(max_length=255)
     order = fields.IntField(default=0) # The order the section should appear in the frontend
-    scouting_fields = fields.ManyToManyField("models.MatchScoutingField", related_name="sections") # The fields in the section
+    parent = fields.ForeignKeyField("models.MatchScoutingSection", related_name="subsections", null=True)
     organization = fields.ForeignKeyField("models.Organization", related_name="scouting_sections", null=True) # Optional, used if the section is specific to an organization
     created_at = fields.DatetimeField(auto_now_add=True)
