@@ -262,11 +262,66 @@ async def delete_gamepiece(gamepiece_uuid: str, current_user: User = Depends(get
 #    Match Scouting Fields
 @app.get("/fields/season/{season_uuid}")
 async def get_season_fields(season_uuid: str):
+    # Find the season
     season = await Season.get_or_none(uuid=season_uuid)
     if not season:
         raise HTTPException(status_code=404, detail="Season not found")
-    fields = await MatchScoutingField.filter(season=season)
-    return fields
+
+    # Fetch all fields for the season including their children
+    fields = await MatchScoutingField.filter(season=season).prefetch_related("children")
+
+    # Convert queryset to list of dicts
+    field_list = [f for f in fields]
+
+    # Build lookup dict for fast parent-child linking
+    field_map = {f.uuid: f for f in field_list}
+
+    # Prepare the tree structure
+    tree = []
+
+    # Attach children recursively
+    for field in field_list:
+        # Convert model instance to dict
+        field_data = {
+            "uuid": str(field.uuid),
+            "name": field.name,
+            "field_type": field.field_type,
+            "stat_type": field.stat_type,
+            "game_piece_id": str(field.game_piece_id) if field.game_piece_id else None,
+            "required": field.required,
+            "options": field.options,
+            "order": field.order,
+            "organization_id": str(field.organization_id) if field.organization_id else None,
+            "fields": []  # for children
+        }
+
+        # If field has a parent, attach it to parent's "fields" list
+        if field.parent_id:
+            parent = field_map.get(field.parent_id)
+            if not hasattr(parent, "_tree_fields"):
+                parent._tree_fields = []
+            parent._tree_fields.append(field_data)
+        else:
+            # Top-level field (no parent)
+            tree.append(field_data)
+
+        # Store the built dict for later child assignment
+        field._tree_data = field_data
+
+    # Now attach children properly to their parents' dicts
+    for field in field_list:
+        if hasattr(field, "_tree_fields"):
+            field._tree_data["fields"] = field._tree_fields
+
+    # Sort recursively by `order`
+    def sort_fields(fields):
+        fields.sort(key=lambda f: f["order"])
+        for f in fields:
+            sort_fields(f["fields"])
+
+    sort_fields(tree)
+
+    return tree
 
 @app.post("/fields/season/{season_uuid}/create")
 async def create_season_field(
