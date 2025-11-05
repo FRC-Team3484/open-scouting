@@ -21,7 +21,8 @@
 	import BooleanField from "./fields/BooleanField.svelte";
 	import ChoiceField from "./fields/ChoiceField.svelte";
 	import MultipleChoiceField from "./fields/MultipleChoiceField.svelte";
-	import FieldNode from "./fields/FieldNode.svelte";
+	import BaseSection from "./fields/BaseSection.svelte";
+	import Section from "./fields/Section.svelte";
 
     let fields = [];
     let gamePieces = [];
@@ -360,8 +361,22 @@
             {/if}
         {/each} -->
 
-        {#each fields as node (node.uuid)}
-            <FieldNode {node} editable={editable} {getStructure} />
+        {#each fields as field (field.uuid)}
+            {#if field.field_type === "string"}
+                <StringField field={field} editable={editable} getFields={getStructure}/>
+            {:else if field.field_type === "large_number"}
+                <LargeNumberField field={field} editable={editable} getFields={getStructure}/>
+            {:else if field.field_type === "small_number"}
+                <SmallNumberField field={field} editable={editable} getFields={getStructure}/>
+            {:else if field.field_type === "boolean"}
+                <BooleanField field={field} editable={editable} getFields={getStructure}/>
+            {:else if field.field_type === "choice"}
+                <ChoiceField field={field} editable={editable} getFields={getStructure}/>
+            {:else if field.field_type === "multiple_choice"}
+                <MultipleChoiceField field={field} editable={editable} getFields={getStructure}/>
+            {:else if field.field_type === "section"}
+                <Section field={field} editable={editable} getFields={getStructure}/>
+            {/if}
         {/each}
     {/if}
 </div>

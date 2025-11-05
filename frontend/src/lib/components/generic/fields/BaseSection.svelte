@@ -2,7 +2,7 @@
 	import Button from "$lib/components/ui/button/button.svelte";
     import * as Card from "$lib/components/ui/card/index.js";
 	import { apiFetch } from "$lib/utls/api";
-	import { Pencil, Trash } from "phosphor-svelte";
+	import { FolderPlus, Pencil, PlusCircle, Trash } from "phosphor-svelte";
 
     let { field: section, editable = false, getFields = () => {}, children } = $props();
 
@@ -19,7 +19,7 @@
 
 <Card.Root class="w-auto min-w-64">
     <Card.Header>
-        <div class="flex flex-row gap-2 items-center justify-between">
+        <div class="flex flex-row gap-2 items-center justify-between flex-wrap">
             <div class="flex flex-row gap-2 items-center">
                 <p>{section.name}</p>
                 {#if editable}
@@ -31,6 +31,8 @@
                 <div class="flex flex-row gap-2 items-center">
                     <Button size="icon" variant="outline"><Pencil weight="bold" /></Button>
                     <Button size="icon" variant="destructive" onclick={deleteSection}><Trash weight="bold" /></Button>
+                    <Button size="icon" variant="default"><PlusCircle weight="bold" /></Button>
+                    <Button size="icon" variant="default"><FolderPlus weight="bold" /></Button>
                 </div>
             {/if}
         </div>

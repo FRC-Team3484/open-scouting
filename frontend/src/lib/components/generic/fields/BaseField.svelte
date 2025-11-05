@@ -19,7 +19,7 @@
 
 <Card.Root class="w-auto min-w-64">
     <Card.Header>
-        <div class="flex flex-row gap-2 items-center justify-between">
+        <div class="flex flex-row gap-2 items-center justify-between flex-wrap">
             <div class="flex flex-row gap-2 items-center">
                 <p>{field.name}</p>
                 {#if editable}
