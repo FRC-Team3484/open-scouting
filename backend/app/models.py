@@ -1,3 +1,4 @@
+from re import M
 from tortoise import fields
 from tortoise.models import Model
 
@@ -63,11 +64,11 @@ class GamePiece(Model):
 
 class MatchScoutingField(Model):
     uuid = fields.UUIDField(pk=True)
-    section = fields.ForeignKeyField("models.MatchScoutingSection", related_name="fields", null=True)
+    parent = fields.ForeignKeyField("models.MatchScoutingField", related_name="children", null=True)
     season = fields.ForeignKeyField("models.Season", related_name="fields")
     name = fields.CharField(max_length=255)
-    field_type = fields.CharField(max_length=255) # string, large_number, small_number, boolean, choice, multiple_choice
-    stat_type = fields.CharField(max_length=255) # auton_score, auton_miss, teleop_score, teleop_miss, capability, other, ignore
+    field_type = fields.CharField(max_length=255) # section, string, large_number, small_number, boolean, choice, multiple_choice
+    stat_type = fields.CharField(max_length=255) # section, auton_score, auton_miss, teleop_score, teleop_miss, capability, other, ignore
     game_piece = fields.ForeignKeyField("models.GamePiece", related_name="fields", null=True) # needed if stat_type is score or miss
     required = fields.BooleanField(default=False)
     options = fields.JSONField(null=True, default=list) # For integer maximum and minimums, choices, etc.

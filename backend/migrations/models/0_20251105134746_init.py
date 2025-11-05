@@ -22,15 +22,6 @@ CREATE TABLE IF NOT EXISTS "gamepiece" (
     "created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "season_id" CHAR(36) NOT NULL REFERENCES "season" ("uuid") ON DELETE CASCADE
 );
-CREATE TABLE IF NOT EXISTS "matchscoutingsection" (
-    "uuid" CHAR(36) NOT NULL PRIMARY KEY,
-    "name" VARCHAR(255) NOT NULL,
-    "order" INT NOT NULL DEFAULT 0,
-    "created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "organization_id" CHAR(36) REFERENCES "organization" ("uuid") ON DELETE CASCADE,
-    "parent_id" CHAR(36) REFERENCES "matchscoutingsection" ("uuid") ON DELETE CASCADE,
-    "season_id" CHAR(36) NOT NULL REFERENCES "season" ("uuid") ON DELETE CASCADE
-);
 CREATE TABLE IF NOT EXISTS "matchscoutingfield" (
     "uuid" CHAR(36) NOT NULL PRIMARY KEY,
     "name" VARCHAR(255) NOT NULL,
@@ -42,8 +33,8 @@ CREATE TABLE IF NOT EXISTS "matchscoutingfield" (
     "created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "game_piece_id" CHAR(36) REFERENCES "gamepiece" ("uuid") ON DELETE CASCADE,
     "organization_id" CHAR(36) REFERENCES "organization" ("uuid") ON DELETE CASCADE,
-    "season_id" CHAR(36) NOT NULL REFERENCES "season" ("uuid") ON DELETE CASCADE,
-    "section_id" CHAR(36) REFERENCES "matchscoutingsection" ("uuid") ON DELETE CASCADE
+    "parent_id" CHAR(36) REFERENCES "matchscoutingfield" ("uuid") ON DELETE CASCADE,
+    "season_id" CHAR(36) NOT NULL REFERENCES "season" ("uuid") ON DELETE CASCADE
 );
 CREATE TABLE IF NOT EXISTS "user" (
     "uuid" CHAR(36) NOT NULL PRIMARY KEY,
