@@ -21,6 +21,7 @@
 	import BooleanField from "./fields/BooleanField.svelte";
 	import ChoiceField from "./fields/ChoiceField.svelte";
 	import MultipleChoiceField from "./fields/MultipleChoiceField.svelte";
+	import FieldNode from "./fields/FieldNode.svelte";
 
     let fields = [];
     let gamePieces = [];
@@ -49,31 +50,26 @@
     type ChoiceType = {id: string; name: string }[];
     let choices: ChoiceType[] = [];
 
+    type Node = {
+        id: string;
+        type: "section" | "field";
+        name: string;
+        order: number;
+        children?: Node[]; // only for sections
+        field_type?: string;
+        stat_type?: string;
+        game_piece_uuid?: string;
+        required?: boolean;
+        options?: any;
+    };
+
     export let season_uuid: string = "";
     export let editable: boolean = false;
 
-    async function getFields() {
-        if (!season_uuid) return;
-        fields = [];
+    async function getStructure() {
         fields = await apiFetch(`/fields/season/${season_uuid}`);
 
-        fields = fields.map(field => {
-            if (field.field_type === "choice" || field.field_type === "multiple_choice" || field.field_type === "small_number") {
-                const raw = field.options?.[0];
-                try {
-                    // Parse only if it's a valid JSON string
-                    if (typeof raw === "string") {
-                        field.options = JSON.parse(raw);
-                    }
-                } catch (err) {
-                    console.error("Error parsing field options:", field.name, raw, err);
-                    field.options = [];
-                }
-            }
-            return field;
-        });
-
-        console.log(fields);
+        console.log("fields structure:", fields);
     }
 
     async function createField(event: Event) {
@@ -88,18 +84,20 @@
         body.append("stat_type", formData.get("stat_type")!.toString());
         body.append("game_piece_uuid", formData.get("game_piece")!.toString());
         body.append("required", formData.get("required") ? "true" : "false");
-        body.append("label", formData.get("name")!.toString());
         body.append("order", "0");
         body.append("organization_uuid", "");
+        body.append("parent_uuid", "");
 
         if (formData.get("field_type") === "choice" || formData.get("field_type") === "multiple_choice") {
             body.append("options", JSON.stringify(choices));
         } else if (formData.get("field_type") === "small_number") {
-            const options = JSON.parse(formData.get("options") || "{}");
+            const options = JSON.parse(formData.get("options") || "[]");
             options.minimum = formData.get("minimum")!.toString();
             options.maximum = formData.get("maximum")!.toString();
             options.default = formData.get("default")!.toString();
             body.append("options", JSON.stringify(options));
+        } else {
+            body.append("options", JSON.stringify([]));
         }
 
         console.log(body)
@@ -111,7 +109,7 @@
                 token: localStorage.getItem("access_token")
             });
 
-            getFields();
+            getStructure();
         } catch (error) {
             console.error(error);
         }
@@ -126,7 +124,7 @@
         while (!season_uuid) {
             await new Promise(resolve => setTimeout(resolve, 100));
         }
-        getFields();
+        getStructure();
         getGamePieces();
     });
 </script>
@@ -305,20 +303,24 @@
             </Card.Content>
         </Card.Root>
 
-        {#each fields as field}
+        <!-- {#each fields as field}
             {#if field.field_type === "string"}
-                <StringField field={field} editable={editable} getFields={getFields}/>
+                <StringField field={field} editable={editable} getFields={getStructure}/>
             {:else if field.field_type === "large_number"}
-                <LargeNumberField field={field} editable={editable} getFields={getFields}/>
+                <LargeNumberField field={field} editable={editable} getFields={getStructure}/>
             {:else if field.field_type === "small_number"}
-                <SmallNumberField field={field} editable={editable} getFields={getFields}/>
+                <SmallNumberField field={field} editable={editable} getFields={getStructure}/>
             {:else if field.field_type === "boolean"}
-                <BooleanField field={field} editable={editable} getFields={getFields}/>
+                <BooleanField field={field} editable={editable} getFields={getStructure}/>
             {:else if field.field_type === "choice"}
-                <ChoiceField field={field} editable={editable} getFields={getFields}/>
+                <ChoiceField field={field} editable={editable} getFields={getStructure}/>
             {:else if field.field_type === "multiple_choice"}
-                <MultipleChoiceField field={field} editable={editable} getFields={getFields}/>
+                <MultipleChoiceField field={field} editable={editable} getFields={getStructure}/>
             {/if}
+        {/each} -->
+
+        {#each fields as node (node.id)}
+            <FieldNode {node} editable={editable} {getStructure} />
         {/each}
     {/if}
 </div>
