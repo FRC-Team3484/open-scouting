@@ -1,5 +1,6 @@
 import os
 from datetime import timedelta
+import stat
 
 from pydantic import BaseModel
 from typing import Annotated, List
@@ -341,9 +342,16 @@ async def create_season_field(
     season = await Season.get_or_none(uuid=season_uuid)
     if not season:
         raise HTTPException(status_code=404, detail="Season not found")
-    game_piece = await GamePiece.get_or_none(uuid=game_piece_uuid)
-    if not game_piece:
-        raise HTTPException(status_code=404, detail="Game piece not found")
+
+    print(stat_type)
+
+    if stat_type == "auton_score" or stat_type == "auton_miss" or stat_type == "teleop_score" or stat_type == "teleop_miss":
+        game_piece = await GamePiece.get_or_none(uuid=game_piece_uuid)
+        if not game_piece:
+            raise HTTPException(status_code=404, detail="Game piece not found")
+    else:
+        game_piece = None
+
     if organization_uuid != "":
         organization = await Organization.get_or_none(uuid=organization_uuid)
         if not organization:

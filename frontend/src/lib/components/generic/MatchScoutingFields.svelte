@@ -115,6 +115,36 @@
         }
     }
 
+    async function createSection(event: Event) {
+        event.preventDefault();
+
+        const form = event.currentTarget as HTMLFormElement;
+        const formData = new FormData(form);
+
+        const body = new FormData();
+        body.append("name", formData.get("name")!.toString());
+        body.append("field_type", "section")
+        body.append("stat_type", "section")
+        body.append("game_piece_uuid", "");
+        body.append("required", "false");
+        body.append("options", JSON.stringify([]));
+        body.append("order", "0");
+        body.append("organization_uuid", "");
+        body.append("parent_uuid", "");
+
+        try {
+            const response = await apiFetch(`/fields/season/${season_uuid}/create`, {
+                method: "POST",
+                data: body,
+                token: localStorage.getItem("access_token")
+            });
+
+            getStructure();
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     async function getGamePieces() {
         gamePieces = await apiFetch(`/gamepieces/season/${season_uuid}`);
         selectedGamePiece = gamePieces[0];
@@ -148,7 +178,7 @@
                                 <Dialog.Title>Add Field</Dialog.Title>
                                 <Dialog.Description>Create a new field</Dialog.Description>
                             </Dialog.Header>
-
+                            
                             <form method="post" on:submit={createField} class="flex flex-col gap-4">
                                 <Field.Group class="gap-4">
                                     <Field.Set class="flex flex-col gap-2">
@@ -288,15 +318,26 @@
                             <Button><FolderPlus weight="bold" /> Add Section</Button>
                         </Dialog.Trigger>
 
-                        <Dialog.Content>
+                        <Dialog.Content class="overflow-y-scroll max-h-[calc(100vh-2rem)]">
                             <Dialog.Header>
                                 <Dialog.Title>Add Section</Dialog.Title>
                                 <Dialog.Description>Create a new section</Dialog.Description>
                             </Dialog.Header>
 
-                            <Dialog.Footer>
-                                <Button type="submit">Create</Button>
-                            </Dialog.Footer>
+                            <form method="post" on:submit={createSection} class="flex flex-col gap-4">
+                                <Field.Group class="gap-4">
+                                    <Field.Set class="flex flex-col gap-2">
+                                        <Field.Label>Name</Field.Label>
+                                        <Input type="text" name="name" required />
+                                        <Field.Description>The name of the section</Field.Description>
+                                    </Field.Set>
+                                </Field.Group>
+
+                                <Dialog.Footer>
+                                    <Button type="submit">Create</Button>
+                                </Dialog.Footer>
+                                
+                            </form>
                         </Dialog.Content>
                     </Dialog.Root>
                 </div>
@@ -319,7 +360,7 @@
             {/if}
         {/each} -->
 
-        {#each fields as node (node.id)}
+        {#each fields as node (node.uuid)}
             <FieldNode {node} editable={editable} {getStructure} />
         {/each}
     {/if}
