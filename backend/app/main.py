@@ -11,7 +11,7 @@ from tortoise.contrib.fastapi import register_tortoise
 from tortoise.exceptions import IntegrityError
 from tortoise.contrib.pydantic import pydantic_model_creator
 
-from app.models import User, Profile, Organization, OrganizationMember, Season, Settings, GamePiece, MatchScoutingField, MatchScoutingSection
+from app.models import User, Profile, Organization, OrganizationMember, Season, Settings, GamePiece, MatchScoutingField
 from app.auth import get_password_hash, verify_password, create_access_token, decode_access_token
 
 # Setup
@@ -269,7 +269,7 @@ async def get_season_fields(season_uuid: str):
     return fields
 
 @app.post("/fields/season/{season_uuid}/create")
-async def create_season_field(season_uuid: str, name: str = Form(...), field_type: str = Form(...), stat_type: str = Form(...), game_piece_uuid: str = Form(...), required: bool = Form(...), options: list = Form(...), order: int = Form(...), organization_uuid: str = Form(...), current_user: User = Depends(get_current_user)):
+async def create_season_field(season_uuid: str, name: str = Form(...), field_type: str = Form(...), stat_type: str = Form(...), game_piece_uuid: str = Form(...), required: bool = Form(...), options: list = Form(...), order: int = Form(...), organization_uuid: str = Form(...), parent_uuid: str = Form(...), current_user: User = Depends(get_current_user)):
     season = await Season.get_or_none(uuid=season_uuid)
     if not season:
         raise HTTPException(status_code=404, detail="Season not found")
@@ -283,7 +283,14 @@ async def create_season_field(season_uuid: str, name: str = Form(...), field_typ
     else:
         organization = None
 
-    field = await MatchScoutingField.create(season=season, name=name, field_type=field_type, stat_type=stat_type, game_piece=game_piece, required=required, options=options, order=order, organization=organization)
+    if parent_uuid != "":
+        parent = await MatchScoutingField.get_or_none(uuid=parent_uuid)
+        if not section:
+            raise HTTPException(status_code=404, detail="Section not found")
+    else:
+        section = None
+
+    field = await MatchScoutingField.create(season=season, name=name, field_type=field_type, stat_type=stat_type, game_piece=game_piece, required=required, options=options, order=order, organization=organization, section=section)
     return field
 
 @app.post("/fields/season/{season_uuid}/edit/{field_uuid}")
@@ -318,47 +325,3 @@ async def delete_field(field_uuid: str, current_user: User = Depends(get_current
         raise HTTPException(status_code=404, detail="Field not found")
     await field.delete()
     return {"message": "Field deleted"}
-
-#    Match Scouting Sections
-@app.get("/sections/season/{season_uuid}")
-async def get_season_sections(season_uuid: str):
-    season = await Season.get_or_none(uuid=season_uuid)
-    if not season:
-        raise HTTPException(status_code=404, detail="Season not found")
-    sections = await MatchScoutingSection.filter(season=season)
-    return sections
-
-@app.post("/sections/season/{season_uuid}/create")
-async def create_season_section(season_uuid: str, name: str = Form(...), order: int = Form(...), scouting_field_uuids: List[str] = Form(...), current_user: User = Depends(get_current_user)):
-    season = await Season.get_or_none(uuid=season_uuid)
-    if not season:
-        raise HTTPException(status_code=404, detail="Season not found")
-    section = await MatchScoutingSection.create(season=season, name=name, order=order)
-    return section
-
-@app.post("/sections/season/{season_uuid}/edit/{section_uuid}")
-async def edit_season_section(season_uuid: str, section_uuid: str, name: str = Form(...), label: str = Form(...), order: int = Form(...), scouting_field_uuids: List[str] = Form(...), current_user: User = Depends(get_current_user)):
-    season = await Season.get_or_none(uuid=season_uuid)
-    if not season:
-        raise HTTPException(status_code=404, detail="Season not found")
-    section = await MatchScoutingSection.get_or_none(uuid=section_uuid)
-    if not section:
-        raise HTTPException(status_code=404, detail="Section not found")
-    section.name = name
-    section.label = label
-    section.order = order
-    section.scouting_fields.clear()
-    for field_uuid in scouting_field_uuids:
-        field = await MatchScoutingField.get_or_none(uuid=field_uuid)
-        if field:
-            await section.scouting_fields.add(field)
-    await section.save()
-    return section
-
-@app.delete("/sections/delete/{section_uuid}")
-async def delete_section(section_uuid: str, current_user: User = Depends(get_current_user)):
-    section = await MatchScoutingSection.get_or_none(uuid=section_uuid)
-    if not section:
-        raise HTTPException(status_code=404, detail="Section not found")
-    await section.delete()
-    return {"message": "Section deleted"}

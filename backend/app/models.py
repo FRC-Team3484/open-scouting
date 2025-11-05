@@ -74,12 +74,3 @@ class MatchScoutingField(Model):
     order = fields.IntField(default=0) # The order the field should appear in the frontend or section
     organization = fields.ForeignKeyField("models.Organization", related_name="scouting_fields", null=True) # Optional, used if the field is specific to an organization
     created_at = fields.DatetimeField(auto_now_add=True)
-
-class MatchScoutingSection(Model):
-    uuid = fields.UUIDField(pk=True)
-    season = fields.ForeignKeyField("models.Season", related_name="sections")
-    name = fields.CharField(max_length=255)
-    order = fields.IntField(default=0) # The order the section should appear in the frontend
-    parent = fields.ForeignKeyField("models.MatchScoutingSection", related_name="subsections", null=True)
-    organization = fields.ForeignKeyField("models.Organization", related_name="scouting_sections", null=True) # Optional, used if the section is specific to an organization
-    created_at = fields.DatetimeField(auto_now_add=True)
