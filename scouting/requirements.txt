@@ -5,7 +5,7 @@ click==8.2.1
 colorama==0.4.6
 cssbeautifier==1.15.4
 drf-spectacular==0.28.0
-Django==5.2.6
+Django==5.2.8
 django-environ==0.12.0
 djangorestframework==3.16.1
 djangorestframework-api-key==2.3.0
