@@ -26,8 +26,8 @@
 	import AddSectionDialog from "./dialogs/AddSectionDialog.svelte";
 	import AddFieldDialog from "./dialogs/AddFieldDialog.svelte";
 
-    let fields = [];
-    let gamePieces = [];
+    let fields = $state([]);
+    let gamePieces = $state([]);
 
     type ChoiceType = {id: string; name: string }[];
     let choices: ChoiceType[] = [];
@@ -58,7 +58,6 @@
 
     async function getGamePieces() {
         gamePieces = await apiFetch(`/gamepieces/season/${season_uuid}`);
-        selectedGamePiece = gamePieces[0];
     }
 
     onMount(async () => {

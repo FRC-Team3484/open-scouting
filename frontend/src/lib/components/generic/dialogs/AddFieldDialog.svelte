@@ -13,7 +13,7 @@
 
     let { open = $bindable(), season_uuid, gamePieces, getStructure } = $props();
 
-    let selectedGamePiece = null;
+    let selectedGamePiece = $state(null);
     const fieldTypes = [
         { name: "string", label: "String" },
         { name: "large_number", label: "Large Number" },
@@ -33,7 +33,7 @@
         { name: "ignore", label: "Ignore" },
     ];
     let selectedStatType = "auton_score";
-
+    
     async function createField(event: Event) {
         event.preventDefault();
 
@@ -76,6 +76,13 @@
             console.error(error);
         }
     }
+
+    $effect(() => {
+        if (gamePieces) {
+            selectedGamePiece = gamePieces[0];
+        }
+    })
+
 </script>
 
 <BaseDialog title="Add Field" description="Create a new field" bind:open={open}>
