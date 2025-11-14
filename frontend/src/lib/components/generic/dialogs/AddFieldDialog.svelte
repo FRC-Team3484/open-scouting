@@ -1,17 +1,20 @@
 <script lang="ts">
+	import { PlusCircle, X } from "phosphor-svelte";
+
+	import { addFieldDialogOpen, addFieldParentUuid } from "$lib/stores/dialog";
+	import { apiFetch } from "$lib/utls/api";
+
     import * as Field from "$lib/components/ui/field";
     import * as Dialog from "$lib/components/ui/dialog";
 	import { Input } from "$lib/components/ui/input";
 	import Button from "$lib/components/ui/button/button.svelte";
     import { Separator } from "$lib/components/ui/separator";
     import * as Select from "$lib/components/ui/select";
-
-	import { apiFetch } from "$lib/utls/api";
-    import BaseDialog from "./BaseDialog.svelte";
-	import { PlusCircle, X } from "phosphor-svelte";
 	import { Checkbox } from "$lib/components/ui/checkbox";
+    
+    import BaseDialog from "./BaseDialog.svelte";
 
-    let { open = $bindable(), season_uuid, gamePieces, getStructure } = $props();
+    let { season_uuid, gamePieces, getStructure } = $props();
 
     let selectedGamePiece = $state(null);
     const fieldTypes = [
@@ -48,7 +51,7 @@
         body.append("required", formData.get("required") ? "true" : "false");
         body.append("order", "0");
         body.append("organization_uuid", "");
-        body.append("parent_uuid", "");
+        body.append("parent_uuid", $addFieldParentUuid);
 
         if (formData.get("field_type") === "choice" || formData.get("field_type") === "multiple_choice") {
             body.append("options", JSON.stringify(choices));
@@ -62,8 +65,6 @@
             body.append("options", JSON.stringify([]));
         }
 
-        console.log(body)
-
         try {
             const response = await apiFetch(`/fields/season/${season_uuid}/create`, {
                 method: "POST",
@@ -71,6 +72,7 @@
                 token: localStorage.getItem("access_token")
             });
 
+            addFieldParentUuid.set("");
             getStructure();
         } catch (error) {
             console.error(error);
@@ -85,7 +87,7 @@
 
 </script>
 
-<BaseDialog title="Add Field" description="Create a new field" bind:open={open}>
+<BaseDialog title="Add Field" description="Create a new field" bind:open={$addFieldDialogOpen}>
     <form method="post" on:submit={createField} class="flex flex-col gap-4">
         <Field.Group class="gap-4">
             <Field.Set class="flex flex-col gap-2">

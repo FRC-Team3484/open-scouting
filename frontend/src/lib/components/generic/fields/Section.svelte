@@ -9,9 +9,7 @@
 	import MultipleChoiceField from "./MultipleChoiceField.svelte";
 	import Section from "./Section.svelte";
 
-	export let field: any;
-	export let editable: boolean = false;
-	export let getFields: () => void = () => {};
+	let { field, editable, getFields } = $props();
 </script>
 
 <BaseSection field={field} editable={editable} getFields={getFields}>

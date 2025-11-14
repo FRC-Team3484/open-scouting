@@ -1,10 +1,12 @@
 <script lang="ts">
+    import { addSectionDialogOpen, addSectionParentUuid } from "$lib/stores/dialog";
+	import { apiFetch } from "$lib/utls/api";
+    
     import * as Field from "$lib/components/ui/field";
     import * as Dialog from "$lib/components/ui/dialog";
 	import { Input } from "$lib/components/ui/input";
 	import Button from "$lib/components/ui/button/button.svelte";
 
-	import { apiFetch } from "$lib/utls/api";
     import BaseDialog from "./BaseDialog.svelte";
 
     let { open = $bindable(), season_uuid, getStructure } = $props();
@@ -24,7 +26,7 @@
         body.append("options", JSON.stringify([]));
         body.append("order", "0");
         body.append("organization_uuid", "");
-        body.append("parent_uuid", "");
+        body.append("parent_uuid", $addSectionParentUuid);
 
         try {
             const response = await apiFetch(`/fields/season/${season_uuid}/create`, {
@@ -33,6 +35,7 @@
                 token: localStorage.getItem("access_token")
             });
 
+            addSectionParentUuid.set("");
             getStructure();
         } catch (error) {
             console.error(error);
@@ -40,7 +43,7 @@
     }
 </script>
 
-<BaseDialog title="Add Section" description="Create a new section" bind:open={open}>
+<BaseDialog title="Add Section" description="Create a new section" bind:open={$addSectionDialogOpen}>
     <form method="post" on:submit={createSection} class="flex flex-col gap-4">
         <Field.Group class="gap-4">
             <Field.Set class="flex flex-col gap-2">
@@ -53,6 +56,5 @@
         <Dialog.Footer>
             <Button type="submit">Create</Button>
         </Dialog.Footer>
-        
     </form>
 </BaseDialog>

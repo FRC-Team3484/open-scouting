@@ -1,8 +1,9 @@
 <script lang="ts">
-	import Button from "$lib/components/ui/button/button.svelte";
-    import * as Card from "$lib/components/ui/card/index.js";
 	import { apiFetch } from "$lib/utls/api";
 	import { Pencil, Trash } from "phosphor-svelte";
+    
+	import Button from "$lib/components/ui/button/button.svelte";
+    import * as Card from "$lib/components/ui/card/index.js";
 
     let { field, editable = false, getFields = () => {}, children } = $props();
 
