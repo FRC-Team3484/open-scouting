@@ -65,7 +65,7 @@
 	{:else if page === "action"}
 		<!-- 4 - Action -->
 
-		<Action />
+		<Action year={year} event={selected_event}/>
 
 	{/if}
 </PageContainer>

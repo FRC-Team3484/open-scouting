@@ -3,6 +3,8 @@
 	import { Binoculars, Database, Link, ListNumbers } from "phosphor-svelte";
 	import Button from "../ui/button/button.svelte";
 	import { Label } from "../ui/label";
+
+    let { year, event } = $props();
 </script>
 
 <Card.Card class="w-auto min-w-64">
@@ -13,7 +15,7 @@
 
     <Card.Content>
         <div class="flex flex-col gap-4 md:px-20">
-            <Button variant="default" id="match"><Binoculars weight="bold" /> Match Scouting</Button>
+            <Button variant="default" id="match" href={`/match_scouting?year=${year}&event=${event.event_code}`}><Binoculars weight="bold" /> Match Scouting</Button>
             <Label for="match">Contribute data by watching matches at competition</Label>
             
             <Button variant="default" id="pit" disabled><ListNumbers weight="bold" /> Pit Scouting</Button>
