@@ -62,14 +62,16 @@
         <Skeleton class="w-128 h-32" />
         <Skeleton class="w-128 h-32" />
     {:else}
-        <Card.Root class="w-auto min-w-64">
-            <Card.Content>
-                <div class="flex flex-col gap-4">
-                    <Button onclick={() => addFieldDialogOpen.set(true)}><PlusCircle weight="bold" /> Add Field</Button>
-                    <Button onclick={() => addSectionDialogOpen.set(true)}><FolderPlus weight="bold" /> Add Section</Button>
-                </div>
-            </Card.Content>
-        </Card.Root>
+        {#if editable}
+            <Card.Root class="w-auto min-w-64">
+                <Card.Content>
+                    <div class="flex flex-col gap-4">
+                        <Button onclick={() => addFieldDialogOpen.set(true)}><PlusCircle weight="bold" /> Add Field</Button>
+                        <Button onclick={() => addSectionDialogOpen.set(true)}><FolderPlus weight="bold" /> Add Section</Button>
+                    </div>
+                </Card.Content>
+            </Card.Root>
+        {/if}
 
         {#each fields as field (field.uuid)}
             {#if field.field_type === "string"}
