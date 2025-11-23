@@ -17,7 +17,7 @@
     })
 </script>
 
-<div class="hidden md:flex fixed top-0 left-0 right-0 w-full h-24 flex-row justify-between items-center border-1 bg-background/50 border-accent rounded-b-lg backdrop-blur-lg p-2 z-10">
+<div class="hidden md:flex fixed top-0 left-0 right-0 w-full h-24 flex-row justify-between items-center border-1 bg-card/50 border-accent rounded-b-lg backdrop-blur-lg p-2 z-10">
     <Logo text={true} style="tiny" href="/" />
 
     <div class="flex flex-row gap-4 items-center">
