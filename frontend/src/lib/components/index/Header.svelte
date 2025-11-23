@@ -64,7 +64,7 @@ export let page: string;
             </div>
 
             {#if details}
-                <div class="flex flex-col gap-2" transition:slide>
+                <div class="flex flex-col gap-2 text-left" transition:slide>
                     <div class="flex flex-row gap-4 items-center">
                         <p class="text-lg text-muted-foreground">Details</p>
                         <Separator orientation="horizontal" class="!w-3/4"/>
