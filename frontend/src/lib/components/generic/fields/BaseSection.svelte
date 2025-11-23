@@ -3,9 +3,12 @@
     import * as Card from "$lib/components/ui/card/index.js";
 	import { addFieldDialogOpen, addFieldParentUuid, addSectionDialogOpen, addSectionParentUuid } from "$lib/stores/dialog";
 	import { apiFetch } from "$lib/utls/api";
-	import { FolderPlus, Pencil, PlusCircle, Trash } from "phosphor-svelte";
+	import { CaretDown, CaretUp, FolderPlus, Pencil, PlusCircle, Trash } from "phosphor-svelte";
+	import { slide } from "svelte/transition";
 
     let { field: section, editable = false, getFields = () => {}, children } = $props();
+
+    let expanded = $state(true);
 
     async function editSection() {}
 
@@ -42,10 +45,22 @@
                     <Button size="icon" variant="default" onclick={() => {addSectionDialogOpen.set(true); addSectionParentUuid.set(section.uuid)}}><FolderPlus weight="bold" /></Button>
                 </div>
             {/if}
+
+            <Button size="icon" variant="ghost" onclick={() => expanded = !expanded}>
+                {#if expanded}
+                    <CaretDown weight="bold" />
+                {:else}
+                    <CaretUp weight="bold" />
+                {/if}
+            </Button>
         </div>
     </Card.Header>
 
     <Card.Content>
-        {@render children()}
+        {#if expanded}
+            <div transition:slide>
+                {@render children()}
+            </div>
+        {/if}
     </Card.Content>
 </Card.Root>
