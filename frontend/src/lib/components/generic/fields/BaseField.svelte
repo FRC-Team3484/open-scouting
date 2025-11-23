@@ -22,7 +22,12 @@
     <Card.Header>
         <div class="flex flex-row gap-2 items-center justify-between flex-wrap">
             <div class="flex flex-row gap-2 items-center">
-                <p>{field.name}</p>
+                <p>
+                    {field.name}
+                    {#if field.required}
+                        <span class="text-red-500">*</span>
+                    {/if}
+                </p>
                 {#if editable}
                     <p class="text-sm opacity-80">{field.field_type}</p>
                 {/if}
