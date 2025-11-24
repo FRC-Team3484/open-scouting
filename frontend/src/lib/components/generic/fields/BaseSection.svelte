@@ -1,9 +1,10 @@
 <script lang="ts">
 	import Button from "$lib/components/ui/button/button.svelte";
     import * as Card from "$lib/components/ui/card/index.js";
+    import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
 	import { addFieldDialogOpen, addFieldParentUuid, addSectionDialogOpen, addSectionParentUuid } from "$lib/stores/dialog";
 	import { apiFetch } from "$lib/utls/api";
-	import { CaretDown, CaretUp, FolderPlus, Pencil, PlusCircle, Trash } from "phosphor-svelte";
+	import { CaretDown, CaretUp, DotsThree, FolderPlus, Pencil, PlusCircle, Trash } from "phosphor-svelte";
 	import { slide } from "svelte/transition";
 
     let { field: section, editable = false, getFields = () => {}, children } = $props();
@@ -37,22 +38,34 @@
                 {/if}
             </div>
 
-            {#if editable}
-                <div class="flex flex-row gap-2 items-center">
-                    <Button size="icon" variant="outline"><Pencil weight="bold" /></Button>
-                    <Button size="icon" variant="destructive" onclick={deleteSection}><Trash weight="bold" /></Button>
-                    <Button size="icon" variant="default" onclick={() => {addFieldDialogOpen.set(true); addFieldParentUuid.set(section.uuid)}}><PlusCircle weight="bold" /></Button>
-                    <Button size="icon" variant="default" onclick={() => {addSectionDialogOpen.set(true); addSectionParentUuid.set(section.uuid)}}><FolderPlus weight="bold" /></Button>
-                </div>
-            {/if}
-
-            <Button size="icon" variant="ghost" onclick={() => expanded = !expanded}>
-                {#if expanded}
-                    <CaretDown weight="bold" />
-                {:else}
-                    <CaretUp weight="bold" />
+            <div class="flex flex-row gap-2 items-center">
+                {#if editable}
+                    <DropdownMenu.Root>
+                        <DropdownMenu.Trigger>
+                            <Button size="icon" variant="outline"><DotsThree weight="bold" /></Button>
+                        </DropdownMenu.Trigger>
+                        <DropdownMenu.Content class="w-56" align="start">
+                            <DropdownMenu.Label>Section Options</DropdownMenu.Label>
+                            <DropdownMenu.Group>
+                                <DropdownMenu.Item><Pencil weight="bold" /> Edit</DropdownMenu.Item>
+                                <DropdownMenu.Item onclick={deleteSection}><Trash weight="bold" /> Delete</DropdownMenu.Item>
+                            </DropdownMenu.Group>
+                            <DropdownMenu.Separator />
+                            <DropdownMenu.Group>
+                                <DropdownMenu.Item onclick={() => {addFieldDialogOpen.set(true); addFieldParentUuid.set(section.uuid)}}><PlusCircle weight="bold" /> Add Field</DropdownMenu.Item>
+                                <DropdownMenu.Item onclick={() => {addSectionDialogOpen.set(true); addSectionParentUuid.set(section.uuid)}}><FolderPlus weight="bold" /> Add Section</DropdownMenu.Item>
+                            </DropdownMenu.Group>
+                        </DropdownMenu.Content>
+                    </DropdownMenu.Root>
                 {/if}
-            </Button>
+                <Button size="icon" variant="ghost" onclick={() => expanded = !expanded}>
+                    {#if expanded}
+                        <CaretDown weight="bold" />
+                    {:else}
+                        <CaretUp weight="bold" />
+                    {/if}
+                </Button>
+            </div>
         </div>
     </Card.Header>
 

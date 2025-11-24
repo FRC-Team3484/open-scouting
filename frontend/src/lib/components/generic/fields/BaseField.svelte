@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { apiFetch } from "$lib/utls/api";
-	import { Pencil, Trash } from "phosphor-svelte";
+	import { DotsThree, Pencil, Trash } from "phosphor-svelte";
     
 	import Button from "$lib/components/ui/button/button.svelte";
     import * as Card from "$lib/components/ui/card/index.js";
+    import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
 
     let { field, editable = false, getFields = () => {}, children } = $props();
 
@@ -34,10 +35,19 @@
             </div>
 
             {#if editable}
-                <div class="flex flex-row gap-2 items-center">
-                    <Button size="icon" variant="outline"><Pencil weight="bold" /></Button>
-                    <Button size="icon" variant="destructive" onclick={deleteField}><Trash weight="bold" /></Button>
-                </div>
+                <DropdownMenu.Root>
+                    <DropdownMenu.Trigger>
+                        <Button size="icon" variant="outline"><DotsThree weight="bold" /></Button>
+                    </DropdownMenu.Trigger>
+
+                    <DropdownMenu.Content class="w-56" align="start">
+                        <DropdownMenu.Label>Field Options</DropdownMenu.Label>
+                        <DropdownMenu.Group>
+                            <DropdownMenu.Item><Pencil weight="bold" /> Edit</DropdownMenu.Item>
+                            <DropdownMenu.Item onclick={deleteField}><Trash weight="bold" /> Delete</DropdownMenu.Item>
+                        </DropdownMenu.Group>
+                    </DropdownMenu.Content>
+                </DropdownMenu.Root>
             {/if}
         </div>
     </Card.Header>
