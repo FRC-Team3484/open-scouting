@@ -343,8 +343,6 @@ async def create_season_field(
     if not season:
         raise HTTPException(status_code=404, detail="Season not found")
 
-    print(stat_type)
-
     if stat_type == "auton_score" or stat_type == "auton_miss" or stat_type == "teleop_score" or stat_type == "teleop_miss":
         game_piece = await GamePiece.get_or_none(uuid=game_piece_uuid)
         if not game_piece:
@@ -404,12 +402,14 @@ async def edit_season_field(
     season = await Season.get_or_none(uuid=season_uuid)
     if not season:
         raise HTTPException(status_code=404, detail="Season not found")
-    parent = await MatchScoutingField.get_or_none(uuid=parent_uuid)
-    if not parent:
-        return HTTPException(status_code=404, detail="Parent field not found")
-    game_piece = await GamePiece.get_or_none(uuid=game_piece_uuid)
-    if not game_piece:
-        raise HTTPException(status_code=404, detail="Game piece not found")
+
+    if stat_type == "auton_score" or stat_type == "auton_miss" or stat_type == "teleop_score" or stat_type == "teleop_miss":
+        game_piece = await GamePiece.get_or_none(uuid=game_piece_uuid)
+        if not game_piece:
+            raise HTTPException(status_code=404, detail="Game piece not found")
+    else:
+        game_piece = None
+
     if organization_uuid != "":
         organization = await Organization.get_or_none(uuid=organization_uuid)
         if not organization:
@@ -417,7 +417,6 @@ async def edit_season_field(
     else:
         organization = None
 
-    field.parent = parent
     field.name = name
     field.field_type = field_type
     field.stat_type = stat_type

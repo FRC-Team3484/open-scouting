@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { PlusCircle, X } from "phosphor-svelte";
 
-	import { addFieldDialogOpen, addFieldParentUuid } from "$lib/stores/dialog";
+	import { addFieldDialogOpen, addFieldEditData, addFieldParentUuid } from "$lib/stores/dialog";
 	import { apiFetch } from "$lib/utls/api";
 
     import * as Field from "$lib/components/ui/field";
@@ -16,7 +16,6 @@
 
     let { season_uuid, gamePieces, getStructure } = $props();
 
-    let selectedGamePiece = $state(null);
     const fieldTypes = [
         { name: "string", label: "String" },
         { name: "large_number", label: "Large Number" },
@@ -25,7 +24,6 @@
         { name: "choice", label: "Choice" },
         { name: "multiple_choice", label: "Multiple Choice" },
     ];
-    let selectedFieldType = "string";
     const statTypes = [
         { name: "auton_score", label: "Auton Score" },
         { name: "auton_miss", label: "Auton Miss" },
@@ -35,7 +33,23 @@
         { name: "other", label: "Other" },
         { name: "ignore", label: "Ignore" },
     ];
-    let selectedStatType = "auton_score";
+
+    let addFieldAnswers = $state({
+        name: "",
+        field_type: "",
+        stat_type: "",
+        game_piece: "",
+        required: false,
+        options: [],
+        minimum: "",
+        maximum: "",
+        default: "",
+    });
+
+    let dialogTitle = $state("Add Field");
+    let dialogDescription = $state("Create a new field");
+
+    $inspect($addFieldEditData);
     
     async function createField(event: Event) {
         event.preventDefault();
@@ -66,33 +80,80 @@
         }
 
         try {
-            const response = await apiFetch(`/fields/season/${season_uuid}/create`, {
-                method: "POST",
-                data: body,
-                token: localStorage.getItem("access_token")
-            });
+            if (Object.keys($addFieldEditData).length > 0) {
+                await apiFetch(`/fields/season/${season_uuid}/edit/${$addFieldEditData.uuid}`, {
+                    method: "POST",
+                    data: body,
+                    token: localStorage.getItem("access_token")
+                });
+            } else {
+                await apiFetch(`/fields/season/${season_uuid}/create`, {
+                    method: "POST",
+                    data: body,
+                    token: localStorage.getItem("access_token")
+                });
+            }
 
             addFieldParentUuid.set("");
+            addFieldDialogOpen.set(false);
             getStructure();
         } catch (error) {
             console.error(error);
         }
     }
 
+    function onOpenChange() {
+        if ($addFieldDialogOpen === false) {
+            addFieldParentUuid.set("");
+            addFieldEditData.set({});
+            addFieldAnswers = {
+                name: "",
+                field_type: "",
+                stat_type: "",
+                game_piece: "",
+                required: false,
+                options: [],
+                minimum: "",
+                maximum: "",
+                default: "",
+            };
+            dialogTitle = "Add Field";
+            dialogDescription = "Create a new field";
+        } else {
+            const data = $addFieldEditData;
+            if (data && Object.keys(data).length > 0) {
+                addFieldAnswers.name = data.name ?? "";
+                addFieldAnswers.field_type = data.field_type ?? "";
+                addFieldAnswers.stat_type = data.stat_type ?? "";
+                addFieldAnswers.game_piece = data.game_piece_id ?? "";
+                addFieldAnswers.required = data.required ?? false;
+                addFieldAnswers.options = data.options ?? [];
+                addFieldAnswers.minimum = data.minimum ?? "";
+                addFieldAnswers.maximum = data.maximum ?? "";
+                addFieldAnswers.default = data.default ?? "";
+
+                dialogTitle = "Edit Field";
+                dialogDescription = `Editing field '${addFieldAnswers.name}'`;
+
+                $addFieldParentUuid = "";
+            }
+        }
+    }
+
+
     $effect(() => {
         if (gamePieces) {
-            selectedGamePiece = gamePieces[0];
+            addFieldAnswers.game_piece = gamePieces[0].uuid;
         }
-    })
-
+    });
 </script>
 
-<BaseDialog title="Add Field" description="Create a new field" bind:open={$addFieldDialogOpen}>
+<BaseDialog title={dialogTitle} description={dialogDescription} bind:open={$addFieldDialogOpen} onOpenChange={onOpenChange}>
     <form method="post" on:submit={createField} class="flex flex-col gap-4">
         <Field.Group class="gap-4">
             <Field.Set class="flex flex-col gap-2">
                 <Field.Label>Name</Field.Label>
-                <Input type="text" name="name" label="Name" required />
+                <Input type="text" name="name" label="Name" required bind:value={addFieldAnswers.name} />
                 <Field.Description>The name of the field</Field.Description>
             </Field.Set>
         </Field.Group>
@@ -102,9 +163,9 @@
         <Field.Group class="gap-4">
             <Field.Set class="flex flex-col gap-2">
                 <Field.Label>Field Type</Field.Label>
-                    <Select.Root type="single" name="field_type" label="Field Type" required bind:value={selectedFieldType}>
+                    <Select.Root type="single" name="field_type" label="Field Type" required bind:value={addFieldAnswers.field_type}>
                             <Select.Trigger>
-                            {fieldTypes.find(t => t.name === selectedFieldType)?.label}
+                            {fieldTypes.find(t => t.name === addFieldAnswers.field_type)?.label}
                         </Select.Trigger>
                         <Select.Content>
                             <Select.Label>Field Type</Select.Label>
@@ -118,9 +179,9 @@
 
             <Field.Set class="flex flex-col gap-2">
                 <Field.Label>Stat Type</Field.Label>
-                    <Select.Root type="single" name="stat_type" label="Stat Type" required bind:value={selectedStatType}>
+                    <Select.Root type="single" name="stat_type" label="Stat Type" required bind:value={addFieldAnswers.stat_type}>
                         <Select.Trigger>
-                            {statTypes.find(t => t.name === selectedStatType)?.label}
+                            {statTypes.find(t => t.name === addFieldAnswers.stat_type)?.label}
                         </Select.Trigger>
                         <Select.Content>
                             <Select.Label>Stat Type</Select.Label>
@@ -132,12 +193,12 @@
                 <Field.Description>Define the type of field</Field.Description>
             </Field.Set>
 
-            {#if selectedStatType === "auton_score" || selectedStatType === "auton_miss" || selectedStatType === "teleop_score" || selectedStatType === "teleop_miss"}
+            {#if addFieldAnswers.stat_type === "auton_score" || addFieldAnswers.stat_type === "auton_miss" || addFieldAnswers.stat_type === "teleop_score" || addFieldAnswers.stat_type === "teleop_miss"}
                 <Field.Set class="flex flex-col gap-2">
                     <Field.Label>Game Piece</Field.Label>
-                    <Select.Root type="single" name="game_piece" label="Game Piece" required bind:value={selectedGamePiece}>
+                    <Select.Root type="single" name="game_piece" label="Game Piece" required bind:value={addFieldAnswers.game_piece}>
                         <Select.Trigger>
-                            {gamePieces.find(t => t.uuid === selectedGamePiece)?.name}
+                            {gamePieces.find(t => t.uuid === addFieldAnswers.game_piece)?.name}
                         </Select.Trigger>
                         <Select.Content>
                             <Select.Label>Game Piece</Select.Label>
@@ -152,7 +213,7 @@
 
             <Field.Set class="flex flex-col gap-2">
                 <Field.Field orientation="horizontal">
-                    <Checkbox id="required" name="required"/>
+                    <Checkbox id="required" name="required" bind:checked={addFieldAnswers.required} />
                     <Field.Content>
                         <Field.Label for="required">
                             Required Field
@@ -165,7 +226,7 @@
             </Field.Set>
         </Field.Group>
 
-        {#if selectedFieldType === "choice" || selectedFieldType === "multiple_choice"}
+        {#if addFieldAnswers.field_type === "choice" || addFieldAnswers.field_type === "multiple_choice"}
             <Separator />
             <Field.Group class="gap-4">
                 <Field.Set class="flex flex-col gap-2">
@@ -175,16 +236,16 @@
                     </div>
 
                     <Button type="button" onclick={() => {
-                        choices = [...choices, {id: crypto.randomUUID(), name: document.getElementById("choice_name").value}]
+                        addFieldAnswers.choices = [...addFieldAnswers.choices, {id: crypto.randomUUID(), name: document.getElementById("choice_name").value}]
                         ; document.getElementById("choice_name").value = ""
                         }}>
                         <PlusCircle weight="bold" />Add Choice
                     </Button>
 
-                    {#each choices as choice, i (choice.id)}
+                    {#each addFieldAnswers.choices as choice, i (choice.id)}
                         <div class="flex flex-row gap-2 items-center justify-between">
                             <p>{choice.name}</p>
-                            <Button variant="destructive" type="button" onclick={() => choices = choices.filter((_, j) => j !== i)}>
+                            <Button variant="destructive" type="button" onclick={() => addFieldAnswers.choices = addFieldAnswers.choices.filter((_, j) => j !== i)}>
                                 <X weight="bold" />
                             </Button>
                         </div>
@@ -192,7 +253,7 @@
                 </Field.Set>
             </Field.Group>
 
-        {:else if selectedFieldType === "small_number"}
+        {:else if addFieldAnswers.field_type === "small_number"}
             <Separator />
 
             <Field.Group class="gap-4">
@@ -216,7 +277,14 @@
         {/if}
 
         <Dialog.Footer>
-            <Button type="submit">Create</Button>
+            <Dialog.Close>
+                <Button type="button" variant="outline">Cancel</Button>
+            </Dialog.Close>
+            {#if Object.keys($addFieldEditData).length > 0}
+                <Button type="submit">Edit</Button>
+            {:else}
+                <Button type="submit">Create</Button>
+            {/if}
         </Dialog.Footer>
     </form>
 </BaseDialog>

@@ -5,6 +5,7 @@
 	import Button from "$lib/components/ui/button/button.svelte";
     import * as Card from "$lib/components/ui/card/index.js";
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
+	import { addFieldDialogOpen, addFieldEditData, addFieldParentUuid } from "$lib/stores/dialog";
 
     let { field, editable = false, getFields = () => {}, children } = $props();
 
@@ -15,6 +16,11 @@
         })
 
         await getFields();
+    }
+
+    function editField() {
+        addFieldDialogOpen.set(true);
+        addFieldEditData.set(field);
     }
 </script>
 
@@ -43,7 +49,7 @@
                     <DropdownMenu.Content class="w-56" align="start">
                         <DropdownMenu.Label>Field Options</DropdownMenu.Label>
                         <DropdownMenu.Group>
-                            <DropdownMenu.Item><Pencil weight="bold" /> Edit</DropdownMenu.Item>
+                            <DropdownMenu.Item onclick={editField}><Pencil weight="bold" /> Edit</DropdownMenu.Item>
                             <DropdownMenu.Item onclick={deleteField}><Trash weight="bold" /> Delete</DropdownMenu.Item>
                         </DropdownMenu.Group>
                     </DropdownMenu.Content>
