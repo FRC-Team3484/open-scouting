@@ -48,8 +48,6 @@
 
     let dialogTitle = $state("Add Field");
     let dialogDescription = $state("Create a new field");
-
-    $inspect($addFieldEditData);
     
     async function createField(event: Event) {
         event.preventDefault();
@@ -135,7 +133,7 @@
                 dialogTitle = "Edit Field";
                 dialogDescription = `Editing field '${addFieldAnswers.name}'`;
 
-                $addFieldParentUuid = "";
+                addFieldParentUuid.set("");
             }
         }
     }

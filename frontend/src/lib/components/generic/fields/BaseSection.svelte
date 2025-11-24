@@ -2,7 +2,7 @@
 	import Button from "$lib/components/ui/button/button.svelte";
     import * as Card from "$lib/components/ui/card/index.js";
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
-	import { addFieldDialogOpen, addFieldParentUuid, addSectionDialogOpen, addSectionParentUuid } from "$lib/stores/dialog";
+	import { addFieldDialogOpen, addFieldParentUuid, addSectionDialogOpen, addSectionEditData, addSectionParentUuid } from "$lib/stores/dialog";
 	import { apiFetch } from "$lib/utls/api";
 	import { CaretDown, CaretUp, DotsThree, FolderPlus, Pencil, PlusCircle, Trash } from "phosphor-svelte";
 	import { slide } from "svelte/transition";
@@ -11,7 +11,10 @@
 
     let expanded = $state(true);
 
-    async function editSection() {}
+    function editSection() {
+        addSectionDialogOpen.set(true);
+        addSectionEditData.set(section);
+    }
 
     async function deleteSection() {
         await apiFetch(`/fields/delete/${section.uuid}`, {
@@ -47,7 +50,7 @@
                         <DropdownMenu.Content class="w-56" align="start">
                             <DropdownMenu.Label>Section Options</DropdownMenu.Label>
                             <DropdownMenu.Group>
-                                <DropdownMenu.Item><Pencil weight="bold" /> Edit</DropdownMenu.Item>
+                                <DropdownMenu.Item onclick={editSection}><Pencil weight="bold" /> Edit</DropdownMenu.Item>
                                 <DropdownMenu.Item onclick={deleteSection}><Trash weight="bold" /> Delete</DropdownMenu.Item>
                             </DropdownMenu.Group>
                             <DropdownMenu.Separator />

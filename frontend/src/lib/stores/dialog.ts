@@ -6,3 +6,4 @@ export const addFieldEditData = writable({});
 
 export const addSectionDialogOpen = writable(false);
 export const addSectionParentUuid = writable("");
+export const addSectionEditData = writable({});
