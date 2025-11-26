@@ -140,7 +140,7 @@
 
 
     $effect(() => {
-        if (gamePieces) {
+        if (gamePieces && gamePieces.length > 0) {
             addFieldAnswers.game_piece = gamePieces[0].uuid;
         }
     });
@@ -195,9 +195,11 @@
                 <Field.Set class="flex flex-col gap-2">
                     <Field.Label>Game Piece</Field.Label>
                     <Select.Root type="single" name="game_piece" label="Game Piece" required bind:value={addFieldAnswers.game_piece}>
-                        <Select.Trigger>
-                            {gamePieces.find(t => t.uuid === addFieldAnswers.game_piece)?.name}
-                        </Select.Trigger>
+                        {#if gamePieces && gamePieces.length > 0}
+                            <Select.Trigger>
+                                {gamePieces.find(t => t.uuid === addFieldAnswers.game_piece)?.name}
+                            </Select.Trigger>
+                        {/if}
                         <Select.Content>
                             <Select.Label>Game Piece</Select.Label>
                             {#each gamePieces as game_piece}

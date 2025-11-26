@@ -8,7 +8,6 @@
 	import Button from "$lib/components/ui/button/button.svelte";
 
     import BaseDialog from "./BaseDialog.svelte";
-	import { add } from "dexie";
 
     let { open = $bindable(), season_uuid, getStructure } = $props();
 
