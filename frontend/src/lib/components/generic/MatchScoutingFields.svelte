@@ -17,6 +17,8 @@
 	import Section from "./fields/Section.svelte";
 	import AddSectionDialog from "./dialogs/AddSectionDialog.svelte";
 	import AddFieldDialog from "./dialogs/AddFieldDialog.svelte";
+	import MathScoutingSubmit from "./MathScoutingSubmit.svelte";
+	import { db } from "$lib/utls/db";
 
     type Node = {
         id: string;
@@ -47,6 +49,19 @@
         gamePieces = await apiFetch(`/gamepieces/season/${season_uuid}`);
     }
 
+    async function submit(event: Event) {
+        event.preventDefault();
+
+        const form = event.currentTarget as HTMLFormElement;
+        const formData = new FormData(form);
+
+        await db.match_scouting.add({
+            uuid: crypto.randomUUID(),
+            data: Object.fromEntries(formData),
+            synced: false
+        });
+    }
+
     onMount(async () => {
         while (!season_uuid) {
             await new Promise(resolve => setTimeout(resolve, 100));
@@ -72,30 +87,37 @@
                 </Card.Content>
             </Card.Root>
         {/if}
+        
+        <form method="post" onsubmit={submit}>
+            {#each fields as field (field.uuid)}
+                {#if field.field_type === "string"}
+                    <StringField field={field} editable={editable} getFields={getStructure}/>
+                {:else if field.field_type === "large_number"}
+                    <LargeNumberField field={field} editable={editable} getFields={getStructure}/>
+                {:else if field.field_type === "small_number"}
+                    <SmallNumberField field={field} editable={editable} getFields={getStructure}/>
+                {:else if field.field_type === "boolean"}
+                    <BooleanField field={field} editable={editable} getFields={getStructure}/>
+                {:else if field.field_type === "choice"}
+                    <ChoiceField field={field} editable={editable} getFields={getStructure}/>
+                {:else if field.field_type === "multiple_choice"}
+                    <MultipleChoiceField field={field} editable={editable} getFields={getStructure}/>
+                {:else if field.field_type === "section"}
+                    <Section 
+                        field={field} 
+                        editable={editable} 
+                        getFields={getStructure}
+                    />
+                {/if}
+            {/each}
 
-        {#each fields as field (field.uuid)}
-            {#if field.field_type === "string"}
-                <StringField field={field} editable={editable} getFields={getStructure}/>
-            {:else if field.field_type === "large_number"}
-                <LargeNumberField field={field} editable={editable} getFields={getStructure}/>
-            {:else if field.field_type === "small_number"}
-                <SmallNumberField field={field} editable={editable} getFields={getStructure}/>
-            {:else if field.field_type === "boolean"}
-                <BooleanField field={field} editable={editable} getFields={getStructure}/>
-            {:else if field.field_type === "choice"}
-                <ChoiceField field={field} editable={editable} getFields={getStructure}/>
-            {:else if field.field_type === "multiple_choice"}
-                <MultipleChoiceField field={field} editable={editable} getFields={getStructure}/>
-            {:else if field.field_type === "section"}
-                <Section 
-                    field={field} 
-                    editable={editable} 
-                    getFields={getStructure}
-                />
+            {#if !editable}
+                <MathScoutingSubmit />
             {/if}
-        {/each}
+        </form>
     {/if}
 </div>
+
 
 <AddFieldDialog season_uuid={season_uuid} gamePieces={gamePieces} getStructure={getStructure} />
 <AddSectionDialog season_uuid={season_uuid} getStructure={getStructure} />
