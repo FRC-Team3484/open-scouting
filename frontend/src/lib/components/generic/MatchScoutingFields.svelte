@@ -19,6 +19,7 @@
 	import AddFieldDialog from "./dialogs/AddFieldDialog.svelte";
 	import MathScoutingSubmit from "./MathScoutingSubmit.svelte";
 	import { db } from "$lib/utls/db";
+	import { toast } from "svelte-sonner";
 
     type Node = {
         id: string;
@@ -60,6 +61,10 @@
             data: Object.fromEntries(formData),
             synced: false
         });
+
+        toast.success("Match scouting data saved", { duration: 5000 });
+        form.reset();
+        scrollTo({ top: 0, behavior: "smooth" });
     }
 
     onMount(async () => {
@@ -88,7 +93,7 @@
             </Card.Root>
         {/if}
         
-        <form method="post" onsubmit={submit}>
+        <form method="post" onsubmit={submit} class="flex flex-col gap-2">
             {#each fields as field (field.uuid)}
                 {#if field.field_type === "string"}
                     <StringField field={field} editable={editable} getFields={getStructure}/>
