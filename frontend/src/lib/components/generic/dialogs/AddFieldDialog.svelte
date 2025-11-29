@@ -44,6 +44,7 @@
         minimum: "",
         maximum: "",
         default: "",
+        choices: []
     });
 
     let dialogTitle = $state("Add Field");
@@ -66,7 +67,7 @@
         body.append("parent_uuid", $addFieldParentUuid);
 
         if (formData.get("field_type") === "choice" || formData.get("field_type") === "multiple_choice") {
-            body.append("options", JSON.stringify(choices));
+            body.append("options", JSON.stringify(addFieldAnswers.choices));
         } else if (formData.get("field_type") === "small_number") {
             const options = JSON.parse(formData.get("options") || "[]");
             options.minimum = formData.get("minimum")!.toString();
@@ -114,6 +115,7 @@
                 minimum: "",
                 maximum: "",
                 default: "",
+                choices: []
             };
             dialogTitle = "Add Field";
             dialogDescription = "Create a new field";
@@ -129,6 +131,7 @@
                 addFieldAnswers.minimum = data.minimum ?? "";
                 addFieldAnswers.maximum = data.maximum ?? "";
                 addFieldAnswers.default = data.default ?? "";
+                addFieldAnswers.choices = data.choices ?? [];
 
                 dialogTitle = "Edit Field";
                 dialogDescription = `Editing field '${addFieldAnswers.name}'`;
