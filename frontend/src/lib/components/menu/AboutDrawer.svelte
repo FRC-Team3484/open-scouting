@@ -3,7 +3,7 @@
     import { PUBLIC_VERSION } from "$env/static/public";
 
     import * as Drawer from "$lib/components/ui/drawer";
-	import { DotsThreeOutline } from "phosphor-svelte";
+	import { DotsThreeOutline, XCircle } from "phosphor-svelte";
 	import Button from "../ui/button/button.svelte";
 	import { Separator } from "../ui/separator";
 </script>
@@ -13,7 +13,7 @@
         <Button variant="outline" class="w-full"><DotsThreeOutline weight="bold" /> About Open Scouting</Button>
     </Drawer.Trigger>
     <Drawer.Portal>
-        <Drawer.Content class="h-auto lg:mx-64 border-1 p-4 pb-16">
+        <Drawer.Content class="h-auto lg:mx-64 border-1 p-4">
             <div class="flex flex-col gap-4 mt-6">
                 <div class="flex flex-col gap-2 items-center text-center mx-8">
                     <img src={icon_rounded} alt="Logo" class="w-24 h-24 aspect-square" />
@@ -30,6 +30,14 @@
                     <p class="text-md opacity-70">Started by <a href="https://github.com/nfoert" class="underline">nfoert</a></p>
                     <p class="text-md opacity-70">Powered by <a href="https://www.thebluealliance.com/" class="underline">The Blue Alliance</a></p>
                 </div>
+
+                
+
+                <Drawer.Footer>
+                    <Drawer.Close>
+                        <Button variant="outline" class="w-full"><XCircle weight="bold" /> Close</Button>
+                    </Drawer.Close>
+                </Drawer.Footer>
             </div>
         </Drawer.Content>
         <Drawer.Overlay />

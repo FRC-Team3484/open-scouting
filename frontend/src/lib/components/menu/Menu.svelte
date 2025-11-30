@@ -6,10 +6,11 @@
 	import { toggleMode, mode } from "mode-watcher";
 	import { fade, slide } from "svelte/transition";
 	import AboutDrawer from "./AboutDrawer.svelte";
+	import ManageDataDrawer from "./ManageDataDrawer.svelte";
 
     type State = "ready" | "loading" | "warning"
 
-    let menu_open: boolean = false;
+    let menu_open: boolean = true;
     let state: State = "ready";
     let status: string = "";
 
@@ -85,7 +86,7 @@
 
             <Separator orientation="horizontal" />
 
-            <div class="flex flex-row gap-4 flex-wrap">
+            <div class="flex flex-row gap-2 flex-wrap">
                 <Button variant="outline" href="/"><House weight="bold" /> Home</Button>
                 <Button variant="outline" href="https://github.com/FRC-Team3484/open-scouting"><GithubLogo weight="bold" /> Source Code</Button>
                 <Button variant="outline" href="https://github.com/FRC-Team3484/open-scouting/issues"><Bug weight="bold" /> Issues</Button>
@@ -94,11 +95,10 @@
 
             <Separator orientation="horizontal" />
 
-            <div class="flex flex-col gap-2">
-                <Button variant="outline"><FloppyDisk weight="bold" /> Manage Local Data</Button>
+            <div class="flex flex-col gap-4">
+                <ManageDataDrawer />
+                <AboutDrawer />
             </div>
-
-            <AboutDrawer />
         </div>
     </Drawer.Content>
 </Drawer.Root>
