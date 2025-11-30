@@ -1,16 +1,15 @@
 <script lang="ts">
     import * as Drawer from "$lib/components/ui/drawer";
-	import { Article, Bug, CheckCircle, CircleNotch, Clock, GithubLogo, House, List, Moon, Sun, Warning, X } from "phosphor-svelte";
+	import { Article, Bug, CheckCircle, CircleNotch, Clock, FloppyDisk, GithubLogo, House, List, Moon, Sun, Warning, X } from "phosphor-svelte";
 	import Button from "../ui/button/button.svelte";
-	import ThemeSwitcherIcon from "../generic/ThemeSwitcherIcon.svelte";
 	import Separator from "../ui/separator/separator.svelte";
 	import { toggleMode, mode } from "mode-watcher";
 	import { fade, slide } from "svelte/transition";
-	import { onMount } from "svelte";
+	import AboutDrawer from "./AboutDrawer.svelte";
 
     type State = "ready" | "loading" | "warning"
 
-    let menu_open: boolean = true;
+    let menu_open: boolean = false;
     let state: State = "ready";
     let status: string = "";
 
@@ -23,14 +22,7 @@
                 state = "ready";
             }, 3000);
         }
-    }
-
-    onMount(async () => {
-        setState("warning", "hi", false);
-        setTimeout(() => {
-            setState("ready", "all done!", true);
-        }, 5000)
-    })
+    };
 </script>
 
 <Button
@@ -102,7 +94,11 @@
 
             <Separator orientation="horizontal" />
 
+            <div class="flex flex-col gap-2">
+                <Button variant="outline"><FloppyDisk weight="bold" /> Manage Local Data</Button>
+            </div>
 
+            <AboutDrawer />
         </div>
     </Drawer.Content>
 </Drawer.Root>
