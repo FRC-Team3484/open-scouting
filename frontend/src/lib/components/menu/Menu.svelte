@@ -10,7 +10,7 @@
 
     type State = "ready" | "loading" | "warning"
 
-    let menu_open: boolean = true;
+    let menu_open: boolean = false;
     let state: State = "ready";
     let status: string = "";
 
@@ -96,7 +96,7 @@
             <Separator orientation="horizontal" />
 
             <div class="flex flex-col gap-4">
-                <ManageDataDrawer />
+                <ManageDataDrawer setState={setState}/>
                 <AboutDrawer />
             </div>
         </div>

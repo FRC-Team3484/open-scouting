@@ -9,6 +9,8 @@
 	import Menu from "$lib/components/menu/Menu.svelte";
 	import NavBar from "$lib/components/generic/NavBar.svelte";
 
+	import "$lib/utils/sync";
+
 	let { children } = $props();
 
 	// put the <link rel="manifest"> into the head

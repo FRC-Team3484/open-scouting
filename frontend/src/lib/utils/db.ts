@@ -10,8 +10,8 @@ export class OpenScoutingDB extends Dexie {
     
     this.version(1).stores({
       match_scouting: "&uuid, data, synced",
-      season_data: "&year, fields, game_pieces",
-      event: "&uuid, year, event_code, name, type, city, country, start_date, end_date"
+      season_data: "&year, fields, game_pieces, fetch_time",
+      event: "&uuid, year, event_code, name, type, city, country, start_date, end_date, fetch_time"
     });
 
     this.match_scouting = this.table('match_scouting');

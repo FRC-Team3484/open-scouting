@@ -7,6 +7,10 @@
 	import { FloppyDisk } from "phosphor-svelte";
 	import Button from "../ui/button/button.svelte";
 	import { Separator } from "../ui/separator";
+	import { onMount } from "svelte";
+
+    let { setState } = $props();
+
 </script>
 
 <Drawer.NestedRoot>
