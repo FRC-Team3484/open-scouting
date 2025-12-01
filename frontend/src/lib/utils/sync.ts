@@ -38,7 +38,7 @@ async function fetchEventData() {
 
         for (const event in eventsResponse) {
             await db.event.put({
-                uuid: crypto.randomUUID(),
+                uuid: eventsResponse[event].key,
                 year: seasonsResponse[season].year,
                 event_code: eventsResponse[event].event_code,
                 name: eventsResponse[event].name,
@@ -92,7 +92,7 @@ async function main() {
             status: "Fetching season data...",
             close: false
         });
-        
+
         await fetchSeasonData();
         console.log("Fetched season data");
         menuState.set({
