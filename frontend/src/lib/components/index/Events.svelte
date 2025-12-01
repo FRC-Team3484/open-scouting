@@ -8,9 +8,14 @@
 	import Checkbox from "../ui/checkbox/checkbox.svelte";
 	import Label from "../ui/label/label.svelte";
 	import Separator from "../ui/separator/separator.svelte";
-	import { SquaresFour, Star } from "phosphor-svelte";
+	import { CloudSlash, SquaresFour, Star } from "phosphor-svelte";
 	import { getUserSetting, setUserSetting } from "$lib/utils/user";
 	import EventList from "./events/EventList.svelte";
+	import { db } from "$lib/utils/db";
+	import { Button } from "../ui/button";
+    import * as Dialog from "../ui/dialog/index.js";
+	import { fetchEventData } from "$lib/utils/sync";
+	import { toast } from "svelte-sonner";
 
     let { handleNavigate, year, setEvent } = $props();
 
@@ -31,17 +36,6 @@
         );
     }));
 
-    onMount(async () => {
-        try {
-            const response = await theBlueAllianceApiFetch("/events/" + year);
-            events = response;
-        } catch (error) {
-            console.error(error);
-        }
-
-        favorite_events = await getUserSetting("favorite_events") ?? [];
-    });
-
     async function favoriteEvent(e: MouseEvent, eventData) {
         const key = `${eventData.year}_${eventData.event_code}`;
 
@@ -53,6 +47,16 @@
 
         await setUserSetting("favorite_events", favorite_events);
     }
+
+    async function getEvents() {
+        events = await db.event.toArray();
+    }
+
+    onMount(async () => {
+        getEvents();
+
+        favorite_events = await getUserSetting("favorite_events") ?? [];
+    });
 </script>
 
 <Card.Root class="w-auto min-w-64 mt-4">
@@ -74,10 +78,30 @@
             <Separator orientation="horizontal" />
 
             <Tabs.Root value="all">
-                <Tabs.List>
-                    <Tabs.Trigger value="all"><SquaresFour weight="bold" /> All Events</Tabs.Trigger>
-                    <Tabs.Trigger value="favorite"><Star weight="bold" /> Favorite Events</Tabs.Trigger>
-                </Tabs.List>
+                <div class="flex flex-row gap-2 items-center justify-between">
+                    <Tabs.List>
+                        <Tabs.Trigger value="all"><SquaresFour weight="bold" /> All Events</Tabs.Trigger>
+                        <Tabs.Trigger value="favorite"><Star weight="bold" /> Favorite Events</Tabs.Trigger>
+                    </Tabs.List>
+                    
+                    <Dialog.Root>
+                        <Dialog.Trigger>
+                            <Button variant="outline" size="icon"><CloudSlash weight="bold" /></Button>
+                        </Dialog.Trigger>
+                        <Dialog.Content>
+                            <Dialog.Title>Using Offline Data</Dialog.Title>
+                            <Dialog.Description>Open Scouting caches events from The Blue Alliance to work with no or poor connection. If an event seems to be missing, you can rebuild the event cache here.</Dialog.Description>
+
+                            <Dialog.Footer>
+                                <Dialog.Close>
+                                    <Button variant="outline">Cancel</Button>
+                                    <Button onclick={async () => {await fetchEventData(); await getEvents(); await toast.success("Event cache rebuilt");}}>Rebuild Event Cache</Button>
+                                </Dialog.Close>
+                            </Dialog.Footer>
+                        </Dialog.Content>
+                    </Dialog.Root>
+                </div>
+
                 <Tabs.Content value="all">
                     <EventList events={filteredEvents} favorite_events={favorite_events} handleNavigate={handleNavigate} setEvent={setEvent} favoriteEvent={favoriteEvent} favorites={false} />
                 </Tabs.Content>
@@ -87,7 +111,4 @@
             </Tabs.Root>
         </div>
     </Card.Content>
-
-    <Card.Footer>
-    </Card.Footer>
 </Card.Root>
