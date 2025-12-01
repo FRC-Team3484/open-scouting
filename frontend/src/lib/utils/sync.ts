@@ -1,4 +1,4 @@
-import { error } from "@sveltejs/kit";
+import { menuState } from "$lib/stores/menu";
 import { apiFetch, theBlueAllianceApiFetch } from "./api";
 import { db } from "./db";
 
@@ -80,16 +80,34 @@ async function isOldData() {
     }
 }
 
+
 /**
  * If the locally stored data is out of date, download it and ask the menu to show that status
  */
 async function main() {
     if (await isOldData()) {
         console.log("Data is out of date. Fetching...");
+        menuState.set({
+            state: "loading",
+            status: "Fetching season data...",
+            close: false
+        });
+        
         await fetchSeasonData();
         console.log("Fetched season data");
+        menuState.set({
+            state: "loading",
+            status: "Fetching event data...",
+            close: false
+        });
+
         await fetchEventData();
         console.log("Fetched event data");
+        menuState.set({
+            state: "ready",
+            status: "Data is up to date!",
+            close: true
+        });
     }
 }
 

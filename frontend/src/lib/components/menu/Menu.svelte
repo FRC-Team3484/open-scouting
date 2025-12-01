@@ -7,37 +7,35 @@
 	import { fade, slide } from "svelte/transition";
 	import AboutDrawer from "./AboutDrawer.svelte";
 	import ManageDataDrawer from "./ManageDataDrawer.svelte";
-
-    type State = "ready" | "loading" | "warning"
+	import { menuState } from "$lib/stores/menu";
 
     let menu_open: boolean = false;
-    let state: State = "ready";
-    let status: string = "";
 
-    async function setState(newState: State, newStatus: string, close: boolean = false) {
-        state = newState;
-        status = newStatus;
-        if (close) {
+    menuState.subscribe((value) => {
+        if (value.close) {
             setTimeout(() => {
-                status = "";
-                state = "ready";
-            }, 3000);
+                menuState.set({
+                    state: "ready",
+                    status: "",
+                    close: false
+                });
+            }, 3000)
         }
-    };
+    });
 </script>
 
 <Button
     variant="outline"
-    class={`fixed bottom-2 right-2 !aspect-square !rounded-full md:!w-16 md:!h-16 !w-10 !h-10 backdrop-blur-lg ${state === "warning" ? "!bg-amber-500/30 !border-amber-700" : ""}`}
+    class={`fixed bottom-2 right-2 !aspect-square !rounded-full md:!w-16 md:!h-16 !w-10 !h-10 backdrop-blur-lg ${$menuState.state === "warning" ? "!bg-amber-500/30 !border-amber-700" : ""}`}
     onclick={() => menu_open = true}
 >
-    {#key state}
+    {#key $menuState.state}
         <div transition:fade|local={{ duration: 150 }}>
-            {#if state === "ready"}
+            {#if $menuState.state === "ready"}
                 <List weight="bold" class="md:!w-8 md:!h-8 !w-6 !h-6" />
-            {:else if state === "loading"}
+            {:else if $menuState.state === "loading"}
                 <CircleNotch weight="bold" class="animate-spin md:!w-6 md:!h-6 !w-4 !h-4" />
-            {:else if state === "warning"}
+            {:else if $menuState.state === "warning"}
                 <Warning weight="bold" class="animate-pulse md:!w-6 md:!h-6 !w-4 !h-4" />
             {/if}
         </div>
@@ -57,16 +55,16 @@
                 <Drawer.Close><Button variant="outline" size="icon" class="!p-6 rounded-full"><X weight="bold" class="!w-6 !h-6"/></Button></Drawer.Close>
             </div>
 
-            {#if status}
+            {#if $menuState.status}
                 <div class="flex flex-row gap-2 items-center" transition:slide>
-                    {#if state === "ready"}
+                    {#if $menuState.state === "ready"}
                         <CheckCircle weight="bold"/>
-                    {:else if state === "loading"}
+                    {:else if $menuState.state === "loading"}
                         <CircleNotch weight="bold" class="animate-spin"/>
-                    {:else if state === "warning"}
+                    {:else if $menuState.state === "warning"}
                         <Warning weight="bold"/>
                     {/if}
-                    <p>{status}</p>
+                    <p>{$menuState.status}</p>
                 </div>
             {/if}
 
@@ -96,7 +94,7 @@
             <Separator orientation="horizontal" />
 
             <div class="flex flex-col gap-4">
-                <ManageDataDrawer setState={setState}/>
+                <ManageDataDrawer/>
                 <AboutDrawer />
             </div>
         </div>

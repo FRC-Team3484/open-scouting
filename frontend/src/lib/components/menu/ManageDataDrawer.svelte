@@ -9,8 +9,6 @@
 	import { Separator } from "../ui/separator";
 	import { onMount } from "svelte";
 
-    let { setState } = $props();
-
 </script>
 
 <Drawer.NestedRoot>

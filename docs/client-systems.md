@@ -2,12 +2,14 @@
 
 This document lists the various client side systems that are available to aid in development.
 
-- [Dialog](#dialog)
-- [Toast](#toasts)
-- [Database](#database)
-- [UI](#ui)
-- [User Management](#user-managment)
-- [API Requests](#api-requests)
+- [Client Systems](#client-systems)
+  - [Dialog](#dialog)
+  - [Toasts](#toasts)
+  - [Database](#database)
+  - [UI](#ui)
+  - [User Managment](#user-managment)
+  - [API Requests](#api-requests)
+  - [Menu Status](#menu-status)
 
 ## Dialog
 A simple alert dialog that is presented to the user
@@ -80,3 +82,20 @@ The client can manage the currently authenticated user using `$lib/utils/user.ts
 
 ## API Requests
 Requests can be made to the backend using `api.ts`
+
+## Menu Status
+You can show the progress of a task in the menu by setting the `menuState` store
+
+- `state` - Either `ready`, `loading` or `warning`. Indicates what icon should be shown on the menu
+- `status` - The text description of the task or warning
+- `close` - If the text should be hidden three seconds after the data is written (Used to indicate a task was completed)
+
+```js
+import { menuState } from "$lib/stores/menu";
+
+menuState.set({
+    state: "loading",
+    status: "Fetching season data...",
+    close: false
+});
+```
