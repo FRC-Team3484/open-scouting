@@ -40,14 +40,24 @@
     type ChoiceType = {id: string; name: string }[];
     let choices: ChoiceType[] = [];
 
-    let { season_uuid, editable } = $props();
+    let { season_uuid, year, editable } = $props();
 
     async function getStructure() {
-        fields = await apiFetch(`/fields/season/${season_uuid}`);
+        if (editable) {
+            fields = await apiFetch(`/fields/season/${season_uuid}`);
+        } else {
+            const season = await db.season_data.get(parseInt(year));
+            fields = season?.fields
+        }
     }
 
     async function getGamePieces() {
-        gamePieces = await apiFetch(`/gamepieces/season/${season_uuid}`);
+        if (editable) {
+            gamePieces = await apiFetch(`/gamepieces/season/${season_uuid}`);
+        } else {
+            const season = await db.season_data.get(parseInt(year));
+            gamePieces = season?.game_pieces
+        }
     }
 
     async function submit(event: Event) {

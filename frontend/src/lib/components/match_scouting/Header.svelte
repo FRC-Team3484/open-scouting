@@ -2,9 +2,12 @@
     import * as Card from "$lib/components/ui/card/index.js";
 	import { onMount } from "svelte";
 	import Logo from "../generic/Logo.svelte";
-	import { apiFetch } from "$lib/utils/api";
     import { validateTokenOnline } from "$lib/utils/user";
-	import { get } from "svelte/store";
+    import * as Dialog from "$lib/components/ui/dialog/index.js";
+	import { CloudSlash } from "phosphor-svelte";
+	import Button from "../ui/button/button.svelte";
+	import { toast } from "svelte-sonner";
+	import { fetchSeasonData } from "$lib/utils/sync";
 
     let user = null
 
@@ -39,9 +42,26 @@
     <div class="flex flex-row gap-4 items-center justify-between flex-wrap p-4">
         <Logo text={false} style="tiny" href="/" />
         <div class="flex flex-col gap-2 text-left">
-            <p class="text-2xl font-bold">Match Scouting</p>
+            <div class="flex flex-row gap-2 items-center">
+                <p class="text-2xl font-bold">Match Scouting</p>
+                <Dialog.Root>
+                    <Dialog.Trigger>
+                        <Button variant="outline" size="icon"><CloudSlash weight="bold" /></Button>
+                    </Dialog.Trigger>
+                    <Dialog.Content>
+                        <Dialog.Title>Using Offline Data</Dialog.Title>
+                        <Dialog.Description>Open Scouting caches events from the server to work with no or poor connection. If the fields seem to be out of date, you can rebuild the season data cache here.</Dialog.Description>
+
+                        <Dialog.Footer>
+                            <Dialog.Close>
+                                <Button variant="outline">Cancel</Button>
+                                <Button onclick={async () => {await fetchSeasonData(); await toast.success("Season data cache rebuilt"); window.location.reload();}}>Rebuild Season Data Cache</Button>
+                            </Dialog.Close>
+                        </Dialog.Footer>
+                    </Dialog.Content>
+                </Dialog.Root>
+            </div>
             <p>Scouting <span class="font-bold font-mono">{event_code}</span> in <span class="font-bold">{year}</span> as <span class="font-bold">{username}</span></p>
         </div>
     </div>
-
 </Card.Root>

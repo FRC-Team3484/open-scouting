@@ -52,5 +52,5 @@
 
     <Separator />
 
-    <MatchScoutingFields season_uuid={season_value.uuid} editable={true} />
+    <MatchScoutingFields season_uuid={season_value.uuid} year={season_value.year} editable={true} />
 </div>
