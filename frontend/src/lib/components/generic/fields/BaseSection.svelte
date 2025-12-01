@@ -3,7 +3,7 @@
     import * as Card from "$lib/components/ui/card/index.js";
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
 	import { addFieldDialogOpen, addFieldParentUuid, addSectionDialogOpen, addSectionEditData, addSectionParentUuid } from "$lib/stores/dialog";
-	import { apiFetch } from "$lib/utls/api";
+	import { apiFetch } from "$lib/utils/api";
 	import { CaretDown, CaretUp, DotsThree, FolderPlus, Pencil, PlusCircle, Trash } from "phosphor-svelte";
 	import { slide } from "svelte/transition";
 

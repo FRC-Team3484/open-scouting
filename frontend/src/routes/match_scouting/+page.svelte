@@ -2,7 +2,7 @@
 	import MatchScoutingFields from "$lib/components/generic/MatchScoutingFields.svelte";
 	import PageContainer from "$lib/components/layout/PageContainer.svelte";
 	import Header from "$lib/components/match_scouting/Header.svelte";
-	import { apiFetch } from "$lib/utls/api";
+	import { apiFetch } from "$lib/utils/api";
 	import { onMount } from "svelte";
 
     let season_uuid: string = "";

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { apiFetch } from "$lib/utls/api";
+	import { apiFetch } from "$lib/utils/api";
 	import { DotsThree, Pencil, Trash } from "phosphor-svelte";
     
 	import Button from "$lib/components/ui/button/button.svelte";

@@ -4,7 +4,7 @@
 	import { onMount } from "svelte";
 
 	import MatchScoutingFields from "../generic/MatchScoutingFields.svelte";
-	import { apiFetch } from "$lib/utls/api";
+	import { apiFetch } from "$lib/utils/api";
 	import GamePieceManager from "./GamePieceManager.svelte";
 	import Separator from "../ui/separator/separator.svelte";
 

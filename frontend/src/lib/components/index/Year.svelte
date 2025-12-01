@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { apiFetch } from "$lib/utls/api";
+	import { apiFetch } from "$lib/utils/api";
 	import { onMount } from "svelte";
     import * as Card from "$lib/components/ui/card/index.js";
     import * as Select from "$lib/components/ui/select/index.js";

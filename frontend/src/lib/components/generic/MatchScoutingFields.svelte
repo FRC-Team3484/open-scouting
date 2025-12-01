@@ -3,7 +3,7 @@
 	import { FolderPlus, PlusCircle } from "phosphor-svelte";
 
     import { addFieldDialogOpen, addSectionDialogOpen } from "$lib/stores/dialog";
-    import { apiFetch } from "$lib/utls/api";
+    import { apiFetch } from "$lib/utils/api";
 
 	import Skeleton from "../ui/skeleton/skeleton.svelte";
     import * as Card from "$lib/components/ui/card/index.js";
@@ -18,7 +18,7 @@
 	import AddSectionDialog from "./dialogs/AddSectionDialog.svelte";
 	import AddFieldDialog from "./dialogs/AddFieldDialog.svelte";
 	import MathScoutingSubmit from "./MathScoutingSubmit.svelte";
-	import { db } from "$lib/utls/db";
+	import { db } from "$lib/utils/db";
 	import { toast } from "svelte-sonner";
 
     type Node = {

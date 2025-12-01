@@ -1,6 +1,6 @@
 <script lang="ts">
 	import PageContainer from "$lib/components/layout/PageContainer.svelte";
-	import { validateTokenOnline } from "$lib/utls/user";
+	import { validateTokenOnline } from "$lib/utils/user";
 	import { onMount } from "svelte";
 	import { toast } from "svelte-sonner";
     import * as Card from "$lib/components/ui/card/index.js";

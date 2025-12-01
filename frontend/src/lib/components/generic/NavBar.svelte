@@ -2,7 +2,7 @@
 	import { onMount } from "svelte";
 	import Button from "../ui/button/button.svelte";
 	import Logo from "./Logo.svelte";
-	import { signOut, validateTokenOnline } from "$lib/utls/user";
+	import { signOut, validateTokenOnline } from "$lib/utils/user";
 	import * as Avatar from "../ui/avatar/index.js";
 	import Skeleton from "../ui/skeleton/skeleton.svelte";
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";

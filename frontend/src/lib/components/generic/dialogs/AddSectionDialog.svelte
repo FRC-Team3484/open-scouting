@@ -1,6 +1,6 @@
 <script lang="ts">
     import { addSectionDialogOpen, addSectionEditData, addSectionParentUuid } from "$lib/stores/dialog";
-	import { apiFetch } from "$lib/utls/api";
+	import { apiFetch } from "$lib/utils/api";
     
     import * as Field from "$lib/components/ui/field";
     import * as Dialog from "$lib/components/ui/dialog";

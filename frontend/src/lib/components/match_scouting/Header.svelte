@@ -2,8 +2,8 @@
     import * as Card from "$lib/components/ui/card/index.js";
 	import { onMount } from "svelte";
 	import Logo from "../generic/Logo.svelte";
-	import { apiFetch } from "$lib/utls/api";
-    import { validateTokenOnline } from "$lib/utls/user";
+	import { apiFetch } from "$lib/utils/api";
+    import { validateTokenOnline } from "$lib/utils/user";
 	import { get } from "svelte/store";
 
     let user = null

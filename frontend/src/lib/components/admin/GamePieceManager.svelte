@@ -1,6 +1,6 @@
 <script lang="ts">
     import * as Card from "$lib/components/ui/card/index.js";
-	import { apiFetch } from "$lib/utls/api";
+	import { apiFetch } from "$lib/utils/api";
 	import { onMount } from "svelte";
 	import Button from "../ui/button/button.svelte";
 	import { PlusCircle, X } from "phosphor-svelte";

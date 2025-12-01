@@ -8,9 +8,9 @@
     import * as Tabs from "$lib/components/ui/tabs";
 
 	import { ArrowRight, ArrowLeft, Building, SignOut, SignIn } from "phosphor-svelte";
-	import { signOut, validateTokenOnline } from "$lib/utls/user";
+	import { signOut, validateTokenOnline } from "$lib/utils/user";
 	import { onMount } from "svelte";
-	import { apiFetch, theBlueAllianceApiFetch } from "$lib/utls/api";
+	import { apiFetch, theBlueAllianceApiFetch } from "$lib/utils/api";
 	import Skeleton from "../ui/skeleton/skeleton.svelte";
 	import Separator from "../ui/separator/separator.svelte";
 

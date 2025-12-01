@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { theBlueAllianceApiFetch } from "$lib/utls/api";
+	import { theBlueAllianceApiFetch } from "$lib/utils/api";
 	import { onMount } from "svelte";
 
     import * as Card from "$lib/components/ui/card/index.js";
@@ -9,7 +9,7 @@
 	import Label from "../ui/label/label.svelte";
 	import Separator from "../ui/separator/separator.svelte";
 	import { SquaresFour, Star } from "phosphor-svelte";
-	import { getUserSetting, setUserSetting } from "$lib/utls/user";
+	import { getUserSetting, setUserSetting } from "$lib/utils/user";
 	import EventList from "./events/EventList.svelte";
 
     let { handleNavigate, year, setEvent } = $props();

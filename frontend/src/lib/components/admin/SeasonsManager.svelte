@@ -1,6 +1,6 @@
 <script lang="ts">
     import * as Card from "$lib/components/ui/card/index.js";
-	import { apiFetch } from "$lib/utls/api";
+	import { apiFetch } from "$lib/utils/api";
 	import { CheckCircle, PlusCircle, X } from "phosphor-svelte";
 	import { onMount } from "svelte";
 	import Separator from "../ui/separator/separator.svelte";
