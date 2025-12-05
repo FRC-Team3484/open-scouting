@@ -1,3 +1,9 @@
+from tortoise.fields.base import Field
+
+
+from datetime import datetime
+
+
 from re import M
 from tortoise import fields
 from tortoise.models import Model
@@ -75,3 +81,27 @@ class MatchScoutingField(Model):
     order = fields.IntField(default=0) # The order the field should appear in the frontend or section
     organization = fields.ForeignKeyField("models.Organization", related_name="scouting_fields", null=True) # Optional, used if the field is specific to an organization
     created_at = fields.DatetimeField(auto_now_add=True)
+
+class Event(Model):
+    uuid = fields.UUIDField(pk=True)
+    season = fields.ForeignKeyField("models.Season", related_name="events")
+    event_code = fields.CharField(max_length=255)
+    name = fields.CharField(max_length=255)
+    type = fields.CharField(max_length=255)
+    city = fields.CharField(max_length=255)
+    country = fields.CharField(max_length=255)
+    start_date = fields.DatetimeField()
+    end_date = fields.DatetimeField()
+    created_at = fields.DatetimeField(auto_now_add=True)
+
+class MatchScoutingSubmission(Model):
+    uuid = fields.UUIDField(pk=True)
+    user = fields.ForeignKeyField("models.User", related_name="answers")
+    event = fields.ForeignKeyField("models.Event", related_name="answers")
+    created_at = fields.DatetimeField(auto_now_add=True)
+
+class MatchScoutingAnswer(Model):
+    uuid = fields.UUIDField(pk=True)
+    field = fields.ForeignKeyField("models.MatchScoutingField", related_name="answers")
+    value = fields.CharField(max_length=255, null=True)
+    submission = fields.ForeignKeyField("models.MatchScoutingSubmission", related_name="answers")

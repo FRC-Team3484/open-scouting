@@ -1,9 +1,4 @@
 import os
-from datetime import timedelta
-import stat
-
-from pydantic import BaseModel
-from typing import Annotated, List
 
 from fastapi import FastAPI, Form, Depends, HTTPException, status, Body
 from fastapi.middleware.cors import CORSMiddleware
@@ -12,7 +7,7 @@ from tortoise.contrib.fastapi import register_tortoise
 from tortoise.exceptions import IntegrityError
 from tortoise.contrib.pydantic import pydantic_model_creator
 
-from app.models import User, Profile, Organization, OrganizationMember, Season, Settings, GamePiece, MatchScoutingField
+from app.models import MatchScoutingSubmission, User, Profile, Organization, OrganizationMember, Season, Settings, GamePiece, MatchScoutingField, Event, MatchScoutingAnswer
 from app.auth import get_password_hash, verify_password, create_access_token, decode_access_token
 
 # Setup
@@ -435,3 +430,58 @@ async def delete_field(field_uuid: str, current_user: User = Depends(get_current
         raise HTTPException(status_code=404, detail="Field not found")
     await field.delete()
     return {"message": "Field deleted"}
+
+#    Match Scouting Answers
+@app.post("/scouting/submit")
+async def submit_match_scouting(
+    submission_uuid: str,
+    fields: dict[str, str],
+    user_uuid: str, # Is either the UUID for the authenticated user, or just a username
+    year: int,
+    event_code: str,
+    event_name: str,
+    event_type: str,
+    event_city: str,
+    event_country: str,
+    event_start_date: str,
+    event_end_date: str
+):
+
+    user = User.get_or_none(uuid=user_uuid)
+    if not user:
+        user = None # Sets the user to none if not a user. This should probably be the user's username later
+
+    season = Season.get_or_none(year=year)
+    if not season:
+        raise HTTPException(status_code=404, detail="Season not found")
+
+    event = Event.get_or_create(
+        season=season,
+        event_code=event_code,
+        name = event_name,
+        type = event_type,
+        city = event_city,
+        country = event_country,
+        start_date = event_start_date,
+        end_date = event_end_date
+    )
+
+    submission = await MatchScoutingSubmission.create(
+        uuid=submission_uuid,
+        user=user,
+        event=event
+    )
+
+    for key, value in fields.items():
+        field = await MatchScoutingField.get_or_none(uuid=key)
+        if not field:
+            raise HTTPException(status_code=404, detail="Field not found")
+
+        _ = await MatchScoutingAnswer.create(
+            uuid=key,
+            field=field,
+            value=value,
+            submission=submission
+        )
+
+    return submission
