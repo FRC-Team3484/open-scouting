@@ -3,7 +3,23 @@
 This document lists the things that need to be implemented in the `v2.0.0` redesign, in order.
 
 - [x] Base frontend and backend
-- [x] Admin page
+- [ ] Admin page
+  - [x] Manage Seasons
+  - [ ] Manage match scouting fields and game pieces
+    - [x] Create and edit fields
+    - [ ] Make reorderable
+  - [ ] Manage pit scouting questions
+  - [ ] Manage users
+  - [ ] Manage events
+  - [ ] Manage match scouting data
+  - [ ] Manage pit scouting data
 - [ ] Match scouting
+  - [x] Render fields and be submittable
+  - [x] Save match scouting data locally
+  - [ ] Sync match scouting data to the database
 - [ ] Pit scouting
 - [ ] Data view
+- [ ] Host in experimental
+- [ ] Add link to Open Scouting v1.0.0 to try
+- [ ] Be able to import data from v1.0.0
+- [ ] Deprecate `open-scouting-utils` repo
