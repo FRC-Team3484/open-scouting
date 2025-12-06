@@ -20,6 +20,7 @@
 	import MathScoutingSubmit from "./MathScoutingSubmit.svelte";
 	import { db } from "$lib/utils/db";
 	import { toast } from "svelte-sonner";
+	import { validateTokenOnline } from "$lib/utils/user";
 
     type Node = {
         id: string;
@@ -40,7 +41,9 @@
     type ChoiceType = {id: string; name: string }[];
     let choices: ChoiceType[] = [];
 
-    let { season_uuid, year, editable } = $props();
+    let user;
+
+    let { season_uuid, year, event_data = {}, editable } = $props();
 
     async function getStructure() {
         if (editable) {
@@ -69,6 +72,15 @@
         await db.match_scouting.add({
             uuid: crypto.randomUUID(),
             data: Object.fromEntries(formData),
+            user_uuid: user.uuid ?? "",
+            year: event_data.year,
+            event_code: event_data.event_code,
+            event_name: event_data.event_name,
+            event_type: event_data.event_type,
+            event_city: event_data.event_city,
+            event_country: event_data.event_country,
+            event_start_date: event_data.event_start_date,
+            event_end_date: event_data.event_end_date,
             synced: false
         });
 
@@ -83,6 +95,8 @@
         }
         getStructure();
         getGamePieces();
+
+        user = await validateTokenOnline();
     });
 </script>
 

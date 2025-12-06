@@ -8,11 +8,12 @@
 	import Button from "../ui/button/button.svelte";
 	import { toast } from "svelte-sonner";
 	import { fetchSeasonData } from "$lib/utils/sync";
+	import { db } from "$lib/utils/db";
 
-    let user = null
+    let { event_data } = $props();
 
-    let event_code = $state("");
-    let year = $state(0);
+    let user = null;
+
     let username = $state("");
 
     async function get_info() {
@@ -22,13 +23,27 @@
         const get_team_number = new URL(window.location.href).searchParams.get("team_number");
         
         if (get_username && get_team_number) {
-            username = get_username
+            username = get_username;
         } else {
             username = user.username;
         }
 
-        event_code = get_event;
-        year = get_year;
+        const event = await db.event
+            .where("event_code")
+            .equals(get_event)
+            .and(ev => ev.year === parseInt(get_year))
+            .first();
+
+        if (event) {
+            event_data.year = event.year;
+            event_data.event_code = event.event_code;
+            event_data.event_name = event.name;
+            event_data.event_type = event.type;
+            event_data.event_city = event.city;
+            event_data.event_country = event.country;
+            event_data.event_start_date = event.start_date;
+            event_data.event_end_date = event.end_date;
+        }
     }
 
     onMount(async () => {
@@ -61,7 +76,7 @@
                     </Dialog.Content>
                 </Dialog.Root>
             </div>
-            <p>Scouting <span class="font-bold font-mono">{event_code}</span> in <span class="font-bold">{year}</span> as <span class="font-bold">{username}</span></p>
+            <p>Scouting <span class="font-bold font-mono">{event_data.event_name}</span> in <span class="font-bold">{event_data.year}</span> as <span class="font-bold">{username}</span></p>
         </div>
     </div>
 </Card.Root>

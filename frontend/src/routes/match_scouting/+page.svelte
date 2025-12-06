@@ -9,6 +9,17 @@
     let season_uuid: string = $state("");
     let year: string = $state("");
 
+    let event_data = $state({
+        year: 0,
+        event_code: "",
+        event_name: "",
+        event_type: "",
+        event_city: "",
+        event_country: "",
+        event_start_date: "",
+        event_end_date: ""
+    });
+
     function get_season_uuid(year: string) {
         apiFetch(`/seasons`).then((seasons) => {
             season_uuid = seasons.find((season) => season.year == year).uuid
@@ -27,9 +38,9 @@
 </script>
 
 <PageContainer>
-    <Header />
-    {#if year && season_uuid}
-        <MatchScoutingFields season_uuid={season_uuid} year={year} editable={false} />
+    <Header bind:event_data={event_data}/>
+    {#if year && season_uuid && event_data.year !== 0}
+        <MatchScoutingFields season_uuid={season_uuid} year={year} event_data={event_data} editable={false} />
     {:else}
         <CircleNotch weight="bold" class="animate-spin md:!w-6 md:!h-6 !w-4 !h-4" />
     {/if}
