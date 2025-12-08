@@ -469,11 +469,14 @@ async def submit_match_scouting(
         end_date = event_end_date
     )
 
-    submission = await MatchScoutingSubmission.create(
-        uuid=submission_uuid,
-        user=user,
-        event=event
-    )
+    try:
+        submission = await MatchScoutingSubmission.create(
+            uuid=submission_uuid,
+            user=user,
+            event=event
+        )
+    except IntegrityError:
+        raise HTTPException(status_code=200, detail="Submission already exists")
 
     for key, value in fields.items():
         field = await MatchScoutingField.get_or_none(uuid=key)
@@ -481,7 +484,6 @@ async def submit_match_scouting(
             raise HTTPException(status_code=404, detail="Field not found")
 
         _ = await MatchScoutingAnswer.create(
-            uuid=key,
             field=field,
             value=value,
             submission=submission

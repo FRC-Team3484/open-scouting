@@ -109,11 +109,11 @@ async function pushMatchScoutingData() {
             body.append("event_start_date", match.event_start_date);
             body.append("event_end_date", match.event_end_date);
 
-            console.log(body);
-
             await apiFetch("/scouting/submit", {
                 method: "POST",
                 data: body
+            }).then(() => {
+                db.match_scouting.update(match.uuid, { synced: true });
             });
         }
 
@@ -157,7 +157,6 @@ async function main() {
     }
 
     await pushMatchScoutingData();
-    console.log("Pushed match scouting data");
 }
 
 main().catch((error) => console.error(error));
