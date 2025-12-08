@@ -80,6 +80,52 @@ async function isOldData() {
     }
 }
 
+/**
+ * Pushes unsynced match scouting data to the backend
+ * 
+ * 
+ */
+async function pushMatchScoutingData() {
+    const unsynced = await db.match_scouting.filter(m => m.synced === false).toArray();
+
+    if (unsynced.length > 0) {
+        menuState.set({
+            state: "loading",
+            status: "Uploading match scouting data...",
+            close: false
+        });
+
+        for (const match of unsynced) {
+            const body = new FormData();
+            body.append("submission_uuid", match.uuid);
+            body.append("fields", JSON.stringify(match.data));
+            body.append("user_uuid", match.user_uuid);
+            body.append("year", match.year);
+            body.append("event_code", match.event_code);
+            body.append("event_name", match.event_name);
+            body.append("event_type", match.event_type);
+            body.append("event_city", match.event_city);
+            body.append("event_country", match.event_country);
+            body.append("event_start_date", match.event_start_date);
+            body.append("event_end_date", match.event_end_date);
+
+            console.log(body);
+
+            await apiFetch("/scouting/submit", {
+                method: "POST",
+                data: body
+            });
+        }
+
+        menuState.set({
+            state: "ready",
+            status: "Match scouting data uploaded!",
+            close: true
+        });
+    } else {
+        console.log("No unsynced data");
+    }
+}
 
 /**
  * If the locally stored data is out of date, download it and ask the menu to show that status
@@ -109,6 +155,9 @@ async function main() {
             close: true
         });
     }
+
+    await pushMatchScoutingData();
+    console.log("Pushed match scouting data");
 }
 
 main().catch((error) => console.error(error));
