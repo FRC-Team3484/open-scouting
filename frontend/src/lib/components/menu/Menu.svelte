@@ -1,6 +1,6 @@
 <script lang="ts">
     import * as Drawer from "$lib/components/ui/drawer";
-	import { Article, Bug, CheckCircle, CircleNotch, Clock, FloppyDisk, GithubLogo, House, List, Moon, Sun, Warning, X } from "phosphor-svelte";
+	import { Article, Bug, CheckCircle, CircleNotch, Clock, DiscordLogo, FloppyDisk, GithubLogo, House, List, Moon, Sun, Warning, X } from "phosphor-svelte";
 	import Button from "../ui/button/button.svelte";
 	import Separator from "../ui/separator/separator.svelte";
 	import { toggleMode, mode } from "mode-watcher";
@@ -86,6 +86,7 @@
 
             <div class="flex flex-row gap-2 flex-wrap">
                 <Button variant="outline" href="/"><House weight="bold" /> Home</Button>
+                <Button variant="outline" href="https://discord.gg/M3wESZUP35"><DiscordLogo weight="bold" /> Discord</Button>
                 <Button variant="outline" href="https://github.com/FRC-Team3484/open-scouting"><GithubLogo weight="bold" /> Source Code</Button>
                 <Button variant="outline" href="https://github.com/FRC-Team3484/open-scouting/issues"><Bug weight="bold" /> Issues</Button>
                 <Button variant="outline" href="https://github.com/FRC-Team3484/open-scouting/releases"><Article weight="bold" /> Releases</Button>
