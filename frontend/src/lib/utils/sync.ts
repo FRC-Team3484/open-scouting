@@ -161,4 +161,4 @@ async function main() {
 
 main().catch((error) => console.error(error));
 
-export { fetchSeasonData, fetchEventData, isOldData }
+export { fetchSeasonData, fetchEventData, isOldData, pushMatchScoutingData }
