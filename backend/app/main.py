@@ -1,4 +1,6 @@
+import json
 import os
+from time import strftime
 
 from fastapi import FastAPI, Form, Depends, HTTPException, status, Body
 from fastapi.middleware.cors import CORSMiddleware
@@ -434,28 +436,29 @@ async def delete_field(field_uuid: str, current_user: User = Depends(get_current
 #    Match Scouting Answers
 @app.post("/scouting/submit")
 async def submit_match_scouting(
-    submission_uuid: str,
-    fields: dict[str, str],
-    user_uuid: str, # Is either the UUID for the authenticated user, or just a username
-    year: int,
-    event_code: str,
-    event_name: str,
-    event_type: str,
-    event_city: str,
-    event_country: str,
-    event_start_date: str,
-    event_end_date: str
+    submission_uuid: str = Form(...),
+    fields: str = Form(...),
+    user_uuid: str = Form(...), # Is either the UUID for the authenticated user, or just a username
+    year: int = Form(...),
+    event_code: str = Form(...),
+    event_name: str = Form(...),
+    event_type: str = Form(...),
+    event_city: str = Form(...),
+    event_country: str = Form(...),
+    event_start_date: str = Form(...),
+    event_end_date: str = Form(...)
 ):
+    fields = json.loads(fields)
 
-    user = User.get_or_none(uuid=user_uuid)
+    user = await User.get_or_none(uuid=user_uuid)
     if not user:
         user = None # Sets the user to none if not a user. This should probably be the user's username later
 
-    season = Season.get_or_none(year=year)
+    season = await Season.get_or_none(year=year)
     if not season:
         raise HTTPException(status_code=404, detail="Season not found")
 
-    event = Event.get_or_create(
+    event, _ = await Event.get_or_create(
         season=season,
         event_code=event_code,
         name = event_name,
