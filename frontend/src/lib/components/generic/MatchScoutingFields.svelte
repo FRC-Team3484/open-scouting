@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import { FolderPlus, PlusCircle } from "phosphor-svelte";
+	import { FolderPlus, Info, PlusCircle } from "phosphor-svelte";
 
     import { addFieldDialogOpen, addSectionDialogOpen } from "$lib/stores/dialog";
     import { apiFetch } from "$lib/utils/api";
@@ -21,6 +21,8 @@
 	import { db } from "$lib/utils/db";
 	import { toast } from "svelte-sonner";
 	import { validateTokenOnline } from "$lib/utils/user";
+	import Separator from "../ui/separator/separator.svelte";
+	import MatchScoutingTeamInfo from "./MatchScoutingMatchInfo.svelte";
 
     type Node = {
         id: string;
@@ -115,6 +117,21 @@
                     </div>
                 </Card.Content>
             </Card.Root>
+
+            <Separator orientation="horizontal" />
+        {/if}
+
+        {#if editable}
+            <Card.Root class="w-auto min-w-64">
+                <Card.Content>
+                    <div class="flex flex-row gap-2 items-center">
+                        <Info weight="bold"/>
+                        <p class="text-sm">Team number, match number, and match type fields are visible during full match scouting</p>
+                    </div>
+                </Card.Content>
+            </Card.Root>
+        {:else}
+            <MatchScoutingTeamInfo event_data={event_data} />
         {/if}
         
         <form method="post" onsubmit={submit} class="flex flex-col gap-2">

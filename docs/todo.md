@@ -24,4 +24,4 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [ ] Host in experimental
 - [ ] Add link to Open Scouting v1.0.0 to try
 - [ ] Be able to import data from v1.0.0
-- [ ] Deprecate `open-scouting-utils` repo
+- [ ] Deprecate `open-scouting-utils` repor
