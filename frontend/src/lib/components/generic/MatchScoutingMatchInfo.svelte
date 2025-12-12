@@ -5,10 +5,12 @@
     import * as Select from "$lib/components/ui/select/index.js";
 	import Separator from "../ui/separator/separator.svelte";
     import * as Dialog from "$lib/components/ui/dialog/index.js";
-	import { Info } from "phosphor-svelte";
+	import { Info, Warning } from "phosphor-svelte";
 	import Button from "../ui/button/button.svelte";
+    import * as Alert from "$lib/components/ui/alert/index.js";
 	import { theBlueAllianceApiFetch } from "$lib/utils/api";
 	import { onMount } from "svelte";
+	import { fade, slide } from "svelte/transition";
 
     let { event_data } = $props();
 
@@ -17,7 +19,7 @@
 
     const match_types = [
         { value: "qualification", label: "Qualification Match" },
-        { value: "playoff", label: "Playoff Match" },
+        { value: "semifinals", label: "Semifinals Match" },
         { value: "finals", label: "Finals Match" },
         { value: "practise", label: "Practise Match" },
         { value: "other", label: "Other Match" },
@@ -41,19 +43,56 @@
     )
 
     let matches = $state([]);
+    let get_info_error = $state(false);
 
     async function getMatchList() {
         matches = await theBlueAllianceApiFetch(`/event/${event_data.year + event_data.event_code}/matches/simple`)
     }
 
-    function fillTeamInfo() {
-        if (selected_position === "red1") {
-            team_number = matches
+    function getTeamInfo() {
+        if (selected_match_type === "qualification" || selected_match_type === "semifinals" || selected_match_type === "finals") {
+            get_info_error = false;
+            if (match_number == null) {
+                match_number = 1;
+            }
+
+            let comp_level = "";
+            if (selected_match_type === "qualification") {
+                comp_level = "qm";
+            } else if (selected_match_type === "semifinals") {
+                comp_level = "sf";
+            } else if (selected_match_type === "finals") {
+                comp_level = "f";
+            }
+
+            let alliance = "";
+            if (selected_position.includes("red")) {
+                alliance = "red";
+            } else if (selected_position.includes("blue")) {
+                alliance = "blue";
+            }
+
+            let team_position = parseInt(selected_position.replace(alliance, "")) - 1;
+
+            try {
+                let team_number_result = matches.filter(
+                    match => match.match_number === parseInt(match_number) 
+                    && match.comp_level === comp_level
+                )[0].alliances[alliance].team_keys[team_position].substring(3);
+
+                team_number = team_number_result;
+                console.log(team_number_result);
+            } catch (e) {
+                team_number = "";
+                get_info_error = true;
+            }
+            
         }
     }
 
     onMount(async () => {
         await getMatchList();
+        getTeamInfo();
     })
 </script>
 
@@ -69,12 +108,12 @@
 
             <div class="flex flex-col items-start gap-2">
                 <Label for="team_number">Match Number</Label>
-                <Input type="number" placeholder="Team Number" bind:value={team_number} />
+                <Input type="number" placeholder="Team Number" bind:value={match_number} onchange={getTeamInfo} />
             </div>
 
             <div class="flex flex-col items-start gap-2">
                 <Label for="match_type">Match Type</Label>
-                <Select.Root type="single" bind:value={selected_match_type}>
+                <Select.Root type="single" bind:value={selected_match_type} onValueChange={getTeamInfo}>
                     <Select.Trigger>{selected_match_type_label}</Select.Trigger>
                     <Select.Content>
                         <Select.Label>Match Types</Select.Label>
@@ -85,7 +124,7 @@
                 </Select.Root>
             </div>
 
-            {#if selected_match_type === "qualification" || selected_match_type === "playoff" || selected_match_type === "finals"}
+            {#if selected_match_type === "qualification" || selected_match_type === "semifinals" || selected_match_type === "finals"}
                 <Separator orientation="horizontal" />
 
                 <div class="flex flex-row gap-2 justify-between items-center">
@@ -113,7 +152,7 @@
 
                 <div class="flex flex-col items-start gap-2">
                     <Label for="match_type">Position</Label>
-                    <Select.Root type="single" bind:value={selected_position}>
+                    <Select.Root type="single" bind:value={selected_position} onValueChange={getTeamInfo}>
                         <Select.Trigger>{selected_position_label}</Select.Trigger>
                         <Select.Content>
                             <Select.Label>Match Types</Select.Label>
@@ -123,6 +162,15 @@
                         </Select.Content>
                     </Select.Root>
                 </div>
+
+                {#if get_info_error}
+                    <div transition:slide>
+                        <Alert.Root variant="destructive">
+                            <Warning weight="bold" />
+                            <Alert.Title>Unable to get team number from the provided information</Alert.Title>
+                        </Alert.Root>
+                    </div>
+                {/if}
             {/if}
         </div>
     </Card.Content>
