@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from "svelte";
+	import { createEventDispatcher, onMount } from "svelte";
 	import { FolderPlus, Info, PlusCircle } from "phosphor-svelte";
 
     import { addFieldDialogOpen, addSectionDialogOpen } from "$lib/stores/dialog";
@@ -23,6 +23,8 @@
 	import { validateTokenOnline } from "$lib/utils/user";
 	import Separator from "../ui/separator/separator.svelte";
 	import MatchScoutingTeamInfo from "./MatchScoutingMatchInfo.svelte";
+
+    let matchScoutingTeamInfoChild;
 
     type Node = {
         id: string;
@@ -88,6 +90,12 @@
 
         toast.success("Match scouting data saved", { duration: 5000 });
         form.reset();
+
+        // Delay 100ms while form is resetting
+        setTimeout(() => {
+            matchScoutingTeamInfoChild.increment_match_number(parseInt(formData.get("match_number")), formData.get("match_type"), formData.get("position"));
+        }, 100);
+    
         scrollTo({ top: 0, behavior: "smooth" });
     }
 
@@ -120,21 +128,21 @@
 
             <Separator orientation="horizontal" />
         {/if}
-
-        {#if editable}
-            <Card.Root class="w-auto min-w-64">
-                <Card.Content>
-                    <div class="flex flex-row gap-2 items-center">
-                        <Info weight="bold"/>
-                        <p class="text-sm">Team number, match number, and match type fields are visible during full match scouting</p>
-                    </div>
-                </Card.Content>
-            </Card.Root>
-        {:else}
-            <MatchScoutingTeamInfo event_data={event_data} />
-        {/if}
         
         <form method="post" onsubmit={submit} class="flex flex-col gap-2">
+            {#if editable}
+                <Card.Root class="w-auto min-w-64">
+                    <Card.Content>
+                        <div class="flex flex-row gap-2 items-center">
+                            <Info weight="bold"/>
+                            <p class="text-sm">Team number, match number, and match type fields are visible during full match scouting</p>
+                        </div>
+                    </Card.Content>
+                </Card.Root>
+            {:else}
+                <MatchScoutingTeamInfo event_data={event_data} bind:this={matchScoutingTeamInfoChild} />
+            {/if}
+            
             {#each fields as field (field.uuid)}
                 {#if field.field_type === "string"}
                     <StringField field={field} editable={editable} getFields={getStructure}/>

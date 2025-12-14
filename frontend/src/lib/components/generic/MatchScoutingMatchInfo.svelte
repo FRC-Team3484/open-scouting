@@ -45,10 +45,16 @@
     let matches = $state([]);
     let get_info_error = $state(false);
 
+    /**
+     * Fetches the list of matches for the event
+     */
     async function getMatchList() {
         matches = await theBlueAllianceApiFetch(`/event/${event_data.year + event_data.event_code}/matches/simple`)
     }
 
+    /**
+     * Based on the selected match type, match number, and position, sets the team number
+     */
     function getTeamInfo() {
         if (selected_match_type === "qualification" || selected_match_type === "semifinals" || selected_match_type === "finals") {
             get_info_error = false;
@@ -89,6 +95,21 @@
             
         }
     }
+    
+    /**
+     * Called by MatchScoutingFields, increments the match number 
+     *    and sets the match type and position to what it was before the form was submitted
+     * 
+     * @param old_match_number
+     * @param old_match_type
+     * @param old_position
+     */
+    export function increment_match_number(old_match_number: number, old_match_type: string, old_position: string) {
+        match_number = old_match_number + 1
+        selected_match_type = old_match_type;
+        selected_position = old_position;
+        getTeamInfo();
+    }
 
     onMount(async () => {
         await getMatchList();
@@ -103,17 +124,17 @@
 
             <div class="flex flex-col items-start gap-2">
                 <Label for="team_number">Team Number</Label>
-                <Input type="number" placeholder="Team Number" bind:value={team_number} />
+                <Input type="number" placeholder="Team Number" name="team_number" required bind:value={team_number} />
             </div>
 
             <div class="flex flex-col items-start gap-2">
                 <Label for="team_number">Match Number</Label>
-                <Input type="number" placeholder="Team Number" bind:value={match_number} onchange={getTeamInfo} />
+                <Input type="number" placeholder="Match Number" name="match_number" required bind:value={match_number} onchange={getTeamInfo} />
             </div>
 
             <div class="flex flex-col items-start gap-2">
                 <Label for="match_type">Match Type</Label>
-                <Select.Root type="single" bind:value={selected_match_type} onValueChange={getTeamInfo}>
+                <Select.Root type="single" bind:value={selected_match_type} name="match_type" onValueChange={getTeamInfo}>
                     <Select.Trigger>{selected_match_type_label}</Select.Trigger>
                     <Select.Content>
                         <Select.Label>Match Types</Select.Label>
@@ -152,7 +173,7 @@
 
                 <div class="flex flex-col items-start gap-2">
                     <Label for="match_type">Position</Label>
-                    <Select.Root type="single" bind:value={selected_position} onValueChange={getTeamInfo}>
+                    <Select.Root type="single" bind:value={selected_position} name="position" onValueChange={getTeamInfo}>
                         <Select.Trigger>{selected_position_label}</Select.Trigger>
                         <Select.Content>
                             <Select.Label>Match Types</Select.Label>
