@@ -440,6 +440,9 @@ async def submit_match_scouting(
     fields: str = Form(...),
     user_uuid: str = Form(...), # Is either the UUID for the authenticated user, or just a username
     year: int = Form(...),
+    team_number: int = Form(...),
+    match_number: int = Form(...),
+    match_type: str = Form(...),
     event_code: str = Form(...),
     event_name: str = Form(...),
     event_type: str = Form(...),
@@ -461,19 +464,22 @@ async def submit_match_scouting(
     event, _ = await Event.get_or_create(
         season=season,
         event_code=event_code,
-        name = event_name,
-        type = event_type,
-        city = event_city,
-        country = event_country,
-        start_date = event_start_date,
-        end_date = event_end_date
+        name=event_name,
+        type=event_type,
+        city=event_city,
+        country=event_country,
+        start_date=event_start_date,
+        end_date=event_end_date
     )
 
     try:
         submission = await MatchScoutingSubmission.create(
             uuid=submission_uuid,
             user=user,
-            event=event
+            event=event,
+            team_number=team_number,
+            match_number=match_number,
+            match_type=match_type
         )
     except IntegrityError:
         raise HTTPException(status_code=200, detail="Submission already exists")

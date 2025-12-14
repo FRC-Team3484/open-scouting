@@ -98,6 +98,9 @@ class MatchScoutingSubmission(Model):
     uuid = fields.UUIDField(pk=True)
     user = fields.ForeignKeyField("models.User", related_name="answers")
     event = fields.ForeignKeyField("models.Event", related_name="answers")
+    team_number = fields.IntField(default=0)
+    match_number = fields.IntField(default=0)
+    match_type = fields.CharField(max_length=255, default="")
     created_at = fields.DatetimeField(auto_now_add=True)
 
 class MatchScoutingAnswer(Model):

@@ -101,6 +101,9 @@ async function pushMatchScoutingData() {
             body.append("fields", JSON.stringify(match.data));
             body.append("user_uuid", match.user_uuid);
             body.append("year", match.year);
+            body.append("team_number", match.team_number);
+            body.append("match_number", match.match_number);
+            body.append("match_type", match.match_type);
             body.append("event_code", match.event_code);
             body.append("event_name", match.event_name);
             body.append("event_type", match.event_type);
