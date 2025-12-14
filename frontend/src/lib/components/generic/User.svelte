@@ -35,6 +35,11 @@
                     <DropdownMenu.Item>
                         Profile
                     </DropdownMenu.Item>
+                    {#if user.is_superuser}
+                        <DropdownMenu.Item onclick={() => window.location.href = "/admin"}>
+                            Admin
+                        </DropdownMenu.Item>
+                    {/if}
                 </DropdownMenu.Group>
                 <DropdownMenu.Separator />
                 <DropdownMenu.Item onclick={() => {signOut(); window.location.reload()}}>
