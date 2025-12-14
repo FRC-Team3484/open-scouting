@@ -1,3 +1,4 @@
+from venv import create
 from tortoise.fields.base import Field
 
 
@@ -108,3 +109,31 @@ class MatchScoutingAnswer(Model):
     field = fields.ForeignKeyField("models.MatchScoutingField", related_name="answers")
     value = fields.CharField(max_length=255, null=True)
     submission = fields.ForeignKeyField("models.MatchScoutingSubmission", related_name="answers")
+
+#    Pit Scouting
+# A PitScoutingField is defined in the admin interface
+# When the pits list for a season and event is fetched, create it, and attempt to populate the teams in it from TBA
+# Then the questions for that season (PitScoutingField) are loaded, and appear for each TeamPit
+# New TeamPits can be created, and when an answer is added, create a PitScoutingAnswer
+class PitScoutingField(Model):
+    uuid = fields.UUIDField(pk=True)
+    season = fields.ForeignKeyField("models.Season", related_name="pit_fields")
+    name = fields.CharField(max_length=255)
+    field_type = fields.CharField(max_length=255) # text, number, boolean, choice
+    options = fields.JSONField(null=True, default=list) # For field_type=choice
+    order = fields.IntField(default=0) # The order the field should appear in the frontend or section
+    organization = fields.ForeignKeyField("models.Organization", related_name="pit_fields", null=True) # Optional, used if the field is specific to an organization
+    created_at = fields.DatetimeField(auto_now_add=True)
+
+class TeamPit(Model):
+    uuid = fields.UUIDField(pk=True)
+    team_number = fields.IntField()
+    created_at = fields.DatetimeField(auto_now_add=True)
+    season = fields.ForeignKeyField("models.Season", related_name="team_pits")
+    event = fields.ForeignKeyField("models.Event", related_name="team_pits")
+
+class PitScoutingAnswer(Model):
+    uuid = fields.UUIDField(pk=True)
+    field = fields.ForeignKeyField("models.PitScoutingField", related_name="answers")
+    value = fields.CharField(max_length=255, null=True)
+    team = fields.ForeignKeyField("models.TeamPit", related_name="answers")
