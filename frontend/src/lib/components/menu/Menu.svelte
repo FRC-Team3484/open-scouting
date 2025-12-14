@@ -1,13 +1,19 @@
 <script lang="ts">
-    import * as Drawer from "$lib/components/ui/drawer";
-	import { Article, Bug, CheckCircle, CircleNotch, Clock, DiscordLogo, FloppyDisk, GithubLogo, House, List, Moon, Sun, Warning, X } from "phosphor-svelte";
+	import { fade, slide } from "svelte/transition";
+	import { toggleMode, mode } from "mode-watcher";
+
 	import Button from "../ui/button/button.svelte";
 	import Separator from "../ui/separator/separator.svelte";
-	import { toggleMode, mode } from "mode-watcher";
-	import { fade, slide } from "svelte/transition";
+    import { ArrowRight, Article, Bug, CheckCircle, CircleNotch, Clock, DiscordLogo, FloppyDisk, GithubLogo, House, List, Moon, Sun, Warning, X } from "phosphor-svelte";
+
 	import AboutDrawer from "./AboutDrawer.svelte";
 	import ManageDataDrawer from "./ManageDataDrawer.svelte";
+    import * as Drawer from "$lib/components/ui/drawer";
+
 	import { menuState } from "$lib/stores/menu";
+	import User from "../generic/User.svelte";
+
+    let user = null;
 
     let menu_open: boolean = false;
 
@@ -48,8 +54,7 @@
         <div class="flex flex-col gap-4 mt-4">
             <div class="flex flex-row gap-4 justify-between items-center">
                 <div class="flex flex-row gap-2 items-center">
-                    <Clock weight="bold"/>
-                    <p class="text-lg font-bold">{new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit' }).format(new Date())}</p>
+                    <User show_text={true} />
                 </div>
 
                 <Drawer.Close><Button variant="outline" size="icon" class="!p-6 rounded-full"><X weight="bold" class="!w-6 !h-6"/></Button></Drawer.Close>
@@ -85,6 +90,7 @@
             <Separator orientation="horizontal" />
 
             <div class="flex flex-row gap-2 flex-wrap">
+                <Button href="/start"><ArrowRight weight="bold" /> Start</Button>
                 <Button variant="outline" href="/"><House weight="bold" /> Home</Button>
                 <Button variant="outline" href="https://discord.gg/M3wESZUP35"><DiscordLogo weight="bold" /> Discord</Button>
                 <Button variant="outline" href="https://github.com/FRC-Team3484/open-scouting"><GithubLogo weight="bold" /> Source Code</Button>

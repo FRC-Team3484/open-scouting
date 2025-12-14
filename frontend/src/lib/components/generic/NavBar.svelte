@@ -9,12 +9,7 @@
     import * as Drawer from "$lib/components/ui/drawer/index.js";
 	import { ArrowRight, List, X } from "phosphor-svelte";
 	import Separator from "../ui/separator/separator.svelte";
-
-    let user = null;
-
-    onMount(async () => {
-        user = await validateTokenOnline();
-    })
+	import User from "./User.svelte";
 </script>
 
 <div class="hidden md:flex fixed top-0 left-0 right-0 w-full h-24 flex-row justify-between items-center border-1 bg-card/50 border-accent rounded-b-lg backdrop-blur-lg p-2 z-10">
@@ -29,35 +24,7 @@
     <div class="flex flex-row gap-4 items-center">
         <Button variant="default" href="/start"><ArrowRight weight="bold" /> Get Started</Button>
 
-        {#if user === null}
-            <Skeleton class="h-8 w-8 rounded-full" />
-        {:else if user}
-            <Button variant="outline" size="icon" class="!rounded-full">
-                <DropdownMenu.Root>
-                    <DropdownMenu.Trigger>
-                        <Avatar.Root>
-                            <!-- TODO: Actually load avatar from user account -->
-                            <Avatar.Image src={`https://github.com/${user.username}.png`} alt={user.username} />
-                            <Avatar.Fallback>{user.username}</Avatar.Fallback>
-                        </Avatar.Root>
-                    </DropdownMenu.Trigger>
-                    <DropdownMenu.Content class="w-56" align="start">
-                        <DropdownMenu.Label>{user.username}</DropdownMenu.Label>
-                        <DropdownMenu.Group>
-                            <DropdownMenu.Item>
-                                Profile
-                            </DropdownMenu.Item>
-                        </DropdownMenu.Group>
-                        <DropdownMenu.Separator />
-                        <DropdownMenu.Item onclick={() => {signOut(); window.location.reload()}}>
-                            Log out
-                        </DropdownMenu.Item>
-                    </DropdownMenu.Content>
-                </DropdownMenu.Root>
-            </Button>
-        {:else}
-            <Button variant="outline" href="/authentication">Login</Button>
-        {/if}
+        <User show_text={false} />
     </div>
 </div>
 
@@ -74,37 +41,7 @@
                 <Drawer.Close><Button variant="outline" size="icon"><X weight="bold"/></Button></Drawer.Close>
             </div>
             <div class="flex flex-row gap-4 items-center">
-                {#if user === null}
-                    <Skeleton class="h-8 w-8 rounded-full" />
-                {:else if user}
-                    <Button variant="outline" size="icon" class="!rounded-full">
-                        <DropdownMenu.Root>
-                            <DropdownMenu.Trigger>
-                                <Avatar.Root>
-                                    <!-- TODO: Actually load avatar from user account -->
-                                    <Avatar.Image src={`https://github.com/${user.username}.png`} alt={user.username} />
-                                    <Avatar.Fallback>{user.username}</Avatar.Fallback>
-                                </Avatar.Root>
-                            </DropdownMenu.Trigger>
-                            <DropdownMenu.Content class="w-56" align="start">
-                                <DropdownMenu.Label>{user.username}</DropdownMenu.Label>
-                                <DropdownMenu.Group>
-                                    <DropdownMenu.Item>
-                                        Profile
-                                    </DropdownMenu.Item>
-                                </DropdownMenu.Group>
-                                <DropdownMenu.Separator />
-                                <DropdownMenu.Item onclick={() => {signOut(); window.location.reload()}}>
-                                    Log out
-                                </DropdownMenu.Item>
-                            </DropdownMenu.Content>
-                        </DropdownMenu.Root>
-                    </Button>
-
-                    <p class="text-muted-foreground">{user.username}</p>
-                {:else}
-                    <Button variant="outline" href="/authentication" class="w-full">Login</Button>
-                {/if}
+                <User show_text={true} />
             </div>
             <Separator orientation="horizontal" />
             <Button variant="outline" href="/">Home</Button>
