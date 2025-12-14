@@ -73,11 +73,25 @@
         const form = event.currentTarget as HTMLFormElement;
         const formData = new FormData(form);
 
+        const EXCLUDED_KEYS = new Set([
+            "team_number",
+            "match_number",
+            "match_type",
+            "position",
+        ]);
+
+        const filteredFields = Object.fromEntries(
+            [...formData.entries()].filter(([key]) => !EXCLUDED_KEYS.has(key))
+        );
+
         await db.match_scouting.add({
             uuid: crypto.randomUUID(),
-            data: Object.fromEntries(formData),
+            data: filteredFields,
             user_uuid: user.uuid ?? "",
             year: event_data.year,
+            team_number: parseInt(formData.get("team_number")),
+            match_number: parseInt(formData.get("match_number")),
+            match_type: formData.get("match_type"),
             event_code: event_data.event_code,
             event_name: event_data.event_name,
             event_type: event_data.event_type,
