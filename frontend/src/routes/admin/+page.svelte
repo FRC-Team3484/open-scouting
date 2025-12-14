@@ -10,6 +10,7 @@
 	import AdminHeader from "$lib/components/admin/AdminHeader.svelte";
 	import Dialog from "$lib/components/generic/Dialog.svelte";
 	import MatchScoutingFieldsManager from "$lib/components/admin/MatchScoutingFieldsManager.svelte";
+	import PitScoutingQuestionsManager from "$lib/components/admin/PitScoutingQuestionsManager.svelte";
 
     let user = null;
     let page = $state("start");
@@ -45,7 +46,7 @@
                     <Button id="seasons" onclick={() => page = "seasons"}>Manage Seasons</Button>
                     <Separator orientation="horizontal" />
                     <Button onclick={() => page = "match_fields"}>Manage Match Scouting Fields</Button>
-                    <Button disabled>Manage Pit Scouting Questions</Button>
+                    <Button onclick={() => page = "pit_scouting_questions"}>Manage Pit Scouting Questions</Button>
                     <Separator orientation="horizontal" />
                     <Button disabled>Manage Users</Button>
                     <Button disabled>Manage Events</Button>
@@ -62,6 +63,11 @@
     {:else if page === "match_fields"}
         <AdminHeader handleNavigate={handleNavigate}/>
         <MatchScoutingFieldsManager />
+
+    {:else if page === "pit_scouting_questions"}
+        <AdminHeader handleNavigate={handleNavigate}/>
+        <PitScoutingQuestionsManager />
+
     {/if}
 </PageContainer>
 
