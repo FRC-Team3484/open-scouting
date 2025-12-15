@@ -9,7 +9,22 @@ from tortoise.contrib.fastapi import register_tortoise
 from tortoise.exceptions import IntegrityError
 from tortoise.contrib.pydantic import pydantic_model_creator
 
-from app.models import MatchScoutingSubmission, User, Profile, Organization, OrganizationMember, Season, Settings, GamePiece, MatchScoutingField, Event, MatchScoutingAnswer
+from app.models import \
+    MatchScoutingSubmission, \
+    User, \
+    Profile, \
+    Organization, \
+    OrganizationMember, \
+    Season, \
+    Settings, \
+    GamePiece, \
+    MatchScoutingField, \
+    Event, \
+    MatchScoutingAnswer, \
+    PitScoutingField, \
+    TeamPit, \
+    PitScoutingAnswer
+
 from app.auth import get_password_hash, verify_password, create_access_token, decode_access_token
 
 # Setup
@@ -496,3 +511,130 @@ async def submit_match_scouting(
         )
 
     return submission
+
+#    Pit Scouting
+@app.get("/pits/fields/{season_uuid}")
+async def get_pit_fields(season_uuid: str):
+    season = await Season.get_or_none(uuid=season_uuid)
+
+    if not season:
+        raise HTTPException(status_code=404, detail="Season not found")
+
+    fields = await PitScoutingField.filter(season=season)
+    return fields
+
+@app.post("/pits/fields/{season_uuid}/create")
+async def create_pit_field(
+    season_uuid: str,
+
+    name: str = Form(...),
+    field_type: str = Form(...),
+    options: str = Form(...),
+    order: int = Form(...),
+    organization_uuid: str = Form(...)
+    ):
+    
+    season = await Season.get_or_none(uuid=season_uuid)
+    if not season:
+        raise HTTPException(status_code=404, detail="Season not found")
+
+    if organization_uuid != "":
+        organization = await Organization.get_or_none(uuid=organization_uuid)
+        if not organization:
+            raise HTTPException(status_code=404, detail="Organization not found")
+    else:
+        organization = None
+
+    field = await PitScoutingField.create(
+        season=season,
+        name=name,
+        field_type=field_type,
+        options=options,
+        order=order,
+        organization=organization
+    )
+    return field
+
+@app.patch("/pits/fields/{season_uuid}/edit/{field_uuid}")
+async def edit_pit_field(
+    season_uuid: str, 
+    field_uuid: str,
+
+    name: str = Form(...),
+    field_type: str = Form(...),
+    options: str = Form(...),
+    order: int = Form(...),
+    organization_uuid: str = Form(...)
+    
+    ):
+    
+    season = await Season.get_or_none(uuid=season_uuid)
+    if not season:
+        raise HTTPException(status_code=404, detail="Season not found")
+
+    field = await PitScoutingField.get_or_none(uuid=field_uuid)
+    if not field:
+        raise HTTPException(status_code=404, detail="Field not found")
+
+    if organization_uuid != "":
+        organization = await Organization.get_or_none(uuid=organization_uuid)
+        if not organization:
+            raise HTTPException(status_code=404, detail="Organization not found")
+    else:
+        organization = None
+
+    await field.update(
+        name=name,
+        field_type=field_type,
+        options=options,
+        order=order,
+        organization=organization
+    )
+    return field
+
+@app.post("/pits/get/{season_uuid}")
+async def get_pits(
+    season_uuid: str, 
+    event_uuid: str,
+    
+    event_code: str = Form(...),
+    event_name: str = Form(...),
+    event_type: str = Form(...),
+    event_city: str = Form(...),
+    event_country: str = Form(...),
+    event_start_date: str = Form(...),
+    event_end_date: str = Form(...)
+    ):
+    
+    season = await Season.get_or_none(uuid=season_uuid)
+    if not season:
+        raise HTTPException(status_code=404, detail="Season not found")
+
+    event, _ = await Event.get_or_create(
+        season=season,
+        event_code=event_code,
+        name=event_name,
+        type=event_type,
+        city=event_city,
+        country=event_country,
+        start_date=event_start_date,
+        end_date=event_end_date
+    )
+
+    pits = await TeamPit.filter(event=event)
+    return pits
+
+@app.post("/pits/submit/{season_uuid}/{event_uuid}/{team_number}")
+async def submit_pit(
+    season_uuid: str, 
+    event_uuid: str, 
+    team_number: int,
+
+    answers: dict = Form(...),
+    ):
+    """
+    Get the season and event from the uuids. Then, check if a pit with that team number exists.
+    If it does, update 
+    """
+    # TODO: implement
+    pass
