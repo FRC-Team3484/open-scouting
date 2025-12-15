@@ -14,11 +14,13 @@ async function fetchSeasonData() {
     for (const season in seasonsResponse) {
         const fieldData = await apiFetch(`/fields/season/${seasonsResponse[season].uuid}`);
         const gamePieceData = await apiFetch(`/gamepieces/season/${seasonsResponse[season].uuid}`);
+        const pitData = await apiFetch(`/pits/fields/${seasonsResponse[season].uuid}`);
 
         await db.season_data.put({
             year: seasonsResponse[season].year,
             fields: fieldData,
             game_pieces: gamePieceData,
+            pit_scouting_questions: pitData,
             fetch_time: new Date()
         });
     }

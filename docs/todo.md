@@ -23,7 +23,7 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [ ] Pit scouting
   - [x] Create models
   - [ ] Create backend functions
-  - [ ] Sync pit questions to the frontend
+  - [x] Sync pit questions to the frontend
   - [ ] Create frontend page
 - [ ] Data view
 - [ ] Host in experimental
