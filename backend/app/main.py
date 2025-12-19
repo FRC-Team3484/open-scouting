@@ -533,7 +533,9 @@ async def create_pit_field(
     order: int = Form(...),
     organization_uuid: str = Form(...)
     ):
-    
+
+    print(options)
+
     season = await Season.get_or_none(uuid=season_uuid)
     if not season:
         raise HTTPException(status_code=404, detail="Season not found")

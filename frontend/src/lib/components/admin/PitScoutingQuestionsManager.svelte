@@ -2,11 +2,13 @@
     import * as Card from "$lib/components/ui/card/index.js";
     import * as Select from "$lib/components/ui/select/index.js";
 	import { onMount } from "svelte";
-
-	import MatchScoutingFields from "../generic/MatchScoutingFields.svelte";
-	import { apiFetch } from "$lib/utils/api";
-	import GamePieceManager from "./GamePieceManager.svelte";
 	import Separator from "../ui/separator/separator.svelte";
+
+	import { apiFetch } from "$lib/utils/api";
+	import Button from "../ui/button/button.svelte";
+	import { PlusCircle } from "phosphor-svelte";
+	import { addPitScoutingQuestionDialogOpen } from "$lib/stores/dialog";
+	import AddPitScoutingQuestionDialog from "../generic/dialogs/AddPitScoutingQuestionDialog.svelte";
 
     let seasons = [];
     let season_value = {};
@@ -15,6 +17,8 @@
         seasons = await apiFetch(`/seasons`);
         season_value = {name: seasons[0].name, uuid: seasons[0].uuid};
     }
+
+    async function getQuestions() {}
 
     onMount(async () => {
         get_seasons();
@@ -48,5 +52,13 @@
 </Card.Root>
 
 <div class="flex flex-col gap-4">
-    
+    <Separator orientation="horizontal" />
+
+    <Card.Root class="w-auto min-w-64">
+        <Card.Content>
+            <Button onclick={() => {addPitScoutingQuestionDialogOpen.set(true);}}><PlusCircle weight="bold" /> Add Question</Button>
+        </Card.Content>
+    </Card.Root>
 </div>
+
+<AddPitScoutingQuestionDialog getQuestions={getQuestions} seasonUuid={season_value.uuid}/>

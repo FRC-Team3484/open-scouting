@@ -1,7 +1,7 @@
 <script lang="ts">
 	import * as Dialog from "$lib/components/ui/dialog/index.js";
 
-    let { title = "", description = "", open = $bindable(false), onOpenChange, children } = $props();
+    let { title = "", description = "", open = $bindable(false), onOpenChange = $bindable(() => {}), children } = $props();
 </script>
 
 <Dialog.Root bind:open={open} onOpenChangeComplete={onOpenChange}>
