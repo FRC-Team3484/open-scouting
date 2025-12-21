@@ -13,7 +13,7 @@
 
     async function get_seasons() {
         seasons = await apiFetch(`/seasons`);
-        season_value = {name: seasons[0].name, uuid: seasons[0].uuid};
+        season_value = {name: seasons[0].name, uuid: seasons[0].uuid, year: seasons[0].year};
     }
 
     onMount(async () => {
