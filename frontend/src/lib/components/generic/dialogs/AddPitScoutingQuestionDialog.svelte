@@ -10,6 +10,7 @@
 	import Separator from "$lib/components/ui/separator/separator.svelte";
 
 	import { addPitScoutingQuestionDialogOpen } from "$lib/stores/dialog";
+	import { PlusCircle, X } from "phosphor-svelte";
 
 	let { getQuestions, seasonUuid } = $props();
 
@@ -23,6 +24,7 @@
 	const selectedQuestionTypeLabel = $derived(
 		questionTypes.find((qt) => qt.value === selectedQuestionType)?.label ?? "Select Question Type"
 	);
+	let options = $state([]);
 
 	async function createPitQuestion(event: Event) {
 		event.preventDefault();
@@ -30,7 +32,7 @@
 		const form = event.currentTarget as HTMLFormElement;
 		const formData = new FormData(form);
 
-		console.log(formData);
+		console.log(formData, options);
 
 		const body = new FormData();
 		body.append("name", formData.get("name")!.toString());
@@ -39,7 +41,7 @@
 		body.append("organization_uuid", "");
 
 		if (selectedQuestionType == "choice") {
-			body.append("options", JSON.stringify(formData.get("options")?.toString().split(",")));
+			body.append("options", JSON.stringify(options));
 		} else {
 			body.append("options", "[]");
 		}
@@ -85,14 +87,30 @@
 
 		{#if selectedQuestionType === "choice"}
 			<Separator />
+            <Field.Group class="gap-4">
+                <Field.Set class="flex flex-col gap-2">
+                    <Field.Label>Choices</Field.Label>
+                    <div class="flex flex-row gap-2 items-center">
+                        <Input id="choice_name" type="text" placeholder="Choice Name" />
+                    </div>
 
-			<Field.Group class="gap-4">
-				<Field.Set class="flex flex-col gap-2">
-					<Field.Label>Choices</Field.Label>
-					<Input type="text" name="options" required />
-					<Field.Description>Comma separated list of choices</Field.Description>
-				</Field.Set>
-			</Field.Group>
+                    <Button type="button" onclick={() => {
+                        options = [...options, {id: crypto.randomUUID(), name: document.getElementById("choice_name").value}]
+                        ; document.getElementById("choice_name").value = ""
+                        }}>
+                        <PlusCircle weight="bold" />Add Choice
+                    </Button>
+
+                    {#each options as option, i (option.id)}
+                        <div class="flex flex-row gap-2 items-center justify-between">
+                            <p>{option.name}</p>
+                            <Button variant="destructive" type="button" onclick={() => options = options.filter((_, j) => j !== i)}>
+                                <X weight="bold" />
+                            </Button>
+                        </div>
+                    {/each}
+                </Field.Set>
+            </Field.Group>
 		{/if}
 
 		<Dialog.Footer>
