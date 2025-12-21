@@ -31,8 +31,8 @@
 		questionTypes.find((qt) => qt.value === addQuestionAnswers.field_type)?.label ?? "Select Question Type"
 	);
 
-	let dialogTitle = "Add Pit Scouting Question";
-	let dialogDescription = "Create a new pit scouting question";
+	let dialogTitle = $state("Add Pit Scouting Question");
+	let dialogDescription = $state("Create a new pit scouting question");
 
 	async function createPitQuestion(event: Event) {
 		event.preventDefault();
@@ -57,7 +57,7 @@
 		console.log(body);
 
 		try {
-			if (Object.keys($addPitScoutingQuestionData.length > 0)) {
+			if (Object.keys($addPitScoutingQuestionData).length > 0) {
 				await apiFetch(`/pits/fields/${seasonUuid}/edit/${$addPitScoutingQuestionData.uuid}`, {
 					method: "PATCH",
 					data: body,
