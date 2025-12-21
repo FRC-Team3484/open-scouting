@@ -1,26 +1,22 @@
 <script lang="ts">
+	import { onMount } from "svelte";
+
     import * as Card from "$lib/components/ui/card/index.js";
     import * as Select from "$lib/components/ui/select/index.js";
-	import { onMount } from "svelte";
-	import Separator from "../ui/separator/separator.svelte";
-
-	import { apiFetch } from "$lib/utils/api";
-	import Button from "../ui/button/button.svelte";
-	import { PlusCircle } from "phosphor-svelte";
-	import { addPitScoutingQuestionDialogOpen } from "$lib/stores/dialog";
-	import AddPitScoutingQuestionDialog from "../generic/dialogs/AddPitScoutingQuestionDialog.svelte";
+    
 	import PitScoutingFields from "../generic/PitScoutingFields.svelte";
+	import { apiFetch } from "$lib/utils/api";
 
     let seasons = [];
     let season_value = {};
 
     async function get_seasons() {
         seasons = await apiFetch(`/seasons`);
-        season_value = {name: seasons[0].name, uuid: seasons[0].uuid};
+        season_value = {name: seasons[0].name, uuid: seasons[0].uuid, year: seasons[0].year};
     }
 
     onMount(async () => {
-        get_seasons();
+        await get_seasons();
     })
 
 </script>
@@ -50,4 +46,6 @@
     </Card.Content>
 </Card.Root>
 
-<PitScoutingFields season_uuid={season_value.uuid} year={season_value.name} editable={true} />
+{#if season_value.name !== undefined}
+    <PitScoutingFields season_uuid={season_value.uuid} year={season_value.name} editable={true} />
+{/if}
