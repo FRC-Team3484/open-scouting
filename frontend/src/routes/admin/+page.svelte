@@ -66,7 +66,7 @@
 
     {:else if page === "pit_scouting_questions"}
         <AdminHeader handleNavigate={handleNavigate}/>
-        <PitScoutingQuestionsManager />
+        <PitScoutingQuestionsManager/>
 
     {/if}
 </PageContainer>

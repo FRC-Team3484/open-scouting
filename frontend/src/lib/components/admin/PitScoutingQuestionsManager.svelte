@@ -9,6 +9,7 @@
 	import { PlusCircle } from "phosphor-svelte";
 	import { addPitScoutingQuestionDialogOpen } from "$lib/stores/dialog";
 	import AddPitScoutingQuestionDialog from "../generic/dialogs/AddPitScoutingQuestionDialog.svelte";
+	import PitScoutingFields from "../generic/PitScoutingFields.svelte";
 
     let seasons = [];
     let season_value = {};
@@ -17,8 +18,6 @@
         seasons = await apiFetch(`/seasons`);
         season_value = {name: seasons[0].name, uuid: seasons[0].uuid};
     }
-
-    async function getQuestions() {}
 
     onMount(async () => {
         get_seasons();
@@ -51,14 +50,4 @@
     </Card.Content>
 </Card.Root>
 
-<div class="flex flex-col gap-4">
-    <Separator orientation="horizontal" />
-
-    <Card.Root class="w-auto min-w-64">
-        <Card.Content>
-            <Button onclick={() => {addPitScoutingQuestionDialogOpen.set(true);}}><PlusCircle weight="bold" /> Add Question</Button>
-        </Card.Content>
-    </Card.Root>
-</div>
-
-<AddPitScoutingQuestionDialog getQuestions={getQuestions} seasonUuid={season_value.uuid}/>
+<PitScoutingFields season_uuid={season_value.uuid} year={season_value.name} editable={true} />
