@@ -594,6 +594,19 @@ async def edit_pit_field(
     )
     return field
 
+@app.delete("/pits/fields/{field_uuid}/delete")
+async def delete_pit_field(
+        field_uuid: str, 
+        current_user: User = Depends(get_current_user)
+    ):
+
+    field = await PitScoutingField.get_or_none(uuid=field_uuid)
+    if not field:
+        raise HTTPException(status_code=404, detail="Field not found")
+
+    await field.delete()
+    return field
+
 @app.post("/pits/get/{season_uuid}")
 async def get_pits(
     season_uuid: str, 
