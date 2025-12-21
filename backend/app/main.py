@@ -585,13 +585,13 @@ async def edit_pit_field(
     else:
         organization = None
 
-    await field.update(
-        name=name,
-        field_type=field_type,
-        options=options,
-        order=order,
-        organization=organization
-    )
+    field.name = name
+    field.field_type = field_type
+    field.options = options
+    field.order = order
+    field.organization = organization
+
+    await field.save()
     return field
 
 @app.delete("/pits/fields/{field_uuid}/delete")
