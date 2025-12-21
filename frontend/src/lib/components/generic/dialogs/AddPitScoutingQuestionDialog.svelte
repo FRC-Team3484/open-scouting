@@ -9,10 +9,17 @@
 	import Button from "$lib/components/ui/button/button.svelte";
 	import Separator from "$lib/components/ui/separator/separator.svelte";
 
-	import { addPitScoutingQuestionDialogOpen } from "$lib/stores/dialog";
+	import { addFieldDialogOpen, addPitScoutingQuestionData, addPitScoutingQuestionDialogOpen } from "$lib/stores/dialog";
 	import { PlusCircle, X } from "phosphor-svelte";
+	import { add } from "dexie";
 
 	let { getQuestions, seasonUuid } = $props();
+
+	let addQuestionAnswers = $state({
+		name: "",
+		field_type: "text",
+		options: [],
+	});
 
 	const questionTypes = [
 		{ value: "text", label: "Text" },
@@ -20,11 +27,12 @@
 		{ value: "boolean", label: "Boolean" },
 		{ value: "choice", label: "Choice" },
 	];
-	let selectedQuestionType = $state("text");
 	const selectedQuestionTypeLabel = $derived(
-		questionTypes.find((qt) => qt.value === selectedQuestionType)?.label ?? "Select Question Type"
+		questionTypes.find((qt) => qt.value === addQuestionAnswers.field_type)?.label ?? "Select Question Type"
 	);
-	let options = $state([]);
+
+	let dialogTitle = "Add Pit Scouting Question";
+	let dialogDescription = "Create a new pit scouting question";
 
 	async function createPitQuestion(event: Event) {
 		event.preventDefault();
@@ -32,16 +40,16 @@
 		const form = event.currentTarget as HTMLFormElement;
 		const formData = new FormData(form);
 
-		console.log(formData, options);
+		console.log(formData, addQuestionAnswers.options);
 
 		const body = new FormData();
 		body.append("name", formData.get("name")!.toString());
-		body.append("field_type", selectedQuestionType);
+		body.append("field_type", addQuestionAnswers.field_type);
 		body.append("order", "0"); // TODO: Implement reordering
 		body.append("organization_uuid", "");
 
-		if (selectedQuestionType == "choice") {
-			body.append("options", JSON.stringify(options));
+		if (addQuestionAnswers.field_type == "choice") {
+			body.append("options", JSON.stringify(addQuestionAnswers.options));
 		} else {
 			body.append("options", "[]");
 		}
@@ -49,30 +57,65 @@
 		console.log(body);
 
 		try {
-			await apiFetch(`/pits/fields/${seasonUuid}/create`, {
-				method: "POST",
-				data: body,
-				token: localStorage.getItem("access_token")
-			});
+			if (Object.keys($addPitScoutingQuestionData.length > 0)) {
+				await apiFetch(`/pits/fields/${seasonUuid}/edit/${$addPitScoutingQuestionData.uuid}`, {
+					method: "PATCH",
+					data: body,
+					token: localStorage.getItem("access_token")
+				});
+			} else {
+				await apiFetch(`/pits/fields/${seasonUuid}/create`, {
+					method: "POST",
+					data: body,
+					token: localStorage.getItem("access_token")
+				});
+			}
+			
+			addFieldDialogOpen.set(false);
 			getQuestions();
 		} catch (error) {
 			console.error(error);
 		}
 	}
+
+	function onOpenChange() {
+		if ($addPitScoutingQuestionDialogOpen === false) {
+			addPitScoutingQuestionData.set({});
+
+			addQuestionAnswers = {
+				name: "",
+				field_type: "text",
+				options: [],
+			};
+
+			dialogTitle = "Add Pit Scouting Question";
+			dialogDescription = "Create a new pit scouting question";
+		} else {
+			const data = $addPitScoutingQuestionData;
+			if (data && Object.keys(data).length > 0) {
+				addQuestionAnswers.name = data.name ?? "";
+				addQuestionAnswers.field_type = data.field_type ?? "text";
+				addQuestionAnswers.options = data.options ?? [];
+
+				dialogTitle = "Edit Pit Scouting Question";
+				dialogDescription = `Editing pit scouting question '${addQuestionAnswers.name}'`;
+			}
+		}
+	}
 </script>
 
-<BaseDialog title={"Add Pit Scouting Question"} description={"Create a new pit scouting question"} bind:open={$addPitScoutingQuestionDialogOpen}>
+<BaseDialog title={dialogTitle} description={dialogDescription} bind:open={$addPitScoutingQuestionDialogOpen} bind:onOpenChange={onOpenChange}>
     <form method="post" on:submit={createPitQuestion} class="flex flex-col gap-4">
 		<Field.Group class="gap-4">
 			<Field.Set class="flex flex-col gap-2">
 				<Field.Label>Name</Field.Label>
-				<Input type="text" name="name" required />
+				<Input type="text" name="name" required bind:value={addQuestionAnswers.name} />
 				<Field.Description>The name of the question</Field.Description>
 			</Field.Set>
 
 			<Field.Set class="flex flex-col gap-2">
 				<Field.Label>Question Type</Field.Label>
-				<Select.Root type="single" bind:value={selectedQuestionType} name="field_type">
+				<Select.Root type="single" bind:value={addQuestionAnswers.field_type} name="field_type">
                     <Select.Trigger>{selectedQuestionTypeLabel}</Select.Trigger>
                     <Select.Content>
                         <Select.Label>Match Types</Select.Label>
@@ -85,7 +128,7 @@
 			</Field.Set>
 		</Field.Group>
 
-		{#if selectedQuestionType === "choice"}
+		{#if addQuestionAnswers.field_type === "choice"}
 			<Separator />
             <Field.Group class="gap-4">
                 <Field.Set class="flex flex-col gap-2">
@@ -95,16 +138,16 @@
                     </div>
 
                     <Button type="button" onclick={() => {
-                        options = [...options, {id: crypto.randomUUID(), name: document.getElementById("choice_name").value}]
+                        addQuestionAnswers.options = [...addQuestionAnswers.options, {id: crypto.randomUUID(), name: document.getElementById("choice_name").value}]
                         ; document.getElementById("choice_name").value = ""
                         }}>
                         <PlusCircle weight="bold" />Add Choice
                     </Button>
 
-                    {#each options as option, i (option.id)}
+                    {#each addQuestionAnswers.options as option, i (option.id)}
                         <div class="flex flex-row gap-2 items-center justify-between">
                             <p>{option.name}</p>
-                            <Button variant="destructive" type="button" onclick={() => options = options.filter((_, j) => j !== i)}>
+                            <Button variant="destructive" type="button" onclick={() => addQuestionAnswers.options = addQuestionAnswers.options.filter((_, j) => j !== i)}>
                                 <X weight="bold" />
                             </Button>
                         </div>

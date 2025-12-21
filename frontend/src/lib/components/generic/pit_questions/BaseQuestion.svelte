@@ -2,6 +2,7 @@
 	import Button from "$lib/components/ui/button/button.svelte";
     import * as Card from "$lib/components/ui/card/index.js";
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
+	import { addPitScoutingQuestionData, addPitScoutingQuestionDialogOpen } from "$lib/stores/dialog";
 	import { apiFetch } from "$lib/utils/api";
 	import { DotsThree, Pencil, Trash } from "phosphor-svelte";
 	import { toast } from "svelte-sonner";
@@ -18,7 +19,10 @@
         toast.success("Question deleted", { duration: 5000 });
     }
 
-    function editQuestion() {}
+    function editQuestion() {
+        addPitScoutingQuestionDialogOpen.set(true);
+        addPitScoutingQuestionData.set(question);
+    }
 </script>
 
 <Card.Root class="w-auto min-w-64">

@@ -9,3 +9,4 @@ export const addSectionParentUuid = writable("");
 export const addSectionEditData = writable({});
 
 export const addPitScoutingQuestionDialogOpen = writable(false);
+export const addPitScoutingQuestionData = writable({});
