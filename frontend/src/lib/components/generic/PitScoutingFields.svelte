@@ -26,8 +26,6 @@
             const season = await db.season_data.get(parseInt(year));
             questions = season?.pit_scouting_questions;
         }
-
-        console.log(questions);
     }
 
     onMount(async () => {

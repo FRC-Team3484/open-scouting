@@ -2,11 +2,22 @@
 	import Button from "$lib/components/ui/button/button.svelte";
     import * as Card from "$lib/components/ui/card/index.js";
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
+	import { apiFetch } from "$lib/utils/api";
 	import { DotsThree, Pencil, Trash } from "phosphor-svelte";
+	import { toast } from "svelte-sonner";
 
     let { question, editable = false, getQuestions = () => {}, children } = $props();
 
-    async function deleteQuestion() {}
+    async function deleteQuestion() {
+        await apiFetch(`/pits/fields/${question.uuid}/delete`, {
+            method: "DELETE",
+            token: localStorage.getItem("access_token")
+        });
+
+        await getQuestions();
+        toast.success("Question deleted", { duration: 5000 });
+    }
+
     function editQuestion() {}
 </script>
 
@@ -29,7 +40,7 @@
                     </DropdownMenu.Trigger>
 
                     <DropdownMenu.Content class="w-56" align="start">
-                        <DropdownMenu.Label>Field Options</DropdownMenu.Label>
+                        <DropdownMenu.Label>Question Options</DropdownMenu.Label>
                         <DropdownMenu.Group>
                             <DropdownMenu.Item onclick={editQuestion}><Pencil weight="bold" /> Edit</DropdownMenu.Item>
                             <DropdownMenu.Item onclick={deleteQuestion}><Trash weight="bold" /> Delete</DropdownMenu.Item>
