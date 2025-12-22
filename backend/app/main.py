@@ -1,6 +1,8 @@
 import json
 import os
 from time import strftime
+from dotenv import load_dotenv
+import requests
 
 from fastapi import FastAPI, Form, Depends, HTTPException, status, Body
 from fastapi.middleware.cors import CORSMiddleware
@@ -30,7 +32,14 @@ from app.auth import get_password_hash, verify_password, create_access_token, de
 # Setup
 app = FastAPI()
 
+# TODO: Handle production environment variables
+load_dotenv(".env.development")
+
 origins = os.getenv("CORS_ORIGINS", "*").split(",")
+TBA_API_KEY = os.getenv("TBA_API_KEY")
+
+if TBA_API_KEY is None or TBA_API_KEY == "":
+    print("TBA_API_KEY is not set. Pit scouting will not work as expected.")
 
 app.add_middleware(
     CORSMiddleware,
@@ -610,7 +619,6 @@ async def delete_pit_field(
 @app.post("/pits/get/{season_uuid}")
 async def get_pits(
     season_uuid: str, 
-    event_uuid: str,
     
     event_code: str = Form(...),
     event_name: str = Form(...),
@@ -620,12 +628,14 @@ async def get_pits(
     event_start_date: str = Form(...),
     event_end_date: str = Form(...)
     ):
+
+    print(event_start_date, event_end_date)
     
     season = await Season.get_or_none(uuid=season_uuid)
     if not season:
         raise HTTPException(status_code=404, detail="Season not found")
 
-    event, _ = await Event.get_or_create(
+    event, created = await Event.get_or_create(
         season=season,
         event_code=event_code,
         name=event_name,
@@ -636,8 +646,38 @@ async def get_pits(
         end_date=event_end_date
     )
 
-    pits = await TeamPit.filter(event=event)
-    return pits
+    # If created for the first time, get teams from TBA and create TeamPits
+    if created and TBA_API_KEY != "" and TBA_API_KEY is not None:
+        event_key = str(season.year) + event_code
+        response = requests.get(f"https://www.thebluealliance.com/api/v3/event/{event_key}/teams", headers={"X-TBA-Auth-Key": TBA_API_KEY})
+        teams = response.json()
+
+        for team in teams:
+            _ = await TeamPit.create(
+                team_number=team["team_number"],
+                nickname=team["nickname"],
+                season=season,
+                event=event
+            )
+
+    pits = await TeamPit.filter(event=event).prefetch_related("answers")
+    return [
+        {
+            "uuid": pit.uuid,
+            "team_number": pit.team_number,
+            "nickname": pit.nickname,
+            "created_at": pit.created_at,
+            "answers": [
+                {
+                    "uuid": ans.uuid,
+                    "field_uuid": ans.field_id,
+                    "value": ans.value,
+                }
+                for ans in pit.answers
+            ]
+        }
+        for pit in pits
+    ]
 
 @app.post("/pits/submit/{season_uuid}/{event_uuid}/{team_number}")
 async def submit_pit(

@@ -91,8 +91,8 @@ class Event(Model):
     type = fields.CharField(max_length=255)
     city = fields.CharField(max_length=255)
     country = fields.CharField(max_length=255)
-    start_date = fields.DatetimeField()
-    end_date = fields.DatetimeField()
+    start_date = fields.DateField(null=True)
+    end_date = fields.DateField(null=True)
     created_at = fields.DatetimeField(auto_now_add=True)
 
 class MatchScoutingSubmission(Model):
@@ -128,6 +128,7 @@ class PitScoutingField(Model):
 class TeamPit(Model):
     uuid = fields.UUIDField(pk=True)
     team_number = fields.IntField()
+    nickname = fields.CharField(max_length=255)
     created_at = fields.DatetimeField(auto_now_add=True)
     season = fields.ForeignKeyField("models.Season", related_name="team_pits")
     event = fields.ForeignKeyField("models.Event", related_name="team_pits")
