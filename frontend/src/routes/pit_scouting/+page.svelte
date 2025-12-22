@@ -3,6 +3,7 @@
 	import PageContainer from "$lib/components/layout/PageContainer.svelte";
 	import Header from "$lib/components/pit_scouting/Header.svelte";
 	import { apiFetch } from "$lib/utils/api";
+	import { db } from "$lib/utils/db";
 	import { CircleNotch } from "phosphor-svelte";
 	import { onMount } from "svelte";
 
@@ -40,12 +41,28 @@
 
         console.log(body);
 
-        pits = await apiFetch(`/pits/get/${season_uuid}`, {
+        const pit_data = await apiFetch(`/pits/get/${season_uuid}`, {
             method: "POST",
             data: body
-        })
+        });
 
-        console.log(pits);
+        for (const pit of pit_data) {
+            await db.pit_scouting.put({
+                uuid: pit.uuid,
+                answers: pit.answers,
+                nickname: pit.nickname,
+                team_number: pit.team_number,
+                year: event_data.year,
+                event_code: event_data.event_code,
+                event_name: event_data.event_name,
+                event_type: event_data.event_type,
+                event_city: event_data.event_city,
+                event_country: event_data.event_country,
+                event_start_date: event_data.event_start_date,
+                event_end_date: event_data.event_end_date,
+                synced: true
+            });
+        }
     }
 
     onMount(async () => {
