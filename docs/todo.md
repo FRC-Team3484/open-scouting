@@ -10,6 +10,8 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
     - [x] Create and edit fields
     - [ ] Make reorderable
   - [ ] Manage pit scouting questions
+    - [x] Create and edit questions
+    - [ ] Make reorderable
   - [ ] Manage users
   - [ ] Manage events
   - [ ] Manage match scouting data
@@ -22,7 +24,7 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [x] Autofill team and match number via TBA when a supported event is selected
 - [ ] Pit scouting
   - [x] Create models
-  - [ ] Create backend functions
+  - [x] Create backend functions
   - [x] Sync pit questions to the frontend
   - [ ] Create frontend page
 - [ ] Data view
@@ -31,7 +33,7 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [ ] Edit profile
   - [ ] Change password
   - [ ] Verification codes when enabled
-- [ ] Add link to Open Scouting v1.0.0 to try
+- [ ] Add link to Open Scouting v1.0.0 to try v2.0.0
 - [ ] Import legacy match scouting data from v1.0.0
 - [ ] Deprecate `open-scouting-utils` repo
 - [ ] Release `v2.0.0`
