@@ -26,7 +26,7 @@
             <Button variant="default" id="match" href={`/match_scouting?year=${year}&event=${event.event_code}${user_string}`}><Binoculars weight="bold" /> Match Scouting</Button>
             <Label for="match">Contribute data by watching matches at competition</Label>
             
-            <Button variant="default" id="pit" disabled><ListNumbers weight="bold" /> Pit Scouting</Button>
+            <Button variant="default" id="pit" href={`/pit_scouting?year=${year}&event=${event.event_code}${user_string}`}><ListNumbers weight="bold" /> Pit Scouting</Button>
             <Label for="match">Contribute pit scouting data</Label>
 
             <Button variant="default" id="data" disabled><Database weight="bold" /> View Data</Button>

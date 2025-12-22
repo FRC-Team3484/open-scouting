@@ -15,7 +15,7 @@
 	import BooleanQuestion from "./pit_questions/BooleanQuestion.svelte";
 	import ChoiceQuestion from "./pit_questions/ChoiceQuestion.svelte";
 
-    let { season_uuid, year, editable } = $props();
+    let { season_uuid, year, event_data = {}, editable } = $props();
 
     let questions = $state([]);
 
