@@ -20,10 +20,32 @@
         event_end_date: ""
     });
 
+    let pits = $state([]);
+
     function get_season_uuid(year: string) {
         apiFetch(`/seasons`).then((seasons) => {
             season_uuid = seasons.find((season) => season.year == year).uuid
         })
+    }
+
+    async function get_pits() {
+        const body = new FormData();
+        body.append("event_code", event_data.event_code);
+        body.append("event_name", event_data.event_name);
+        body.append("event_type", event_data.event_type);
+        body.append("event_city", event_data.event_city);
+        body.append("event_country", event_data.event_country);
+        body.append("event_start_date", event_data.event_start_date);
+        body.append("event_end_date", event_data.event_end_date);
+
+        console.log(body);
+
+        pits = await apiFetch(`/pits/get/${season_uuid}`, {
+            method: "POST",
+            data: body
+        })
+
+        console.log(pits);
     }
 
     onMount(async () => {
@@ -35,6 +57,12 @@
 
         get_season_uuid(year);
     });
+
+    $effect(() => {
+        if (season_uuid && event_data.year !== 0) {
+            get_pits();
+        }
+    })
 </script>
 
 <PageContainer>
