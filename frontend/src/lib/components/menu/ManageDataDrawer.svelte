@@ -20,6 +20,8 @@
     let seasonData = $state(0);
     let matchScoutingData = $state(0);
     let matchScoutingDataUnsynced = $state(0);
+    let pitScoutingData = $state(0);
+    let pitScoutingDataUnsynced = $state(0);
 
     function getSpaceUsed() {
         const quota = navigator.storage.estimate();
@@ -34,6 +36,8 @@
         seasonData = await db.season_data.count();
         matchScoutingData = await db.match_scouting.count();
         matchScoutingDataUnsynced = await db.match_scouting.filter(m => m.synced === false).count();
+        pitScoutingData = await db.pit_scouting.count();
+        pitScoutingDataUnsynced = await db.pit_scouting.filter(m => m.synced === false).count();
     }
 
     onMount(() => {
@@ -203,7 +207,55 @@
                             </Dialog.Content>
                         </Dialog.Root>
                     </div>
-                    <p class="text-sm text-muted-foreground">The season data for each year, including the fields and game pieces for that year</p>
+                    <p class="text-sm text-muted-foreground">Match scouting data stored locally, in case of poor connection requiring reports to be submitted later</p>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                    <div class="flex flex-row gap-2 items-center flex-wrap">
+                        <p class="font-bold">{pitScoutingData} Team Pits</p>
+                        {#if pitScoutingDataUnsynced > 0}
+                            <Badge variant="destructive">{pitScoutingDataUnsynced} Unsynced</Badge>
+
+                            <!-- <Dialog.Root>
+                                <Dialog.Trigger>
+                                    <Button>Sync</Button>
+                                </Dialog.Trigger>
+                                <Dialog.Content>
+                                    <Dialog.Title>Are you sure?</Dialog.Title>
+                                    <Dialog.Description>Are you sure you want to sync match scouting data?</Dialog.Description>
+
+                                    <Dialog.Footer>
+                                        <Dialog.Close>
+                                            <Button variant="outline">Cancel</Button>
+                                        </Dialog.Close>
+                                        <Dialog.Close>
+                                            <Button type="submit" onclick={async () => { await pushMatchScoutingData(); await getAmount(); getSpaceUsed(); await toast.success("Match scouting data synced"); }}>Sync</Button>
+                                        </Dialog.Close>
+                                    </Dialog.Footer>
+                                </Dialog.Content>
+                            </Dialog.Root> -->
+                        {/if}
+
+                        <Dialog.Root>
+                            <Dialog.Trigger>
+                                <Button variant="outline">Delete</Button>
+                            </Dialog.Trigger>
+                            <Dialog.Content>
+                                <Dialog.Title>Are you sure?</Dialog.Title>
+                                <Dialog.Description>Are you sure you want to delete all pit scouting data? This cannot be undone, and any unsynced data will be completely lost.</Dialog.Description>
+
+                                <Dialog.Footer>
+                                    <Dialog.Close>
+                                        <Button variant="outline">Cancel</Button>
+                                    </Dialog.Close>
+                                    <Dialog.Close>
+                                        <Button type="submit" onclick={async () => { await db.pit_scouting.clear(); await getAmount(); getSpaceUsed(); await toast.success("Pit scouting data cleared"); }}>Delete</Button>
+                                    </Dialog.Close>
+                                </Dialog.Footer>
+                            </Dialog.Content>
+                        </Dialog.Root>
+                    </div>
+                    <p class="text-sm text-muted-foreground">Pit scouting data for each team at each event in each season that you've loaded. Used to manage the live pit scouting page, and keep you and the other scouts up to date.</p>
                 </div>
             </div>
         </Drawer.Content>
