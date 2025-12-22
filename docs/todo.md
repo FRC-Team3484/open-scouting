@@ -42,3 +42,8 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [ ] Organizations
 - [ ] Import and export field data
 - [ ] Captcha in authentication
+
+## Other
+- [ ] Be able to sync pit scouting data from the local data management drawer
+- [ ] Menu drawers are not scrollable on smaller screens
+- [ ] Fix logo squashing on smaller screens

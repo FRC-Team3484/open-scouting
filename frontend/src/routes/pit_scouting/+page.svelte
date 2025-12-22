@@ -2,6 +2,7 @@
 	import PitScoutingFields from "$lib/components/generic/PitScoutingFields.svelte";
 	import PageContainer from "$lib/components/layout/PageContainer.svelte";
 	import Header from "$lib/components/pit_scouting/Header.svelte";
+	import Pit from "$lib/components/pit_scouting/Pit.svelte";
 	import { apiFetch } from "$lib/utils/api";
 	import { db } from "$lib/utils/db";
 	import { CircleNotch } from "phosphor-svelte";
@@ -75,9 +76,12 @@
         get_season_uuid(year);
     });
 
-    $effect(() => {
+    $effect(async () => {
         if (season_uuid && event_data.year !== 0) {
             get_pits();
+
+            pits = await db.pit_scouting.filter(pit => pit.year === event_data.year && pit.event_code === event_data.event_code).toArray();
+            console.log(pits);
         }
     })
 </script>
@@ -85,7 +89,12 @@
 <PageContainer>
     <Header bind:event_data={event_data}/>
     {#if year && season_uuid && event_data.year !== 0}
-        <PitScoutingFields season_uuid={season_uuid} year={year} event_data={event_data} editable={false} />
+        <div class="flex flex-col gap-4 items-center">
+            {#each pits as pit}
+                <Pit pit={pit} />
+            {/each}
+        </div>
+
     {:else}
         <CircleNotch weight="bold" class="animate-spin md:!w-6 md:!h-6 !w-4 !h-4" />
     {/if}
