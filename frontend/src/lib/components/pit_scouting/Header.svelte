@@ -65,7 +65,7 @@
                     </Dialog.Trigger>
                     <Dialog.Content>
                         <Dialog.Title>Using Offline Data</Dialog.Title>
-                        <Dialog.Description>Open Scouting caches events from the server to work with no or poor connection. If the fields seem to be out of date, you can rebuild the season data cache here.</Dialog.Description>
+                        <Dialog.Description>Open Scouting caches pit scouting questions from the server to improve performance with no or poor connection. If the questions seem to be out of date, you can rebuild the season data cache here.</Dialog.Description>
 
                         <Dialog.Footer>
                             <Dialog.Close>
