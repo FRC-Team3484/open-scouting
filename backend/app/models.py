@@ -138,3 +138,4 @@ class PitScoutingAnswer(Model):
     field = fields.ForeignKeyField("models.PitScoutingField", related_name="answers")
     value = fields.CharField(max_length=255, null=True)
     team = fields.ForeignKeyField("models.TeamPit", related_name="answers")
+    username = fields.CharField(max_length=255, null=True)

@@ -628,8 +628,6 @@ async def get_pits(
     event_start_date: str = Form(...),
     event_end_date: str = Form(...)
     ):
-
-    print(event_start_date, event_end_date)
     
     season = await Season.get_or_none(uuid=season_uuid)
     if not season:
@@ -672,6 +670,7 @@ async def get_pits(
                     "uuid": ans.uuid,
                     "field_uuid": ans.field_id,
                     "value": ans.value,
+                    "username": ans.username
                 }
                 for ans in pit.answers
             ]
@@ -689,7 +688,7 @@ async def submit_pit(
     ):
     """
     Get the season and event from the uuids. Then, check if a pit with that team number exists.
-    If it does, update 
+    If it does, update that pit
     """
     # TODO: implement
     pass
