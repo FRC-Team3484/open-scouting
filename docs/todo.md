@@ -27,6 +27,10 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [x] Create backend functions
   - [x] Sync pit questions to the frontend
   - [ ] Create frontend page
+    - [ ] View and add answers
+    - [ ] Add custom questions
+    - [ ] Add new pits
+    - [ ] Sync data to the server
 - [ ] Data view
 - [ ] Host in experimental
 - [ ] Profile
@@ -47,3 +51,4 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [ ] Be able to sync pit scouting data from the local data management drawer
 - [ ] Menu drawers are not scrollable on smaller screens
 - [ ] Fix logo squashing on smaller screens
+- [ ] Correctly handle when match scouting fields or pit scouting questions are deleted by the admin
