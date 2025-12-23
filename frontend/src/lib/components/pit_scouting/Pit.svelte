@@ -3,8 +3,12 @@
 	import { CaretDown, CaretUp } from "phosphor-svelte";
 	import Button from "../ui/button/button.svelte";
 	import { slide } from "svelte/transition";
+	import TextQuestion from "../generic/pit_questions/main/TextQuestion.svelte";
+	import NumberQuestion from "../generic/pit_questions/main/NumberQuestion.svelte";
+	import BooleanQuestion from "../generic/pit_questions/main/BooleanQuestion.svelte";
+	import ChoiceQuestion from "../generic/pit_questions/main/ChoiceQuestion.svelte";
 
-    let { pit, show_avatar = false } = $props();
+    let { pit, pit_questions, show_avatar = false } = $props();
 
     let expanded = $state(false);
     let avatar_loaded = $state(true);
@@ -34,7 +38,17 @@
 
             {#if expanded}
                 <div class="flex flex-col gap-2 items-start" transition:slide>
-                    <p>expanded</p>
+                    {#each pit_questions as question}
+                        {#if question.field_type === "text"}
+                            <TextQuestion question={question} answers={pit.answers.filter((answer) => answer.field_uuid === question.uuid)} />
+                        {:else if question.field_type === "number"}
+                            <NumberQuestion question={question} answers={pit.answers.filter((answer) => answer.field_uuid === question.uuid)} />
+                        {:else if question.field_type === "boolean"}
+                            <BooleanQuestion question={question} answers={pit.answers.filter((answer) => answer.field_uuid === question.uuid)} />
+                        {:else if question.field_type === "choice"}
+                            <ChoiceQuestion question={question} answers={pit.answers.filter((answer) => answer.field_uuid === question.uuid)} />
+                        {/if}
+                    {/each}
                 </div>
             {/if}
         </div>

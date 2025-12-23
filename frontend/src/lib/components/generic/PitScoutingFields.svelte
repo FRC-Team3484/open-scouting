@@ -10,10 +10,10 @@
 	import { addPitScoutingQuestionDialogOpen } from "$lib/stores/dialog";
 	import { apiFetch } from "$lib/utils/api";
 	import { db } from "$lib/utils/db";
-	import TextQuestion from "./pit_questions/TextQuestion.svelte";
-	import NumberQuestion from "./pit_questions/NumberQuestion.svelte";
-	import BooleanQuestion from "./pit_questions/BooleanQuestion.svelte";
-	import ChoiceQuestion from "./pit_questions/ChoiceQuestion.svelte";
+	import TextQuestion from "./pit_questions/admin/TextQuestion.svelte";
+	import NumberQuestion from "./pit_questions/admin/NumberQuestion.svelte";
+	import BooleanQuestion from "./pit_questions/admin/BooleanQuestion.svelte";
+	import ChoiceQuestion from "./pit_questions/admin/ChoiceQuestion.svelte";
 
     let { season_uuid, year, event_data = {}, editable } = $props();
 

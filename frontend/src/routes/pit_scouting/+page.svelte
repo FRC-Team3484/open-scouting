@@ -23,6 +23,7 @@
     });
 
     let pits = $state([]);
+    let pit_questions = $state([]);
 
     function get_season_uuid(year: string) {
         apiFetch(`/seasons`).then((seasons) => {
@@ -39,8 +40,6 @@
         body.append("event_country", event_data.event_country);
         body.append("event_start_date", event_data.event_start_date);
         body.append("event_end_date", event_data.event_end_date);
-
-        console.log(body);
 
         const pit_data = await apiFetch(`/pits/get/${season_uuid}`, {
             method: "POST",
@@ -66,6 +65,11 @@
         }
     }
 
+    async function get_pit_questions() {
+        const season = await db.season_data.get(parseInt(year));
+        pit_questions = season?.pit_scouting_questions;
+    }
+
     onMount(async () => {
         let url = new URL(window.location.href);
         year = url.searchParams.get("year");
@@ -74,6 +78,7 @@
         }
 
         get_season_uuid(year);
+        get_pit_questions();
     });
 
     $effect(async () => {
@@ -91,7 +96,7 @@
     {#if year && season_uuid && event_data.year !== 0}
         <div class="flex flex-col gap-4 items-center">
             {#each pits as pit}
-                <Pit pit={pit} />
+                <Pit pit={pit} pit_questions={pit_questions} show_avatar={false} />
             {/each}
         </div>
 
