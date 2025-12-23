@@ -139,3 +139,4 @@ class PitScoutingAnswer(Model):
     value = fields.CharField(max_length=255, null=True)
     team = fields.ForeignKeyField("models.TeamPit", related_name="answers")
     username = fields.CharField(max_length=255, null=True)
+    created_at = fields.DatetimeField(auto_now_add=True)

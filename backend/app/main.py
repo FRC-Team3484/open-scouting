@@ -670,7 +670,8 @@ async def get_pits(
                     "uuid": ans.uuid,
                     "field_uuid": ans.field_id,
                     "value": ans.value,
-                    "username": ans.username
+                    "username": ans.username,
+                    "created_at": ans.created_at
                 }
                 for ans in pit.answers
             ]
