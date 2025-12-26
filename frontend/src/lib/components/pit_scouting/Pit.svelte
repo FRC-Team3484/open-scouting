@@ -8,9 +8,9 @@
 	import BooleanQuestion from "../generic/pit_questions/main/BooleanQuestion.svelte";
 	import ChoiceQuestion from "../generic/pit_questions/main/ChoiceQuestion.svelte";
 
-    let { pit, pit_questions, show_avatar = false } = $props();
+    let { pit, pit_questions, user, show_avatar = false } = $props();
 
-    let expanded = $state(false);
+    let expanded = $state(true);
     let avatar_loaded = $state(true);
 </script>
 
@@ -40,13 +40,13 @@
                 <div class="flex flex-col gap-2 items-start" transition:slide>
                     {#each pit_questions as question}
                         {#if question.field_type === "text"}
-                            <TextQuestion question={question} answers={pit.answers.filter((answer) => answer.field_uuid === question.uuid)} />
+                            <TextQuestion pit={pit} question={question} answers={pit.answers.filter((answer) => answer.field_uuid === question.uuid)} user={user} />
                         {:else if question.field_type === "number"}
-                            <NumberQuestion question={question} answers={pit.answers.filter((answer) => answer.field_uuid === question.uuid)} />
+                            <NumberQuestion pit={pit} question={question} answers={pit.answers.filter((answer) => answer.field_uuid === question.uuid)} user={user} />
                         {:else if question.field_type === "boolean"}
-                            <BooleanQuestion question={question} answers={pit.answers.filter((answer) => answer.field_uuid === question.uuid)} />
+                            <BooleanQuestion pit={pit} question={question} answers={pit.answers.filter((answer) => answer.field_uuid === question.uuid)} user={user} />
                         {:else if question.field_type === "choice"}
-                            <ChoiceQuestion question={question} answers={pit.answers.filter((answer) => answer.field_uuid === question.uuid)} />
+                            <ChoiceQuestion pit={pit} question={question} answers={pit.answers.filter((answer) => answer.field_uuid === question.uuid)} user={user} />
                         {/if}
                     {/each}
                 </div>

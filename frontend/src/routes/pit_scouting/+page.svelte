@@ -5,6 +5,8 @@
 	import Pit from "$lib/components/pit_scouting/Pit.svelte";
 	import { apiFetch } from "$lib/utils/api";
 	import { db } from "$lib/utils/db";
+	import { validateTokenOnline } from "$lib/utils/user";
+	import { liveQuery } from "dexie";
 	import { CircleNotch } from "phosphor-svelte";
 	import { onMount } from "svelte";
 
@@ -22,8 +24,9 @@
         event_end_date: ""
     });
 
-    let pits = $state([]);
     let pit_questions = $state([]);
+
+    let user = $state(null);
 
     function get_season_uuid(year: string) {
         apiFetch(`/seasons`).then((seasons) => {
@@ -47,23 +50,35 @@
         });
 
         for (const pit of pit_data) {
-            await db.pit_scouting.put({
-                uuid: pit.uuid,
-                answers: pit.answers,
-                nickname: pit.nickname,
-                team_number: pit.team_number,
-                year: event_data.year,
-                event_code: event_data.event_code,
-                event_name: event_data.event_name,
-                event_type: event_data.event_type,
-                event_city: event_data.event_city,
-                event_country: event_data.event_country,
-                event_start_date: event_data.event_start_date,
-                event_end_date: event_data.event_end_date,
-                synced: true
-            });
+            const pit_in_db = await db.pit_scouting.get(pit.uuid);
+            const synced = pit_in_db ? pit_in_db.synced : true;
+
+            if (synced) {
+                await db.pit_scouting.put({
+                    uuid: pit.uuid,
+                    answers: pit.answers,
+                    nickname: pit.nickname,
+                    team_number: pit.team_number,
+                    year: event_data.year,
+                    event_code: event_data.event_code,
+                    event_name: event_data.event_name,
+                    event_type: event_data.event_type,
+                    event_city: event_data.event_city,
+                    event_country: event_data.event_country,
+                    event_start_date: event_data.event_start_date,
+                    event_end_date: event_data.event_end_date,
+                    synced: true
+                });
+            } else {
+                console.warn("Pit not synced: " + pit.uuid);
+            }
+            
         }
     }
+
+    let pits = liveQuery(
+        () => db.pit_scouting.filter(pit => pit.year === event_data.year && pit.event_code === event_data.event_code).toArray()
+    );
 
     async function get_pit_questions() {
         const season = await db.season_data.get(parseInt(year));
@@ -79,24 +94,23 @@
 
         get_season_uuid(year);
         get_pit_questions();
+
+        user = await validateTokenOnline();
     });
 
     $effect(async () => {
         if (season_uuid && event_data.year !== 0) {
             get_pits();
-
-            pits = await db.pit_scouting.filter(pit => pit.year === event_data.year && pit.event_code === event_data.event_code).toArray();
-            console.log(pits);
         }
     })
 </script>
 
 <PageContainer>
     <Header bind:event_data={event_data}/>
-    {#if year && season_uuid && event_data.year !== 0}
+    {#if year && season_uuid && event_data.year !== 0 && user}
         <div class="flex flex-col gap-4 items-center">
-            {#each pits as pit}
-                <Pit pit={pit} pit_questions={pit_questions} show_avatar={false} />
+            {#each ($pits || []) as pit}
+                <Pit pit={pit} pit_questions={pit_questions} user={user} show_avatar={false} />
             {/each}
         </div>
 
