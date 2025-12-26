@@ -12,10 +12,13 @@
 
 	import { menuState } from "$lib/stores/menu";
 	import User from "../generic/User.svelte";
+	import { online } from "svelte/reactivity/window";
+	import { toast } from "svelte-sonner";
 
     let user = null;
 
     let menu_open: boolean = false;
+    let wasOnline = $state(online.current)
 
     menuState.subscribe((value) => {
         if (value.close) {
@@ -27,6 +30,18 @@
                 });
             }, 3000)
         }
+    });
+
+    $effect(() => {
+        const now = online.current;
+
+        if (!wasOnline && now) {
+            toast.success("You're back online", { description: "All features are now available" });
+        } else if (wasOnline && !now) {
+            toast.error("You are now offline", { description: "Some features may be unavailable and data may be out of date. Reconnect to the internet to sync data" });
+        }
+
+        wasOnline = now;
     });
 </script>
 
