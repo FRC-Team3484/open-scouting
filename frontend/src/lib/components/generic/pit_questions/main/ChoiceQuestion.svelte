@@ -14,7 +14,7 @@
     async function addAnswer() {
         const newAnswer = { uuid: crypto.randomUUID(), value: selectedOptionLabel.name, username: user.username, field_uuid: question.uuid, created_at: new Date().toISOString() }
         await db.pit_scouting.update(pit.uuid, {
-            answers: [...answers, newAnswer],
+            answers: [...pit.answers, newAnswer],
             synced: false
         });
 
