@@ -1,6 +1,7 @@
 import json
 import os
 from time import strftime
+import uuid
 from dotenv import load_dotenv
 import requests
 
@@ -685,11 +686,51 @@ async def submit_pit(
     event_uuid: str, 
     team_number: int,
 
-    answers: dict = Form(...),
+    answers: str = Form(...),
+    nickname: str = Form(...)
     ):
     """
     Get the season and event from the uuids. Then, check if a pit with that team number exists.
     If it does, update that pit
+
+    For the answers in that pit, find each answer that does not already exist on the server, and add them
+
+    If a pit does not exist, that means it was created by the client of a user. It should be created.
     """
-    # TODO: implement
-    pass
+    
+    season = await Season.get_or_none(uuid=season_uuid)
+    if not season:
+        raise HTTPException(status_code=404, detail="Season not found")
+
+    event = await Event.get_or_none(uuid=event_uuid)
+    if not event:
+        raise HTTPException(status_code=404, detail="Event not found")
+
+    pit, created = await TeamPit.get_or_create(
+        team_number=team_number,
+        season=season,
+        event=event,
+        nickname=nickname
+    )
+
+    if created:
+        print("Created pit", pit.uuid, "for team", team_number, "and event", event.uuid)
+
+    for answer in json.loads(answers):
+        field = await PitScoutingField.get_or_none(uuid=answer["field_uuid"])
+
+        if not field:
+            raise HTTPException(status_code=404, detail="Field not found")
+
+        _, created = await PitScoutingAnswer.get_or_create(
+            uuid=answer["uuid"],
+            team=pit,
+            field=field,
+            value=answer["value"],
+            username=answer["username"]
+        )
+
+        if created:
+            print("Created answer", answer["uuid"], "for pit", pit.uuid, "and field", field.uuid)
+
+    return
