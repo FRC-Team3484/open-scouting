@@ -7,6 +7,7 @@
     let { pit, question, answers, user } = $props();
 
     let value = $state("");
+    let resetBase;
 
     async function addAnswer() {
         const newAnswer = { uuid: crypto.randomUUID(), value: value, username: user.username, field_uuid: question.uuid, created_at: new Date().toISOString() }
@@ -16,10 +17,11 @@
         });
 
         value = "";
+        resetBase();
     }
 </script>
 
-<BaseQuestion question={question} answers={answers}>
+<BaseQuestion question={question} answers={answers} bind:reset={resetBase}>
     <div class="flex flex-row gap-2 items-center">
         <Input type="text" placeholder={question.name} bind:value />
         <Button onclick={addAnswer}>Save</Button>

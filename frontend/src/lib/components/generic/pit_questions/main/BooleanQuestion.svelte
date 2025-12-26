@@ -7,6 +7,7 @@
     let { pit, question, answers, user } = $props();
 
     let checked = $state("false");
+    let resetBase;
 
     async function addAnswer() {
         const newAnswer = { uuid: crypto.randomUUID(), value: checked, username: user.username, field_uuid: question.uuid, created_at: new Date().toISOString() }
@@ -16,10 +17,11 @@
         });
 
         checked = "false";
+        resetBase();
     }
 </script>
 
-<BaseQuestion question={question} answers={answers}>
+<BaseQuestion question={question} answers={answers} bind:reset={resetBase}>
     <div class="flex flex-row gap-2 items-center">
         <Checkbox placeholder={question.name} bind:checked/>
         <p>Boolean</p>

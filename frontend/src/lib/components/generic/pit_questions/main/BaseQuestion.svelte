@@ -1,15 +1,19 @@
 <script lang="ts">
 	import Badge from "$lib/components/ui/badge/badge.svelte";
-import Button from "$lib/components/ui/button/button.svelte";
+    import Button from "$lib/components/ui/button/button.svelte";
     import * as Card from "$lib/components/ui/card/index.js";
 	import { Calendar, Eye, PlusCircle, User, X } from "phosphor-svelte";
 	import { slide } from "svelte/transition";
 
-    let { question, answers, children } = $props();
+    let { question, answers, reset = $bindable(), children } = $props();
 
     type Mode = "none" | "view" | "add";
 
     let mode: Mode = $state("none");
+
+    reset = () => {
+        mode = "none";
+    }
 </script>
 
 <Card.Root class="w-full">
