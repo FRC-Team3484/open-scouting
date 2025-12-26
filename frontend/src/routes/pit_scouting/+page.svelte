@@ -1,6 +1,7 @@
 <script lang="ts">
 	import PitScoutingFields from "$lib/components/generic/PitScoutingFields.svelte";
 	import PageContainer from "$lib/components/layout/PageContainer.svelte";
+	import AddPit from "$lib/components/pit_scouting/AddPit.svelte";
 	import Header from "$lib/components/pit_scouting/Header.svelte";
 	import Pit from "$lib/components/pit_scouting/Pit.svelte";
 	import { apiFetch } from "$lib/utils/api";
@@ -112,6 +113,8 @@
             {#each ($pits || []) as pit}
                 <Pit pit={pit} pit_questions={pit_questions} user={user} show_avatar={false} />
             {/each}
+
+            <AddPit event_data={event_data} />
         </div>
 
     {:else}
