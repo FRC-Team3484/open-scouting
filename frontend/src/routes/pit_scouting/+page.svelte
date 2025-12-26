@@ -1,9 +1,9 @@
 <script lang="ts">
-	import PitScoutingFields from "$lib/components/generic/PitScoutingFields.svelte";
 	import PageContainer from "$lib/components/layout/PageContainer.svelte";
 	import AddPit from "$lib/components/pit_scouting/AddPit.svelte";
 	import Header from "$lib/components/pit_scouting/Header.svelte";
 	import Pit from "$lib/components/pit_scouting/Pit.svelte";
+	import SyncManager from "$lib/components/pit_scouting/SyncManager.svelte";
 	import { apiFetch } from "$lib/utils/api";
 	import { db } from "$lib/utils/db";
 	import { validateTokenOnline } from "$lib/utils/user";
@@ -120,4 +120,6 @@
     {:else}
         <CircleNotch weight="bold" class="animate-spin md:!w-6 md:!h-6 !w-4 !h-4" />
     {/if}
+
+    <SyncManager eventData={event_data} />
 </PageContainer>
