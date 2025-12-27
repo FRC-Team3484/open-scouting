@@ -680,11 +680,18 @@ async def get_pits(
         for pit in pits
     ]
 
-@app.post("/pits/submit/{season_uuid}/{event_uuid}/{team_number}")
+@app.post("/pits/submit/{season_uuid}/{team_number}")
 async def submit_pit(
     season_uuid: str, 
-    event_uuid: str, 
     team_number: int,
+
+    event_code: str = Form(...),
+    event_name: str = Form(...),
+    event_type: str = Form(...),
+    event_city: str = Form(...),
+    event_country: str = Form(...),
+    event_start_date: str = Form(...),
+    event_end_date: str = Form(...),
 
     answers: str = Form(...),
     nickname: str = Form(...)
@@ -702,7 +709,7 @@ async def submit_pit(
     if not season:
         raise HTTPException(status_code=404, detail="Season not found")
 
-    event = await Event.get_or_none(uuid=event_uuid)
+    event = await Event.get_or_none(event_code=event_code, season=season).first()
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
 
