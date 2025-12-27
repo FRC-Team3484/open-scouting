@@ -17,7 +17,7 @@
 
     let user = null;
 
-    let menu_open: boolean = false;
+    let menu_open: boolean = $state(false);
     let wasOnline = $state(online.current)
 
     menuState.subscribe((value) => {
