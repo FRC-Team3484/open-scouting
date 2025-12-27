@@ -634,7 +634,7 @@ async def get_pits(
     if not season:
         raise HTTPException(status_code=404, detail="Season not found")
 
-    event, created = await Event.get_or_create(
+    event, _ = await Event.get_or_create(
         season=season,
         event_code=event_code,
         name=event_name,
@@ -645,8 +645,8 @@ async def get_pits(
         end_date=event_end_date
     )
 
-    # If created for the first time, get teams from TBA and create TeamPits
-    if created and TBA_API_KEY != "" and TBA_API_KEY is not None:
+    # If pits have not been generated yet, get teams from TBA and create TeamPits
+    if not event.pits_generated and TBA_API_KEY != "" and TBA_API_KEY is not None:
         event_key = str(season.year) + event_code
         response = requests.get(f"https://www.thebluealliance.com/api/v3/event/{event_key}/teams", headers={"X-TBA-Auth-Key": TBA_API_KEY})
         teams = response.json()
@@ -658,6 +658,9 @@ async def get_pits(
                 season=season,
                 event=event
             )
+
+        event.pits_generated = True
+        await event.save()
 
     pits = await TeamPit.filter(event=event).prefetch_related("answers")
     return [
