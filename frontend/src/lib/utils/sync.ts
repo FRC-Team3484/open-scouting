@@ -128,7 +128,7 @@ async function pushMatchScoutingData() {
             close: true
         });
     } else {
-        console.log("No unsynced match scouting data");
+        // console.log("No unsynced match scouting data");
     }
 }
 
@@ -143,8 +143,6 @@ async function pushPitScoutingData(event_data, season_uuid) {
         p.event_code === event_data.event_code && 
         p.year === parseInt(event_data.year)
     ).toArray();
-
-    console.log(unsyncedPits);
 
     if (unsyncedPits.length > 0) {
         menuState.set({
@@ -182,7 +180,7 @@ async function pushPitScoutingData(event_data, season_uuid) {
             close: true
         });
     } else {
-        console.log("No unsynced pit scouting data");
+        // console.log("No unsynced pit scouting data");
         return false;
     }
 }
@@ -207,8 +205,6 @@ async function fetchPitScoutingData(event_data, season_uuid) {
         method: "POST",
         data: body
     });
-
-    console.log("Fetched pit scouting data", pit_data);
 
     for (const pit of pit_data) {
         const pit_in_db = await db.pit_scouting.get(pit.uuid);
