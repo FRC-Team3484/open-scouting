@@ -128,7 +128,111 @@ async function pushMatchScoutingData() {
             close: true
         });
     } else {
-        console.log("No unsynced data");
+        console.log("No unsynced match scouting data");
+    }
+}
+
+/**
+ * Pushes unsynced pit scouting data to the backend, based on the event
+ * 
+ * @param event_data The event data
+ */
+async function pushPitScoutingData(event_data, season_uuid) {
+    const unsyncedPits = await db.pit_scouting.filter(
+        p => p.synced === false && 
+        p.event_code === event_data.event_code && 
+        p.year === parseInt(event_data.year)
+    ).toArray();
+
+    console.log(unsyncedPits);
+
+    if (unsyncedPits.length > 0) {
+        menuState.set({
+            state: "loading",
+            status: "Uploading pit scouting data...",
+            close: false
+        });
+
+        for (const pit of unsyncedPits) {
+            const body = new FormData();
+            body.append("event_code", event_data.event_code);
+            body.append("event_name", event_data.event_name);
+            body.append("event_type", event_data.event_type);
+            body.append("event_city", event_data.event_city);
+            body.append("event_country", event_data.event_country);
+            body.append("event_start_date", event_data.event_start_date);
+            body.append("event_end_date", event_data.event_end_date);
+
+            body.append("answers", JSON.stringify(pit.answers));
+            body.append("nickname", pit.nickname);
+
+            await apiFetch(`/pits/submit/${season_uuid}/${pit.team_number}`, {
+                method: "POST",
+                data: body
+            }).then(() => {
+                db.pit_scouting.update(pit.uuid, { synced: true });
+            });
+
+            console.log("Pit scouting data uploaded", pit.uuid);
+        }
+
+        menuState.set({
+            state: "ready",
+            status: "Pit scouting data uploaded!",
+            close: true
+        });
+    } else {
+        console.log("No unsynced pit scouting data");
+        return false;
+    }
+}
+
+/**
+ * Gets pit scouting data from the backend and stores it locally, based on the event
+ * 
+ * @param event_data The event data
+ * @param season_uuid The season uuid
+ */
+async function fetchPitScoutingData(event_data, season_uuid) {
+    const body = new FormData();
+    body.append("event_code", event_data.event_code);
+    body.append("event_name", event_data.event_name);
+    body.append("event_type", event_data.event_type);
+    body.append("event_city", event_data.event_city);
+    body.append("event_country", event_data.event_country);
+    body.append("event_start_date", event_data.event_start_date);
+    body.append("event_end_date", event_data.event_end_date);
+
+    const pit_data = await apiFetch(`/pits/get/${season_uuid}`, {
+        method: "POST",
+        data: body
+    });
+
+    console.log("Fetched pit scouting data", pit_data);
+
+    for (const pit of pit_data) {
+        const pit_in_db = await db.pit_scouting.get(pit.uuid);
+        const synced = pit_in_db ? pit_in_db.synced : true;
+
+        if (synced) {
+            await db.pit_scouting.put({
+                uuid: pit.uuid,
+                answers: pit.answers,
+                nickname: pit.nickname,
+                team_number: pit.team_number,
+                year: event_data.year,
+                event_code: event_data.event_code,
+                event_name: event_data.event_name,
+                event_type: event_data.event_type,
+                event_city: event_data.event_city,
+                event_country: event_data.event_country,
+                event_start_date: event_data.event_start_date,
+                event_end_date: event_data.event_end_date,
+                synced: true
+            });
+        } else {
+            console.warn("Pit not synced: " + pit.uuid);
+        }
     }
 }
 
@@ -166,4 +270,4 @@ async function main() {
 
 main().catch((error) => console.error(error));
 
-export { fetchSeasonData, fetchEventData, isOldData, pushMatchScoutingData }
+export { fetchSeasonData, fetchEventData, isOldData, pushMatchScoutingData, pushPitScoutingData, fetchPitScoutingData }

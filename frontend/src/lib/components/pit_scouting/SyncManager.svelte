@@ -5,8 +5,10 @@
 	import Badge from "../ui/badge/badge.svelte";
 	import { db } from "$lib/utils/db";
 	import { onMount } from "svelte";
+	import { online } from "svelte/reactivity/window";
+	import { fetchPitScoutingData, pushPitScoutingData } from "$lib/utils/sync";
 
-    let { eventData } = $props();
+    let { eventData, seasonUuid } = $props();
 
     type Status = "ready" | "fetching" | "pushing" | "warning" | "offline";
 
@@ -19,17 +21,30 @@
         unsynced = unsyncedCount;
     }
 
-    onMount(async () => {
-        getUnsynced();
+    async function sync() {
+        status = "pushing";
+        await pushPitScoutingData(eventData, seasonUuid);
+        status = "fetching";
+        await fetchPitScoutingData(eventData, seasonUuid);
+        status = "ready";
+    }
 
-        // Every 10 seconds:
-        //     If online:
-        //         - Push unsynced pit scouting data to the server, if it exists
-        //         - Pull pit scouting data from the server and update the local copies
-        //     If offline:
-        //         - Inform the user that they are offline
-        setInterval(() => {
+    onMount(async () => {
+        // Delay by 100ms to ensure season_uuid has been fetched
+        // TODO: Make this more reliable later
+        setTimeout(() => {
             getUnsynced();
+        
+            if (online.current) {
+                sync();
+            }
+        }, 100);
+
+        setInterval(async () => {
+            if (online.current) {
+                getUnsynced();
+                sync();
+            }
         }, 10000);
     })
 </script>
