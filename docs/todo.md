@@ -32,6 +32,10 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
     - [x] Sync data to the server
     - [x] Show pits with no and incomplete data, and be able to jump to them
 - [ ] Data view
+  - [ ] Create backend function
+  - [ ] Create frontend filters
+  - [ ] Create frontend UI
+  - [ ] Be able to export data
 - [ ] Host in experimental
 - [ ] Profile
   - [ ] Edit profile

@@ -744,3 +744,78 @@ async def submit_pit(
             print("Created answer", answer["uuid"], "for pit", pit.uuid, "and field", field.uuid)
 
     return
+
+#    Data View
+@app.get("/data/filters/?year={year}&event_codes={event_codes}&team_numbers={team_numbers}")
+def get_data_filters(
+        year: int,
+        event_codes: str,
+        team_numbers: str
+    ):
+    """
+    For a year, list of event codes, and list of team numbers, return a JSON object 
+        containing the available filters that can additionally be applied
+
+    For example, if just a year is given, return all team numbers and events with data on the server.
+    If a year and event code is given, return all team numbers for that event and year with data on the server.
+    If a year and multiple event codes are given, return all team numbers which have data on the server for those event codes and year.
+    If a year and a team number is given, return all event codes which have data on the server for that team number and year.
+    If a year and multiple team numbers are given, return all event codes which have data on the server for those team numbers and year.
+    """
+    pass
+
+@app.get("/data/get/?year={year}&event_codes={event_codes}&team_numbers={team_numbers}")
+def get_data(
+        year: int,
+        event_codes: str,
+        team_numbers: str
+    ):
+    """
+    Given a year, event codes, and team numbers, return the data that matches those filters
+
+    Data should be structured based on the stat_type and game_piece of the associated MatchScoutingField.
+    The data should be a list of JSON objects. Each object represents a team with data. In that object,
+        there should be four lists: teleop_score, auton_score, capability, other
+    teleop_score and auton_score should be a list of JSON objects, for each game_piece for that season.
+        Then, for each game piece, it should be a list of JSON objects that represents each individual field.
+        These fields should have the field type, name, uuid, list of all data points, and the minimum, the maximum, and the average (if applicable).
+    
+    For example, there are two game pieces. Coral and Algae. There is a field for how much coral was scored and how much were dropped, both as a teleop_score.
+        There will be a list of JSON objects for each team. In the team object, inside the teleop_score list, there should be two additional lists, one for coral and one for algae.
+        Then there will two more JSON objects for both of those fields, with the field type, name, uuid, and list of all data points.
+
+    [
+        {
+            "team_number": 1234,
+            "nickname": "Team 1234",
+            "teleop_score": [
+                "coral": [
+                    {
+                        "field_uuid": "uuid",
+                        "field_type": "small_number",
+                        "field_name": "Coral scored",
+                        "values": [1, 2, 3, ...],
+                        "min": 0,
+                        "max": 100,
+                        "avg": 50
+                    },
+                    {
+                        "field_uuid": "uuid",
+                        "field_type": "small_number",
+                        "field_name": "Coral dropped",
+                        "values": [1, 2, 3, ...],
+                        "min": 0,
+                        "max": 100,
+                        "avg": 50
+                    }
+                ],
+                "algae": [...],
+            ],
+            "auton_score": [...],
+            "capability": [...],
+            "other": [...]
+        },
+        ...
+    ]
+    """
+    pass
