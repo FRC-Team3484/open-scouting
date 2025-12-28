@@ -60,7 +60,6 @@
         body.append("name", formData.get("name")!.toString());
         body.append("field_type", formData.get("field_type")!.toString());
         body.append("stat_type", formData.get("stat_type")!.toString());
-        body.append("game_piece_uuid", formData.get("game_piece")!.toString());
         body.append("required", formData.get("required") ? "true" : "false");
         body.append("order", "0");
         body.append("organization_uuid", "");
@@ -76,6 +75,12 @@
             body.append("options", JSON.stringify(options));
         } else {
             body.append("options", JSON.stringify([]));
+        }
+
+        if (formData.get("stat_type") === "teleop_score" || formData.get("stat_type") === "teleop_miss" || formData.get("stat_type") === "auton_score" || formData.get("stat_type") === "auton_miss") {
+            body.append("game_piece_uuid", formData.get("game_piece")!.toString());
+        } else {
+            body.append("game_piece_uuid", "");
         }
 
         try {
