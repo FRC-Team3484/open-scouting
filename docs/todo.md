@@ -26,11 +26,11 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [x] Create models
   - [x] Create backend functions
   - [x] Sync pit questions to the frontend
-  - [ ] Create frontend page
+  - [x] Create frontend page
     - [x] View and add answers
     - [x] Add new pits
     - [x] Sync data to the server
-    - [ ] Show pits with no and incomplete data, and be able to jump to them
+    - [x] Show pits with no and incomplete data, and be able to jump to them
 - [ ] Data view
 - [ ] Host in experimental
 - [ ] Profile
