@@ -14,7 +14,7 @@
     </Drawer.Trigger>
     <Drawer.Portal>
         <Drawer.Content class="h-auto lg:mx-64 border-1 p-4">
-            <div class="flex flex-col gap-4 mt-6">
+            <div class="flex flex-col gap-4 mt-6 overflow-y-scroll pr-2">
                 <div class="flex flex-col gap-2 items-center text-center mx-8">
                     <img src={icon_rounded} alt="Logo" class="w-24 h-24 aspect-square" />
                     <p class="text-2xl font-mono font-bold">Open Scouting</p>

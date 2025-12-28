@@ -65,8 +65,8 @@
 
 
 <Drawer.Root shouldScaleBackground={false} bind:open={menu_open}>
-    <Drawer.Content class="h-auto lg:mx-64 border-1 p-4 pb-16">
-        <div class="flex flex-col gap-4 mt-4">
+    <Drawer.Content class="h-auto lg:mx-64 border-1 p-4 md:pb-16">
+        <div class="flex flex-col gap-4 mt-4 overflow-y-scroll pr-2">
             <div class="flex flex-row gap-4 justify-between items-center">
                 <div class="flex flex-row gap-2 items-center">
                     <User show_text={true} />

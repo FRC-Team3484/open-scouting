@@ -50,7 +50,7 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 
 ## Other
 - [ ] Be able to sync pit scouting data from the local data management drawer
-- [ ] Menu drawers are not scrollable on smaller screens
-- [ ] Fix logo squashing on smaller screens
+- [x] Menu drawers are not scrollable on smaller screens
+- [x] Fix logo squashing on smaller screens
 - [ ] Correctly handle when match scouting fields or pit scouting questions are deleted by the admin
 - [ ] When a new pit is created from multiple clients when pit scouting, make sure duplicate pits aren't created
