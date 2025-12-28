@@ -1,6 +1,6 @@
 <script lang="ts">
     import * as Card from "$lib/components/ui/card/index.js";
-	import { CaretDown, CaretUp } from "phosphor-svelte";
+	import { CaretDown, CaretUp, CheckCircle, DotsThreeCircle, XCircle } from "phosphor-svelte";
 	import Button from "../ui/button/button.svelte";
 	import { slide } from "svelte/transition";
 	import TextQuestion from "../generic/pit_questions/main/TextQuestion.svelte";
@@ -10,7 +10,35 @@
 
     let { pit, pit_questions, user, show_avatar = false } = $props();
 
-    let expanded = $state(true);
+    let pitCompletion = $derived.by(() => {
+        if (!pit || !pit_questions?.length) {
+            return {
+                answered: 0,
+                total: pit_questions?.length ?? 0,
+                status: "none" as "done" | "incomplete" | "none"
+            };
+        }
+
+        const answered = pit_questions.filter(q =>
+            pit.answers?.some(a => a.field_uuid === q.uuid)
+        ).length;
+
+        let status: "done" | "incomplete" | "none" = "none";
+
+        if (answered === pit_questions.length) {
+            status = "done";
+        } else if (answered > 0) {
+            status = "incomplete";
+        }
+
+        return {
+            answered,
+            total: pit_questions.length,
+            status
+        };
+    });
+
+    let expanded = $state(false);
     let avatar_loaded = $state(true);
 </script>
 
@@ -21,6 +49,23 @@
                 <div class="flex flex-row gap-2 items-center flex-wrap">
                     {#if show_avatar && avatar_loaded}
                         <img src={`https://www.thebluealliance.com/avatar/2026/frc${pit.team_number}.png`} class="w-10 h-10 aspect-square rounded-md bg-accent p-1" onerror={() => avatar_loaded = false}>
+                    {/if}
+
+                    {#if pitCompletion.status === "done"}
+                        <div class="flex flex-row gap-0.5 items-center text-green-300">
+                            <CheckCircle weight="bold" /> 
+                            <p>{pitCompletion.answered}/{pitCompletion.total}</p>
+                        </div>
+                    {:else if pitCompletion.status === "incomplete"}
+                        <div class="flex flex-row gap-0.5 items-center text-orange-400">
+                            <DotsThreeCircle weight="bold" /> 
+                            <p>{pitCompletion.answered}/{pitCompletion.total}</p>
+                        </div>
+                    {:else}
+                        <div class="flex flex-row gap-0.5 items-center text-red-400">
+                            <XCircle weight="bold" /> 
+                            <p>{pitCompletion.answered}/{pitCompletion.total}</p>
+                        </div>
                     {/if}
                     
                     <p class="font-bold">{pit.team_number}</p>
