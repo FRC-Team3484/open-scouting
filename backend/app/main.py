@@ -1,5 +1,7 @@
+from collections import defaultdict
 import json
 import os
+from statistics import mean
 from time import strftime
 from typing import List, Optional
 import uuid
@@ -369,6 +371,7 @@ async def create_season_field(
     if stat_type == "auton_score" or stat_type == "auton_miss" or stat_type == "teleop_score" or stat_type == "teleop_miss":
         game_piece = await GamePiece.get_or_none(uuid=game_piece_uuid)
         if not game_piece:
+            print(game_piece_uuid)
             raise HTTPException(status_code=404, detail="Game piece not found")
     else:
         game_piece = None
@@ -792,31 +795,36 @@ async def get_data_filters(
         "teams": teams,
     }
 
-@app.get("/data/get/?year={year}&event_codes={event_codes}&team_numbers={team_numbers}")
-def get_data(
-        year: int,
-        event_codes: str,
-        team_numbers: str
-    ):
+@app.get("/data/get")
+async def get_data(
+    year: int,
+    event_codes: Optional[List[str]] = Query(None),
+    team_numbers: Optional[List[int]] = Query(None),
+):
     """
     Given a year, event codes, and team numbers, return the data that matches those filters
 
     Data should be structured based on the stat_type and game_piece of the associated MatchScoutingField.
     The data should be a list of JSON objects. Each object represents a team with data. In that object,
-        there should be four lists: teleop_score, auton_score, capability, other
-    teleop_score and auton_score should be a list of JSON objects, for each game_piece for that season.
-        Then, for each game piece, it should be a list of JSON objects that represents each individual field.
+        there should be four lists: teleop, auton, capability, other
+    teleop and auton should be a list of JSON objects, for each game_piece for that season.
+        Then, for each game piece, it should be a list of JSON objects that represents each individual field with type: auton_score, auton_miss, teleop_score, teleop_miss
         These fields should have the field type, name, uuid, list of all data points, and the minimum, the maximum, and the average (if applicable).
     
     For example, there are two game pieces. Coral and Algae. There is a field for how much coral was scored and how much were dropped, both as a teleop_score.
-        There will be a list of JSON objects for each team. In the team object, inside the teleop_score list, there should be two additional lists, one for coral and one for algae.
+        There will be a list of JSON objects for each team. In the team object, inside the teleop list, there should be two additional lists, one for coral and one for algae.
         Then there will two more JSON objects for both of those fields, with the field type, name, uuid, and list of all data points.
+
+    Next, for capabilities, find each field that is a capability and find the percentages of each value occurrence. This will most likely 
+        be something that is a multiple_choice or choice MatchScoutingField, and we'll want to show how often each value occurred using something like a pie chart.
+
+    Finally, for other, simply return the same field information and the value, as this will likely be a text input.
 
     [
         {
             "team_number": 1234,
             "nickname": "Team 1234",
-            "teleop_score": [
+            "teleop": [
                 "coral": [
                     {
                         "field_uuid": "uuid",
@@ -839,11 +847,190 @@ def get_data(
                 ],
                 "algae": [...],
             ],
-            "auton_score": [...],
-            "capability": [...],
-            "other": [...]
+            "auton": [...],
+            "capability": [
+                {
+                    "field_uuid": "uuid",
+                    "field_type": "choice",
+                    "field_name": "Climb level",
+                    "values": ["low", "medium", "high"],
+                    "percentages": [
+                        {
+                            "value": "low",
+                            "percentage": 50
+                        }, {
+                            "value": "medium",
+                            "percentage": 25
+                        }, {
+                            "value": "high",
+                            "percentage": 25
+                        }
+                    ],
+                    ...
+                }
+            ],
+            "other": [
+                {
+                    "field_uuid": "uuid",
+                    "field_type": "string",
+                    "field_name": "Notes",
+                    "value": "Some notes",
+                },
+                ...
+            ]
         },
         ...
     ]
     """
-    pass
+
+    season = await Season.get_or_none(year=year)
+    if not season:
+        raise HTTPException(status_code=404, detail="Season not found")
+
+    submissions_qs = MatchScoutingSubmission.filter(
+        event__season=season
+    ).select_related("event")
+
+    if event_codes:
+        submissions_qs = submissions_qs.filter(event__event_code__in=event_codes)
+
+    if team_numbers:
+        submissions_qs = submissions_qs.filter(team_number__in=team_numbers)
+
+    submissions = await submissions_qs
+
+    if not submissions:
+        return []
+
+    submission_ids = [s.uuid for s in submissions]
+
+    answers = await MatchScoutingAnswer.filter(
+        submission_id__in=submission_ids,
+        field__stat_type__not="ignore",
+    ).select_related(
+        "field",
+        "field__game_piece",
+        "submission",
+    )
+
+    # Load team nicknames from TeamPit (best available source)
+    team_pits = await TeamPit.filter(
+        season=season,
+        team_number__in={s.team_number for s in submissions}
+    )
+
+    team_names = {
+        tp.team_number: tp.nickname for tp in team_pits
+    }
+
+    # ------------------------
+    # Data structure
+    # ------------------------
+    teams = defaultdict(lambda: {
+        "team_number": None,
+        "nickname": None,
+        "teleop": defaultdict(list),
+        "auton": defaultdict(list),
+        "capability": [],
+        "other": [],
+    })
+
+    # Helper: numeric conversion
+    def parse_number(val):
+        try:
+            return float(val)
+        except (TypeError, ValueError):
+            return None
+
+    # ------------------------
+    # Aggregate raw values
+    # ------------------------
+    field_values = defaultdict(list)
+
+    for ans in answers:
+        team_number = ans.submission.team_number
+        field = ans.field
+
+        teams[team_number]["team_number"] = team_number
+        teams[team_number]["nickname"] = team_names.get(team_number)
+
+        key = (team_number, field.uuid)
+        field_values[key].append(ans.value)
+
+    # ------------------------
+    # Process fields
+    # ------------------------
+    fields = await MatchScoutingField.filter(
+        season=season,
+        stat_type__not="ignore"
+    ).select_related("game_piece")
+
+    fields_by_uuid = {f.uuid: f for f in fields}
+
+    for (team_number, field_uuid), raw_values in field_values.items():
+        field = fields_by_uuid[field_uuid]
+        stat_type = field.stat_type
+
+        # NUMERIC (auton / teleop)
+        if stat_type in {
+            "auton_score", "auton_miss",
+            "teleop_score", "teleop_miss"
+        }:
+            values = [parse_number(v) for v in raw_values if parse_number(v) is not None]
+
+            if not values:
+                continue
+
+            game_piece = field.game_piece.name
+
+            bucket = "auton" if stat_type.startswith("auton") else "teleop"
+
+            teams[team_number][bucket][game_piece].append({
+                "field_uuid": str(field.uuid),
+                "field_type": field.field_type,
+                "field_name": field.name,
+                "values": values,
+                "min": min(values),
+                "max": max(values),
+                "avg": mean(values),
+            })
+
+        # CAPABILITY (percentages)
+        elif stat_type == "capability":
+            counts = defaultdict(int)
+            for v in raw_values:
+                counts[v] += 1
+
+            total = sum(counts.values())
+
+            teams[team_number]["capability"].append({
+                "field_uuid": str(field.uuid),
+                "field_type": field.field_type,
+                "field_name": field.name,
+                "values": list(counts.keys()),
+                "percentages": [
+                    {
+                        "value": val,
+                        "percentage": round((count / total) * 100, 2)
+                    }
+                    for val, count in counts.items()
+                ]
+            })
+
+        # OTHER (text / misc)
+        elif stat_type == "other":
+            teams[team_number]["other"].append({
+                "field_uuid": str(field.uuid),
+                "field_type": field.field_type,
+                "field_name": field.name,
+                "value": raw_values[-1],  # most recent
+            })
+
+    # Convert defaultdicts to lists
+    result = []
+    for team in teams.values():
+        team["teleop"] = dict(team["teleop"])
+        team["auton"] = dict(team["auton"])
+        result.append(team)
+
+    return result
