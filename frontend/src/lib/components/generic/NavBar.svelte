@@ -30,10 +30,8 @@
 
 <div class="flex md:hidden fixed top-0 left-0 right-0 w-full h-16 flex-row justify-between items-center border-1 bg-background/50 border-accent rounded-b-lg backdrop-blur-lg p-2 z-10">
     <Drawer.Root shouldScaleBackground={false} direction="left">
-        <Drawer.Trigger>
-            <Button variant="outline" size="icon">
-                <List weight="bold"/>
-            </Button>
+        <Drawer.Trigger class="p-2 text-md border-1 border-border rounded-md bg-input/30">
+            <List weight="bold"/>
         </Drawer.Trigger>
         <Drawer.Content class="flex flex-col gap-4 p-4">
             <div class="flex flex-row gap-4 items-center justify-between">

@@ -59,7 +59,7 @@
     });
 </script>
 
-<Card.Root class="w-auto min-w-64 mt-4">
+<Card.Root class="mt-4">
     <Card.Header>
         <Card.Title>Events</Card.Title>
         <Card.Description>Choose an event to scout or view data for</Card.Description>

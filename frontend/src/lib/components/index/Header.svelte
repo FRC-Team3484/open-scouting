@@ -42,11 +42,13 @@ export let page: string;
     <Card.Content>
         <div class="flex flex-col gap-2">
             <div class="flex flex-row gap-4 items-center">
-                <Logo text={false} style="small" href="/"/>
-
+                
                 <div class="flex flex-col gap-2">
-                    <p class="text-lg font-bold font-mono">Open Scouting</p>
-                    <Button onclick={() => handleNavigate("auth")} class="max-w-fit" variant="ghost"><ArrowLeft weight="bold" /> Start Over</Button>
+                    <div class="flex flex-row gap-4 items-center">
+                        <Logo text={false} style="tiny" href="/"/>
+                        <p class="text-lg font-bold font-mono text-left">Open <br>Scouting</p>
+                    </div>
+                    <Button onclick={() => handleNavigate("auth")} class="max-w-fill" variant="ghost"><ArrowLeft weight="bold" /> Start Over</Button>
                 </div>
 
                 <Separator orientation="vertical" class="min-h-16" />

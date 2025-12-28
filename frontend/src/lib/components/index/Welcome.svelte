@@ -11,7 +11,7 @@
 
     <p class="text-md text-center">An open source application for easier scouting at FIRST robotics competitions</p>
 
-    <div class="flex flex-row gap-4 items-center flex-wrap justify-center">
+    <div class="flex flex-row gap-2 items-center flex-wrap justify-center">
         <Button variant="outline" href="https://discord.gg/M3wESZUP35"><DiscordLogo weight="bold" /> Discord</Button>
         <Button variant="outline" href="https://github.com/FRC-Team3484/open-scouting"><GithubLogo weight="bold" /> Source Code</Button>
         <Button variant="outline" href="https://github.com/FRC-Team3484/open-scouting/issues"><Bug weight="bold" /> Issues</Button>

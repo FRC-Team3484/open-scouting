@@ -24,7 +24,7 @@
     export let setYear: (year: number) => void;
 </script>
 
-<Card.Card class="w-auto min-w-64 mt-4">
+<Card.Card class="text-left mt-4 max-w-64 w-full">
     <Card.Header>
         <Card.Title>Season</Card.Title>
         <Card.Description>Choose a season to scout or view data for</Card.Description>

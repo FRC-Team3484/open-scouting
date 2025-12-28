@@ -64,7 +64,6 @@
 
 	{:else if page === "action"}
 		<!-- 4 - Action -->
-
 		<Action year={year} event={selected_event} user={user}/>
 
 	{/if}

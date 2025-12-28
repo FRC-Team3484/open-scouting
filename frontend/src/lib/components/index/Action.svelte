@@ -15,7 +15,7 @@
     }
 </script>
 
-<Card.Card class="w-auto min-w-64 mt-4">
+<Card.Card class="mt-4">
     <Card.Header>
         <Card.Title>Action</Card.Title>
         <Card.Description>Select an action</Card.Description>

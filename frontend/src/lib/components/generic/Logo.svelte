@@ -12,7 +12,7 @@
 
 <div class={`flex items-center ${alignment === "auto" ? "flex-col md:flex-row" : (alignment === "row" ? "flex-row" : "flex-col")} gap-4`}>
     {#if href}
-        <a href={href} class="hover:scale-105 transition-transform">
+        <a href={href} class="hover:scale-105 transition-transform aspect-square">
             <img
                 src={icon_rounded}
                 alt="Logo"
@@ -39,7 +39,7 @@
         <p class={
             style === "tiny" ? "text-lg font-bold font-mono" 
             : style === "small" ? "text-2xl font-bold font-mono" 
-            : "text-5xl font-bold font-mono"
+            : "text-3xl md:text-5xl font-bold font-mono"
         }>Open Scouting</p>
     {/if}
 </div>

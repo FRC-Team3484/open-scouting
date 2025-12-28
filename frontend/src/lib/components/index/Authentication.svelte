@@ -51,7 +51,7 @@
 
 <div class="flex flex-col gap-4 mt-4">
     <div class="flex flex-col md:flex-row gap-4">
-        <Card.Root class="max-w-128 p-4 min-w-64 text-left">
+        <Card.Root class="text-left">
             <Card.Header>
                 <Card.Title>Continue Without Account</Card.Title>
                 <Card.Description>Use Open Scouting without an account</Card.Description>
@@ -72,7 +72,7 @@
             </Card.Footer>
         </Card.Root>
 
-        <Card.Root class="max-w-128 p-4 min-w-64 text-left">
+        <Card.Root class="text-left">
             <Card.Header>
                 <Card.Title>Authentication</Card.Title>
                 <Card.Description>Use Open Scouting with an account</Card.Description>
@@ -114,7 +114,7 @@
                 {/if}
             </Card.Content>
 
-            <Card.Footer class="flex flex-row gap-2 mt-auto">
+            <Card.Footer class="flex flex-row gap-2 mt-auto flex-wrap">
                 {#if user}
                     <Button variant="outline" onclick={async () => {await signOut(); window.location.reload()}}>
                         <SignOut weight="bold" />
