@@ -2,7 +2,7 @@
 	import { onMount } from "svelte";
     import * as Card from "$lib/components/ui/card/index.js";
 	import Button from "../ui/button/button.svelte";
-	import { CheckCircle, DotsThreeCircle, RewindCircle, XCircle } from "phosphor-svelte";
+	import { ArrowDown, CheckCircle, DotsThreeCircle, RewindCircle, XCircle } from "phosphor-svelte";
 
     let { pits, pit_questions } = $props();
 
@@ -29,7 +29,7 @@
         });
     });
 
-    function scrollToTeam(team_number: number) {
+    function scrollToTeam(team_number: number | "addPit") {
         const element = document.querySelector(`[data-teamNumber="${team_number}"]`);
         if (element) {
             element.scrollIntoView({ behavior: "smooth" });
@@ -63,6 +63,8 @@
                     {/if}
                 {/each}
             </div>
+
+            <Button variant="outline" onclick={() => scrollToTeam("addPit")}><ArrowDown weight="bold" /> Add Missing Pit</Button>
             
             <p>Loaded {pitStatus.length} pits - {pitStatus.filter(pit => pit.status === "done").length}/{pitStatus.length} ({Math.round(pitStatus.filter(pit => pit.status === "done").length / pitStatus.length * 100)}%) completed</p>
             <div class="flex flex-row gap-0.5 flex-wrap text-sm text-muted-foreground items-center">

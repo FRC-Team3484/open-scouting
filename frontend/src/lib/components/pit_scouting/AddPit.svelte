@@ -50,7 +50,7 @@
     }
 </script>
 
-<Card.Root class="w-auto md:min-w-128 mb-4">
+<Card.Root class="w-auto md:min-w-128 mb-4" data-teamNumber="addPit">
     <Card.Header>
         <div class="flex flex-col gap-2 items-start">
             <p class="font-bold">Add Pit</p>
