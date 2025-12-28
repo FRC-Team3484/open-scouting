@@ -29,7 +29,7 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [ ] Create frontend page
     - [x] View and add answers
     - [x] Add new pits
-    - [ ] Sync data to the server
+    - [x] Sync data to the server
     - [ ] Show pits with no and incomplete data, and be able to jump to them
 - [ ] Data view
 - [ ] Host in experimental

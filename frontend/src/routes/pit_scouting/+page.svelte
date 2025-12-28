@@ -1,16 +1,17 @@
 <script lang="ts">
+    import { onMount } from "svelte";
+	import { liveQuery } from "dexie";
+	import { CircleNotch } from "phosphor-svelte";
+
+	import { apiFetch } from "$lib/utils/api";
+	import { db } from "$lib/utils/db";
+	import { validateTokenOnline } from "$lib/utils/user";
 	import PageContainer from "$lib/components/layout/PageContainer.svelte";
 	import AddPit from "$lib/components/pit_scouting/AddPit.svelte";
 	import Header from "$lib/components/pit_scouting/Header.svelte";
 	import Pit from "$lib/components/pit_scouting/Pit.svelte";
 	import SyncManager from "$lib/components/pit_scouting/SyncManager.svelte";
-	import { apiFetch } from "$lib/utils/api";
-	import { db } from "$lib/utils/db";
-	import { fetchPitScoutingData } from "$lib/utils/sync";
-	import { validateTokenOnline } from "$lib/utils/user";
-	import { liveQuery } from "dexie";
-	import { CircleNotch } from "phosphor-svelte";
-	import { onMount } from "svelte";
+	import PitStatus from "$lib/components/pit_scouting/PitStatus.svelte";
 
     let season_uuid: string = $state("");
     let year: string = $state("");
@@ -57,18 +58,14 @@
 
         user = await validateTokenOnline();
     });
-
-    // $effect(async () => {
-    //     if (season_uuid && event_data.year !== 0) {
-    //         fetchPitScoutingData(event_data, season_uuid);
-    //     }
-    // })
 </script>
 
 <PageContainer>
     <Header bind:event_data={event_data}/>
     {#if year && season_uuid && event_data.year !== 0 && user}
         <div class="flex flex-col gap-4 items-center">
+            <PitStatus pits={$pits} pit_questions={pit_questions} />
+
             {#each ($pits || []) as pit}
                 <Pit pit={pit} pit_questions={pit_questions} user={user} show_avatar={false} />
             {/each}

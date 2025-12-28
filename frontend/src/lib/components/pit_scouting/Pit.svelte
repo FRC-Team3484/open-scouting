@@ -14,7 +14,7 @@
     let avatar_loaded = $state(true);
 </script>
 
-<Card.Root class="w-auto md:min-w-128">
+<Card.Root class="w-auto md:min-w-128" data-teamNumber={pit.team_number}>
     <Card.Content>
         <div class="flex flex-col gap-4">
             <div class="flex flex-row gap-2 items-center justify-between">
