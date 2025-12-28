@@ -37,6 +37,7 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [ ] Edit profile
   - [ ] Change password
   - [ ] Verification codes when enabled
+- [ ] Properly secure routes
 - [ ] Add link to Open Scouting v1.0.0 to try v2.0.0
 - [ ] Import legacy match scouting data from v1.0.0
 - [ ] Deprecate `open-scouting-utils` repo
@@ -52,3 +53,4 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [ ] Menu drawers are not scrollable on smaller screens
 - [ ] Fix logo squashing on smaller screens
 - [ ] Correctly handle when match scouting fields or pit scouting questions are deleted by the admin
+- [ ] When a new pit is created from multiple clients when pit scouting, make sure duplicate pits aren't created

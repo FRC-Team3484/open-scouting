@@ -38,7 +38,9 @@
     }
 
     let pits = liveQuery(
-        () => db.pit_scouting.filter(pit => pit.year === event_data.year && pit.event_code === event_data.event_code).toArray()
+        () => db.pit_scouting
+            .filter(pit => pit.year === event_data.year && pit.event_code === event_data.event_code)
+            .sortBy("team_number")
     );
 
     async function get_pit_questions() {
