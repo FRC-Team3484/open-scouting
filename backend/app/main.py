@@ -1,11 +1,12 @@
 import json
 import os
 from time import strftime
+from typing import List, Optional
 import uuid
 from dotenv import load_dotenv
 import requests
 
-from fastapi import FastAPI, Form, Depends, HTTPException, status, Body
+from fastapi import FastAPI, Form, Depends, HTTPException, Query, status, Body
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from tortoise.contrib.fastapi import register_tortoise
@@ -746,11 +747,11 @@ async def submit_pit(
     return
 
 #    Data View
-@app.get("/data/filters/?year={year}&event_codes={event_codes}&team_numbers={team_numbers}")
-def get_data_filters(
-        year: int,
-        event_codes: str,
-        team_numbers: str
+@app.get("/data/filters")
+async def get_data_filters(
+    year: int,
+    event_codes: Optional[List[str]] = Query(None),
+    team_numbers: Optional[List[int]] = Query(None),
     ):
     """
     For a year, list of event codes, and list of team numbers, return a JSON object 
@@ -762,7 +763,34 @@ def get_data_filters(
     If a year and a team number is given, return all event codes which have data on the server for that team number and year.
     If a year and multiple team numbers are given, return all event codes which have data on the server for those team numbers and year.
     """
-    pass
+    season = await Season.get_or_none(year=year)
+    if not season:
+        raise HTTPException(status_code=404, detail="Season not found")
+
+    qs = MatchScoutingSubmission.filter(
+        event__season=season
+    ).select_related("event")
+
+    if event_codes:
+        qs = qs.filter(event__event_code__in=event_codes)
+
+    if team_numbers:
+        qs = qs.filter(team_number__in=team_numbers)
+
+    events = await qs.distinct().values(
+        event_code="event__event_code",
+        event_name="event__name",
+    )
+
+    # TEAMS
+    teams = await qs.distinct().values(
+        team_number="team_number"
+    )
+
+    return {
+        "events": events,
+        "teams": teams,
+    }
 
 @app.get("/data/get/?year={year}&event_codes={event_codes}&team_numbers={team_numbers}")
 def get_data(
