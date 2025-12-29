@@ -1,10 +1,12 @@
 <script lang="ts">
     import * as Card from "$lib/components/ui/card/index.js";
     import * as Select from "$lib/components/ui/select/index.js";
+    import * as AlertDialog from "$lib/components/ui/alert-dialog/index.js";
 	import { apiFetch } from "$lib/utils/api";
-	import { Buildings, Calendar, Faders, Users } from "phosphor-svelte";
+	import { Buildings, Calendar, Faders, Info, Users } from "phosphor-svelte";
 	import { onMount } from "svelte";
 	import FilterList from "./FilterList.svelte";
+	import Button from "../ui/button/button.svelte";
     
     let { filters = $bindable() } = $props();
 
@@ -61,15 +63,31 @@
     });
 </script>
 
-<Card.Root class="mt-4">
+<Card.Root class="mt-4 min-w-64">
     <Card.Content>
         <div class="flex flex-col gap-2">
             <div class="flex flex-row gap-2 items-center">
                 <Faders weight="bold" size={24} />
                 <p class="text-lg font-bold"> Filters</p>
-            </div>
 
-            <p class="text-muted-foreground text-left">Filter the loaded match scouting data by year, events, and teams.</p>
+                <AlertDialog.Root>
+                    <AlertDialog.Trigger>
+                        <Button size="icon-sm" variant="outline"><Info weight="bold" /></Button>
+                    </AlertDialog.Trigger>
+
+                    <AlertDialog.Content>
+                        <AlertDialog.Title>Filters</AlertDialog.Title>
+                        <AlertDialog.Description>Filter the loaded match scouting data by year, events, and teams</AlertDialog.Description>
+                        <AlertDialog.Description>
+                            Avaliable filters are based on the other filters. For example, if two events are selected, you can only filter for teams that have data at both of those events.
+                        </AlertDialog.Description>
+
+                        <AlertDialog.Footer>
+                            <AlertDialog.Cancel type="button">Close</AlertDialog.Cancel>
+                        </AlertDialog.Footer>
+                    </AlertDialog.Content>
+                </AlertDialog.Root>
+            </div>
 
             <div class="flex flex-col gap-2">
                 <div class="flex flex-col gap-2">
