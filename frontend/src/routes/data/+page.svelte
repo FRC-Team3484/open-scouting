@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { goto } from "$app/navigation";
+	import DataManager from "$lib/components/data/DataManager.svelte";
 	import Filters from "$lib/components/data/Filters.svelte";
 	import Header from "$lib/components/data/Header.svelte";
 	import PageContainer from "$lib/components/layout/PageContainer.svelte";
@@ -61,4 +61,5 @@
 <PageContainer>
     <Header />
     <Filters bind:filters={filters} />
+    <DataManager filters={filters} />
 </PageContainer>
