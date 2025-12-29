@@ -13,7 +13,7 @@
     let events = $state([]);
     let teams = $state([]);
 
-    async function getFilterOptions() {
+    async function loadSeasons() {
         const seasonsRequest = await apiFetch(`/seasons`);
 
         seasons = seasonsRequest.map((season) => ({
@@ -21,28 +21,44 @@
             value: season.year
         }));
 
-        filters.season = seasons[0].value;
-
-        let filterQueryParams = new URLSearchParams(window.location.search);
-
-        filterQueryParams.set("year", filters.season);
-        if (filters.event_codes.length > 0) {
-            filterQueryParams.set("event_codes", filters.event_codes.join(","));
+        if (!filters.season && seasons.length > 0) {
+            filters.season = seasons[0].value;
         }
-        if (filters.team_numbers.length > 0) {
-            filterQueryParams.set("team_numbers", filters.team_numbers.join(","));
+    }
+
+    async function loadFilters() {
+        if (!filters.season) return;
+
+        const params = new URLSearchParams();
+        params.set("year", String(filters.season));
+
+        if (filters.event_codes.length) {
+            params.set("event_codes", filters.event_codes.join(","));
         }
 
-        const filtersRequest = await apiFetch(`/data/filters?${filterQueryParams.toString()}`);
-        console.log(filtersRequest);
+        if (filters.team_numbers.length) {
+            params.set("team_numbers", filters.team_numbers.join(","));
+        }
+
+        const filtersRequest = await apiFetch(
+            `/data/filters?${params.toString()}`
+        );
 
         events = filtersRequest.events;
         teams = filtersRequest.teams;
     }
 
     onMount(async () => {
-        getFilterOptions();
-    })
+        loadSeasons();
+    });
+
+    $effect(() => {
+        filters.season;
+        filters.event_codes;
+        filters.team_numbers;
+
+        loadFilters();
+    });
 </script>
 
 <Card.Root class="mt-4">
