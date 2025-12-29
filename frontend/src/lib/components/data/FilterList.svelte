@@ -65,8 +65,8 @@
             </div>
         {/each}
 
-        {#if filteredValues.length < 0}
-            <p class="text-muted-foreground">No matches found.</p>
+        {#if filteredValues.length <= 0}
+            <p class="text-muted-foreground text-sm text-center mt-2">No matches found</p>
         {/if}
     </div>
 {/snippet}
