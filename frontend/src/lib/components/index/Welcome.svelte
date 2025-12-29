@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Button from "../ui/button/button.svelte";
-    import { GithubLogo, Bug, Rocket, ArrowRight, DiscordLogo } from "phosphor-svelte";
+    import { GithubLogo, Bug, Rocket, ArrowRight, DiscordLogo, Database } from "phosphor-svelte";
 
     import Logo from "../generic/Logo.svelte";
 	import Separator from "../ui/separator/separator.svelte";
@@ -21,4 +21,5 @@
     <Separator orientation="horizontal" />
 
     <Button href="/start"><ArrowRight weight="bold" /> Get Started</Button>
+    <Button href="/data" variant="outline"><Database weight="bold" /> View Data</Button>
 </div>
