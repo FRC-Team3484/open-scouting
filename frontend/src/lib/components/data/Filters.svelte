@@ -9,7 +9,7 @@
     let { filters = $bindable() } = $props();
 
     let seasons = $state([]);
-    let seasons_label = $derived(seasons.find((s) => s.value === filters.season)?.label ?? "Select Year");
+    let seasons_label = $derived(seasons.find((s) => s.value === filters.year)?.label ?? "Select Year");
     let events = $state([]);
     let teams = $state([]);
 
@@ -21,16 +21,16 @@
             value: season.year
         }));
 
-        if (!filters.season && seasons.length > 0) {
-            filters.season = seasons[0].value;
+        if (!filters.year && seasons.length > 0) {
+            filters.year = seasons[0].value;
         }
     }
 
     async function loadFilters() {
-        if (!filters.season) return;
+        if (!filters.year) return;
 
         const params = new URLSearchParams();
-        params.set("year", String(filters.season));
+        params.set("year", String(filters.year));
 
         if (filters.event_codes.length) {
             params.set("event_codes", filters.event_codes.join(","));
@@ -53,7 +53,7 @@
     });
 
     $effect(() => {
-        filters.season;
+        filters.year;
         filters.event_codes;
         filters.team_numbers;
 
@@ -77,7 +77,7 @@
                         <Calendar weight="bold" size={16} />
                         <p>Year</p>
                     </div>
-                    <Select.Root type="single" bind:value={filters.season}>
+                    <Select.Root type="single" bind:value={filters.year}>
                         <Select.Trigger>{seasons_label}</Select.Trigger>
 
                         <Select.Content>
