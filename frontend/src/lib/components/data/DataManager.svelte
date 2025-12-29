@@ -1,7 +1,9 @@
 <script lang="ts">
     import * as Card from "$lib/components/ui/card/index.js";
 	import { apiFetch } from "$lib/utils/api";
+	import { CircleNotch } from "phosphor-svelte";
 	import Button from "../ui/button/button.svelte";
+	import TeamData from "./TeamData.svelte";
 
     let { filters } = $props();
 
@@ -53,10 +55,17 @@
     </Card.Root>
 {:else if filters.year != 0}
     {#if data == null}
-        <p>Loading...</p>
+        <CircleNotch weight="bold" class="animate-spin my-4" size={24} />
     {:else if data.length == 0}
-        <p>No data found</p>
+        <div class="flex flex-col gap-1 my-4">
+            <p class="text-muted-foreground">No data found</p>
+            <p class="text-muted-foreground text-sm">Please check your filters and try again</p>
+        </div>
     {:else}
-        <p>data</p>
+        <div class="flex flex-col gap-2 my-4">
+            {#each data as team}
+                <TeamData team={team} />
+            {/each}
+        </div>
     {/if}
 {/if}
