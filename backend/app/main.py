@@ -955,7 +955,10 @@ async def get_data(
         teams[team_number]["nickname"] = team_names.get(team_number)
 
         key = (team_number, field.uuid)
-        field_values[key].append(ans.value)
+        field_values[key].append({
+            "match_number": ans.submission.match_number,
+            "value": parse_number(ans.value),
+        })
 
     # ------------------------
     # Process fields
@@ -976,7 +979,7 @@ async def get_data(
             "auton_score", "auton_miss",
             "teleop_score", "teleop_miss"
         }:
-            values = [parse_number(v) for v in raw_values if parse_number(v) is not None]
+            values = [v for v in raw_values if v["value"] is not None]
 
             if not values:
                 continue
@@ -984,22 +987,23 @@ async def get_data(
             game_piece = field.game_piece.name
 
             bucket = "auton" if stat_type.startswith("auton") else "teleop"
+            numeric_values = [v["value"] for v in values]
 
             teams[team_number][bucket][game_piece].append({
                 "field_uuid": str(field.uuid),
                 "field_type": field.field_type,
                 "field_name": field.name,
                 "values": values,
-                "min": min(values),
-                "max": max(values),
-                "avg": mean(values),
+                "min": min(numeric_values),
+                "max": max(numeric_values),
+                "avg": mean(numeric_values)
             })
 
         # CAPABILITY (percentages)
         elif stat_type == "capability":
             counts = defaultdict(int)
             for v in raw_values:
-                counts[v] += 1
+                counts[v["value"]] += 1
 
             total = sum(counts.values())
 
