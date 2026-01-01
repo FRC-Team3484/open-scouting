@@ -44,7 +44,7 @@
 </script>
 
 {#if !loadConfirmed && filters.year != 0}
-    <Card.Root class="my-4">
+    <Card.Root class="my-4 items-center">
         <Card.Content class="max-w-64">
             <div class="flex flex-col gap-2">
                 <p class="font-bold">Load data?</p>

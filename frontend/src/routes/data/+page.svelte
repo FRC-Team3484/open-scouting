@@ -62,7 +62,13 @@
 </script>
 
 <PageContainer>
-    <Header />
-    <Filters bind:filters={filters} />
-    <DataManager filters={filters} />
+    <div class="lg:flex lg:flex-col lg:overflow-y-scroll">
+        <Header />
+
+        <div class="flex flex-col lg:flex-row lg:gap-4 lg:items-start">
+            <Filters bind:filters={filters} />
+
+            <DataManager filters={filters} />
+        </div>
+    </div>
 </PageContainer>

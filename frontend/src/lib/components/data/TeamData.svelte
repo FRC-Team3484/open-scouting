@@ -14,7 +14,7 @@
 
 <Card.Root>
     <Card.Content>
-        <div class="flex flex-col gap-2">
+        <div class="flex flex-col gap-2 lg:min-w-128">
             <div class="flex flex-row gap-2 justify-between">
                 <div class="flex flex-row gap-2 items-center">
                     <p class="font-bold">{team.team_number}</p>
