@@ -959,6 +959,7 @@ async def get_data(
             "match_number": ans.submission.match_number,
             "value": parse_number(ans.value),
         })
+        field_values[key] = sorted(field_values[key], key=lambda x: x["match_number"])
 
     # ------------------------
     # Process fields
