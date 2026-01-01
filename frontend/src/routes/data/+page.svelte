@@ -1,9 +1,10 @@
 <script lang="ts">
+	import { pushState, replaceState } from "$app/navigation";
 	import DataManager from "$lib/components/data/DataManager.svelte";
 	import Filters from "$lib/components/data/Filters.svelte";
 	import Header from "$lib/components/data/Header.svelte";
 	import PageContainer from "$lib/components/layout/PageContainer.svelte";
-	import { onMount } from "svelte";
+	import { onMount, tick } from "svelte";
 
     // Page should be loaded like /?year=2025&event_codes=paca,ohcl&team_numbers=1234,3484
     let filters = $state({year: 0, event_codes: [], team_numbers: []})
@@ -29,7 +30,9 @@
             url.searchParams.delete("team_numbers");
         }
 
-        history.replaceState({}, "", url);
+        tick().then(() => {
+            replaceState(url, {});
+        });
     }
 
     function loadUrlParams() {
