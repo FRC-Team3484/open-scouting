@@ -80,9 +80,28 @@
             "position",
         ]);
 
-        const filteredFields = Object.fromEntries(
-            [...formData.entries()].filter(([key]) => !EXCLUDED_KEYS.has(key))
-        );
+        // Exclude fields and merge duplicates (likely from a multiple_choice field) into a stringified array
+        const filteredFields: Record<string, string> = {};
+        const seen = new Set<string>();
+
+        for (const [key, value] of formData.entries()) {
+            if (EXCLUDED_KEYS.has(key)) continue;
+
+            if (seen.has(key)) {
+                const current = filteredFields[key];
+                const arr = current.startsWith("[")
+                    ? JSON.parse(current)
+                    : [current];
+
+                arr.push(value);
+                filteredFields[key] = JSON.stringify(arr);
+            } else {
+                seen.add(key);
+                filteredFields[key] = value as string;
+            }
+        }
+
+        console.log(filteredFields);
 
         await db.match_scouting.add({
             uuid: crypto.randomUUID(),

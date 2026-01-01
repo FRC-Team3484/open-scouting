@@ -21,7 +21,8 @@
 			<Select.Label>Options</Select.Label>
 			<Select.Item value="na">N/A</Select.Item>
 			{#each field.options as option}
-				<Select.Item value={option.id}>
+				<!-- TODO: Currently forcing the value to be the plain text name instead of the ID. Later use the ID to allow for translations -->
+				<Select.Item value={option.name}>
 					{option.name}
 				</Select.Item>
 			{/each}

@@ -520,7 +520,7 @@ async def submit_match_scouting(
 
         _ = await MatchScoutingAnswer.create(
             field=field,
-            value=value,
+            value=json.dumps(value),
             submission=submission
         )
 

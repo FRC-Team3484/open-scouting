@@ -4,13 +4,21 @@
 
 	let { field, editable, getFields } = $props();
 
+	let options = JSON.parse(field.options);
+
 	// Store selected values as an array of IDs
 	let value = $state<string[]>(["na"]);
 
+	$inspect(value);
+
 	// Compute selected option objects from the IDs
+	// TODO: Use when basing options on a UUID
+	// let selectedOptions = $derived(
+	// 	value.map((id) => options.find((o) => o.id === id) ?? { id, name: "N/A" })
+	// );
 	let selectedOptions = $derived(
-		value.map((id) => field.options.find((o) => o.id === id) ?? { id, name: "N/A" })
-	);
+		value.map((id) => options.find((o) => o.name === id) ?? { id, name: "N/A" })
+	)
 
 	// Enforce selection rules
 	$effect(() => {
@@ -46,8 +54,9 @@
 			<Select.Item value="na">N/A</Select.Item>
 
 			<!-- All field options -->
-			{#each field.options as option}
-				<Select.Item value={option.id}>
+			{#each options as option}
+				<!-- TODO: Currently forcing the value to be the plain text name instead of the ID. Later use the ID to allow for translations -->
+				<Select.Item value={option.name}>
 					{option.name}
 				</Select.Item>
 			{/each}

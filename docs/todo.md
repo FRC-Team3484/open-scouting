@@ -36,6 +36,7 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [x] Create frontend filters
   - [ ] Create frontend UI
   - [ ] Be able to export data
+  - [ ] Add summaries
 - [ ] Copy link to event
 - [ ] Create custom events
 - [ ] Host in experimental
@@ -63,5 +64,7 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [x] Fix logo squashing on smaller screens
 - [ ] Correctly handle when match scouting fields or pit scouting questions are deleted by the admin
 - [ ] When a new pit is created from multiple clients when pit scouting, make sure duplicate pits aren't created
-- [ ] Multiple choice fields don't show options when match scouting
+- [x] Multiple choice fields don't show options when match scouting
 - [ ] Boolean fields don't reset properly when match scouting
+- [ ] Multiple choice, choice, and boolean fields don't reset properly when match scouting
+- [ ] Use IDs for choice and multiple choice fields for translations
