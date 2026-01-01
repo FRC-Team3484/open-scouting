@@ -53,7 +53,7 @@
     <Card.Root class={`p-4 transition-colors ${status == "warning" ? "bg-destructive/30 !border-destructive/40 backdrop-blur-lg" : ""}`}>
         <div class="flex flex-row gap-2 items-center">
             {#if status != "offline"}
-                <Button variant="outline" size="icon"><ArrowClockwise weight="bold" /></Button>
+                <Button variant="outline" size="icon" onclick={sync}><ArrowClockwise weight="bold" /></Button>
             {/if}
 
             <div class="flex flex-col gap-2 items-start">
