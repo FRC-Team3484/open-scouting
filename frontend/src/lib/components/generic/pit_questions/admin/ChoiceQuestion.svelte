@@ -6,7 +6,7 @@
 
 	let value = $state("na");
 
-	let selectedOption = $derived(
+	let selectedOption = (
 		question.options.find((o) => o.id === value) ?? { id: "na", name: "N/A" }
 	);
 </script>

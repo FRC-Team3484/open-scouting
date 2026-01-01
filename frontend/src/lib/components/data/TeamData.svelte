@@ -3,6 +3,9 @@
 	import { CaretDown, CaretUp } from "phosphor-svelte";
 	import Button from "../ui/button/button.svelte";
 	import { slide } from "svelte/transition";
+	import TeamScores from "./TeamScores.svelte";
+	import TeamCapabilities from "./TeamCapabilities.svelte";
+	import TeamOthers from "./TeamOthers.svelte";
 
     let { team } = $props();
 
@@ -28,8 +31,18 @@
             </div>
 
             {#if expanded}
-                <div class="flex flex-col gap-2" transition:slide>
+                <div class="flex flex-col gap-4" transition:slide>
+                    <!-- Autonomous -->
+                    <TeamScores title="Autonomous" gamePieces={team.auton} />
+
+                    <!-- Teleoperated -->
+                    <TeamScores title="Teleoperated" gamePieces={team.teleop} />
                     
+                    <!-- Capabilities -->
+                    <TeamCapabilities capabilities={team.capability} />
+
+                    <!-- Other -->
+                    <TeamOthers others={team.other} />
                 </div>
             {/if}
         </div>
