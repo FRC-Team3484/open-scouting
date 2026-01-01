@@ -1,6 +1,7 @@
 from collections import defaultdict
 import json
 import os
+import pprint
 from statistics import mean
 from time import strftime
 from typing import List, Optional
@@ -957,7 +958,7 @@ async def get_data(
         key = (team_number, field.uuid)
         field_values[key].append({
             "match_number": ans.submission.match_number,
-            "value": parse_number(ans.value),
+            "value": json.loads(ans.value),
         })
         field_values[key] = sorted(field_values[key], key=lambda x: x["match_number"])
 
@@ -980,7 +981,7 @@ async def get_data(
             "auton_score", "auton_miss",
             "teleop_score", "teleop_miss"
         }:
-            values = [v for v in raw_values if v["value"] is not None]
+            values = [{"match_number": v["match_number"], "value": parse_number(v["value"])} for v in raw_values if v["value"] is not None]
 
             if not values:
                 continue
@@ -988,7 +989,9 @@ async def get_data(
             game_piece = field.game_piece.name
 
             bucket = "auton" if stat_type.startswith("auton") else "teleop"
-            numeric_values = [v["value"] for v in values]
+            numeric_values = [parse_number(v["value"]) for v in values]
+
+            print(numeric_values)
 
             teams[team_number][bucket][game_piece].append({
                 "field_uuid": str(field.uuid),
@@ -1003,8 +1006,22 @@ async def get_data(
         # CAPABILITY (percentages)
         elif stat_type == "capability":
             counts = defaultdict(int)
+
             for v in raw_values:
-                counts[v["value"]] += 1
+                raw = v["value"]
+
+                # Decode JSON if needed
+                try:
+                    decoded = json.loads(raw)
+                except (TypeError, json.JSONDecodeError):
+                    decoded = raw
+
+                # If the answer is a list, count each item
+                if isinstance(decoded, list):
+                    for item in decoded:
+                        counts[item] += 1
+                else:
+                    counts[decoded] += 1
 
             total = sum(counts.values())
 
