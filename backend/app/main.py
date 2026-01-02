@@ -989,9 +989,9 @@ async def get_data(
             game_piece = field.game_piece.name
 
             bucket = "auton" if stat_type.startswith("auton") else "teleop"
-            numeric_values = [parse_number(v["value"]) for v in values]
+            numeric_values = [parse_number(v["value"]) for v in values if v["value"] is not None]
 
-            print(numeric_values)
+            print(field_uuid)
 
             teams[team_number][bucket][game_piece].append({
                 "field_uuid": str(field.uuid),
@@ -1045,7 +1045,7 @@ async def get_data(
                 "field_uuid": str(field.uuid),
                 "field_type": field.field_type,
                 "field_name": field.name,
-                "value": raw_values[-1],  # most recent
+                "values": raw_values
             })
 
     # Convert defaultdicts to lists
