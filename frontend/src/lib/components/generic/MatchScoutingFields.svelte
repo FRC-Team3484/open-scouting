@@ -23,6 +23,7 @@
 	import { validateTokenOnline } from "$lib/utils/user";
 	import Separator from "../ui/separator/separator.svelte";
 	import MatchScoutingTeamInfo from "./MatchScoutingMatchInfo.svelte";
+	import { pushMatchScoutingData } from "$lib/utils/sync";
 
     let matchScoutingTeamInfoChild;
 
@@ -130,6 +131,8 @@
         }, 100);
     
         scrollTo({ top: 0, behavior: "smooth" });
+
+        await pushMatchScoutingData();
     }
 
     onMount(async () => {
