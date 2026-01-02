@@ -991,17 +991,16 @@ async def get_data(
             bucket = "auton" if stat_type.startswith("auton") else "teleop"
             numeric_values = [parse_number(v["value"]) for v in values if v["value"] is not None]
 
-            print(field_uuid)
-
-            teams[team_number][bucket][game_piece].append({
-                "field_uuid": str(field.uuid),
-                "field_type": field.field_type,
-                "field_name": field.name,
-                "values": values,
-                "min": min(numeric_values),
-                "max": max(numeric_values),
-                "avg": mean(numeric_values)
-            })
+            if numeric_values:
+                teams[team_number][bucket][game_piece].append({
+                    "field_uuid": str(field.uuid),
+                    "field_type": field.field_type,
+                    "field_name": field.name,
+                    "values": values,
+                    "min": min(numeric_values),
+                    "max": max(numeric_values),
+                    "avg": mean(numeric_values)
+                })
 
         # CAPABILITY (percentages)
         elif stat_type == "capability":
