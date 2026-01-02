@@ -1,9 +1,11 @@
 <script lang="ts">
     import * as Card from "$lib/components/ui/card/index.js";
 	import { apiFetch } from "$lib/utils/api";
-	import { CircleNotch } from "phosphor-svelte";
+	import { ArrowClockwise, CircleNotch } from "phosphor-svelte";
 	import Button from "../ui/button/button.svelte";
 	import TeamData from "./TeamData.svelte";
+	import { toast } from "svelte-sonner";
+	import Separator from "../ui/separator/separator.svelte";
 
     let { filters } = $props();
 
@@ -25,10 +27,15 @@
 
             const dataRequest = await apiFetch(
                 `/data/get?${params.toString()}`
-            );
+            ).then((response) => {
+                data = response;
+            }).catch((e) => {
+                console.error(e);
+                data = "error";
+                toast.error("Error loading data", { duration: 5000 });
+            });
 
-            console.log(dataRequest);
-            data = dataRequest;
+            console.log(data);
         }
     }
 
@@ -57,12 +64,28 @@
     {#if data == null}
         <CircleNotch weight="bold" class="animate-spin my-4" size={24} />
     {:else if data.length == 0}
-        <div class="flex flex-col gap-1 my-4">
+        <div class="flex flex-col gap-1 my-4 flex-wrap max-w-64">
             <p class="text-muted-foreground">No data found</p>
             <p class="text-muted-foreground text-sm">Please check your filters and try again</p>
         </div>
+    {:else if data == "error"}
+        <div class="flex flex-col gap-1 my-4 flex-wrap max-w-64">
+            <p class="text-muted-foreground">Error loading data</p>
+            <p class="text-muted-foreground text-sm">Recieved an invalid response from the backend. Please check your filters and try again</p>
+        </div>
     {:else}
-        <div class="flex flex-col gap-2 my-4">
+        <div class="flex flex-col gap-4 my-4">
+            <Card.Root>
+                <Card.Content>
+                    <div class="flex flex-row gap-2 items-center">
+                        <p class="text-sm text-muted-foreground">Loaded {data.length} {data.length == 1 ? "team" : "teams"} with data</p>
+                        <Button size="sm" variant="outline" onclick={() => loadData()}><ArrowClockwise weight="bold" /> Refresh</Button>
+                    </div>
+                </Card.Content>
+            </Card.Root>
+
+            <Separator orientation="horizontal" />
+
             {#each data as team}
                 <TeamData team={team} />
             {/each}
