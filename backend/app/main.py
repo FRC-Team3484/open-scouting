@@ -58,14 +58,14 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 register_tortoise(
     app,
-    db_url=os.getenv("DATABASE_URL", "sqlite://dev.db"),
+    db_url=os.getenv("DATABASE_URL", "postgres://devuser:devpassword@localhost:5432/devdb"),
     modules={"models": ["app.models"]},
     generate_schemas=False,
     add_exception_handlers=True,
 )
 
 TORTOISE_ORM = {
-    "connections": {"default": os.getenv("DATABASE_URL", "sqlite://dev.db")},
+    "connections": {"default": os.getenv("DATABASE_URL", "postgres://devuser:devpassword@localhost:5432/devdb")},
     "apps": {
         "models": {
             "models": ["app.models", "aerich.models"],
