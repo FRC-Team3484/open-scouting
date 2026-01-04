@@ -33,4 +33,20 @@
         "runOn": "folderOpen"
       }
     },
+    {
+      "label": "Start Postgres DB Server",
+      "type": "shell",
+      "command": "docker compose -f docker-compose.dev.yml up",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always"
+      },
+      "runOptions": {
+        "runOn": "folderOpen"
+      }
+    },
 }
