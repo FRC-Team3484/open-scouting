@@ -24,6 +24,7 @@ Start the frontend:
 ```bash
 npm run dev -- --open
 ```
+Alternatively, use the `Start SvelteKit Frontend` task in VSCode
 
 ## Backend
 Create a new Python virtual environment, and install the dependencies:
@@ -39,7 +40,13 @@ Create the `.env.development` file:
 cp .env.development.template .env.development
 ```
 
-Initialize the database:
+In a new terminal in the project root, start the postgres DB server:
+```bash
+docker compose -f docker-compose.dev.yml up
+```
+Alternatively, use the `Start Postgres DB Server` task in VSCode
+
+Once the DB has been fully pulled and started, initialize the database:
 ```bash
 aerich init-db
 ```
@@ -48,6 +55,7 @@ Start the backend:
 ```bash
 uvicorn app.main:app --reload
 ```
+Alternatively, use the `Start FastAPI Backend` task in VSCode
 
 ## User Setup
 Now that the frontend and backend is running, configure your superuser account.
