@@ -37,8 +37,8 @@ from app.auth import get_password_hash, verify_password, create_access_token, de
 # Setup
 app = FastAPI()
 
-# TODO: Handle production environment variables
-load_dotenv(".env.development")
+load_dotenv()
+ENV = os.getenv("ENV", "development")
 
 origins = os.getenv("CORS_ORIGINS", "*").split(",")
 TBA_API_KEY = os.getenv("TBA_API_KEY")

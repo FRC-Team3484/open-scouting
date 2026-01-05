@@ -1,5 +1,11 @@
-example.com {
-  reverse_proxy /api/* backend:8000
-  reverse_proxy frontend:3000
-  encode gzip
+open-scouting-dev.nfoert.dev {
+    encode gzip zstd
+
+    handle_path /api/* {
+        reverse_proxy backend:8000
+    }
+
+    handle {
+        reverse_proxy frontend:3000
+    }
 }
