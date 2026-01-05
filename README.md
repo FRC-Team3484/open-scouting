@@ -6,7 +6,7 @@
 
   **An open source application for easier scouting at FIRST Robotics competitions**
 
-  **[Live Server](https://206.189.255.232/) ● [Releases](https://github.com/FRC-Team3484/open-scouting/releases) ● [Issues](https://github.com/FRC-Team3484/open-scouting/issues) ● [Development branch](https://github.com/FRC-Team3484/open-scouting/tree/development) ● [API Docs](https://206.189.255.232/api)**
+  **[Live Server](https://open-scouting.nfoert.dev/) ● [Releases](https://github.com/FRC-Team3484/open-scouting/releases) ● [Issues](https://github.com/FRC-Team3484/open-scouting/issues) ● [Development branch](https://github.com/FRC-Team3484/open-scouting/tree/development) ● [API Docs](https://open-scouting.nfoert.dev/api)**
 </div>
 
 <div align="center">
@@ -60,7 +60,7 @@ Additionally, help translating Open Scouting is also always welcome! Please see 
 Please see the [roadmap](/docs/ROADMAP.md) for the currently planned out things that need to be completed. Additionally, see the [issues page](https://github.com/FRC-Team3484/open-scouting/issues) for any current bugs or features that need implemented, but aren't officially scheduled.
 
 ## Read API
-API schema information are auto generated and available [here](https://206.189.255.232/api). 
+API schema information are auto generated and available [here](https://open-scouting.nfoert.dev/api). 
 
 API requests should be made to `/api/v1/<route>` on the live server
 
@@ -69,4 +69,4 @@ An API Key is specified using the `X-Api-Key` header in requests
 X-Api-Key: <Your API key>
 ```
 
-You can create an API Key upon creating an account on the server, navigating to the [profile page](https://206.189.255.232/profile), and clicking on the `API Keys` section.
+You can create an API Key upon creating an account on the server, navigating to the [profile page](https://open-scouting.nfoert.dev/profile), and clicking on the `API Keys` section.
