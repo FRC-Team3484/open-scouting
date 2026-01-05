@@ -1,0 +1,15 @@
+open-scouting.nfoert.dev {
+
+    encode gzip zstd
+
+    # Serve Django static files
+    handle_path /static/* {
+        root * /usr/src/app/staticfiles
+        file_server
+    }
+
+    # Everything else → Django (Gunicorn)
+    handle {
+        reverse_proxy web:8000
+    }
+}
