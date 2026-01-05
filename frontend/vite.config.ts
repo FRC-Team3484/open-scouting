@@ -37,5 +37,8 @@ export default defineConfig({
 	],
 	optimizeDeps: {
 		exclude: ['layerchart']
+	},
+	build: {
+		sourcemap: false
 	}
 });
