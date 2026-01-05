@@ -9,7 +9,7 @@ services:
       POSTGRES_USER: app
       POSTGRES_PASSWORD: app
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - /mnt/openscouting_db/postgres:/var/lib/postgresql/data
 
   frontend:
     build:
