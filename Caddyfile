@@ -1,12 +1,7 @@
 open-scouting-dev.nfoert.dev {
-    encode gzip zstd
+    encode zstd gzip
 
-    handle_path /api_docs* {
-        rewrite * /docs{uri}
-        reverse_proxy backend:8000
-    }
-
-    handle_path /api/* {
+    handle_path /api* {
         reverse_proxy backend:8000
     }
 
