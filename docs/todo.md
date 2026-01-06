@@ -39,9 +39,9 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [ ] Add summaries
 - [ ] Copy link to event
 - [ ] Create custom events
-- [ ] Host in experimental
-  - [ ] Switch to postgres for dev and prod
-  - [ ] Add database to docker compose
+- [x] Host in experimental
+  - [x] Switch to postgres for dev and prod
+  - [x] Add database to docker compose
   - [ ] Use [umami](https://github.com/umami-software/umami) for page view analytics?
 - [ ] Add link to Open Scouting v1.0.0 to try v2.0.0
 - [ ] Profile
@@ -50,7 +50,7 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [ ] Verification codes when enabled
 - [ ] Clean up backend
   - [ ] Move routes to separate files
-  - [ ] Properly secure routes
+  - [ ] Properly secure routes, and only allow some routes to logged in users and superusers
   - [ ] Add comments
 - [ ] Import legacy match scouting data from v1.0.0
 - [ ] Deprecate `open-scouting-utils` repo
