@@ -7,6 +7,8 @@
     import * as Avatar from "$lib/components/ui/avatar/index.js";
 
     import { signOut, validateTokenOnline } from "$lib/utils/user";
+	import { dev } from "$app/environment";
+	import { Book, SignOut, UserCircle, Wrench } from "phosphor-svelte";
 
     let { show_text = true } = $props();
 
@@ -33,17 +35,21 @@
                 <DropdownMenu.Label>{user.username}</DropdownMenu.Label>
                 <DropdownMenu.Group>
                     <DropdownMenu.Item>
-                        Profile
+                        <UserCircle weight="bold" /> Profile
                     </DropdownMenu.Item>
                     {#if user.is_superuser}
-                        <DropdownMenu.Item onclick={() => window.location.href = "/admin"}>
-                            Admin
+                        <DropdownMenu.Label>Admin Options</DropdownMenu.Label>
+                        <DropdownMenu.Item onclick={() => window.location.href = "/admin"} class="bg-green-400/50 hover:bg-green-300/20! transition-colors m-1">
+                            <Wrench weight="bold" /> Admin Dashboard
+                        </DropdownMenu.Item>
+                        <DropdownMenu.Item onclick={() => {if (dev) window.location.href = "http://localhost:8000/docs"; else window.location.href = "/api/docs";}} class="bg-green-400/50 hover:bg-green-300/20! transition-colors m-1">
+                            <Book weight="bold" /> Swagger API Docs
                         </DropdownMenu.Item>
                     {/if}
                 </DropdownMenu.Group>
                 <DropdownMenu.Separator />
                 <DropdownMenu.Item onclick={() => {signOut(); window.location.reload()}}>
-                    Log out
+                    <SignOut weight="bold" /> Log out
                 </DropdownMenu.Item>
             </DropdownMenu.Content>
         </DropdownMenu.Root>
