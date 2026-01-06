@@ -50,7 +50,7 @@ export async function apiFetch<T = any>(
 }
 
 export async function theBlueAllianceApiFetch<T = any>(url: string) {
-	const response = await fetch(`/api/tba/${url}`);
+	const response = await fetch(`/internal/tba/${url}`);
 	return response.json() as Promise<T>;
 }
 
