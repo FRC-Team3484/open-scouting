@@ -1,0 +1,45 @@
+[
+  {
+    "uuid": "84849e0c-c3c1-42ae-8036-8134b284bbcd",
+    "name": "test",
+    "field_type": "string",
+    "stat_type": "auton_miss",
+    "game_piece_id": "d964e786-1c05-45cf-b060-f1eff8bb9bab",
+    "required": false,
+    "options": [
+      "[]"
+    ],
+    "order": 0,
+    "organization_id": null,
+    "fields": []
+  },
+  {
+    "uuid": "0abee2de-cc05-4d5f-a2d9-c3b9bb98bfed",
+    "name": "test folder",
+    "field_type": "section",
+    "stat_type": "section",
+    "game_piece_id": null,
+    "required": false,
+    "options": [
+      "[]"
+    ],
+    "order": 0,
+    "organization_id": null,
+    "fields": [
+      {
+        "uuid": "b607c4f9-c898-40a6-af11-f9a99f1ddf7e",
+        "name": "test again",
+        "field_type": "large_number",
+        "stat_type": "teleop_score",
+        "game_piece_id": "d964e786-1c05-45cf-b060-f1eff8bb9bab",
+        "required": true,
+        "options": [
+          "[]"
+        ],
+        "order": 0,
+        "organization_id": null,
+        "fields": []
+      }
+    ]
+  }
+]

@@ -8,6 +8,7 @@ from typing import List, Optional
 import uuid
 from dotenv import load_dotenv
 import requests
+from pathlib import Path
 
 from fastapi import FastAPI, Form, Depends, HTTPException, Query, status, Body
 from fastapi.middleware.cors import CORSMiddleware
@@ -454,6 +455,18 @@ async def edit_season_field(
     field.organization = organization
     await field.save()
     return field
+
+@app.get("/fields/get_presets")
+async def get_match_scouting_field_presets():    
+    print(os.getcwd())
+    path = Path("./app/match_scouting_presets")
+    presets = []
+
+    for file in path.iterdir():
+        with open(file, "r") as f:
+            presets.append({ "name": file.stem, "preset": json.load(f) })
+
+    return presets
 
 @app.delete("/fields/delete/{field_uuid}")
 async def delete_field(field_uuid: str, current_user: User = Depends(get_current_user)):
