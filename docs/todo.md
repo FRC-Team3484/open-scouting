@@ -59,6 +59,7 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [ ] Add comments
 - [ ] Import legacy match scouting data from v1.0.0
 - [ ] Deprecate `open-scouting-utils` repo
+- [ ] Update doc in `FRC-Team3484/docs` for how to maintain Open Scouting
 - [ ] Release `v2.0.0`
 
 ## `v2.1.0`
@@ -76,3 +77,5 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [ ] Boolean fields don't reset properly when match scouting
 - [ ] Multiple choice, choice, and boolean fields don't reset properly when match scouting
 - [ ] Use IDs for choice and multiple choice fields for translations
+- [ ] Fields can't be edited in production
+- [ ] Increase mobile redability
