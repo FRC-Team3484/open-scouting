@@ -4,9 +4,13 @@
 <script src="{% static '/main/scripts/index/authentication_box.js' %}"></script>
 
 <div class="flex flex-col"
-     x-data="authentication_box"
-     x-show="page == 1"
-     x-transition:enter.delay.300ms>
+x-data="authentication_box"
+x-show="page == 1"
+x-transition:enter.delay.300ms>
+    <a class="border-solid border-2 dark:border-slate-600 dark:bg-blue-900/50 dark:hover:bg-blue-900/80 dark:active:bg-blue-800/80 dark:text-white border-slate-300 bg-blue-200/50 hover:bg-blue-200/80 active:bg-blue-300/80 text-black rounded-xl py-2 px-8 transition backdrop-blur-lg my-2 disabled:scale-95 disabled:opacity-80 mb-8"
+        href="https://open-scouting-dev.nfoert.dev">
+        <i class="ph-bold ph-flask"></i> Try Experimental v2.0.0
+    </a>
 
     <div x-show="!authenticated">
         <button class="ui_button w-full" @click="sign_in()">
@@ -88,4 +92,5 @@
             @click="start_demo()">
         <i class="ph-bold ph-test-tube"></i>{% translate "Try Open Scouting" %}
     </button>
+
 </div>
