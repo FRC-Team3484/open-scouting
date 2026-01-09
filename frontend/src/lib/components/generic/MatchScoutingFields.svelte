@@ -1,13 +1,15 @@
 <script lang="ts">
 	import { createEventDispatcher, onMount } from "svelte";
-	import { FolderPlus, Info, PlusCircle } from "phosphor-svelte";
+	import { CircleNotch, DownloadSimple, Export, FolderPlus, Info, PlusCircle, Trash, Warning, XCircle } from "phosphor-svelte";
 
     import { addFieldDialogOpen, addSectionDialogOpen } from "$lib/stores/dialog";
     import { apiFetch } from "$lib/utils/api";
 
 	import Skeleton from "../ui/skeleton/skeleton.svelte";
     import * as Card from "$lib/components/ui/card/index.js";
+    import * as Dialog from "$lib/components/ui/dialog/index.js";
 	import Button from "../ui/button/button.svelte";
+    import * as Select from "$lib/components/ui/select/index.js";
 	import StringField from "./fields/StringField.svelte";
 	import LargeNumberField from "./fields/LargeNumberField.svelte";
 	import SmallNumberField from "./fields/SmallNumberField.svelte";
@@ -24,6 +26,9 @@
 	import Separator from "../ui/separator/separator.svelte";
 	import MatchScoutingTeamInfo from "./MatchScoutingMatchInfo.svelte";
 	import { pushMatchScoutingData } from "$lib/utils/sync";
+	import Input from "../ui/input/input.svelte";
+	import * as Alert from "../ui/alert/index.js";
+	import { Description } from "../ui/alert-dialog";
 
     let matchScoutingTeamInfoChild;
 
@@ -47,6 +52,13 @@
     let choices: ChoiceType[] = [];
 
     let user;
+
+    let fieldFile = $state(null);
+    let presets = $state([]);
+    let selectedPresetName = $state(null);
+    let selectedPreset = $derived(
+        presets.find(p => p.name === selectedPresetName) ?? null
+    );
 
     let { season_uuid, year, event_data = {}, editable } = $props();
 
@@ -135,6 +147,56 @@
         await pushMatchScoutingData();
     }
 
+    function exportFields() {
+        const json = JSON.stringify(fields, null, 2);
+        const blob = new Blob([json], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "fields.json";
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    async function getPresets() {
+        presets = await apiFetch(`/fields/get_presets`);
+    }
+
+    function importAsFile() {
+        const file = fieldFile[0];
+
+        if (file && file.type === "application/json") {
+            const reader = new FileReader();
+            reader.onload = () => {
+                try {
+                    const newFields = JSON.parse(reader.result as string);
+
+                    if (newFields.length > 0) {
+                        fields = newFields;
+
+                        // TODO: Delete all fields on the server
+                        // TODO: Create fields on the server with the new data
+                    } else {
+                        toast.error("File is empty or invalid", { duration: 5000 });
+                        fieldFile = null;
+                    }
+                } catch (error) {
+                    console.error(error);
+                    toast.error("Invalid file", { duration: 5000 });
+                    fieldFile = null;
+                }
+            };
+            reader.readAsText(file);
+        } else {
+            toast.error("Invalid file type", { duration: 5000 });
+            fieldFile = null;
+        }
+    }
+
+    function importAsPreset() {
+
+    }
+
     onMount(async () => {
         while (!season_uuid) {
             await new Promise(resolve => setTimeout(resolve, 100));
@@ -158,6 +220,86 @@
                     <div class="flex flex-col gap-4">
                         <Button onclick={() => addFieldDialogOpen.set(true)}><PlusCircle weight="bold" /> Add Field</Button>
                         <Button onclick={() => addSectionDialogOpen.set(true)}><FolderPlus weight="bold" /> Add Section</Button>
+                        <div class="flex flex-row gap-2 flex-wrap">
+                            <Dialog.Root onOpenChange={getPresets}>
+                                <Dialog.Trigger>
+                                    <Button variant="outline" class="w-full"><DownloadSimple weight="bold" /> Import Fields</Button>
+                                </Dialog.Trigger>
+                                <Dialog.Content>
+                                    <Dialog.Title>Import Field Data</Dialog.Title>
+                                    <Dialog.Description>Import Field Data either from a JSON file, or from a preset provided by the server.</Dialog.Description>
+                                    
+                                    <Alert.Root variant="destructive">
+                                        <Warning weight="bold" />
+                                        <Alert.Description>All existing field data for this season will be permanently overwritten</Alert.Description>
+                                    </Alert.Root>
+
+                                    <p class="font-bold">Upload a JSON file:</p>
+                                    <div class="flex flex-row gap-2 flex-wrap">
+                                        <Input type="file" accept="application/json" id="presetfile" bind:files={fieldFile} />
+                                        <Button variant="outline" size="icon-sm"><Trash weight="bold" /></Button>
+
+                                        <Button onclick={() => importAsFile()}>Import JSON File</Button>
+                                    </div>
+
+                                    <p class="font-bold">Choose a preset:</p>
+                                    <div class="flex flex-row gap-2 flex-wrap">
+                                        {#if presets == null}
+                                            <CircleNotch class="animate-spin" size={22} />
+                                            <p>Loading presets...</p>
+                                        {:else if presets.length == 0}
+                                            <p class="text-muted-foreground">No presets found on the server</p>
+                                        {:else}
+                                            <Select.Root
+                                                type="single"
+                                                name="preset"
+                                                id="preset"
+                                                bind:value={selectedPresetName}
+                                                >
+                                                <Select.Trigger>
+                                                    {selectedPresetName ?? "Select a preset"}
+                                                </Select.Trigger>
+
+                                                <Select.Content>
+                                                    {#each presets as preset}
+                                                    <Select.Item
+                                                        value={preset.name}
+                                                        label={preset.name}
+                                                    />
+                                                    {/each}
+                                                </Select.Content>
+                                            </Select.Root>
+
+                                            <Button variant="outline" size="icon-sm" onclick={() => selectedPresetName = null}><XCircle weight="bold" /></Button>
+                                            <Button>Import Preset</Button>
+                                        {/if}
+                                    </div>
+
+                                    <Dialog.Footer>
+                                        <Dialog.Close>
+                                            <Button variant="outline">Close</Button>
+                                        </Dialog.Close>
+                                    </Dialog.Footer>
+                                </Dialog.Content>
+                            </Dialog.Root>
+                            <Button variant="outline" onclick={() => exportFields()} class="flex-2"><Export weight="bold" /> Export Fields as JSON</Button>
+
+                            <Dialog.Root>
+                                <Dialog.Trigger>
+                                    <Button variant="outline" size="icon"><Info weight="bold" /></Button>
+                                </Dialog.Trigger>
+                                <Dialog.Content>
+                                    <Dialog.Title>About Exported Field Data</Dialog.Title>
+                                    <Dialog.Description>Exported data can be imported on another server, or used to add a season preset into the repo at the start of a new season.</Dialog.Description>
+
+                                    <Dialog.Footer>
+                                        <Dialog.Close>
+                                            <Button variant="outline">Close</Button>
+                                        </Dialog.Close>
+                                    </Dialog.Footer>
+                                </Dialog.Content>
+                            </Dialog.Root>
+                        </div>
                     </div>
                 </Card.Content>
             </Card.Root>

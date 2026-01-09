@@ -7,6 +7,7 @@
 	import { apiFetch } from "$lib/utils/api";
 	import GamePieceManager from "./GamePieceManager.svelte";
 	import Separator from "../ui/separator/separator.svelte";
+	import Button from "../ui/button/button.svelte";
 
     let seasons = [];
     let season_value = {};
