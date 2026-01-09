@@ -265,7 +265,9 @@
     }
 
     function importAsPreset() {
-
+        if (selectedPreset) {
+            importFieldsToServer(selectedPreset.preset);
+        }
     }
 
     onMount(async () => {
@@ -310,7 +312,9 @@
                                         <Input type="file" accept="application/json" id="presetfile" bind:files={fieldFile} />
                                         <Button variant="outline" size="icon-sm" onclick={() => fieldFile = null}><Trash weight="bold" /></Button>
 
-                                        <Button onclick={() => importAsFile()} disabled={fieldFile == null}>Import JSON File</Button>
+                                        <Dialog.Close>
+                                            <Button onclick={() => importAsFile()} disabled={fieldFile == null}>Import JSON File</Button>
+                                        </Dialog.Close>
                                     </div>
 
                                     <p class="font-bold">Choose a preset:</p>
@@ -342,7 +346,10 @@
                                             </Select.Root>
 
                                             <Button variant="outline" size="icon-sm" onclick={() => selectedPresetName = null}><XCircle weight="bold" /></Button>
-                                            <Button>Import Preset</Button>
+
+                                            <Dialog.Close>
+                                                <Button onclick={() => importAsPreset()} disabled={selectedPresetName == null}>Import Preset</Button>
+                                            </Dialog.Close>
                                         {/if}
                                     </div>
 
