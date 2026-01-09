@@ -17,12 +17,13 @@
     <div class="flex flex-row gap-4 items-center">
         <Logo text={true} style="tiny" href="/" />
         <ExperimentalWarning />
+
+        <Button variant="outline" href="/" class="ml-4">Home</Button>
+        <Button variant="outline" href="/" disabled>View Data</Button>
+        <Button variant="outline" href="/" disabled>Events</Button>
     </div>
 
     <div class="flex flex-row gap-4 items-center">
-        <Button variant="outline" href="/">Home</Button>
-        <Button variant="outline" href="/" disabled>View Data</Button>
-        <Button variant="outline" href="/" disabled>Events</Button>
     </div>
 
     <div class="flex flex-row gap-4 items-center">
