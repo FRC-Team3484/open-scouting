@@ -43,7 +43,7 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [x] Switch to postgres for dev and prod
   - [x] Add database to docker compose
   - [ ] Use [umami](https://github.com/umami-software/umami) for page view analytics?
-- [ ] Add link to Open Scouting v1.0.0 to try v2.0.0
+- [x] Add link to Open Scouting v1.0.0 to try v2.0.0
 - [ ] Profile
   - [ ] Edit profile
   - [ ] Change password
@@ -60,6 +60,7 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [ ] Import legacy match scouting data from v1.0.0
 - [ ] Deprecate `open-scouting-utils` repo
 - [ ] Update doc in `FRC-Team3484/docs` for how to maintain Open Scouting
+- [ ] Update docs
 - [ ] Release `v2.0.0`
 
 ## `v2.1.0`
