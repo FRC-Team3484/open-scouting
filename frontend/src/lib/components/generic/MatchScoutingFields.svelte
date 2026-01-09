@@ -162,6 +162,79 @@
         presets = await apiFetch(`/fields/get_presets`);
     }
 
+    async function createFieldRecursive(field, parentUuid) {
+        const body = new FormData();
+
+        body.append("name", field.name);
+        body.append("field_type", field.field_type);
+        body.append("stat_type", field.stat_type);
+        body.append("required", field.required ? "true" : "false");
+        body.append("order", field.order?.toString() ?? "0");
+        body.append("organization_uuid", "");
+        body.append("parent_uuid", parentUuid ?? "");
+
+        // Options handling
+        if (field.field_type === "choice" || field.field_type === "multiple_choice") {
+            body.append("options", field.options?.[0] ?? JSON.stringify([]));
+        } else {
+            body.append("options", field.options?.[0] ?? JSON.stringify([]));
+        }
+
+        // Game piece handling
+        if (
+            field.stat_type === "teleop_score" ||
+            field.stat_type === "teleop_miss" ||
+            field.stat_type === "auton_score" ||
+            field.stat_type === "auton_miss"
+        ) {
+            body.append("game_piece_uuid", field.game_piece_id ?? "");
+        } else {
+            body.append("game_piece_uuid", "");
+        }
+
+        // Create field / section
+        let created;
+
+        try {
+            created = await apiFetch(
+                `/fields/season/${season_uuid}/create`,
+                {
+                    method: "POST",
+                    data: body,
+                    token: localStorage.getItem("access_token"),
+                }
+            );
+        } catch (error) {
+            console.error("Failed to create field:", field.name, error);
+            return;
+        }
+
+        const newUuid = created?.uuid;
+        if (!newUuid) return;
+
+        // Recurse into children
+        if (field.field_type === "section" && Array.isArray(field.fields)) {
+            for (const child of field.fields) {
+                await createFieldRecursive(child, newUuid);
+            }
+        }
+    }
+
+    async function importFieldsToServer(newFields) {
+        await apiFetch(`/fields/season/${season_uuid}/clear`, {
+            method: "DELETE",
+            token: localStorage.getItem("access_token")
+        });
+
+        for (const field of newFields) {
+            await createFieldRecursive(field, "");
+        }
+
+        // Refresh structure once everything is done
+        toast.success("Fields imported", { duration: 5000 });
+        getStructure();
+    }
+
     function importAsFile() {
         const file = fieldFile[0];
 
@@ -172,10 +245,8 @@
                     const newFields = JSON.parse(reader.result as string);
 
                     if (newFields.length > 0) {
-                        fields = newFields;
+                        importFieldsToServer(newFields);
 
-                        // TODO: Delete all fields on the server
-                        // TODO: Create fields on the server with the new data
                     } else {
                         toast.error("File is empty or invalid", { duration: 5000 });
                         fieldFile = null;
@@ -237,9 +308,9 @@
                                     <p class="font-bold">Upload a JSON file:</p>
                                     <div class="flex flex-row gap-2 flex-wrap">
                                         <Input type="file" accept="application/json" id="presetfile" bind:files={fieldFile} />
-                                        <Button variant="outline" size="icon-sm"><Trash weight="bold" /></Button>
+                                        <Button variant="outline" size="icon-sm" onclick={() => fieldFile = null}><Trash weight="bold" /></Button>
 
-                                        <Button onclick={() => importAsFile()}>Import JSON File</Button>
+                                        <Button onclick={() => importAsFile()} disabled={fieldFile == null}>Import JSON File</Button>
                                     </div>
 
                                     <p class="font-bold">Choose a preset:</p>
