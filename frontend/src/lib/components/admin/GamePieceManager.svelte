@@ -10,9 +10,9 @@
 	import Input from "../ui/input/input.svelte";
     import * as AlertDialog from "$lib/components/ui/alert-dialog/index.js";
 
-    export let season_uuid: string = "";
+    let { season_uuid } = $props();
 
-    let game_pieces = [];
+    let game_pieces = $state([]);
 
     async function getGamePieces() {
         game_pieces = await apiFetch(`/gamepieces/season/${season_uuid}`);
@@ -49,7 +49,12 @@
             await new Promise(resolve => setTimeout(resolve, 100));
         }
         getGamePieces();
-    })
+    });
+
+    $effect(() => {
+        season_uuid;
+        getGamePieces();
+    });
 </script>
 
 <Card.Root>

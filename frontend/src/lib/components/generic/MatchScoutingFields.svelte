@@ -279,10 +279,18 @@
 
         user = await validateTokenOnline();
     });
+
+    $effect(() => {
+        season_uuid;
+        year;
+
+        getStructure();
+        getGamePieces();
+    })
 </script>
 
 <div class="flex flex-col gap-4">
-    {#if season_uuid === ""}
+    {#if season_uuid == ""}
         <Skeleton class="w-128 h-32" />
         <Skeleton class="w-128 h-32" />
         <Skeleton class="w-128 h-32" />
@@ -420,6 +428,10 @@
                     />
                 {/if}
             {/each}
+
+            {#if fields.length == 0}
+                <p class="text-muted-foreground">No fields found</p>
+            {/if}
 
             {#if !editable}
                 <MathScoutingSubmit />
