@@ -79,4 +79,5 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [ ] Multiple choice, choice, and boolean fields don't reset properly when match scouting
 - [ ] Use IDs for choice and multiple choice fields for translations
 - [ ] Fields can't be edited in production
-- [ ] Increase mobile redability
+- [ ] Increase mobile readability
+- [ ] Hide favorite events when not signed in
