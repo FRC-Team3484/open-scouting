@@ -9,6 +9,7 @@ import uuid
 from dotenv import load_dotenv
 import requests
 from pathlib import Path
+import httpx
 
 from fastapi import FastAPI, Form, Depends, HTTPException, Query, status, Body
 from fastapi.middleware.cors import CORSMiddleware
@@ -687,7 +688,12 @@ async def get_pits(
     # If pits have not been generated yet, get teams from TBA and create TeamPits
     if not event.pits_generated and TBA_API_KEY != "" and TBA_API_KEY is not None:
         event_key = str(season.year) + event_code
-        response = requests.get(f"https://www.thebluealliance.com/api/v3/event/{event_key}/teams", headers={"X-TBA-Auth-Key": TBA_API_KEY})
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(
+                f"https://www.thebluealliance.com/api/v3/event/{event_key}/teams",
+                headers={"X-TBA-Auth-Key": TBA_API_KEY},
+            )
+
         teams = response.json()
 
         for team in teams:
