@@ -10,7 +10,7 @@
     let resetBase;
 
     async function addAnswer() {
-        const newAnswer = { uuid: crypto.randomUUID(), value: checked, username: user.username, field_uuid: question.uuid, created_at: new Date().toISOString() }
+        const newAnswer = { uuid: crypto.randomUUID(), value: checked, username: user?.username ?? "guest", field_uuid: question.uuid, created_at: new Date().toISOString() }
         await db.pit_scouting.update(pit.uuid, {
         answers: [...pit.answers, newAnswer],
             synced: false

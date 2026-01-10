@@ -64,7 +64,7 @@
 
 <PageContainer>
     <Header bind:event_data={event_data}/>
-    {#if year && season_uuid && event_data.year !== 0 && user}
+    {#if year && season_uuid && event_data.year !== 0}
         <div class="flex flex-col gap-4 items-center">
             <PitStatus pits={$pits} pit_questions={pit_questions} />
 
