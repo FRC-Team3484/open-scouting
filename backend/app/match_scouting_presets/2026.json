@@ -1,0 +1,202 @@
+[
+  {
+    "uuid": "b458396a-c3b9-4a43-a59c-c697030fc125",
+    "name": "Auton",
+    "field_type": "section",
+    "stat_type": "section",
+    "game_piece_id": null,
+    "required": false,
+    "options": [
+      "[]"
+    ],
+    "order": 0,
+    "organization_id": null,
+    "fields": [
+      {
+        "uuid": "bc241e9c-d0d0-4d83-91e4-7d9f5a2a76dd",
+        "name": "Left Starting Zone",
+        "field_type": "boolean",
+        "stat_type": "capability",
+        "game_piece_id": null,
+        "required": false,
+        "options": [
+          "[]"
+        ],
+        "order": 0,
+        "organization_id": null,
+        "fields": []
+      },
+      {
+        "uuid": "9bb5a85e-7806-4e5e-ac90-8b5f39e1dbc1",
+        "name": "Fuel Scored in Hub",
+        "field_type": "small_number",
+        "stat_type": "auton_score",
+        "game_piece_id": "4f8ff96f-e722-4982-b904-3340389e35a6",
+        "required": false,
+        "options": [
+          "[]"
+        ],
+        "order": 0,
+        "organization_id": null,
+        "fields": []
+      },
+      {
+        "uuid": "e82c3049-14f2-406d-992d-7a20011ecc21",
+        "name": "Climbed Level 1",
+        "field_type": "boolean",
+        "stat_type": "capability",
+        "game_piece_id": null,
+        "required": false,
+        "options": [
+          "[]"
+        ],
+        "order": 0,
+        "organization_id": null,
+        "fields": []
+      },
+      {
+        "uuid": "757a8568-7570-4671-bfc9-f83d08b1adf6",
+        "name": "Gathered Additional Pieces in Auton",
+        "field_type": "boolean",
+        "stat_type": "capability",
+        "game_piece_id": null,
+        "required": false,
+        "options": [
+          "[]"
+        ],
+        "order": 0,
+        "organization_id": null,
+        "fields": []
+      }
+    ]
+  },
+  {
+    "uuid": "a7a5b28f-3298-4126-bb0d-71a3b61f6554",
+    "name": "Teleop",
+    "field_type": "section",
+    "stat_type": "section",
+    "game_piece_id": null,
+    "required": false,
+    "options": [
+      "[]"
+    ],
+    "order": 0,
+    "organization_id": null,
+    "fields": [
+      {
+        "uuid": "28e537ed-4cba-489b-ad85-9bf93791629d",
+        "name": "Fuel Scored in Hub",
+        "field_type": "small_number",
+        "stat_type": "teleop_score",
+        "game_piece_id": "4f8ff96f-e722-4982-b904-3340389e35a6",
+        "required": false,
+        "options": [
+          "[]"
+        ],
+        "order": 0,
+        "organization_id": null,
+        "fields": []
+      },
+      {
+        "uuid": "416facbe-11ff-4ffa-91fe-78029bfbf4a5",
+        "name": "Climbed",
+        "field_type": "choice",
+        "stat_type": "capability",
+        "game_piece_id": null,
+        "required": false,
+        "options": [
+          "[{\"id\":\"4cbc5d3c-c6ad-4004-b50a-aa69efe795b2\",\"name\":\"Level 1\"},{\"id\":\"6715f752-f59f-4053-9a22-3bf32f9791e6\",\"name\":\"Level 2\"},{\"id\":\"783441f1-4096-4f13-8e7c-4e410e1a9e66\",\"name\":\"Level 3\"}]"
+        ],
+        "order": 0,
+        "organization_id": null,
+        "fields": []
+      }
+    ]
+  },
+  {
+    "uuid": "484b565a-edb6-4a84-a984-fc68752798f1",
+    "name": "Extra Information",
+    "field_type": "section",
+    "stat_type": "section",
+    "game_piece_id": null,
+    "required": false,
+    "options": [
+      "[]"
+    ],
+    "order": 0,
+    "organization_id": null,
+    "fields": [
+      {
+        "uuid": "f7fb27ff-bb91-486b-b9a2-48032abaf059",
+        "name": "Ground Pickup",
+        "field_type": "boolean",
+        "stat_type": "capability",
+        "game_piece_id": null,
+        "required": false,
+        "options": [
+          "[]"
+        ],
+        "order": 0,
+        "organization_id": null,
+        "fields": []
+      },
+      {
+        "uuid": "f0dcc4e2-039e-41ae-9dd2-c5a100a95d69",
+        "name": "Outpost Pickup",
+        "field_type": "boolean",
+        "stat_type": "capability",
+        "game_piece_id": null,
+        "required": false,
+        "options": [
+          "[]"
+        ],
+        "order": 0,
+        "organization_id": null,
+        "fields": []
+      }
+    ]
+  },
+  {
+    "uuid": "cda11e07-bcfc-420b-b95b-00780774f29c",
+    "name": "Additional Notes",
+    "field_type": "section",
+    "stat_type": "section",
+    "game_piece_id": null,
+    "required": false,
+    "options": [
+      "[]"
+    ],
+    "order": 0,
+    "organization_id": null,
+    "fields": [
+      {
+        "uuid": "edb25a31-c7d6-4628-be13-1db90f65aa67",
+        "name": "Robot was damaged and/or disabled during the match",
+        "field_type": "boolean",
+        "stat_type": "capability",
+        "game_piece_id": null,
+        "required": false,
+        "options": [
+          "[]"
+        ],
+        "order": 0,
+        "organization_id": null,
+        "fields": []
+      },
+      {
+        "uuid": "22d22fc7-cfc2-4b11-87a4-e3691b267c61",
+        "name": "Additional notes or comments",
+        "field_type": "string",
+        "stat_type": "other",
+        "game_piece_id": null,
+        "required": false,
+        "options": [
+          "[]"
+        ],
+        "order": 0,
+        "organization_id": null,
+        "fields": []
+      }
+    ]
+  }
+]

@@ -1,0 +1,356 @@
+[
+  {
+    "uuid": "35e67a82-4af1-4166-9322-54a3fc775c08",
+    "name": "Auton",
+    "field_type": "section",
+    "stat_type": "section",
+    "game_piece_id": null,
+    "required": false,
+    "options": [
+      "[]"
+    ],
+    "order": 0,
+    "organization_id": null,
+    "fields": [
+      {
+        "uuid": "67f5155b-ee4b-4272-9303-354a8b3c8e0f",
+        "name": "Left Starting Zone",
+        "field_type": "boolean",
+        "stat_type": "capability",
+        "game_piece_id": null,
+        "required": false,
+        "options": [
+          "[]"
+        ],
+        "order": 0,
+        "organization_id": null,
+        "fields": []
+      },
+      {
+        "uuid": "4eb7f233-d76c-4fe0-aa80-04f9fc0a7c7a",
+        "name": "Coral Scored in Reef",
+        "field_type": "small_number",
+        "stat_type": "auton_score",
+        "game_piece_id": "9d73ace4-e32b-42ef-a651-ae43e8180632",
+        "required": false,
+        "options": [
+          "[]"
+        ],
+        "order": 0,
+        "organization_id": null,
+        "fields": []
+      },
+      {
+        "uuid": "df553acc-df14-4ef1-8e18-542047dc3d95",
+        "name": "Coral Dropped",
+        "field_type": "small_number",
+        "stat_type": "auton_miss",
+        "game_piece_id": "9d73ace4-e32b-42ef-a651-ae43e8180632",
+        "required": false,
+        "options": [
+          "[]"
+        ],
+        "order": 0,
+        "organization_id": null,
+        "fields": []
+      },
+      {
+        "uuid": "83c997ba-6a17-42ec-a603-cbeea65454de",
+        "name": "Algae Removed",
+        "field_type": "small_number",
+        "stat_type": "auton_score",
+        "game_piece_id": "49e7403b-7b61-4347-8082-6f72b907d2e2",
+        "required": false,
+        "options": [
+          "[]"
+        ],
+        "order": 0,
+        "organization_id": null,
+        "fields": []
+      },
+      {
+        "uuid": "0264c016-3c9b-4e39-b9e6-587c1cce1d76",
+        "name": "Algae Scored in Net",
+        "field_type": "small_number",
+        "stat_type": "auton_score",
+        "game_piece_id": "49e7403b-7b61-4347-8082-6f72b907d2e2",
+        "required": false,
+        "options": [
+          "[]"
+        ],
+        "order": 0,
+        "organization_id": null,
+        "fields": []
+      },
+      {
+        "uuid": "33cd01a5-2164-4793-861a-c1678f8e658d",
+        "name": "Algae Scored in Processor",
+        "field_type": "small_number",
+        "stat_type": "auton_score",
+        "game_piece_id": "49e7403b-7b61-4347-8082-6f72b907d2e2",
+        "required": false,
+        "options": [
+          "[]"
+        ],
+        "order": 0,
+        "organization_id": null,
+        "fields": []
+      },
+      {
+        "uuid": "f2daabfc-67a3-4152-8d1f-a98574ac34c5",
+        "name": "Algae Score Failed",
+        "field_type": "small_number",
+        "stat_type": "auton_miss",
+        "game_piece_id": "49e7403b-7b61-4347-8082-6f72b907d2e2",
+        "required": false,
+        "options": [
+          "[]"
+        ],
+        "order": 0,
+        "organization_id": null,
+        "fields": []
+      }
+    ]
+  },
+  {
+    "uuid": "95f7f2d7-c319-4aed-a30e-e5a72daa721d",
+    "name": "Teleop",
+    "field_type": "section",
+    "stat_type": "section",
+    "game_piece_id": null,
+    "required": false,
+    "options": [
+      "[]"
+    ],
+    "order": 0,
+    "organization_id": null,
+    "fields": [
+      {
+        "uuid": "c5c300c7-31c8-4604-a482-076fccb66ddb",
+        "name": "Coral Scored in Reef",
+        "field_type": "small_number",
+        "stat_type": "teleop_score",
+        "game_piece_id": "9d73ace4-e32b-42ef-a651-ae43e8180632",
+        "required": false,
+        "options": [
+          "[]"
+        ],
+        "order": 0,
+        "organization_id": null,
+        "fields": []
+      },
+      {
+        "uuid": "aac45464-f87a-4410-99f4-1d4472e79fe5",
+        "name": "Coral Dropped",
+        "field_type": "small_number",
+        "stat_type": "teleop_miss",
+        "game_piece_id": "9d73ace4-e32b-42ef-a651-ae43e8180632",
+        "required": false,
+        "options": [
+          "[]"
+        ],
+        "order": 0,
+        "organization_id": null,
+        "fields": []
+      },
+      {
+        "uuid": "5a6bc516-4e63-456b-9a13-b325d72b966a",
+        "name": "Algae Removed",
+        "field_type": "small_number",
+        "stat_type": "teleop_score",
+        "game_piece_id": "49e7403b-7b61-4347-8082-6f72b907d2e2",
+        "required": false,
+        "options": [
+          "[]"
+        ],
+        "order": 0,
+        "organization_id": null,
+        "fields": []
+      },
+      {
+        "uuid": "2088d426-83fd-488b-80b0-8cc618e8eec8",
+        "name": "Algae Scored in Net",
+        "field_type": "small_number",
+        "stat_type": "teleop_score",
+        "game_piece_id": "9d73ace4-e32b-42ef-a651-ae43e8180632",
+        "required": false,
+        "options": [
+          "[]"
+        ],
+        "order": 0,
+        "organization_id": null,
+        "fields": []
+      },
+      {
+        "uuid": "6832ebd3-1042-4732-8591-a1503ec1bcbd",
+        "name": "Algae Scored in Processor",
+        "field_type": "small_number",
+        "stat_type": "teleop_score",
+        "game_piece_id": "9d73ace4-e32b-42ef-a651-ae43e8180632",
+        "required": false,
+        "options": [
+          "[]"
+        ],
+        "order": 0,
+        "organization_id": null,
+        "fields": []
+      },
+      {
+        "uuid": "1c82e09f-5d30-45d5-9386-2cdc747ed74e",
+        "name": "Algae Score Failed",
+        "field_type": "small_number",
+        "stat_type": "teleop_miss",
+        "game_piece_id": "49e7403b-7b61-4347-8082-6f72b907d2e2",
+        "required": false,
+        "options": [
+          "[]"
+        ],
+        "order": 0,
+        "organization_id": null,
+        "fields": []
+      }
+    ]
+  },
+  {
+    "uuid": "794c0509-d2d0-446c-b0fc-e3ebc08aed0f",
+    "name": "Extra Information",
+    "field_type": "section",
+    "stat_type": "section",
+    "game_piece_id": null,
+    "required": false,
+    "options": [
+      "[]"
+    ],
+    "order": 0,
+    "organization_id": null,
+    "fields": [
+      {
+        "uuid": "a95dcbaa-c8b7-457c-9f65-3ced8ef20435",
+        "name": "Coral Levels",
+        "field_type": "multiple_choice",
+        "stat_type": "capability",
+        "game_piece_id": null,
+        "required": false,
+        "options": [
+          "[{\"id\":\"6b7eb23c-4f80-44f9-b2d4-d8ce991508d4\",\"name\":\"Level 1\"},{\"id\":\"3cb8ae3c-f88b-4a07-927a-dbe87fc896bb\",\"name\":\"Level 2\"},{\"id\":\"15bdc381-87a1-4039-aa9e-958d7987cf69\",\"name\":\"Level 3\"},{\"id\":\"b4ecc002-2a50-47e3-b211-6224f6653aaf\",\"name\":\"Level 4\"}]"
+        ],
+        "order": 0,
+        "organization_id": null,
+        "fields": []
+      },
+      {
+        "uuid": "31ad281a-34b0-4acd-a899-1b7bd68ec5cb",
+        "name": "Feeder Station Pickup",
+        "field_type": "boolean",
+        "stat_type": "capability",
+        "game_piece_id": null,
+        "required": false,
+        "options": [
+          "[]"
+        ],
+        "order": 0,
+        "organization_id": null,
+        "fields": []
+      },
+      {
+        "uuid": "89ea0226-e3bc-4103-8f11-05fa738caa45",
+        "name": "End Location",
+        "field_type": "multiple_choice",
+        "stat_type": "capability",
+        "game_piece_id": null,
+        "required": false,
+        "options": [
+          "[{\"id\":\"c012935b-adfc-46d6-a384-2c9c8a5ccb71\",\"name\":\"Barge Zone\"},{\"id\":\"e0bd74e2-4d51-4a4e-88cc-14bb14ff9f7c\",\"name\":\"Shallow Cage\"},{\"id\":\"7c3849ab-171b-4ac5-9c56-852ca9fae058\",\"name\":\"Deep Cage\"}]"
+        ],
+        "order": 0,
+        "organization_id": null,
+        "fields": []
+      },
+      {
+        "uuid": "1debe743-346e-475c-8f04-a1366e8960f2",
+        "name": "Driver Skill",
+        "field_type": "choice",
+        "stat_type": "capability",
+        "game_piece_id": null,
+        "required": false,
+        "options": [
+          "[{\"id\":\"ffd06917-1562-444f-8c7a-5505eb268092\",\"name\":\"1 - Poor\"},{\"id\":\"2b580654-82e7-49bc-b852-9cb22799d39d\",\"name\":\"2 - Okay\"},{\"id\":\"dec8cccb-6e89-4594-9181-634c79834220\",\"name\":\"3 - Decent\"},{\"id\":\"059d0ed4-88fa-4514-a25c-c0426817d469\",\"name\":\"4 - Good\"},{\"id\":\"ebb4856b-b74c-45ba-8279-878592f6e209\",\"name\":\"5 - Great\"}]"
+        ],
+        "order": 0,
+        "organization_id": null,
+        "fields": []
+      },
+      {
+        "uuid": "7b5f7978-95af-4281-9281-2ea9ae13e9a4",
+        "name": "Defense",
+        "field_type": "choice",
+        "stat_type": "capability",
+        "game_piece_id": null,
+        "required": false,
+        "options": [
+          "[{\"id\":\"6249438b-b3fa-408b-a18a-bb1a4a2bd4be\",\"name\":\"1 - Poor\"},{\"id\":\"71b27e53-fde9-47e2-b0df-d91a5250f80d\",\"name\":\"2 - Okay\"},{\"id\":\"b928c352-640d-4f1d-ace3-c1490f4ce5e3\",\"name\":\"3 - Decent\"},{\"id\":\"161db35a-c059-496a-a005-bfcd25cd9469\",\"name\":\"4 - Good\"},{\"id\":\"24c64c68-3355-4b4f-b5bc-6902deb86cf8\",\"name\":\"5 - Great\"}]"
+        ],
+        "order": 0,
+        "organization_id": null,
+        "fields": []
+      },
+      {
+        "uuid": "96db2854-7e29-4f56-8525-e8b316b6fd6f",
+        "name": "Penalties",
+        "field_type": "choice",
+        "stat_type": "capability",
+        "game_piece_id": null,
+        "required": false,
+        "options": [
+          "[{\"id\":\"595a95ab-0726-4c06-828b-e0389de570bc\",\"name\":\"Minor Foul\"},{\"id\":\"f3043a69-e234-4aaf-851f-d62f05e6af1f\",\"name\":\"Major Foul\"},{\"id\":\"ed52fa1d-dd6f-433b-a2c9-9aedc9b60537\",\"name\":\"Yellow Card\"},{\"id\":\"70a19a5e-1040-41e4-ac9d-647c7758a3bc\",\"name\":\"Red Card\"}]"
+        ],
+        "order": 0,
+        "organization_id": null,
+        "fields": []
+      },
+      {
+        "uuid": "e1f9f0cf-39a1-4519-b82b-3eebb03498fc",
+        "name": "Robot was damaged and/or disabled during the match",
+        "field_type": "boolean",
+        "stat_type": "capability",
+        "game_piece_id": null,
+        "required": false,
+        "options": [
+          "[]"
+        ],
+        "order": 0,
+        "organization_id": null,
+        "fields": []
+      }
+    ]
+  },
+  {
+    "uuid": "53c6f740-3002-42c5-a546-ea714a10fe72",
+    "name": "Additional Notes",
+    "field_type": "section",
+    "stat_type": "section",
+    "game_piece_id": null,
+    "required": false,
+    "options": [
+      "[]"
+    ],
+    "order": 0,
+    "organization_id": null,
+    "fields": [
+      {
+        "uuid": "dc7a7e9d-709a-4d9f-96f5-d57806e39482",
+        "name": "Additional Notes or Comments",
+        "field_type": "string",
+        "stat_type": "other",
+        "game_piece_id": null,
+        "required": false,
+        "options": [
+          "[]"
+        ],
+        "order": 0,
+        "organization_id": null,
+        "fields": []
+      }
+    ]
+  }
+]
