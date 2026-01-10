@@ -561,6 +561,14 @@ async def get_pit_fields(season_uuid: str):
     fields = await PitScoutingField.filter(season=season)
     return fields
 
+@app.delete("/pits/fields/{season_uuid}/clear")
+async def clear_pit_fields(season_uuid: str, current_user: User = Depends(get_current_user)):
+    season = await Season.get_or_none(uuid=season_uuid)
+    if not season:
+        raise HTTPException(status_code=404, detail="Season not found")
+    await PitScoutingField.filter(season=season).delete()
+    return {"message": "Fields cleared"}
+
 @app.post("/pits/fields/{season_uuid}/create")
 async def create_pit_field(
     season_uuid: str,
