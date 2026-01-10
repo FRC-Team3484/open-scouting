@@ -384,8 +384,17 @@ async def create_season_field(
     if stat_type == "auton_score" or stat_type == "auton_miss" or stat_type == "teleop_score" or stat_type == "teleop_miss":
         game_piece = await GamePiece.get_or_none(uuid=game_piece_uuid)
         if not game_piece:
-            print(game_piece_uuid)
-            raise HTTPException(status_code=404, detail="Game piece not found")
+            
+            # Temporary hack to try and repair game pieces for imported fields
+            # TODO: Replace this later for proper game piece repairing in the edit dialog
+            game_pieces = await GamePiece.all()
+            matching_game_pieces = [gp for gp in game_pieces if any(word in name.split() for word in gp.name.split())]
+            
+            if matching_game_pieces:
+                print("WARNING: Game piece not found. Using closest match based on field name: " + matching_game_pieces[0].name)
+                game_piece = matching_game_pieces[0]
+            else:
+                raise HTTPException(status_code=404, detail="Game piece not found")
     else:
         game_piece = None
 
