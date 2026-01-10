@@ -119,7 +119,7 @@
         await db.match_scouting.add({
             uuid: crypto.randomUUID(),
             data: filteredFields,
-            user_uuid: user.uuid ?? "",
+            user_uuid: user?.uuid ?? "",
             year: event_data.year,
             team_number: parseInt(formData.get("team_number")),
             match_number: parseInt(formData.get("match_number")),
