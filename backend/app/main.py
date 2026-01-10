@@ -506,9 +506,12 @@ async def submit_match_scouting(
 ):
     fields = json.loads(fields)
 
-    user = await User.get_or_none(uuid=user_uuid)
-    if not user:
-        user = None # Sets the user to none if not a user. This should probably be the user's username later
+    if user_uuid != "":
+        user = await User.get_or_none(uuid=user_uuid)
+        if not user:
+            user = None # Sets the user to none if not a user. This should probably be the user's username later
+    else:
+        user = None
 
     season = await Season.get_or_none(year=year)
     if not season:
