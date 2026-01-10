@@ -57,6 +57,7 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [ ] Make type-safe
   - [ ] Organize imports
   - [ ] Add comments
+- [ ] Correctly handle when match scouting fields or pit scouting questions are deleted by the admin
 - [ ] Import legacy match scouting data from v1.0.0
 - [ ] Deprecate `open-scouting-utils` repo
 - [ ] Update doc in `FRC-Team3484/docs` for how to maintain Open Scouting
@@ -72,7 +73,6 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [ ] Be able to sync pit scouting data from the local data management drawer
 - [x] Menu drawers are not scrollable on smaller screens
 - [x] Fix logo squashing on smaller screens
-- [ ] Correctly handle when match scouting fields or pit scouting questions are deleted by the admin
 - [ ] When a new pit is created from multiple clients when pit scouting, make sure duplicate pits aren't created
 - [x] Multiple choice fields don't show options when match scouting
 - [ ] Boolean fields don't reset properly when match scouting
