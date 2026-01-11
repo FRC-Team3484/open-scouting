@@ -174,3 +174,93 @@ reefscape = [
         "answers": [],
     },
 ]
+
+# ----------
+# 2026
+# ----------
+rebuilt = [
+    {
+        "text": _("What is your drivetrain?"),
+        "simple_name": "drivetrain",
+        "type": "choice",
+        "choices": [
+            (_("Swerve"), "swerve"),
+            (_("Tank"), "tank"),
+            (_("Other"), "other"),
+        ],
+        "answers": [],
+    },
+    {
+        "text": _("Can your robot score coral in the reef?"),
+        "simple_name": "reef",
+        "type": "boolean",
+        "answers": [],
+    },
+    {
+        "text": _("Can your robot remove algae from the reef?"),
+        "simple_name": "remove_algae",
+        "type": "boolean",
+        "answers": [],
+    },
+    {
+        "text": _("Can your robot score algae in the net?"),
+        "simple_name": "net",
+        "type": "boolean",
+        "answers": [],
+    },
+    {
+        "text": _("Can your robot score algae in the processor?"),
+        "simple_name": "processor",
+        "type": "boolean",
+        "answers": [],
+    },
+    {
+        "text": _("Can your robot climb?"),
+        "simple_name": "climb",
+        "type": "choice",
+        "choices": [
+            (_("No"), "no"),
+            (_("Shallow Cage"), "shallow_cage"),
+            (_("Deep Cage"), "deep_cage"),
+        ],
+        "answers": [],
+    },
+    {
+        "text": _("Do you have autos?"),
+        "simple_name": "auton",
+        "type": "boolean",
+        "answers": [],
+    },
+    {
+        "text": _("If so, how many pieces can you score in auto?"),
+        "simple_name": "auton_pieces",
+        "type": "number",
+        "answers": [],
+    },
+    {
+        "text": _("How often do you meet in build season?"),
+        "simple_name": "meeting_frequency",
+        "type": "text",
+        "answers": [],
+    },
+    {
+        "text": _("Which CAD software do you use?"),
+        "simple_name": "cad",
+        "type": "text",
+        "answers": [],
+    },
+    {
+        "text": _("How long does your team strategize for?"),
+        "simple_name": "strategize_time",
+        "type": "text",
+        "answers": [],
+    },
+    {
+        "text": _(
+            "How long does it take before you're building and assembling your robot?"
+        ),
+        "simple_name": "build_time",
+        "type": "text",
+        "answers": [],
+    },
+]

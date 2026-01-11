@@ -36,6 +36,8 @@ def get_pit_scouting_questions_from_year(year):
         return pit_scouting_questions.crescendo
     elif year == "2025":
         return pit_scouting_questions.reefscape
+    elif year == "2026":
+        return pit_scouting_questions.rebuilt
     else:
         return None
 

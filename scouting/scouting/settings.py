@@ -21,7 +21,7 @@ from django.utils.translation import gettext_lazy as _
 SERVER_VERSION = "v1.1.2"
 
 # Change this when setting up a new season!
-YEARS = [(2024, "2024"), (2025, "2025")]
+YEARS = [(2024, "2024"), (2025, "2025"), (2026, "2026")]
 
 
 env = environ.Env(
