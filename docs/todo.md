@@ -80,5 +80,5 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [ ] Use IDs for choice and multiple choice fields for translations
 - [ ] Fields can't be edited in production
 - [x] Increase mobile readability
-- [ ] Hide favorite events when not signed in
+- [x] Hide favorite events when not signed in
 - [ ] Be able to make a season active

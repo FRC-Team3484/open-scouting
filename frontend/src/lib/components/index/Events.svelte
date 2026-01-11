@@ -9,7 +9,7 @@
 	import Label from "../ui/label/label.svelte";
 	import Separator from "../ui/separator/separator.svelte";
 	import { CloudSlash, SquaresFour, Star } from "phosphor-svelte";
-	import { getUserSetting, setUserSetting } from "$lib/utils/user";
+	import { getUserSetting, setUserSetting, validateTokenOnline } from "$lib/utils/user";
 	import EventList from "./events/EventList.svelte";
 	import { db } from "$lib/utils/db";
 	import { Button } from "../ui/button";
@@ -24,6 +24,8 @@
 
     let search = $state("");
     let showPastEvents = $state(false);
+
+    let user = $state(null);
 
     let filteredEvents = $derived(events?.filter(event => {
         const searchValue = search.toLowerCase();
@@ -55,7 +57,10 @@
     onMount(async () => {
         getEvents();
 
-        favorite_events = await getUserSetting("favorite_events") ?? [];
+        user = await validateTokenOnline();
+        if (user) {
+            favorite_events = await getUserSetting("favorite_events") ?? [];
+        }
     });
 </script>
 
@@ -81,7 +86,9 @@
                 <div class="flex flex-row gap-2 items-center justify-between">
                     <Tabs.List>
                         <Tabs.Trigger value="all"><SquaresFour weight="bold" /> All Events</Tabs.Trigger>
-                        <Tabs.Trigger value="favorite"><Star weight="bold" /> Favorite Events</Tabs.Trigger>
+                        {#if user}
+                            <Tabs.Trigger value="favorite"><Star weight="bold" /> Favorite Events</Tabs.Trigger>
+                        {/if}
                     </Tabs.List>
                     
                     <Dialog.Root>
@@ -103,11 +110,14 @@
                 </div>
 
                 <Tabs.Content value="all">
-                    <EventList events={filteredEvents} favorite_events={favorite_events} handleNavigate={handleNavigate} setEvent={setEvent} favoriteEvent={favoriteEvent} favorites={false} />
+                    <EventList events={filteredEvents} favorite_events={favorite_events} handleNavigate={handleNavigate} setEvent={setEvent} favoriteEvent={favoriteEvent} favorites={false} signed_in={user ? true : false} />
                 </Tabs.Content>
-                <Tabs.Content value="favorite">
-                    <EventList events={filteredEvents} favorite_events={favorite_events} handleNavigate={handleNavigate} setEvent={setEvent} favoriteEvent={favoriteEvent} favorites={true} />
-                </Tabs.Content>
+
+                {#if user}
+                    <Tabs.Content value="favorite">
+                        <EventList events={filteredEvents} favorite_events={favorite_events} handleNavigate={handleNavigate} setEvent={setEvent} favoriteEvent={favoriteEvent} favorites={true} signed_in={user ? true : false} />
+                    </Tabs.Content>
+                {/if}
             </Tabs.Root>
         </div>
     </Card.Content>

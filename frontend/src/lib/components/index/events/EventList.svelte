@@ -12,6 +12,7 @@
     export let setEvent: (event_code: string, year: number, name: string) => void;
     export let favoriteEvent: (e: MouseEvent, eventData) => void;
     export let favorites = false;
+    export let signed_in = false;
 
     $: filteredEvents = favorites
         ? (events ?? []).filter(event => favorite_events.includes(`${event.year}_${event.event_code}`))
@@ -68,10 +69,12 @@
                                     <p class="text-sm">{event.end_date}</p>
                                 </div>
                                 <div class="flex flex-row gap-2">
-                                    {#if favorite_events.includes(`${event.year}_${event.event_code}`)}
-                                        <Button variant="ghost" size="icon" onclick={(e) => favoriteEvent(e, event)}><Star weight="fill" /></Button>
-                                    {:else}
-                                        <Button variant="ghost" size="icon" onclick={(e) => favoriteEvent(e, event)}><Star weight="bold" /></Button>
+                                    {#if signed_in}
+                                        {#if favorite_events.includes(`${event.year}_${event.event_code}`)}
+                                            <Button variant="ghost" size="icon" onclick={(e) => favoriteEvent(e, event)}><Star weight="fill" /></Button>
+                                        {:else}
+                                            <Button variant="ghost" size="icon" onclick={(e) => favoriteEvent(e, event)}><Star weight="bold" /></Button>
+                                        {/if}
                                     {/if}
                                     <Button variant="outline" onclick={(e) => {setEvent(event.event_code, event.year, event.name); handleNavigate("action")}}><ArrowRight weight="bold" /> Continue</Button>
                                 </div>
