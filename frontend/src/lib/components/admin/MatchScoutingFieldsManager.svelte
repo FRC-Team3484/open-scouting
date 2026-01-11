@@ -21,6 +21,7 @@
     async function get_seasons() {
         seasons = await apiFetch(`/seasons`);
         season_value = seasons.find((f) => f.active)?.uuid;
+        update_season_values(season_value);
     }
 
     function update_season_values(value: string) {

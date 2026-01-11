@@ -112,6 +112,13 @@
 
     onMount(async () => {
         getQuestions();
+    });
+
+    $effect(() => {
+        season_uuid;
+        year;
+
+        getQuestions();
     })
 </script>
 
@@ -168,6 +175,10 @@
             {/if}
         {/if}
     {/each}
+
+    {#if questions.length === 0}
+        <p class="text-muted-foreground">No questions found</p>
+    {/if}
 </div>
 
 <AddPitScoutingQuestionDialog getQuestions={getQuestions} seasonUuid={season_uuid}/>
