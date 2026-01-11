@@ -49,9 +49,9 @@
     });
 </script>
 
-<div class="flex flex-col gap-4 mt-4">
+<div class="flex flex-col gap-4 my-4">
     <div class="flex flex-col md:flex-row gap-4">
-        <Card.Root class="text-left">
+        <Card.Root class="text-left min-w-64">
             <Card.Header>
                 <Card.Title>Continue Without Account</Card.Title>
                 <Card.Description>Use Open Scouting without an account</Card.Description>
@@ -72,9 +72,11 @@
             </Card.Footer>
         </Card.Root>
 
-        <Card.Root class="text-left">
+        <p class="block md:hidden font-bold">Or...</p>
+
+        <Card.Root class="text-left min-w-64">
             <Card.Header>
-                <Card.Title>Authentication</Card.Title>
+                <Card.Title>Sign In</Card.Title>
                 <Card.Description>Use Open Scouting with an account</Card.Description>
             </Card.Header>
 

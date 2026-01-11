@@ -59,5 +59,5 @@
         <p class="text-muted-foreground">{user.username}</p>
     {/if}
 {:else}
-    <Button variant="outline" href="/authentication" class="w-full">Login</Button>
+    <Button variant="outline" href="/authentication">Login</Button>
 {/if}
