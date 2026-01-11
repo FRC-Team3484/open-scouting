@@ -105,8 +105,8 @@
             <Separator orientation="horizontal" />
 
             <div class="flex flex-row gap-2 flex-wrap">
-                <Button href="/start"><ArrowRight weight="bold" /> Start</Button>
-                <Button variant="outline" href="/"><House weight="bold" /> Home</Button>
+                <Drawer.Close><Button href="/start"><ArrowRight weight="bold" /> Start</Button></Drawer.Close>
+                <Drawer.Close><Button variant="outline" href="/"><House weight="bold" /> Home</Button></Drawer.Close>
                 <Button variant="outline" href="https://discord.gg/M3wESZUP35"><DiscordLogo weight="bold" /> Discord</Button>
                 <Button variant="outline" href="https://github.com/FRC-Team3484/open-scouting"><GithubLogo weight="bold" /> Source Code</Button>
                 <Button variant="outline" href="https://github.com/FRC-Team3484/open-scouting/issues"><Bug weight="bold" /> Issues</Button>

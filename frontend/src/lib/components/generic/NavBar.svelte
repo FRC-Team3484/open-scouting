@@ -49,9 +49,9 @@
                         <User show_text={true} />
                     </div>
                     <Separator orientation="horizontal" />
-                    <Button variant="outline" href="/">Home</Button>
-                    <Button variant="outline" href="/" disabled>View Data</Button>
-                    <Button variant="outline" href="/" disabled>Events</Button>
+                    <Drawer.Close><Button variant="outline" href="/" class="w-full">Home</Button></Drawer.Close>
+                    <Drawer.Close><Button variant="outline" href="/" class="w-full" disabled>View Data</Button></Drawer.Close>
+                    <Drawer.Close><Button variant="outline" href="/" class="w-full" disabled>Events</Button></Drawer.Close>
                 </div>
 
                 <ExperimentalWarning/>
