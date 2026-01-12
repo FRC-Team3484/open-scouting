@@ -20,7 +20,7 @@
 </script>
 
 <ScrollArea>
-    <div class="flex flex-col overflow-y-scroll max-h-128 md:max-h-256 bg-slate-800 p-4 rounded-md border-2 border-accent">
+    <div class="flex flex-col overflow-y-scroll max-h-128 md:max-h-256 bg-secondary p-4 rounded-md border-2 border-accent">
         {#if filteredEvents == null}
             {#each [0, 1, 2] as _}
                 <div class="flex flex-col gap-2 my-4">
