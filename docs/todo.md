@@ -39,20 +39,24 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [ ] Add summaries
 - [ ] Copy link to event
 - [ ] Create custom events
+  - [x] Backend functions
+  - [ ] Create UI for creating events
+  - [ ] Add custom events to the event list
 - [x] Host in experimental
   - [x] Switch to postgres for dev and prod
   - [x] Add database to docker compose
   - [ ] Use [umami](https://github.com/umami-software/umami) for page view analytics?
 - [x] Add link to Open Scouting v1.0.0 to try v2.0.0
+- [ ] Clean up backend
+  - [ ] Move routes to separate files
+  - [ ] Create initial support for API keys
+  - [ ] Properly secure routes, and only allow some routes to logged in users and superusers
+  - [ ] Add comments
 - [ ] Profile
   - [ ] Edit profile
   - [ ] Change password
   - [ ] Verification codes when enabled
   - [ ] Create API keys
-- [ ] Clean up backend
-  - [ ] Move routes to separate files
-  - [ ] Properly secure routes, and only allow some routes to logged in users and superusers
-  - [ ] Add comments
 - [ ] Clean up frontend
   - [ ] Make type-safe
   - [ ] Organize imports
@@ -81,4 +85,6 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [ ] Fields can't be edited in production
 - [x] Increase mobile readability
 - [x] Hide favorite events when not signed in
-- [ ] Be able to make a season active
+- [ ] Be able to make a season active in the admin page
+- [ ] Implement a better way to mark added fuel
+  - Small number fields can have an option for +1 / +5 / +10 buttons?
