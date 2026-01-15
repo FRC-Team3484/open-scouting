@@ -94,6 +94,7 @@ class Event(Model):
     start_date = fields.DateField(null=True)
     end_date = fields.DateField(null=True)
     pits_generated = fields.BooleanField(default=False)
+    custom = fields.BooleanField(default=False)
     created_at = fields.DatetimeField(auto_now_add=True)
 
 class MatchScoutingSubmission(Model):
