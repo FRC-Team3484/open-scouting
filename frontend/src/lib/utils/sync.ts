@@ -49,6 +49,7 @@ async function fetchEventData() {
                 country: eventsResponse[event].country,
                 start_date: eventsResponse[event].start_date,
                 end_date: eventsResponse[event].end_date,
+                custom: false,
                 fetch_time: new Date()
             });
         }
