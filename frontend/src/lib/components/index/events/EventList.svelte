@@ -5,6 +5,8 @@
 	import { ArrowRight, ArrowSquareOut, Star } from "phosphor-svelte";
 	import { Badge } from "$lib/components/ui/badge";
 	import Button from "$lib/components/ui/button/button.svelte";
+	import CreateCustomEventButton from "./CreateCustomEventButton.svelte";
+	import CreateCustomEventDialog from "$lib/components/generic/dialogs/CreateCustomEventDialog.svelte";
 
     export let events: any = null;
     export let favorite_events: [] = [];
@@ -41,8 +43,12 @@
                 </div>
             {/each}
         {:else if filteredEvents.length == 0}
+            <CreateCustomEventButton />
+                
             <p>No events found</p>
         {:else}
+            <CreateCustomEventButton />
+
             {#each filteredEvents as event}
                 <Card.Root class="w-full max-w-128 min-w-64 my-2">
                     <Card.Content>

@@ -16,6 +16,7 @@
     import * as Dialog from "../ui/dialog/index.js";
 	import { fetchEventData } from "$lib/utils/sync";
 	import { toast } from "svelte-sonner";
+	import CreateCustomEventDialog from "../generic/dialogs/CreateCustomEventDialog.svelte";
 
     let { handleNavigate, year, setEvent } = $props();
 
@@ -122,3 +123,5 @@
         </div>
     </Card.Content>
 </Card.Root>
+
+<CreateCustomEventDialog />
