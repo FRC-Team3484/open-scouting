@@ -57,6 +57,7 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [ ] Change password
   - [ ] Verification codes when enabled
   - [ ] Create API keys
+  - [ ] Profile picture management
 - [ ] Clean up frontend
   - [ ] Make type-safe
   - [ ] Organize imports
@@ -88,3 +89,5 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [ ] Be able to make a season active in the admin page
 - [ ] Implement a better way to mark added fuel
   - Small number fields can have an option for +1 / +5 / +10 buttons?
+- [x] Creating accounts from the frontend was never implemented
+- [ ] Use empty profile pictures instead of ones from GitHub
