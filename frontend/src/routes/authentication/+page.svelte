@@ -18,18 +18,38 @@
 
     const API_URL = env.PUBLIC_FAST_API_URL;
 
-    async function handleSubmit(e: Event) {
+    async function signIn(e: Event) {
         e.preventDefault();
         const form = e.currentTarget as HTMLFormElement;
         const formData = new FormData(form);
 
-        const endpoint = page === "signin" ? "/token" : "/auth/signup";
-        const res = await fetch(API_URL + endpoint, {
+        const res = await fetch(`${API_URL}/token`, {
             method: "POST",
             body: `username=${formData.get("username")}&password=${formData.get("password")}`,
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
             },
+        });
+
+        const data = await res.json();
+        message = data.message ?? data.detail;
+
+        if (res.ok) {
+            if (data.access_token) {
+                localStorage.setItem("access_token", data.access_token);
+                window.location.href = "/";
+            }
+        }
+    }
+
+    async function createAccount(e: Event) {
+        e.preventDefault();
+        const form = e.currentTarget as HTMLFormElement;
+        const formData = new FormData(form);
+
+        const res = await fetch(`${API_URL}/auth/signup`, {
+            method: "POST",
+            body: formData,
         });
 
         const data = await res.json();
@@ -64,7 +84,7 @@
         {/if}
 
         {#if page === "signin"}
-            <form class="flex flex-col gap-4 w-full" on:submit={handleSubmit}>
+            <form class="flex flex-col gap-4 w-full" on:submit={signIn}>
                 <Card.Root class="w-full">
                     <Card.Header>
                         <Card.Title>Sign In</Card.Title>
@@ -89,7 +109,7 @@
             </form>
 
         {:else if page === "signup"}
-            <form class="flex flex-col gap-4 w-full" on:submit={handleSubmit}>
+            <form class="flex flex-col gap-4 w-full" on:submit={createAccount}>
                 <Card.Root class="w-full">
                     <Card.Header>
                         <Card.Title>Create Account</Card.Title>
