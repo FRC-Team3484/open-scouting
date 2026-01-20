@@ -27,8 +27,8 @@
             <DropdownMenu.Trigger>
                 <Avatar.Root>
                     <!-- TODO: Actually load avatar from user account -->
-                    <Avatar.Image src={`https://github.com/${user.username}.png`} alt={user.username} />
-                    <Avatar.Fallback>{user.username}</Avatar.Fallback>
+                    <!-- <Avatar.Image src={`https://github.com/${user.username}.png`} alt={user.username} /> -->
+                    <Avatar.Fallback>{user.username.substring(0, 1)}</Avatar.Fallback>
                 </Avatar.Root>
             </DropdownMenu.Trigger>
             <DropdownMenu.Content class="w-56" align="start">
