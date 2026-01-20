@@ -91,3 +91,5 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - Small number fields can have an option for +1 / +5 / +10 buttons?
 - [x] Creating accounts from the frontend was never implemented
 - [x] Use empty profile pictures instead of ones from GitHub
+- [ ] Make `BaseDialog` a Drawer on smaller screens
+  - [ ] Also properly handle scrolling in both the dialog and drawer
