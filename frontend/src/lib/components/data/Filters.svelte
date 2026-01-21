@@ -20,11 +20,13 @@
 
         seasons = seasonsRequest.map((season) => ({
             label: `${season.year} - ${season.name}`,
-            value: season.year
+            value: season.year,
+            active: season.active
         }));
 
         if (!filters.year && seasons.length > 0) {
-            filters.year = seasons[0].value;
+            const activeSeason = seasons.find((s) => s.active);
+            filters.year = activeSeason ? activeSeason.value : seasons[0].value;
         }
     }
 
