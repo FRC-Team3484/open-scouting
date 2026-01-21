@@ -29,7 +29,7 @@
             <Button variant="default" id="pit" href={`/pit_scouting?year=${year}&event=${event.event_code}${user_string}`}><ListNumbers weight="bold" /> Pit Scouting</Button>
             <Label for="match">Contribute pit scouting data</Label>
 
-            <Button variant="default" id="data" disabled><Database weight="bold" /> View Data</Button>
+            <Button variant="default" id="data" href={`/data?year=${year}&event_codes=${event.event_code}`}><Database weight="bold" /> View Data</Button>
             <Label for="match">View data for this event</Label>
 
             <Button variant="outline" id="link" class="mt-6" disabled><Link weight="bold" /> Copy Link</Button>
