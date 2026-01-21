@@ -44,7 +44,7 @@ async function fetchEventData() {
                 year: seasonsResponse[season].year,
                 event_code: eventsResponse[event].event_code,
                 name: eventsResponse[event].name,
-                type: eventsResponse[event].type,
+                type: eventsResponse[event].event_type_string,
                 city: eventsResponse[event].city,
                 country: eventsResponse[event].country,
                 start_date: eventsResponse[event].start_date,

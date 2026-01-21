@@ -70,7 +70,7 @@
                                     {/if}
                                 </div>
                                 <div class="flex flex-row gap-2">
-                                    <p>{event.type}</p>
+                                    <p>{event.type.charAt(0).toUpperCase() + event.type.slice(1)}</p>
                                     <p>-</p>
                                     <p>{event.city},</p>
                                     <p>{event.country}</p>
