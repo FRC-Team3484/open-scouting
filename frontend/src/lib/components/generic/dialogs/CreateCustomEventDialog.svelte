@@ -2,14 +2,19 @@
 	import * as Field from "$lib/components/ui/field";
 	import Input from "$lib/components/ui/input/input.svelte";
 	import * as Select from "$lib/components/ui/select";
+	import * as Dialog from "$lib/components/ui/dialog";
 
 	import { createCustomEventDialogOpen } from "$lib/stores/dialog";
 	import { apiFetch } from "$lib/utils/api";
 	import { onMount } from "svelte";
 	import BaseDialog from "./BaseDialog.svelte";
 	import { get } from "svelte/store";
+	import Button from "$lib/components/ui/button/button.svelte";
 
-	let seasons: any = $state(null);
+	let seasons: any = $state([]);
+	let selectedSeasonLabel = $derived(
+		seasons.find((s) => s.uuid === selectedSeason)?.name ?? "Select Season"
+	)
 	const eventTypes = [
 		{ value: "district", label: "District" },
 		{ value: "regional", label: "Regional" },
@@ -21,7 +26,7 @@
 		eventTypes.find((et) => et.value === eventType)?.label ?? "Select Event Type"
 	)
 
-    let selectedSeason = $state({year: null, name: null, uuid: null});
+    let selectedSeason = $state("");
 	let eventName = $state("");
 	let eventType = $state("");
 	let eventCity = $state("");
@@ -39,8 +44,22 @@
         }
 	}
 
-	async function createCustomEvent() {
+	async function createCustomEvent(event: Event) {
+		event.preventDefault();
 
+		const form = event.currentTarget as HTMLFormElement;
+		const formData = new FormData(form);
+
+		formData.append("event_code", crypto.randomUUID());
+
+		console.log(formData)
+
+		const response = await apiFetch(`/event/custom/${selectedSeason}/create`, {
+			method: "POST",
+			data: formData,
+		});
+
+		console.log(response);
 	}
 
 	onMount(async () => {
@@ -49,25 +68,26 @@
 </script>
 
 <BaseDialog title={"Create Custom Event"} description={"Create a cuustom event when an event is missing on The Blue Alliance"} bind:open={$createCustomEventDialogOpen}>
-    <Field.Group class="gap-4">
-            <Field.Set class="flex flex-col gap-2">
-                <Field.Label>Season</Field.Label>
-                <Select.Root type="single" name="season" label="Season" required bind:value={selectedSeason}>
+	<form method="post" onsubmit={createCustomEvent} class="flex flex-col gap-4">
+		<Field.Group class="gap-4">
+			<Field.Set class="flex flex-col gap-2">
+				<Field.Label>Season</Field.Label>
+				<Select.Root type="single" name="season" label="Season" required bind:value={selectedSeason}>
 					<Select.Trigger>
-						{selectedSeason.year} - {selectedSeason.name}
+						{selectedSeasonLabel}
 					</Select.Trigger>
 					<Select.Content>
 						<Select.Label>Seasons</Select.Label>
 						{#each seasons as season}
-							<Select.Item value={{"year":season.year, "name":season.name, "uuid":season.uuid}} label={season.year + " - " + season.name} />
+							<Select.Item value={season.uuid} label={season.year + " - " + season.name} />
 						{/each}
 					</Select.Content>
 				</Select.Root>
-                <Field.Description>The season for when the event is held</Field.Description>
+				<Field.Description>The season for when the event is held</Field.Description>
 
 				<Field.Label>Event Name</Field.Label>
-				<Input type="text" name="name" placeholder="Event Name" bind:value={eventName} />
-                <Field.Description>The name of the event</Field.Description>
+				<Input type="text" name="event_name" placeholder="Event Name" bind:value={eventName} />
+				<Field.Description>The name of the event</Field.Description>
 
 				<Field.Label>Event Type</Field.Label>
 				<Select.Root type="single" name="event_type" label="Event Type" required bind:value={eventType}>
@@ -81,13 +101,13 @@
 						{/each}
 					</Select.Content>
 				</Select.Root>
-                <Field.Description>The type of event</Field.Description>
-            </Field.Set>
+				<Field.Description>The type of event</Field.Description>
+			</Field.Set>
 
 			<Field.Set class="flex flex-col gap-2">
 				<Field.Label>Country</Field.Label>
 				<Input type="text" name="event_country" placeholder="Country" bind:value={eventCountry} />
-                <Field.Description>The country where the event is located</Field.Description>
+				<Field.Description>The country where the event is located</Field.Description>
 
 				<Field.Label>City</Field.Label>
 				<Input type="text" name="event_city" placeholder="City" bind:value={eventCity} />
@@ -101,5 +121,11 @@
 				<Input type="date" name="event_end_date" placeholder="End Date" bind:value={eventEndDate} />
 				<Field.Description>The end date of the event</Field.Description>
 			</Field.Set>
-        </Field.Group>
+		</Field.Group>
+
+		<Dialog.Footer>
+			<Button type="button" variant="outline">Cancel</Button>
+			<Button type="submit">Create Event</Button>
+		</Dialog.Footer>
+	</form>
 </BaseDialog>
