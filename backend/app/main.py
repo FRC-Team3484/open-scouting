@@ -1108,11 +1108,11 @@ async def get_data(
 # Custom Events
 @app.get("/event/custom/{season_uuid}")
 async def get_custom_events(season_uuid: str):
-    season = Season.get_or_none(uuid=season_uuid)
+    season = await Season.get_or_none(uuid=season_uuid)
     if not season:
         raise HTTPException(status_code=404, detail="Season not found")
 
-    return Event.filter(season=season, custom=True)
+    return await Event.filter(season=season, custom=True)
 
 @app.post("/event/custom/{season_uuid}/create")
 async def create_custom_event(
