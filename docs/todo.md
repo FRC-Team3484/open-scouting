@@ -93,3 +93,4 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [x] Use empty profile pictures instead of ones from GitHub
 - [x] Make `BaseDialog` a Drawer on smaller screens
   - [x] Also properly handle scrolling in both the dialog and drawer
+- [ ] Have the application version hardcoded somewhere, instead of relying on the `.env`
