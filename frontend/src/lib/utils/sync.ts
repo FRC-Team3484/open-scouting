@@ -53,6 +53,24 @@ async function fetchEventData() {
                 fetch_time: new Date()
             });
         }
+
+        const customEventsResponse = await apiFetch(`/event/custom/${seasonsResponse[season].uuid}`);
+
+        for (const event in customEventsResponse) {
+            await db.event.put({
+                uuid: customEventsResponse[event].uuid,
+                year: seasonsResponse[season].year,
+                event_code: customEventsResponse[event].event_code,
+                name: customEventsResponse[event].name,
+                type: customEventsResponse[event].type,
+                city: customEventsResponse[event].city,
+                country: customEventsResponse[event].country,
+                start_date: customEventsResponse[event].start_date,
+                end_date: customEventsResponse[event].end_date,
+                custom: true,
+                fetch_time: new Date()
+            });
+        }
     }
 }
 

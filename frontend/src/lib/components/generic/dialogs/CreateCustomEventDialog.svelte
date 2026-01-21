@@ -10,6 +10,8 @@
 	import BaseDialog from "./BaseDialog.svelte";
 	import { get } from "svelte/store";
 	import Button from "$lib/components/ui/button/button.svelte";
+	import { db } from "$lib/utils/db";
+	import { toast } from "svelte-sonner";
 
 	let seasons: any = $state([]);
 	let selectedSeasonLabel = $derived(
@@ -52,14 +54,26 @@
 
 		formData.append("event_code", crypto.randomUUID());
 
-		console.log(formData)
-
 		const response = await apiFetch(`/event/custom/${selectedSeason}/create`, {
 			method: "POST",
 			data: formData,
 		});
 
-		console.log(response);
+		await db.event.put({
+			uuid: response.uuid,
+			year: selectedSeason.year,
+			event_code: response.event_code,
+			name: eventName,
+			type: eventType,
+			city: eventCity,
+			country: eventCountry,
+			start_date: eventStartDate,
+			end_date: eventEndDate,
+			custom: true,
+			fetch_time: new Date()
+		});
+
+		toast.success("Custom event created", { duration: 5000 });
 	}
 
 	onMount(async () => {
@@ -124,8 +138,10 @@
 		</Field.Group>
 
 		<Dialog.Footer>
-			<Button type="button" variant="outline">Cancel</Button>
-			<Button type="submit">Create Event</Button>
+			<Dialog.Close>
+				<Button type="button" variant="outline">Cancel</Button>
+				<Button type="submit">Create Event</Button>
+			</Dialog.Close>
 		</Dialog.Footer>
 	</form>
 </BaseDialog>
