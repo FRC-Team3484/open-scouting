@@ -1107,7 +1107,7 @@ async def get_data(
 
 # Custom Events
 @app.get("/event/custom/{season_uuid}")
-def get_custom_events(season_uuid: str):
+async def get_custom_events(season_uuid: str):
     season = Season.get_or_none(uuid=season_uuid)
     if not season:
         raise HTTPException(status_code=404, detail="Season not found")
@@ -1115,7 +1115,7 @@ def get_custom_events(season_uuid: str):
     return Event.filter(season=season, custom=True)
 
 @app.post("/event/custom/{season_uuid}/create")
-def create_custom_event(
+async def create_custom_event(
     season_uuid: str,
 
     event_code: str = Form(...),
@@ -1124,15 +1124,15 @@ def create_custom_event(
     event_city: str = Form(...),
     event_country: str = Form(...),
     event_start_date: str = Form(...),
-    event_end_date: str = Form(...),
+    event_end_date: str = Form(...)
     
     ):
     
-    season = Season.get_or_none(uuid=season_uuid)
+    season = await Season.get_or_none(uuid=season_uuid)
     if not season:
         raise HTTPException(status_code=404, detail="Season not found")
 
-    event, _ = Event.get_or_create(
+    event, _ = await Event.get_or_create(
         season=season,
         event_code=event_code,
         name=event_name,
