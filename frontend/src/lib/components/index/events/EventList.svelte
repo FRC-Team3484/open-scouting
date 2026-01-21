@@ -2,11 +2,10 @@
 	import ScrollArea from "$lib/components/ui/scroll-area/scroll-area.svelte";
 	import Skeleton from "$lib/components/ui/skeleton/skeleton.svelte";
     import * as Card from "$lib/components/ui/card/index.js";
-	import { ArrowRight, ArrowSquareOut, Star } from "phosphor-svelte";
+	import { ArrowRight, ArrowSquareOut, Star, Wrench } from "phosphor-svelte";
 	import { Badge } from "$lib/components/ui/badge";
 	import Button from "$lib/components/ui/button/button.svelte";
 	import CreateCustomEventButton from "./CreateCustomEventButton.svelte";
-	import CreateCustomEventDialog from "$lib/components/generic/dialogs/CreateCustomEventDialog.svelte";
 
     export let events: any = null;
     export let favorite_events: [] = [];
@@ -58,13 +57,20 @@
                                     {#if favorite_events.includes(`${event.year}_${event.event_code}`)}
                                         <Badge variant="default" class="max-h-5 bg-yellow-500"><Star weight="fill" /></Badge>
                                     {/if}
-                                    <Badge variant="secondary" class="max-h-5"><ArrowSquareOut weight="bold" />TBA</Badge>
+
+                                    {#if event.custom == true}
+                                        <Badge variant="secondary" class="max-h-5 !bg-rose-500"><Wrench weight="fill" /> Custom</Badge>
+                                    {:else}
+                                        <Badge variant="secondary" class="max-h-5 !bg-blue-500"><ArrowSquareOut weight="bold" />TBA</Badge>
+                                    {/if}
 
                                     <p class="font-bold">{event.name}</p>
-                                    <p class="font-mono text-muted-foreground">{event.event_code}</p>
+                                    {#if event.custom == false}
+                                        <p class="font-mono text-muted-foreground overflow-hidden">{event.event_code}</p>
+                                    {/if}
                                 </div>
                                 <div class="flex flex-row gap-2">
-                                    <p>{event.event_type_string}</p>
+                                    <p>{event.type}</p>
                                     <p>-</p>
                                     <p>{event.city},</p>
                                     <p>{event.country}</p>
