@@ -38,10 +38,10 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [ ] Be able to export data
   - [ ] Add summaries
 - [ ] Copy link to event
-- [ ] Create custom events
+- [x] Create custom events
   - [x] Backend functions
-  - [ ] Create UI for creating events
-  - [ ] Add custom events to the event list
+  - [x] Create UI for creating events
+  - [x] Add custom events to the event list
 - [x] Host in experimental
   - [x] Switch to postgres for dev and prod
   - [x] Add database to docker compose

@@ -42,7 +42,7 @@
         seasons = response;
         const active_year = seasons.find(year => year.active);
         if (active_year) {
-            selectedSeason = {year: active_year.year, name: active_year.name, uuid: active_year.uuid};
+            selectedSeason = active_year.uuid;
         }
 	}
 
@@ -140,7 +140,7 @@
 		<Dialog.Footer>
 			<Dialog.Close>
 				<Button type="button" variant="outline">Cancel</Button>
-				<Button type="submit">Create Event</Button>
+				<Button type="submit" disabled={!selectedSeason || !eventName || !eventType || !eventCity || !eventCountry || !eventStartDate || !eventEndDate}>Create Event</Button>
 			</Dialog.Close>
 		</Dialog.Footer>
 	</form>
