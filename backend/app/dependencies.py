@@ -15,3 +15,8 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
     if not user:
         raise HTTPException(status_code=401, detail="User not found")
     return user
+
+async def require_user(
+    user: User = Depends(get_current_user),
+) -> User:
+    return user
