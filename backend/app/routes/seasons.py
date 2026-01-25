@@ -1,30 +1,37 @@
-from fastapi import APIRouter, Depends, Form, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 
 from ..dependencies import get_current_user
 from ..models import Season, User
+from ..schemas.seasons import MessageOut, SeasonCreate, SeasonOut
 
 
 router: APIRouter = APIRouter()
 
-@router.get("/seasons")
-async def get_seasons():
-    seasons = await Season.all()
-    return seasons
+@router.get("/seasons", response_model=list[SeasonOut])
+async def get_seasons() -> list[Season]:
+    return await Season.all()
 
-@router.get("/seasons/active")
-async def get_active_season():
-    season = await Season.get_or_none(active=True)
-    return season
+@router.get("/seasons/active", response_model=SeasonOut | None)
+async def get_active_season() -> Season | None:
+    return await Season.get_or_none(active=True)
 
-@router.post("/seasons/create")
-async def create_season(year: int = Form(...), name: str = Form(...), active: bool = Form(...), current_user: User = Depends(get_current_user)):
-    season = await Season.create(year=year, name=name, active=active)
-    return season
+@router.post("/seasons/create", response_model=SeasonOut)
+async def create_season(
+    data: SeasonCreate,
+    current_user: User = Depends(get_current_user),
+    ) -> Season:
 
-@router.delete("/seasons/delete/{season_uuid}")
-async def delete_season(season_uuid: str, current_user: User = Depends(get_current_user)):
-    season = await Season.get_or_none(uuid=season_uuid)
+    return await Season.create(**data.model_dump())
+
+@router.delete("/seasons/delete/{season_uuid}", response_model=MessageOut)
+async def delete_season(
+    season_uuid: str,
+    current_user: User = Depends(get_current_user),
+    ) -> dict[str, str]:
+
+    season: Season | None = await Season.get_or_none(uuid=season_uuid)
     if not season:
         raise HTTPException(status_code=404, detail="Season not found")
+
     await season.delete()
     return {"message": "Season deleted"}
