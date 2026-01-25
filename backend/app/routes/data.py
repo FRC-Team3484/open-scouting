@@ -1,7 +1,6 @@
-from ast import List
 from collections import defaultdict
 import json
-from typing import Optional
+
 from fastapi import APIRouter, HTTPException, Query
 
 from ..models import MatchScoutingAnswer, MatchScoutingField, MatchScoutingSubmission, Season, TeamPit
@@ -12,8 +11,8 @@ router: APIRouter = APIRouter()
 @router.get("/data/filters")
 async def get_data_filters(
     year: int,
-    event_codes: Optional[List[str]] = Query(None),
-    team_numbers: Optional[List[int]] = Query(None),
+    event_codes: list[str] | None = Query(None),
+    team_numbers: list[str] | None = Query(None),
     ):
     """
     For a year, list of event codes, and list of team numbers, return a JSON object 
@@ -57,8 +56,8 @@ async def get_data_filters(
 @router.get("/data/get")
 async def get_data(
     year: int,
-    event_codes: Optional[List[str]] = Query(None),
-    team_numbers: Optional[List[int]] = Query(None),
+    event_codes: list[str] | None = Query(None),
+    team_numbers: list[str] | None = Query(None),
 ):
     """
     Given a year, event codes, and team numbers, return the data that matches those filters
