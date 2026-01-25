@@ -1,13 +1,7 @@
-from uuid import UUID
-from datetime import date, datetime
-
-from typing import Any, override
+from typing import override
 
 from tortoise import fields
 from tortoise.models import Model
-from tortoise.fields.base import Field
-from tortoise.fields.relational import ForeignKeyRelation
-
 # Authentication
 class User(Model):
     """
@@ -21,12 +15,12 @@ class User(Model):
         is_superuser (bool): Whether the user is a superuser
         created_at (datetime): The date and time the user was created
     """
-    uuid: Field[UUID] = fields.UUIDField(pk=True)
-    username: Field[str] = fields.CharField(max_length=255, unique=True)
-    email: Field[str] = fields.CharField(max_length=255, unique=True)
-    hashed_password: Field[str] = fields.CharField(max_length=255)
-    is_superuser: Field[bool] = fields.BooleanField(default=False)
-    created_at: Field[datetime] = fields.DatetimeField(auto_now_add=True)
+    uuid = fields.UUIDField(pk=True)
+    username = fields.CharField(max_length=255, unique=True)
+    email = fields.CharField(max_length=255, unique=True)
+    hashed_password = fields.CharField(max_length=255)
+    is_superuser = fields.BooleanField(default=False)
+    created_at = fields.DatetimeField(auto_now_add=True)
 
     @override
     def __str__(self) -> str:
@@ -42,10 +36,10 @@ class Profile(Model):
         display_name (str): The display name of the user
         team_number (int): The team number of the user
     """
-    uuid: Field[UUID] = fields.UUIDField(pk=True)
-    user: ForeignKeyRelation[User] = fields.ForeignKeyField("models.User", related_name="profiles")
-    display_name: Field[str] = fields.CharField(max_length=255)
-    team_number: Field[int] = fields.IntField(null=True)
+    uuid = fields.UUIDField(pk=True)
+    user = fields.ForeignKeyField("models.User", related_name="profiles")
+    display_name = fields.CharField(max_length=255)
+    team_number = fields.IntField(null=True)
 
     @override
     def __str__(self) -> str:
@@ -62,10 +56,10 @@ class Organization(Model):
         description (str): The description of the organization
         created_at (datetime): The date and time the organization was created
     """
-    uuid: Field[UUID] = fields.UUIDField(pk=True)
-    name: Field[str] = fields.CharField(max_length=255)
-    description: Field[str] = fields.TextField(null=True)
-    created_at: Field[datetime] = fields.DatetimeField(auto_now_add=True)
+    uuid = fields.UUIDField(pk=True)
+    name = fields.CharField(max_length=255)
+    description = fields.TextField(null=True)
+    created_at = fields.DatetimeField(auto_now_add=True)
 
 class OrganizationMember(Model):
     """
@@ -78,11 +72,11 @@ class OrganizationMember(Model):
         role (str): The role of the member in the organization
         created_at (datetime): The date and time the organization member was created
     """
-    uuid: Field[UUID] = fields.UUIDField(pk=True)
-    organization: ForeignKeyRelation[Organization] = fields.ForeignKeyField("models.Organization", related_name="members")
-    user: ForeignKeyRelation[User] = fields.ForeignKeyField("models.User", related_name="organizations")
-    role: Field[str] = fields.CharField(max_length=255) # member, admin
-    created_at: Field[datetime] = fields.DatetimeField(auto_now_add=True)
+    uuid = fields.UUIDField(pk=True)
+    organization = fields.ForeignKeyField("models.Organization", related_name="members")
+    user = fields.ForeignKeyField("models.User", related_name="organizations")
+    role = fields.CharField(max_length=255) # member, admin
+    created_at = fields.DatetimeField(auto_now_add=True)
 
 class Settings(Model):
     """
@@ -96,9 +90,9 @@ class Settings(Model):
         user (User): The user the settings are associated with
         favorite_events (list): The list of favorite events for the user
     """
-    uuid: Field[UUID] = fields.UUIDField(pk=True)
-    user: ForeignKeyRelation[User] = fields.ForeignKeyField("models.User", related_name="settings")
-    favorite_events: Field[Any] = fields.JSONField(null=True, default=list)
+    uuid = fields.UUIDField(pk=True)
+    user = fields.ForeignKeyField("models.User", related_name="settings")
+    favorite_events = fields.JSONField(null=True, default=list)
 
 # Main
 class Season(Model):
@@ -112,11 +106,11 @@ class Season(Model):
         active (bool): Whether the season is active or not
         created_at (datetime): The date and time the season was created
     """
-    uuid: Field[UUID] = fields.UUIDField(pk=True)
-    year: Field[int] = fields.IntField()
-    name: Field[str] = fields.CharField(max_length=255)
-    active: Field[bool] = fields.BooleanField(default=True)
-    created_at: Field[datetime] = fields.DatetimeField(auto_now_add=True)
+    uuid = fields.UUIDField(pk=True)
+    year = fields.IntField()
+    name = fields.CharField(max_length=255)
+    active = fields.BooleanField(default=True)
+    created_at = fields.DatetimeField(auto_now_add=True)
 
     # Deactivate all other seasons if this one is saved as active
     @override
@@ -136,10 +130,10 @@ class GamePiece(Model):
         name (str): The name of the game piece
         created_at (datetime): The date and time the game piece was created
     """
-    uuid: Field[UUID] = fields.UUIDField(pk=True)
-    season: ForeignKeyRelation[Season] = fields.ForeignKeyField("models.Season", related_name="game_pieces")
-    name: Field[str] = fields.CharField(max_length=255)
-    created_at: Field[datetime] = fields.DatetimeField(auto_now_add=True)
+    uuid = fields.UUIDField(pk=True)
+    season = fields.ForeignKeyField("models.Season", related_name="game_pieces")
+    name = fields.CharField(max_length=255)
+    created_at = fields.DatetimeField(auto_now_add=True)
 
 class MatchScoutingField(Model):
     """
@@ -159,18 +153,18 @@ class MatchScoutingField(Model):
         organization (Organization): The organization the match scouting field is associated with
         created_at (datetime): The date and time the match scouting field was created
     """
-    uuid: Field[UUID] = fields.UUIDField(pk=True)
-    parent: ForeignKeyRelation[MatchScoutingField] | None = fields.ForeignKeyField("models.MatchScoutingField", related_name="children", null=True)
-    season: ForeignKeyRelation[Season] = fields.ForeignKeyField("models.Season", related_name="fields")
-    name: Field[str] = fields.CharField(max_length=255)
-    field_type: Field[str] = fields.CharField(max_length=255) # section, string, large_number, small_number, boolean, choice, multiple_choice
-    stat_type: Field[str] = fields.CharField(max_length=255) # section, auton_score, auton_miss, teleop_score, teleop_miss, capability, other, ignore
-    game_piece: ForeignKeyRelation[GamePiece] | None = fields.ForeignKeyField("models.GamePiece", related_name="fields", null=True) # needed if stat_type is score or miss
-    required: Field[bool] = fields.BooleanField(default=False)
-    options: Field[Any] = fields.JSONField(null=True, default=list) # For integer maximum and minimums, choices, etc.
-    order: Field[int] = fields.IntField(default=0) # The order the field should appear in the frontend or section
-    organization: ForeignKeyRelation[Organization] | None = fields.ForeignKeyField("models.Organization", related_name="scouting_fields", null=True) # Optional, used if the field is specific to an organization
-    created_at: Field[datetime] = fields.DatetimeField(auto_now_add=True)
+    uuid = fields.UUIDField(pk=True)
+    parent = fields.ForeignKeyField("models.MatchScoutingField", related_name="children", null=True)
+    season = fields.ForeignKeyField("models.Season", related_name="fields")
+    name = fields.CharField(max_length=255)
+    field_type = fields.CharField(max_length=255) # section, string, large_number, small_number, boolean, choice, multiple_choice
+    stat_type = fields.CharField(max_length=255) # section, auton_score, auton_miss, teleop_score, teleop_miss, capability, other, ignore
+    game_piece = fields.ForeignKeyField("models.GamePiece", related_name="fields", null=True) # needed if stat_type is score or miss
+    required = fields.BooleanField(default=False)
+    options = fields.JSONField(null=True, default=list) # For integer maximum and minimums, choices, etc.
+    order = fields.IntField(default=0) # The order the field should appear in the frontend or section
+    organization = fields.ForeignKeyField("models.Organization", related_name="scouting_fields", null=True) # Optional, used if the field is specific to an organization
+    created_at = fields.DatetimeField(auto_now_add=True)
 
 class Event(Model):
     """
@@ -193,18 +187,18 @@ class Event(Model):
         custom (bool): Whether the event is a custom event or not
         created_at (datetime): The date and time the event was created
     """
-    uuid: Field[UUID] = fields.UUIDField(pk=True)
-    season: ForeignKeyRelation[Season] = fields.ForeignKeyField("models.Season", related_name="events")
-    event_code: Field[str] = fields.CharField(max_length=255)
-    name: Field[str] = fields.CharField(max_length=255)
-    type: Field[str] = fields.CharField(max_length=255)
-    city: Field[str] = fields.CharField(max_length=255)
-    country: Field[str] = fields.CharField(max_length=255)
-    start_date: Field[date] = fields.DateField(null=True)
-    end_date: Field[date] = fields.DateField(null=True)
-    pits_generated: Field[bool] = fields.BooleanField(default=False)
-    custom: Field[bool] = fields.BooleanField(default=False)
-    created_at: Field[datetime] = fields.DatetimeField(auto_now_add=True)
+    uuid = fields.UUIDField(pk=True)
+    season = fields.ForeignKeyField("models.Season", related_name="events")
+    event_code = fields.CharField(max_length=255)
+    name = fields.CharField(max_length=255)
+    type = fields.CharField(max_length=255)
+    city = fields.CharField(max_length=255)
+    country = fields.CharField(max_length=255)
+    start_date = fields.DateField(null=True)
+    end_date = fields.DateField(null=True)
+    pits_generated = fields.BooleanField(default=False)
+    custom = fields.BooleanField(default=False)
+    created_at = fields.DatetimeField(auto_now_add=True)
 
 class MatchScoutingSubmission(Model):
     """
@@ -220,13 +214,13 @@ class MatchScoutingSubmission(Model):
         match_type (str): The match type of the match scouting submission
         created_at (datetime): The date and time the match scouting submission was created
     """
-    uuid: Field[UUID] = fields.UUIDField(pk=True)
-    user: ForeignKeyRelation[User] = fields.ForeignKeyField("models.User", related_name="answers")
-    event: ForeignKeyRelation[Event] = fields.ForeignKeyField("models.Event", related_name="answers")
-    team_number: Field[int] = fields.IntField(default=0)
-    match_number: Field[int] = fields.IntField(default=0)
-    match_type: Field[str] = fields.CharField(max_length=255, default="")
-    created_at: Field[datetime] = fields.DatetimeField(auto_now_add=True)
+    uuid = fields.UUIDField(pk=True)
+    user = fields.ForeignKeyField("models.User", related_name="answers")
+    event = fields.ForeignKeyField("models.Event", related_name="answers")
+    team_number = fields.IntField(default=0)
+    match_number = fields.IntField(default=0)
+    match_type = fields.CharField(max_length=255, default="")
+    created_at = fields.DatetimeField(auto_now_add=True)
 
 class MatchScoutingAnswer(Model):
     """
@@ -238,10 +232,10 @@ class MatchScoutingAnswer(Model):
         value (str): The value of the match scouting answer
         submission (MatchScoutingSubmission): The match scouting submission the match scouting answer is associated with
     """
-    uuid: Field[UUID] = fields.UUIDField(pk=True)
-    field: ForeignKeyRelation[MatchScoutingField] = fields.ForeignKeyField("models.MatchScoutingField", related_name="answers")
-    value: Field[str] = fields.CharField(max_length=255, null=True)
-    submission: ForeignKeyRelation[MatchScoutingSubmission] = fields.ForeignKeyField("models.MatchScoutingSubmission", related_name="answers")
+    uuid = fields.UUIDField(pk=True)
+    field = fields.ForeignKeyField("models.MatchScoutingField", related_name="answers")
+    value = fields.CharField(max_length=255, null=True)
+    submission = fields.ForeignKeyField("models.MatchScoutingSubmission", related_name="answers")
 
 #    Pit Scouting
 class PitScoutingField(Model):
@@ -258,14 +252,14 @@ class PitScoutingField(Model):
         organization (Organization): The organization the pit scouting field is associated with
         created_at (datetime): The date and time the pit scouting field was created
     """
-    uuid: Field[UUID] = fields.UUIDField(pk=True)
-    season: ForeignKeyRelation[Season] = fields.ForeignKeyField("models.Season", related_name="pit_fields")
-    name: Field[str] = fields.CharField(max_length=255)
-    field_type: Field[str] = fields.CharField(max_length=255) # text, number, boolean, choice
-    options: Field[Any] = fields.JSONField(null=True, default=list) # For field_type=choice
-    order: Field[int] = fields.IntField(default=0) # The order the field should appear in the frontend or section
-    organization: ForeignKeyRelation[Organization] | None = fields.ForeignKeyField("models.Organization", related_name="pit_fields", null=True) # Optional, used if the field is specific to an organization
-    created_at: Field[datetime] = fields.DatetimeField(auto_now_add=True)
+    uuid = fields.UUIDField(pk=True)
+    season = fields.ForeignKeyField("models.Season", related_name="pit_fields")
+    name = fields.CharField(max_length=255)
+    field_type = fields.CharField(max_length=255) # text, number, boolean, choice
+    options = fields.JSONField(null=True, default=list) # For field_type=choice
+    order = fields.IntField(default=0) # The order the field should appear in the frontend or section
+    organization = fields.ForeignKeyField("models.Organization", related_name="pit_fields", null=True) # Optional, used if the field is specific to an organization
+    created_at = fields.DatetimeField(auto_now_add=True)
 
 class TeamPit(Model):
     """
@@ -279,12 +273,12 @@ class TeamPit(Model):
         season (Season): The season the team pit is associated with
         event (Event): The event the team pit is associated with
     """
-    uuid: Field[UUID] = fields.UUIDField(pk=True)
-    team_number: Field[int] = fields.IntField()
-    nickname: Field[str] = fields.CharField(max_length=255)
-    created_at: Field[datetime] = fields.DatetimeField(auto_now_add=True)
-    season: ForeignKeyRelation[Season] = fields.ForeignKeyField("models.Season", related_name="team_pits")
-    event: ForeignKeyRelation[Event] = fields.ForeignKeyField("models.Event", related_name="team_pits")
+    uuid = fields.UUIDField(pk=True)
+    team_number = fields.IntField()
+    nickname = fields.CharField(max_length=255)
+    created_at = fields.DatetimeField(auto_now_add=True)
+    season = fields.ForeignKeyField("models.Season", related_name="team_pits")
+    event = fields.ForeignKeyField("models.Event", related_name="team_pits")
 
 class PitScoutingAnswer(Model):
     """
@@ -298,9 +292,9 @@ class PitScoutingAnswer(Model):
         username (str): The username of the user who submitted the pit scouting answer
         created_at (datetime): The date and time the pit scouting answer was created
     """
-    uuid: Field[UUID] = fields.UUIDField(pk=True)
-    field: ForeignKeyRelation[PitScoutingField] = fields.ForeignKeyField("models.PitScoutingField", related_name="answers")
-    value: Field[str] = fields.CharField(max_length=255, null=True)
-    team: ForeignKeyRelation[TeamPit] = fields.ForeignKeyField("models.TeamPit", related_name="answers")
-    username: Field[str] = fields.CharField(max_length=255, null=True)
-    created_at: Field[datetime] = fields.DatetimeField(auto_now_add=True)
+    uuid = fields.UUIDField(pk=True)
+    field = fields.ForeignKeyField("models.PitScoutingField", related_name="answers")
+    value = fields.CharField(max_length=255, null=True)
+    team = fields.ForeignKeyField("models.TeamPit", related_name="answers")
+    username = fields.CharField(max_length=255, null=True)
+    created_at = fields.DatetimeField(auto_now_add=True)
