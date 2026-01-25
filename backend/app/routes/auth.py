@@ -3,44 +3,39 @@ from fastapi import APIRouter, Body, Depends, Form, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from tortoise.contrib.pydantic import pydantic_model_creator
 
+from ..schemas.auth import BaseSettings, SignupRequest, TokenResponse, UserResponse, MessageResponse
+
 from ..auth import create_access_token, get_password_hash, verify_password
 from ..dependencies import get_current_user
 from ..models import User, Profile, Settings
 
 router: APIRouter = APIRouter()
-UserOut = pydantic_model_creator(User, name="UserOut", exclude=["hashed_password"])
 
-
-@router.post("/auth/signup")
+@router.post("/auth/signup", response_model=TokenResponse)
 async def signup(
-    username: str = Form(...),
-    email: str = Form(...),
-    password: str = Form(...),
-    confirm_password: str = Form(...),
-    team_number: str = Form(...),
-    display_name: str = Form(...)
+    data: SignupRequest
 ):
-    if password != confirm_password:
+    if data.password != data.confirm_password:
         raise HTTPException(status_code=400, detail="Passwords do not match")
 
-    hashed_password = get_password_hash(password)
+    hashed_password = get_password_hash(data.password)
 
     try:
         user = await User.create(
-            username=username,
-            email=email,
+            username=data.username,
+            email=data.email,
             hashed_password=hashed_password
         )
-        await Profile.create(user=user, display_name=display_name, team_number=int(team_number))
+        await Profile.create(user=user, display_name=data.display_name, team_number=int(data.team_number))
     except IntegrityError:
         raise HTTPException(status_code=400, detail="Username or email already exists")
 
-    user = await User.get_or_none(username=username)
+    user = await User.get_or_none(username=data.username)
 
     access_token = create_access_token(data={"sub": str(user.uuid)})
     return {"access_token": access_token, "token_type": "bearer"}
 
-@router.post("/token")
+@router.post("/token", response_model=TokenResponse)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     user = await User.get_or_none(username=form_data.username)
     if not user or not verify_password(form_data.password, user.hashed_password):
@@ -52,12 +47,12 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     access_token = create_access_token(data={"sub": str(user.uuid)})
     return {"access_token": access_token, "token_type": "bearer"}
 
-@router.get("/users/")
-async def read_items(current_user: User = Depends(get_current_user), response_model=UserOut):
+@router.get("/users/", response_model=list[UserResponse])
+async def read_items(current_user: User = Depends(get_current_user)):
     users = await User.all()
     return users
 
-@router.delete("/users/delete/{username}")
+@router.delete("/users/delete/{username}", response_model=MessageResponse)
 async def delete_user(username: str, current_user: User = Depends(get_current_user)):
     user = await User.get_or_none(username=username)
     if not user:
@@ -65,8 +60,8 @@ async def delete_user(username: str, current_user: User = Depends(get_current_us
     await user.delete()
     return {"message": "User deleted"}
 
-@router.get("/users/me/get_settings")
-async def get_user_settings(current_user: User = Depends(get_current_user), response_model=UserOut):
+@router.get("/users/me/get_settings", response_model=BaseSettings)
+async def get_user_settings(current_user: User = Depends(get_current_user)):
     user = await User.get_or_none(uuid=current_user.uuid)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -76,8 +71,8 @@ async def get_user_settings(current_user: User = Depends(get_current_user), resp
         settings = await Settings.create(user=user)
     return settings
 
-@router.post("/users/me/update_settings")
-async def update_user_settings(settings_data: dict = Body(...), current_user: User = Depends(get_current_user)):
+@router.post("/users/me/update_settings", response_model=BaseSettings)
+async def update_user_settings(data: BaseSettings, current_user: User = Depends(get_current_user)):
     user = await User.get_or_none(uuid=current_user.uuid)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -86,7 +81,7 @@ async def update_user_settings(settings_data: dict = Body(...), current_user: Us
     if not settings:
         settings = await Settings.create(user=user)
 
-    for key, value in settings_data.items():
+    for key, value in data.items():
         if hasattr(settings, key):
             setattr(settings, key, value)
         else:
@@ -95,7 +90,7 @@ async def update_user_settings(settings_data: dict = Body(...), current_user: Us
     await settings.save()
     return settings
 
-@router.post("/users/me/set_superuser")
+@router.post("/users/me/set_superuser", response_model=UserResponse)
 async def set_superuser(current_user: User = Depends(get_current_user)):
     user = await User.get_or_none(uuid=current_user.uuid)
     if not user:
@@ -104,6 +99,6 @@ async def set_superuser(current_user: User = Depends(get_current_user)):
     await user.save()
     return user
 
-@router.get("/auth/validate")
-async def validate_user(current_user: User = Depends(get_current_user), response_model=UserOut):
+@router.get("/auth/validate", response_model=UserResponse)
+async def validate_user(current_user: User = Depends(get_current_user)):
     return current_user

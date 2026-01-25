@@ -10,7 +10,7 @@ class SeasonBase(BaseModel):
 class SeasonCreate(SeasonBase):
     pass
 
-class SeasonOut(SeasonBase):
+class SeasonResponse(SeasonBase):
     uuid: UUID
     created_at: datetime
 
@@ -18,5 +18,5 @@ class SeasonOut(SeasonBase):
         "from_attributes": True
     }
 
-class MessageOut(BaseModel):
+class MessageResponse(BaseModel):
     message: str
