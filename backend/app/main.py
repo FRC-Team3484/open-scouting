@@ -1,46 +1,14 @@
-from collections import defaultdict
-import json
 import os
-import pprint
-from statistics import mean
-from time import strftime
-from typing import List, Optional
-import uuid
 from dotenv import load_dotenv
-import requests
-from pathlib import Path
-import httpx
 
-from fastapi import FastAPI, Form, Depends, HTTPException, Query, status, Body
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from tortoise.contrib.fastapi import register_tortoise
-from tortoise.exceptions import IntegrityError
-from tortoise.contrib.pydantic import pydantic_model_creator
-
-from .models import \
-    MatchScoutingSubmission, \
-    User, \
-    Profile, \
-    Organization, \
-    OrganizationMember, \
-    Season, \
-    Settings, \
-    GamePiece, \
-    MatchScoutingField, \
-    Event, \
-    MatchScoutingAnswer, \
-    PitScoutingField, \
-    TeamPit, \
-    PitScoutingAnswer
-
-from .auth import get_password_hash, verify_password, create_access_token, decode_access_token
-from .dependencies import get_current_user
 
 from .routes import auth, organizations, seasons, gamepieces, fields, match_scouting, pit_scouting, data, event
 
 # Setup
-app = FastAPI(root_path="/api")
+app: FastAPI = FastAPI(root_path="/api")
 
 load_dotenv()
 ENV = os.getenv("ENV", "development")
@@ -51,6 +19,7 @@ TBA_API_KEY = os.getenv("TBA_API_KEY")
 if TBA_API_KEY is None or TBA_API_KEY == "":
     print("TBA_API_KEY is not set. Pit scouting will not work as expected.")
 
+# Middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -59,6 +28,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Create routes
 app.include_router(auth.router)
 app.include_router(organizations.router)
 app.include_router(seasons.router)
@@ -69,6 +39,7 @@ app.include_router(pit_scouting.router)
 app.include_router(data.router)
 app.include_router(event.router)
 
+# Setup database
 register_tortoise(
     app,
     db_url=os.getenv("DATABASE_URL", "postgres://app:app@localhost:5432/app"),
@@ -86,32 +57,3 @@ TORTOISE_ORM = {
         },
     },
 }
-
-# Model Schemas
-
-# Routes
-#    Auth
-
-
-#    Organizations
-
-
-#    Seasons
-
-
-#    Game Pieces
-
-
-#    Match Scouting Fields
-
-
-#    Match Scouting Answers
-
-
-#    Pit Scouting
-
-
-#    Data View
-
-
-# Custom Events
