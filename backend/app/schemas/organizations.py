@@ -1,4 +1,5 @@
 from datetime import datetime
+from uuid import UUID
 
 from pydantic import BaseModel
 
@@ -17,11 +18,11 @@ class MessageResponse(BaseModel):
     message: str
 
 class OrganizationUuidRequest(BaseModel):
-    organization_uuid: str
+    organization_uuid: UUID
 
 class OrganizationMemberResponse(BaseModel):
     uuid: str
-    organization: str
-    user: str
+    organization: UUID
+    user: UUID
     role: str
     created_at: datetime
