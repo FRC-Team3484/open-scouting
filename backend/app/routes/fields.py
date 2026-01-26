@@ -1,3 +1,7 @@
+from backend.app.models import MatchScoutingField
+from typing import Any
+
+
 import json
 import os
 from pathlib import Path
@@ -5,14 +9,15 @@ from fastapi import APIRouter, Depends, Form, HTTPException
 
 from ..dependencies import get_current_user
 from ..models import GamePiece, MatchScoutingField, Organization, Season, User
+from ..schemas.fields import MatchScoutingFieldRequestUUID, MatchScoutingFieldsResponse, MatchScoutingFieldRequest, MessageResponse
 
 
 router: APIRouter = APIRouter()
 
-@router.get("/fields/season/{season_uuid}")
-async def get_season_fields(season_uuid: str):
+@router.get("/fields/season/{season_uuid}", response_model=MatchScoutingFieldsResponse)
+async def get_season_fields(data: MatchScoutingFieldRequest) -> list[Any]:
     # Find the season
-    season = await Season.get_or_none(uuid=season_uuid)
+    season = await Season.get_or_none(uuid=data.season_uuid)
     if not season:
         raise HTTPException(status_code=404, detail="Season not found")
 
@@ -72,9 +77,9 @@ async def get_season_fields(season_uuid: str):
 
     return tree
 
-@router.delete("/fields/season/{season_uuid}/clear")
-async def clear_season_fields(season_uuid: str, current_user: User = Depends(get_current_user)):
-    season = await Season.get_or_none(uuid=season_uuid)
+@router.delete("/fields/season/{season_uuid}/clear", response_model=MessageResponse)
+async def clear_season_fields(data: MatchScoutingFieldRequest, current_user: User = Depends(get_current_user)):
+    season = await Season.get_or_none(uuid=data.season_uuid)
 
     if not season:
         raise HTTPException(status_code=404, detail="Season not found")
@@ -82,33 +87,24 @@ async def clear_season_fields(season_uuid: str, current_user: User = Depends(get
     await MatchScoutingField.filter(season=season).delete()
     return {"message": "Fields cleared"}
 
-@router.post("/fields/season/{season_uuid}/create")
+@router.post("/fields/season/{season_uuid}/create", response_model=MatchScoutingFieldRequest)
 async def create_season_field(
-        season_uuid: str, 
-        name: str = Form(...), 
-        field_type: str = Form(...), 
-        stat_type: str = Form(...), 
-        game_piece_uuid: str = Form(...), 
-        required: bool = Form(...), 
-        options: list = Form(...),
-        order: int = Form(...), 
-        organization_uuid: str = Form(...), 
-        parent_uuid: str = Form(...), 
+        data: MatchScoutingFieldRequest,
         current_user: User = Depends(get_current_user)
-    ):
+    ) -> MatchScoutingField:
 
-    season = await Season.get_or_none(uuid=season_uuid)
+    season = await Season.get_or_none(uuid=data.season_uuid)
     if not season:
         raise HTTPException(status_code=404, detail="Season not found")
 
-    if stat_type == "auton_score" or stat_type == "auton_miss" or stat_type == "teleop_score" or stat_type == "teleop_miss":
-        game_piece = await GamePiece.get_or_none(uuid=game_piece_uuid)
+    if data.stat_type == "auton_score" or data.stat_type == "auton_miss" or data.stat_type == "teleop_score" or data.stat_type == "teleop_miss":
+        game_piece = await GamePiece.get_or_none(uuid=data.game_piece_uuid)
         if not game_piece:
             
             # Temporary hack to try and repair game pieces for imported fields
             # TODO: Replace this later for proper game piece repairing in the edit dialog
             game_pieces = await GamePiece.all()
-            matching_game_pieces = [gp for gp in game_pieces if any(word in name.split() for word in gp.name.split())]
+            matching_game_pieces = [gp for gp in game_pieces if any(word in data.name.split() for word in gp.name.split())]
             
             if matching_game_pieces:
                 print("WARNING: Game piece not found. Using closest match based on field name: " + matching_game_pieces[0].name)
@@ -118,15 +114,15 @@ async def create_season_field(
     else:
         game_piece = None
 
-    if organization_uuid != "":
-        organization = await Organization.get_or_none(uuid=organization_uuid)
+    if data.organization_uuid != "":
+        organization = await Organization.get_or_none(uuid=data.organization_uuid)
         if not organization:
             raise HTTPException(status_code=404, detail="Organization not found")
     else:
         organization = None
 
-    if parent_uuid != "":
-        parent = await MatchScoutingField.get_or_none(uuid=parent_uuid)
+    if data.parent_uuid != "":
+        parent = await MatchScoutingField.get_or_none(uuid=data.parent_uuid)
         if not parent:
             raise HTTPException(status_code=404, detail="Section not found")
     else:
@@ -135,69 +131,58 @@ async def create_season_field(
     field = await MatchScoutingField.create(
         parent=parent,
         season=season, 
-        name=name, 
-        field_type=field_type, 
-        stat_type=stat_type, 
+        name=data.name, 
+        field_type=data.field_type, 
+        stat_type=data.stat_type, 
         game_piece=game_piece, 
-        required=required, 
-        options=options, 
-        order=order, 
+        required=data.required, 
+        options=data.options, 
+        order=data.order, 
         organization=organization
     )
     return field
 
-@router.post("/fields/season/{season_uuid}/edit/{field_uuid}")
+@router.post("/fields/season/{season_uuid}/edit/{field_uuid}", response_model=MatchScoutingFieldRequest)
 async def edit_season_field(
-        season_uuid: str, 
-        field_uuid: str, 
-
-        parent_uuid: str = Form(...),
-        name: str = Form(...), 
-        field_type: str = Form(...), 
-        stat_type: str = Form(...), 
-        game_piece_uuid: str = Form(...), 
-        required: bool = Form(...), 
-        options: list = Form(...), 
-        order: int = Form(...), 
-        organization_uuid: str = Form(...), 
+        data: MatchScoutingFieldRequest,
         current_user: User = Depends(get_current_user)
-    ):
+    ) -> MatchScoutingField:
 
-    field = await MatchScoutingField.get_or_none(uuid=field_uuid)
+    field = await MatchScoutingField.get_or_none(uuid=data.field_uuid)
     if not field:
         raise HTTPException(status_code=404, detail="Field not found")
         
-    season = await Season.get_or_none(uuid=season_uuid)
+    season = await Season.get_or_none(uuid=data.season_uuid)
     if not season:
         raise HTTPException(status_code=404, detail="Season not found")
 
-    if stat_type == "auton_score" or stat_type == "auton_miss" or stat_type == "teleop_score" or stat_type == "teleop_miss":
-        game_piece = await GamePiece.get_or_none(uuid=game_piece_uuid)
+    if data.stat_type == "auton_score" or data.stat_type == "auton_miss" or data.stat_type == "teleop_score" or data.stat_type == "teleop_miss":
+        game_piece = await GamePiece.get_or_none(uuid=data.game_piece_uuid)
         if not game_piece:
             raise HTTPException(status_code=404, detail="Game piece not found")
     else:
         game_piece = None
 
-    if organization_uuid != "":
-        organization = await Organization.get_or_none(uuid=organization_uuid)
+    if data.organization_uuid != "":
+        organization = await Organization.get_or_none(uuid=data.organization_uuid)
         if not organization:
             raise HTTPException(status_code=404, detail="Organization not found")
     else:
         organization = None
 
-    field.name = name
-    field.field_type = field_type
-    field.stat_type = stat_type
+    field.name = data.name
+    field.field_type = data.field_type
+    field.stat_type = data.stat_type
     field.game_piece = game_piece
-    field.required = required
-    field.options = options
-    field.order = order
+    field.required = data.required
+    field.options = data.options
+    field.order = data.order
     field.organization = organization
     await field.save()
     return field
 
 @router.get("/fields/get_presets")
-async def get_match_scouting_field_presets():    
+async def get_match_scouting_field_presets() -> list[Any]:    
     print(os.getcwd())
     path = Path("./app/match_scouting_presets")
     presets = []
@@ -208,9 +193,9 @@ async def get_match_scouting_field_presets():
 
     return presets
 
-@router.delete("/fields/delete/{field_uuid}")
-async def delete_field(field_uuid: str, current_user: User = Depends(get_current_user)):
-    field = await MatchScoutingField.get_or_none(uuid=field_uuid)
+@router.delete("/fields/delete/{field_uuid}", response_model=MessageResponse)
+async def delete_field(data: MatchScoutingFieldRequestUUID, current_user: User = Depends(get_current_user)):
+    field: MatchScoutingField | None = await MatchScoutingField.get_or_none(uuid=data.field_uuid)
     if not field:
         raise HTTPException(status_code=404, detail="Field not found")
     await field.delete()
