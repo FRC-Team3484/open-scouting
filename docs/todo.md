@@ -73,6 +73,8 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [ ] Organizations
 - [ ] Import and export field data
 - [ ] Captcha in authentication
+- [ ] Create a section on the home page to show ongoing events
+- [ ] Create a page to show all events
 
 ## Other
 - [ ] Be able to sync pit scouting data from the local data management drawer
