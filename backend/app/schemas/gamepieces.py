@@ -1,5 +1,6 @@
 from datetime import datetime
 import uuid
+
 from pydantic import BaseModel
 
 
@@ -12,6 +13,3 @@ class GamepieceResponse(BaseModel):
 class GamepieceRequest(BaseModel):
     season_uuid: uuid.UUID
     name: str
-
-class MessageResponse(BaseModel):
-    message: str

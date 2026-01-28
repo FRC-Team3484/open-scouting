@@ -1,7 +1,7 @@
-
 from datetime import datetime
 from typing import Any
 from uuid import UUID
+
 from pydantic import BaseModel
 
 
@@ -17,9 +17,6 @@ class PitFieldResponse(BaseModel):
     order: int
     organization: UUID
     created_at: datetime
-
-class MessageResponse(BaseModel):
-    message: str
 
 class CreatePitFieldRequest(BaseModel):
     season_uuid: UUID

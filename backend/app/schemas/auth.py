@@ -1,6 +1,8 @@
 from datetime import datetime
 from uuid import UUID
+
 from pydantic import BaseModel, EmailStr, model_validator
+
 
 class SignupRequest(BaseModel):
     username: str
@@ -26,9 +28,6 @@ class UserResponse(BaseModel):
     email: EmailStr
     is_superuser: bool
     created_at: datetime
-
-class MessageResponse(BaseModel):
-    message: str
 
 # TODO: Can this take an arbitrary number of settings with any name?
 class BaseSettings(BaseModel):

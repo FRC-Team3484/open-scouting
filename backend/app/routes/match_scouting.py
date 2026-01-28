@@ -1,5 +1,5 @@
 import json
-from fastapi import APIRouter, Form, HTTPException
+from fastapi import APIRouter, HTTPException
 from tortoise.exceptions import IntegrityError
 
 from ..models import Event, MatchScoutingAnswer, MatchScoutingField, MatchScoutingSubmission, Season, User

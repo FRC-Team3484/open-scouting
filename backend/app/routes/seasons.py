@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from ..dependencies import get_current_user
 from ..models import Season, User
-from ..schemas.seasons import MessageResponse, SeasonCreate, SeasonResponse
+from ..schemas.generic import MessageResponse
+from ..schemas.seasons import SeasonCreate, SeasonResponse
 
 
 router: APIRouter = APIRouter()

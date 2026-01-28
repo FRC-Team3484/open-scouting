@@ -1,6 +1,3 @@
-from backend.app.models import Organization, PitScoutingField, Season
-
-
 import json
 import os
 import httpx
@@ -9,12 +6,13 @@ from fastapi import APIRouter, Depends, Form, HTTPException
 
 from ..dependencies import get_current_user
 from ..models import Event, Organization, PitScoutingAnswer, PitScoutingField, Season, TeamPit, User
-from ..schemas.pit_scouting import EditPitFieldRequest, PitFieldsRequest, PitFieldResponse, MessageResponse, CreatePitFieldRequest, DeletePitFieldRequest, GetPitsForSeasonRequest, SubmitPitFieldAnswerRequest
+from ..schemas.generic import MessageResponse
+from ..schemas.pit_scouting import EditPitFieldRequest, PitFieldsRequest, PitFieldResponse, CreatePitFieldRequest, DeletePitFieldRequest, GetPitsForSeasonRequest, SubmitPitFieldAnswerRequest
+
 
 router: APIRouter = APIRouter()
 
 TBA_API_KEY = os.getenv("TBA_API_KEY")
-
 
 @router.get("/pits/fields/{season_uuid}", response_model=list[PitFieldResponse])
 async def get_pit_fields(data: PitFieldsRequest) -> list[PitScoutingField]:

@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 
-from ..schemas.organizations import OrganizationMemberResponse, OrganizationUuidRequest, OrganizationRequest, OrganizationResponse, MessageResponse
-
 from ..dependencies import get_current_user, require_user
 from ..models import Organization, OrganizationMember, User
+from ..schemas.generic import MessageResponse
+from ..schemas.organizations import OrganizationMemberResponse, OrganizationUuidRequest, OrganizationRequest, OrganizationResponse
 
 
 router: APIRouter = APIRouter(

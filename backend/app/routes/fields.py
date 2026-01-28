@@ -1,15 +1,14 @@
-from backend.app.models import MatchScoutingField
 from typing import Any
-
-
 import json
 import os
 from pathlib import Path
+
 from fastapi import APIRouter, Depends, Form, HTTPException
 
 from ..dependencies import get_current_user
 from ..models import GamePiece, MatchScoutingField, Organization, Season, User
-from ..schemas.fields import MatchScoutingFieldRequestUUID, MatchScoutingFieldsResponse, MatchScoutingFieldRequest, MessageResponse
+from ..schemas.generic import MessageResponse
+from ..schemas.fields import MatchScoutingFieldRequestUUID, MatchScoutingFieldsResponse, MatchScoutingFieldRequest
 
 
 router: APIRouter = APIRouter()

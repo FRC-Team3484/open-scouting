@@ -1,7 +1,8 @@
-from re import Match
 from typing import Any
 from uuid import UUID
+
 from pydantic import BaseModel, RootModel
+
 
 class MatchScoutingField(BaseModel):
     uuid: UUID | None
@@ -15,7 +16,6 @@ class MatchScoutingField(BaseModel):
     organization_id: UUID | None
     fields: list[MatchScoutingField]
 
-
 class MatchScoutingFieldsResponse(RootModel[list[MatchScoutingField]]):
     root: list[MatchScoutingField]
 
@@ -28,6 +28,3 @@ class MatchScoutingFieldRequest(MatchScoutingField):
 
 class MatchScoutingFieldRequestUUID(MatchScoutingFieldRequest):
     field_uuid: UUID
-
-class MessageResponse(BaseModel):
-    message: str
