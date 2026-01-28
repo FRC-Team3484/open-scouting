@@ -52,6 +52,7 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [ ] Create initial support for API keys
   - [ ] Properly secure routes, and only allow some routes to logged in users and superusers
   - [ ] Add comments
+- [ ] Create a changelog pop up and proper client/server versioning
 - [ ] Profile
   - [ ] Edit profile
   - [ ] Change password
