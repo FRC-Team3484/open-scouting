@@ -1,18 +1,18 @@
 from collections import defaultdict
 import json
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException
 
 from ..models import MatchScoutingAnswer, MatchScoutingField, MatchScoutingSubmission, Season, TeamPit
+from ..schemas.data import FiltersRequest
 
 
 router: APIRouter = APIRouter()
 
+# TODO: This needs a proper response_model
 @router.get("/data/filters")
 async def get_data_filters(
-    year: int,
-    event_codes: list[str] | None = Query(None),
-    team_numbers: list[str] | None = Query(None),
+        data: FiltersRequest
     ):
     """
     For a year, list of event codes, and list of team numbers, return a JSON object 
@@ -24,7 +24,7 @@ async def get_data_filters(
     If a year and a team number is given, return all event codes which have data on the server for that team number and year.
     If a year and multiple team numbers are given, return all event codes which have data on the server for those team numbers and year.
     """
-    season = await Season.get_or_none(year=year)
+    season = await Season.get_or_none(year=data.year)
     if not season:
         raise HTTPException(status_code=404, detail="Season not found")
 
@@ -32,11 +32,11 @@ async def get_data_filters(
         event__season=season
     ).select_related("event")
 
-    if event_codes:
-        qs = qs.filter(event__event_code__in=event_codes)
+    if data.event_codes:
+        qs = qs.filter(event__event_code__in=data.event_codes)
 
-    if team_numbers:
-        qs = qs.filter(team_number__in=team_numbers)
+    if data.team_numbers:
+        qs = qs.filter(team_number__in=data.team_numbers)
 
     events = await qs.distinct().values(
         event_code="event__event_code",
@@ -53,12 +53,11 @@ async def get_data_filters(
         "teams": teams,
     }
 
+# TODO: This needs a proper response_model
 @router.get("/data/get")
 async def get_data(
-    year: int,
-    event_codes: list[str] | None = Query(None),
-    team_numbers: list[str] | None = Query(None),
-):
+        data: FiltersRequest
+    ):
     """
     Given a year, event codes, and team numbers, return the data that matches those filters
 
