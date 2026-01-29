@@ -1,7 +1,5 @@
-from backend.app.models import Season
 from typing import Any
 import json
-import os
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -13,7 +11,9 @@ from ..schemas.fields import MatchScoutingFieldRequestUUID, MatchScoutingFieldsR
 from ..utils import get_season
 
 
-router: APIRouter = APIRouter()
+router: APIRouter = APIRouter(
+    tags=["Match Scouting Fields"],
+)
 
 @router.get("/fields/season/{season_uuid}", response_model=MatchScoutingFieldsResponse)
 async def get_season_fields(data: MatchScoutingFieldRequest) -> list[Any]:

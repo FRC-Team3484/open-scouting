@@ -1,13 +1,12 @@
-from backend.app.models import Season
-
-
 from fastapi import APIRouter, HTTPException
 
 from ..models import Event, Season
 from ..schemas.event import CustomEventsRequest, EventResponse, CustomEventRequest
 from ..utils import get_season
 
-router: APIRouter = APIRouter()
+router: APIRouter = APIRouter(
+    tags=["Events"],
+)
 
 @router.get("/event/custom/{season_uuid}", response_model=list[EventResponse])
 async def get_custom_events(data: CustomEventsRequest) -> list[Event]:

@@ -6,7 +6,9 @@ from ..models import Event, MatchScoutingAnswer, MatchScoutingField, MatchScouti
 from ..schemas.match_scouting import MatchScoutingRequest, MatchScoutingResponse
 from ..utils import get_season
 
-router: APIRouter = APIRouter()
+router: APIRouter = APIRouter(
+    tags=["Match Scouting"],
+)
 
 @router.post("/scouting/submit", response_model=MatchScoutingResponse)
 async def submit_match_scouting(

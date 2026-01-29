@@ -1,17 +1,16 @@
-from backend.app.models import Season
-
-
 from collections import defaultdict
 import json
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 
 from ..models import MatchScoutingAnswer, MatchScoutingField, MatchScoutingSubmission, Season, TeamPit
 from ..schemas.data import FiltersRequest
 from ..utils import get_season
 
 
-router: APIRouter = APIRouter()
+router: APIRouter = APIRouter(
+    tags=["Data"],
+)
 
 # TODO: This needs a proper response_model
 @router.get("/data/filters")

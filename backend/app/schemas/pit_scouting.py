@@ -54,5 +54,5 @@ class SubmitPitFieldAnswerRequest(BaseModel):
     event_start_date: str
     event_end_date: str
 
-    answers: dict[Any]
+    answers: dict[Any, Any]
     nickname: str

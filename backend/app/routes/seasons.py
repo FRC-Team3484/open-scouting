@@ -6,7 +6,9 @@ from ..schemas.generic import MessageResponse
 from ..schemas.seasons import SeasonCreate, SeasonResponse
 
 
-router: APIRouter = APIRouter()
+router: APIRouter = APIRouter(
+    tags=["Seasons"],
+)
 
 @router.get("/seasons", response_model=list[SeasonResponse])
 async def get_seasons() -> list[Season]:

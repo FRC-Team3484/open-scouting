@@ -7,7 +7,7 @@ from pydantic import BaseModel
 
 class MatchScoutingRequest(BaseModel):
     submission_uuid: UUID
-    fields: dict[Any]
+    fields: dict[Any, Any]
     user_uuid: UUID | str # Is either the UUID for the authenticated user, or just a username
     year: int
     team_number: int
