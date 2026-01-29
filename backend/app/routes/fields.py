@@ -1,14 +1,16 @@
+from backend.app.models import Season
 from typing import Any
 import json
 import os
 from pathlib import Path
 
-from fastapi import APIRouter, Depends, Form, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 
 from ..dependencies import get_current_user
 from ..models import GamePiece, MatchScoutingField, Organization, Season, User
 from ..schemas.generic import MessageResponse
 from ..schemas.fields import MatchScoutingFieldRequestUUID, MatchScoutingFieldsResponse, MatchScoutingFieldRequest
+from ..utils import get_season
 
 
 router: APIRouter = APIRouter()
@@ -16,9 +18,7 @@ router: APIRouter = APIRouter()
 @router.get("/fields/season/{season_uuid}", response_model=MatchScoutingFieldsResponse)
 async def get_season_fields(data: MatchScoutingFieldRequest) -> list[Any]:
     # Find the season
-    season = await Season.get_or_none(uuid=data.season_uuid)
-    if not season:
-        raise HTTPException(status_code=404, detail="Season not found")
+    season: Season = await get_season(data.season_uuid)
 
     # Fetch all fields for the season including their children
     fields = await MatchScoutingField.filter(season=season).prefetch_related("children")
@@ -78,10 +78,7 @@ async def get_season_fields(data: MatchScoutingFieldRequest) -> list[Any]:
 
 @router.delete("/fields/season/{season_uuid}/clear", response_model=MessageResponse)
 async def clear_season_fields(data: MatchScoutingFieldRequest, current_user: User = Depends(get_current_user)):
-    season = await Season.get_or_none(uuid=data.season_uuid)
-
-    if not season:
-        raise HTTPException(status_code=404, detail="Season not found")
+    season: Season = await get_season(data.season_uuid)
 
     await MatchScoutingField.filter(season=season).delete()
     return {"message": "Fields cleared"}
@@ -92,9 +89,7 @@ async def create_season_field(
         current_user: User = Depends(get_current_user)
     ) -> MatchScoutingField:
 
-    season = await Season.get_or_none(uuid=data.season_uuid)
-    if not season:
-        raise HTTPException(status_code=404, detail="Season not found")
+    season: Season = await get_season(data.season_uuid)
 
     if data.stat_type == "auton_score" or data.stat_type == "auton_miss" or data.stat_type == "teleop_score" or data.stat_type == "teleop_miss":
         game_piece = await GamePiece.get_or_none(uuid=data.game_piece_uuid)
@@ -151,9 +146,7 @@ async def edit_season_field(
     if not field:
         raise HTTPException(status_code=404, detail="Field not found")
         
-    season = await Season.get_or_none(uuid=data.season_uuid)
-    if not season:
-        raise HTTPException(status_code=404, detail="Season not found")
+    season: Season = await get_season(data.season_uuid)
 
     if data.stat_type == "auton_score" or data.stat_type == "auton_miss" or data.stat_type == "teleop_score" or data.stat_type == "teleop_miss":
         game_piece = await GamePiece.get_or_none(uuid=data.game_piece_uuid)
@@ -182,7 +175,6 @@ async def edit_season_field(
 
 @router.get("/fields/get_presets")
 async def get_match_scouting_field_presets() -> list[Any]:    
-    print(os.getcwd())
     path = Path("./app/match_scouting_presets")
     presets = []
 

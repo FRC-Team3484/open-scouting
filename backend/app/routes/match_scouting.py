@@ -4,6 +4,7 @@ from tortoise.exceptions import IntegrityError
 
 from ..models import Event, MatchScoutingAnswer, MatchScoutingField, MatchScoutingSubmission, Season, User
 from ..schemas.match_scouting import MatchScoutingRequest, MatchScoutingResponse
+from ..utils import get_season
 
 router: APIRouter = APIRouter()
 
@@ -22,9 +23,7 @@ async def submit_match_scouting(
     else:
         user = None
 
-    season: Season | None = await Season.get_or_none(year=data.year)
-    if not season:
-        raise HTTPException(status_code=404, detail="Season not found")
+    season: Season = await get_season(year=data.year)
 
     event, _ = await Event.get_or_create(
         season=season,

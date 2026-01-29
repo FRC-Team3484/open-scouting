@@ -1,15 +1,17 @@
+from backend.app.models import Season
+
+
 from fastapi import APIRouter, HTTPException
 
 from ..models import Event, Season
 from ..schemas.event import CustomEventsRequest, EventResponse, CustomEventRequest
+from ..utils import get_season
 
 router: APIRouter = APIRouter()
 
 @router.get("/event/custom/{season_uuid}", response_model=list[EventResponse])
 async def get_custom_events(data: CustomEventsRequest) -> list[Event]:
-    season: Season | None = await Season.get_or_none(uuid=data.season_uuid)
-    if not season:
-        raise HTTPException(status_code=404, detail="Season not found")
+    season: Season = await get_season(data.season_uuid)
 
     return await Event.filter(season=season, custom=True)
 
@@ -18,9 +20,7 @@ async def create_custom_event(
         data: CustomEventRequest
     ) -> Event:
     
-    season: Season | None = await Season.get_or_none(uuid=data.season_uuid)
-    if not season:
-        raise HTTPException(status_code=404, detail="Season not found")
+    season: Season = await get_season(data.season_uuid)
 
     event, _ = await Event.get_or_create(
         season=season,

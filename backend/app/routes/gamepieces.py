@@ -1,9 +1,11 @@
+from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException
 
 from ..dependencies import get_current_user
 from ..models import GamePiece, Season, User
 from ..schemas.generic import MessageResponse
 from ..schemas.gamepieces import GamepieceResponse, GamepieceRequest
+from ..utils import get_season
 
 
 router: APIRouter = APIRouter(
@@ -17,17 +19,13 @@ async def get_gamepieces() -> list[GamePiece]:
 
 @router.post("/gamepieces/create", response_model=GamepieceResponse)
 async def create_gamepiece(data: GamepieceRequest, current_user: User = Depends(get_current_user)):
-    season: Season | None = await Season.get_or_none(uuid=data.season_uuid)
-    if not season:
-        raise HTTPException(status_code=404, detail="Season not found")
+    season: Season = await get_season(data.season_uuid)
     gamepiece: GamePiece = await GamePiece.create(season=season, name=data.name)
     return gamepiece
 
 @router.get("/gamepieces/season/{season_uuid}", response_model=list[GamepieceResponse])
-async def get_season_gamepieces(season_uuid: str) -> list[GamePiece]:
-    season: Season | None = await Season.get_or_none(uuid=season_uuid)
-    if not season:
-        raise HTTPException(status_code=404, detail="Season not found")
+async def get_season_gamepieces(season_uuid: UUID) -> list[GamePiece]:
+    season: Season = await get_season(season_uuid)
     gamepieces: list[GamePiece] = await GamePiece.filter(season=season)
     return gamepieces
 

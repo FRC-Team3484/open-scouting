@@ -1,3 +1,6 @@
+from backend.app.models import Season
+
+
 import json
 import os
 import httpx
@@ -8,7 +11,7 @@ from ..dependencies import get_current_user
 from ..models import Event, Organization, PitScoutingAnswer, PitScoutingField, Season, TeamPit, User
 from ..schemas.generic import MessageResponse
 from ..schemas.pit_scouting import EditPitFieldRequest, PitFieldsRequest, PitFieldResponse, CreatePitFieldRequest, DeletePitFieldRequest, GetPitsForSeasonRequest, SubmitPitFieldAnswerRequest
-
+from ..utils import get_season
 
 router: APIRouter = APIRouter()
 
@@ -16,19 +19,15 @@ TBA_API_KEY = os.getenv("TBA_API_KEY")
 
 @router.get("/pits/fields/{season_uuid}", response_model=list[PitFieldResponse])
 async def get_pit_fields(data: PitFieldsRequest) -> list[PitScoutingField]:
-    season: Season | None = await Season.get_or_none(uuid=data.season_uuid)
-
-    if not season:
-        raise HTTPException(status_code=404, detail="Season not found")
+    season: Season = await get_season(data.season_uuid)
 
     fields: list[PitScoutingField] = await PitScoutingField.filter(season=season)
     return fields
 
 @router.delete("/pits/fields/{season_uuid}/clear", response_model=MessageResponse)
 async def clear_pit_fields(data: PitFieldsRequest, current_user: User = Depends(get_current_user)):
-    season: Season | None = await Season.get_or_none(uuid=data.season_uuid)
-    if not season:
-        raise HTTPException(status_code=404, detail="Season not found")
+    season: Season = await get_season(data.season_uuid)
+
     await PitScoutingField.filter(season=season).delete()
     return {"message": "Fields cleared"}
 
@@ -37,9 +36,7 @@ async def create_pit_field(
         data: CreatePitFieldRequest
     ) -> PitScoutingField:
 
-    season: Season | None = await Season.get_or_none(uuid=data.season_uuid)
-    if not season:
-        raise HTTPException(status_code=404, detail="Season not found")
+    season: Season = await get_season(data.season_uuid)
 
     if data.organization_uuid != "":
         organization: Organization | None = await Organization.get_or_none(uuid=data.organization_uuid)
@@ -63,9 +60,7 @@ async def edit_pit_field(
         data: EditPitFieldRequest
     ) -> PitScoutingField:
     
-    season: Season | None = await Season.get_or_none(uuid=data.season_uuid)
-    if not season:
-        raise HTTPException(status_code=404, detail="Season not found")
+    season: Season = await get_season(data.season_uuid)
 
     field: PitScoutingField | None = await PitScoutingField.get_or_none(uuid=data.field_uuid)
     if not field:
@@ -106,9 +101,7 @@ async def get_pits(
         data: GetPitsForSeasonRequest
     ):
     
-    season: Season | None = await Season.get_or_none(uuid=data.season_uuid)
-    if not season:
-        raise HTTPException(status_code=404, detail="Season not found")
+    season: Season = await get_season(data.season_uuid)
 
     event, _ = await Event.get_or_create(
         season=season,
@@ -123,7 +116,7 @@ async def get_pits(
 
     # If pits have not been generated yet, get teams from TBA and create TeamPits
     if not event.pits_generated and TBA_API_KEY != "" and TBA_API_KEY is not None and event.custom is False:
-        event_key = str(season.year) + data.event_typeevent_code
+        event_key = str(season.year) + data.event_code
         async with httpx.AsyncClient(timeout=10.0) as client:
             response = await client.get(
                 f"https://www.thebluealliance.com/api/v3/event/{event_key}/teams",
@@ -177,9 +170,7 @@ async def submit_pit(
     If a pit does not exist, that means it was created by the client of a user. It should be created.
     """
     
-    season: Season | None = await Season.get_or_none(uuid=data.season_uuid)
-    if not season:
-        raise HTTPException(status_code=404, detail="Season not found")
+    season: Season = await get_season(data.season_uuid)
 
     event = await Event.get_or_none(event_code=data.event_code, season=season).first()
     if not event:

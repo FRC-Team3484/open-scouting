@@ -1,3 +1,6 @@
+from backend.app.models import Season
+
+
 from collections import defaultdict
 import json
 
@@ -5,6 +8,7 @@ from fastapi import APIRouter, HTTPException
 
 from ..models import MatchScoutingAnswer, MatchScoutingField, MatchScoutingSubmission, Season, TeamPit
 from ..schemas.data import FiltersRequest
+from ..utils import get_season
 
 
 router: APIRouter = APIRouter()
@@ -24,9 +28,7 @@ async def get_data_filters(
     If a year and a team number is given, return all event codes which have data on the server for that team number and year.
     If a year and multiple team numbers are given, return all event codes which have data on the server for those team numbers and year.
     """
-    season = await Season.get_or_none(year=data.year)
-    if not season:
-        raise HTTPException(status_code=404, detail="Season not found")
+    season: Season = await get_season(year=data.year)
 
     qs = MatchScoutingSubmission.filter(
         event__season=season
@@ -140,18 +142,16 @@ async def get_data(
     ]
     """
 
-    season = await Season.get_or_none(year=year)
-    if not season:
-        raise HTTPException(status_code=404, detail="Season not found")
+    season: Season = await get_season(year=data.year)
 
     submissions_qs = MatchScoutingSubmission.filter(
         event__season=season
     ).select_related("event")
 
-    if event_codes:
+    if data.event_codes:
         submissions_qs = submissions_qs.filter(event__event_code__in=event_codes)
 
-    if team_numbers:
+    if data.team_numbers:
         submissions_qs = submissions_qs.filter(team_number__in=team_numbers)
 
     submissions = await submissions_qs
