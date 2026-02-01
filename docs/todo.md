@@ -76,6 +76,7 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [ ] Captcha in authentication
 - [ ] Create a section on the home page to show ongoing events
 - [ ] Create a page to show all events
+- [ ] Use [Weblate](https://weblate.org) for localization
 
 ## Other
 - [ ] Be able to sync pit scouting data from the local data management drawer

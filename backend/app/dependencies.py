@@ -20,3 +20,10 @@ async def require_user(
     user: User = Depends(get_current_user),
 ) -> User:
     return user
+
+async def require_superuser(
+    user: User = Depends(get_current_user),
+) -> User:
+    if not user.is_superuser:
+        raise HTTPException(status_code=403, detail="Superuser required")
+    return user
