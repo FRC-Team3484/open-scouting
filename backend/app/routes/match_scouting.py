@@ -14,6 +14,17 @@ router: APIRouter = APIRouter(
 async def submit_match_scouting(
     data: MatchScoutingRequest
 ) -> MatchScoutingSubmission:
+    """
+    Submit a match scouting form
+
+    Will create a MatchScoutingSubmission for each submission, and then create a MatchScoutingAnswer for each field answer
+
+    Parameters:
+        data (MatchScoutingRequest): The data to submit the match scouting form
+
+    Returns:
+        `MatchScoutingSubmission`: The submitted match scouting form
+    """
     fields = json.loads(data.fields)
 
     user: User | None

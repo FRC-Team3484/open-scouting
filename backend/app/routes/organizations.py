@@ -13,17 +13,38 @@ router: APIRouter = APIRouter(
 
 @router.post("/organization/create", response_model=OrganizationResponse)
 async def create_organization(data: OrganizationRequest, current_user: User = Depends(get_current_user)) -> Organization:
+    """
+    Create a new organization
+
+    Parameters:
+        data (OrganizationRequest): The data to create the organization
+
+    Returns:
+        `Organization`: The created organization
+    """
     organization = await Organization.create(name=data.name, description=data.description)
     await OrganizationMember.create(organization=organization, user=current_user, role="admin")
     return organization
 
 @router.get("/organization/all/list", response_model=list[OrganizationResponse])
 async def get_organizations() -> list[Organization]:
+    """
+    Get all organizations on the server
+
+    Returns:
+        list[Organization]: A list of all organizations
+    """
     organizations: list[Organization] = await Organization.all()
     return organizations
 
 @router.get("/organization/me/list", response_model=list[OrganizationResponse])
 async def get_user_organizations(current_user: User = Depends(get_current_user)) -> list[Organization]:
+    """
+    Get all organizations that the current user is a member of
+
+    Returns:
+        list[Organization]: A list of all organizations
+    """
     user = await User.get_or_none(uuid=current_user.uuid)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -34,13 +55,32 @@ async def get_user_organizations(current_user: User = Depends(get_current_user))
 
 @router.get("/organization/{organization_uuid}", response_model=OrganizationResponse)
 async def get_organization(data: OrganizationUuidRequest) -> Organization:
+    """
+    Get a specific organization
+
+    Parameters:
+        data (OrganizationUuidRequest): The data to get the organization
+
+    Returns:
+        `Organization`: The organization
+    """
     organization: Organization | None = await Organization.get_or_none(uuid=data.organization_uuid)
     if not organization:
         raise HTTPException(status_code=404, detail="Organization not found")
     return organization
 
 @router.delete("/organization/delete/{organization_uuid}", response_model=MessageResponse)
-async def delete_organization(data: OrganizationUuidRequest) -> dict[str, str]:
+async def delete_organization(data: OrganizationUuidRequest, current_user: User = Depends(get_current_user)) -> dict[str, str]:
+    """
+    Delete a specific organization
+
+    Parameters:
+        data (OrganizationUuidRequest): The data to delete the organization
+
+    Returns:
+        `MessageResponse`: A message indicating that the organization was deleted
+    """
+    # TODO: Only be able to delete organizations that the user is an admin of
     organization: Organization | None = await Organization.get_or_none(uuid=data.organization_uuid)
     if not organization:
         raise HTTPException(status_code=404, detail="Organization not found")
@@ -49,6 +89,15 @@ async def delete_organization(data: OrganizationUuidRequest) -> dict[str, str]:
 
 @router.get("/organization/{organization_uuid}/members", response_model=list[OrganizationMemberResponse])
 async def get_organization_members(data: OrganizationUuidRequest) -> list[OrganizationMember]:
+    """
+    Get all members of a specific organization
+
+    Parameters:
+        data (OrganizationUuidRequest): The data to get the organization members
+
+    Returns:
+        list[OrganizationMember]: A list of all organization members
+    """
     organization: Organization | None = await Organization.get_or_none(uuid=data.organization_uuid)
     if not organization:
         raise HTTPException(status_code=404, detail="Organization not found")

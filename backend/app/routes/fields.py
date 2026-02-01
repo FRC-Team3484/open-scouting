@@ -4,7 +4,7 @@ from pathlib import Path
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from ..dependencies import get_current_user
+from ..dependencies import require_superuser
 from ..models import GamePiece, MatchScoutingField, Organization, Season, User
 from ..schemas.generic import MessageResponse
 from ..schemas.fields import MatchScoutingFieldRequestUUID, MatchScoutingFieldsResponse, MatchScoutingFieldRequest
@@ -17,14 +17,23 @@ router: APIRouter = APIRouter(
 
 @router.get("/fields/season/{season_uuid}", response_model=MatchScoutingFieldsResponse)
 async def get_season_fields(data: MatchScoutingFieldRequest) -> list[Any]:
+    """
+    Get all match scouting fields for a season
+
+    Parameters:
+        season_uuid (`UUID`): The UUID of the season to get fields for
+
+    Returns:
+        `list[MatchScoutingField]`: A list of all match scouting fields for the season
+    """
     # Find the season
     season: Season = await get_season(data.season_uuid)
 
     # Fetch all fields for the season including their children
-    fields = await MatchScoutingField.filter(season=season).prefetch_related("children")
+    fields: list[MatchScoutingField] = await MatchScoutingField.filter(season=season).prefetch_related("children")
 
     # Convert queryset to list of dicts
-    field_list = [f for f in fields]
+    field_list: list[MatchScoutingField] = [f for f in fields]
 
     # Build lookup dict for fast parent-child linking
     field_map = {f.uuid: f for f in field_list}
@@ -77,7 +86,18 @@ async def get_season_fields(data: MatchScoutingFieldRequest) -> list[Any]:
     return tree
 
 @router.delete("/fields/season/{season_uuid}/clear", response_model=MessageResponse)
-async def clear_season_fields(data: MatchScoutingFieldRequest, current_user: User = Depends(get_current_user)):
+async def clear_season_fields(data: MatchScoutingFieldRequest, superuser: User = Depends(require_superuser)) -> dict[str, str]:
+    """
+    Clear all match scouting fields for a season
+
+    Requires superuser access
+
+    Parameters:
+        season_uuid (`UUID`): The UUID of the season to clear fields for
+
+    Returns:
+        `MessageResponse`: A message indicating that the fields were cleared
+    """
     season: Season = await get_season(data.season_uuid)
 
     await MatchScoutingField.filter(season=season).delete()
@@ -86,9 +106,19 @@ async def clear_season_fields(data: MatchScoutingFieldRequest, current_user: Use
 @router.post("/fields/season/{season_uuid}/create", response_model=MatchScoutingFieldRequest)
 async def create_season_field(
         data: MatchScoutingFieldRequest,
-        current_user: User = Depends(get_current_user)
+        superuser: User = Depends(require_superuser)
     ) -> MatchScoutingField:
+    """
+    Create a new match scouting field
 
+    Requires superuser access
+
+    Parameters:
+        data (MatchScoutingFieldRequest): The data to create the field
+
+    Returns:
+        `MatchScoutingField`: The created field
+    """
     season: Season = await get_season(data.season_uuid)
 
     if data.stat_type == "auton_score" or data.stat_type == "auton_miss" or data.stat_type == "teleop_score" or data.stat_type == "teleop_miss":
@@ -139,8 +169,19 @@ async def create_season_field(
 @router.post("/fields/season/{season_uuid}/edit/{field_uuid}", response_model=MatchScoutingFieldRequest)
 async def edit_season_field(
         data: MatchScoutingFieldRequest,
-        current_user: User = Depends(get_current_user)
+        superuser: User = Depends(require_superuser)
     ) -> MatchScoutingField:
+    """
+    Edit a match scouting field
+
+    Requires superuser access
+
+    Parameters:
+        data (MatchScoutingFieldRequest): The data to edit the field
+
+    Returns:
+        `MatchScoutingField`: The edited field
+    """
 
     field = await MatchScoutingField.get_or_none(uuid=data.field_uuid)
     if not field:
@@ -174,7 +215,15 @@ async def edit_season_field(
     return field
 
 @router.get("/fields/get_presets")
-async def get_match_scouting_field_presets() -> list[Any]:    
+async def get_match_scouting_field_presets(superuser: User = Depends(require_superuser)) -> list[Any]:    
+    """
+    Get all JSON match scouting field presets
+
+    Requires superuser access
+
+    Returns:
+        `list[Any]`: A list of all match scouting field presets
+    """
     path = Path("./app/match_scouting_presets")
     presets = []
 
@@ -185,7 +234,18 @@ async def get_match_scouting_field_presets() -> list[Any]:
     return presets
 
 @router.delete("/fields/delete/{field_uuid}", response_model=MessageResponse)
-async def delete_field(data: MatchScoutingFieldRequestUUID, current_user: User = Depends(get_current_user)):
+async def delete_field(data: MatchScoutingFieldRequestUUID, superuser: User = Depends(require_superuser)) -> dict[str, str]:
+    """
+    Delete a match scouting field
+
+    Requires superuser access
+
+    Parameters:
+        field_uuid (`UUID`): The UUID of the field to delete
+
+    Returns:
+        `MessageResponse`: A message indicating that the field was deleted
+    """
     field: MatchScoutingField | None = await MatchScoutingField.get_or_none(uuid=data.field_uuid)
     if not field:
         raise HTTPException(status_code=404, detail="Field not found")

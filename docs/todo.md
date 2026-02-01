@@ -99,3 +99,4 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [x] Also properly handle scrolling in both the dialog and drawer
 - [ ] Have the application version hardcoded somewhere, instead of relying on the `.env`
 - [ ] Proper frontend data sync erroring
+- [ ] Document field presets

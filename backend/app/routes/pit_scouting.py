@@ -4,7 +4,7 @@ import httpx
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from ..dependencies import get_current_user
+from ..dependencies import get_current_user, require_superuser
 from ..models import Event, Organization, PitScoutingAnswer, PitScoutingField, Season, TeamPit, User
 from ..schemas.generic import MessageResponse
 from ..schemas.pit_scouting import EditPitFieldRequest, PitFieldsRequest, PitFieldResponse, CreatePitFieldRequest, DeletePitFieldRequest, GetPitsForSeasonRequest, SubmitPitFieldAnswerRequest
@@ -18,13 +18,33 @@ TBA_API_KEY = os.getenv("TBA_API_KEY")
 
 @router.get("/pits/fields/{season_uuid}", response_model=list[PitFieldResponse])
 async def get_pit_fields(data: PitFieldsRequest) -> list[PitScoutingField]:
+    """
+    Get all pit scouting fields for a season
+
+    Parameters:
+        data (`PitFieldsRequest`): The UUID of the season to get fields for
+
+    Returns:
+        list[PitFieldResponse]: A list of all pit scouting fields for the season
+    """
     season: Season = await get_season(data.season_uuid)
 
     fields: list[PitScoutingField] = await PitScoutingField.filter(season=season)
     return fields
 
 @router.delete("/pits/fields/{season_uuid}/clear", response_model=MessageResponse)
-async def clear_pit_fields(data: PitFieldsRequest, current_user: User = Depends(get_current_user)):
+async def clear_pit_fields(data: PitFieldsRequest, superuser: User = Depends(require_superuser)):
+    """
+    Clear all pit scouting fields for a season
+
+    Requires superuser access
+
+    Parameters:
+        data (`PitFieldsRequest`): The UUID of the season to clear fields for
+
+    Returns:
+        `MessageResponse`: A message indicating that the fields were cleared
+    """
     season: Season = await get_season(data.season_uuid)
 
     await PitScoutingField.filter(season=season).delete()
@@ -32,8 +52,20 @@ async def clear_pit_fields(data: PitFieldsRequest, current_user: User = Depends(
 
 @router.post("/pits/fields/{season_uuid}/create", response_model=PitFieldResponse)
 async def create_pit_field(
-        data: CreatePitFieldRequest
+        data: CreatePitFieldRequest,
+        superuser: User = Depends(require_superuser)
     ) -> PitScoutingField:
+    """
+    Create a new pit scouting field
+
+    Requires superuser access
+
+    Parameters:
+        data (`CreatePitFieldRequest`): The data to create the field
+
+    Returns:
+        `PitFieldResponse`: The created field
+    """
 
     season: Season = await get_season(data.season_uuid)
 
@@ -56,8 +88,20 @@ async def create_pit_field(
 
 @router.patch("/pits/fields/{season_uuid}/edit/{field_uuid}", response_model=PitFieldResponse)
 async def edit_pit_field(
-        data: EditPitFieldRequest
+        data: EditPitFieldRequest,
+        superuser: User = Depends(require_superuser)
     ) -> PitScoutingField:
+    """
+    Edit a pit scouting field
+
+    Requires superuser access
+
+    Parameters:
+        data (`EditPitFieldRequest`): The data to edit the field
+
+    Returns:
+        `PitFieldResponse`: The edited field
+    """
     
     season: Season = await get_season(data.season_uuid)
 
@@ -84,8 +128,19 @@ async def edit_pit_field(
 @router.delete("/pits/fields/{field_uuid}/delete", response_model=PitFieldResponse)
 async def delete_pit_field(
         data: DeletePitFieldRequest,
-        current_user: User = Depends(get_current_user)
+        superuser: User = Depends(require_superuser)
     ) -> PitScoutingField:
+    """
+    Delete a pit scouting field
+
+    Requires superuser access
+
+    Parameters:
+        data (`DeletePitFieldRequest`): The UUID of the field to delete
+
+    Returns:
+        `PitFieldResponse`: The deleted field
+    """
 
     field: PitScoutingField | None = await PitScoutingField.get_or_none(uuid=data.field_uuid)
     if not field:
@@ -99,7 +154,15 @@ async def delete_pit_field(
 async def get_pits(
         data: GetPitsForSeasonRequest
     ):
-    
+    """
+    Get all pits for a season
+
+    Parameters:
+        data (`GetPitsForSeasonRequest`): The UUID of the season to get pits for
+
+    Returns:
+        list: A list of all pits for the season
+    """
     season: Season = await get_season(data.season_uuid)
 
     event, _ = await Event.get_or_create(
@@ -167,6 +230,12 @@ async def submit_pit(
     For the answers in that pit, find each answer that does not already exist on the server, and add them
 
     If a pit does not exist, that means it was created by the client of a user. It should be created.
+
+    Parameters:
+        data (`SubmitPitFieldAnswerRequest`): The UUID of the season and event to get pits for
+
+    Returns:
+        MessageResponse: A message indicating that the pits were submitted
     """
     
     season: Season = await get_season(data.season_uuid)
