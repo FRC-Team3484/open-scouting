@@ -21,8 +21,8 @@ class MatchScoutingFieldsResponse(RootModel[list[MatchScoutingField]]):
 
 class MatchScoutingFieldRequest(MatchScoutingField):
     season_uuid: UUID
-    organization_uuid: UUID
-    game_piece_uuid: UUID
+    organization_uuid: UUID | None
+    game_piece_uuid: UUID | None
     parent_uuid: UUID | None
     field_uuid: UUID | None
 

@@ -4,9 +4,6 @@ from uuid import UUID
 from pydantic import BaseModel
 
 
-class CustomEventsRequest(BaseModel):
-    season_uuid: UUID
-
 class EventResponse(BaseModel):
     uuid: UUID
     season: UUID

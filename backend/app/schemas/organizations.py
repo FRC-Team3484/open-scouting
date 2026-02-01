@@ -14,9 +14,6 @@ class OrganizationResponse(BaseModel):
     description: str
     created_at: datetime
 
-class OrganizationUuidRequest(BaseModel):
-    organization_uuid: UUID
-
 class OrganizationMemberResponse(BaseModel):
     uuid: str
     organization: UUID

@@ -4,7 +4,6 @@ import json
 from fastapi import APIRouter
 
 from ..models import MatchScoutingAnswer, MatchScoutingField, MatchScoutingSubmission, Season, TeamPit
-from ..schemas.data import FiltersRequest
 from ..utils import get_season
 
 
@@ -15,7 +14,9 @@ router: APIRouter = APIRouter(
 # TODO: This needs a proper response_model
 @router.get("/data/filters")
 async def get_data_filters(
-        data: FiltersRequest
+        year: int,
+        event_codes: str,
+        team_numbers: str
     ):
     """
     For a year, list of event codes, and list of team numbers, return a JSON object 
@@ -27,17 +28,17 @@ async def get_data_filters(
     If a year and a team number is given, return all event codes which have data on the server for that team number and year.
     If a year and multiple team numbers are given, return all event codes which have data on the server for those team numbers and year.
     """
-    season: Season = await get_season(year=data.year)
+    season: Season = await get_season(year=year)
 
     qs = MatchScoutingSubmission.filter(
         event__season=season
     ).select_related("event")
 
-    if data.event_codes:
-        qs = qs.filter(event__event_code__in=data.event_codes)
+    if event_codes:
+        qs = qs.filter(event__event_code__in=event_codes)
 
-    if data.team_numbers:
-        qs = qs.filter(team_number__in=data.team_numbers)
+    if team_numbers:
+        qs = qs.filter(team_number__in=team_numbers)
 
     events = await qs.distinct().values(
         event_code="event__event_code",
@@ -57,7 +58,9 @@ async def get_data_filters(
 # TODO: This needs a proper response_model
 @router.get("/data/get")
 async def get_data(
-        data: FiltersRequest
+        year: int,
+        event_codes: str,
+        team_numbers: str
     ):
     """
     Given a year, event codes, and team numbers, return the data that matches those filters
@@ -141,16 +144,16 @@ async def get_data(
     ]
     """
 
-    season: Season = await get_season(year=data.year)
+    season: Season = await get_season(year=year)
 
     submissions_qs = MatchScoutingSubmission.filter(
         event__season=season
     ).select_related("event")
 
-    if data.event_codes:
+    if event_codes:
         submissions_qs = submissions_qs.filter(event__event_code__in=event_codes)
 
-    if data.team_numbers:
+    if team_numbers:
         submissions_qs = submissions_qs.filter(team_number__in=team_numbers)
 
     submissions = await submissions_qs

@@ -1,6 +1,7 @@
 from typing import Any
 import json
 from pathlib import Path
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
 
@@ -16,7 +17,7 @@ router: APIRouter = APIRouter(
 )
 
 @router.get("/fields/season/{season_uuid}", response_model=MatchScoutingFieldsResponse)
-async def get_season_fields(data: MatchScoutingFieldRequest) -> list[Any]:
+async def get_season_fields(season_uuid: UUID) -> list[Any]:
     """
     Get all match scouting fields for a season
 
@@ -27,7 +28,7 @@ async def get_season_fields(data: MatchScoutingFieldRequest) -> list[Any]:
         `list[MatchScoutingField]`: A list of all match scouting fields for the season
     """
     # Find the season
-    season: Season = await get_season(data.season_uuid)
+    season: Season = await get_season(season_uuid)
 
     # Fetch all fields for the season including their children
     fields: list[MatchScoutingField] = await MatchScoutingField.filter(season=season).prefetch_related("children")

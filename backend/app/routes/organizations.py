@@ -1,9 +1,10 @@
+from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException
 
 from ..dependencies import get_current_user, require_user
 from ..models import Organization, OrganizationMember, User
 from ..schemas.generic import MessageResponse
-from ..schemas.organizations import OrganizationMemberResponse, OrganizationUuidRequest, OrganizationRequest, OrganizationResponse
+from ..schemas.organizations import OrganizationMemberResponse, OrganizationRequest, OrganizationResponse
 
 
 router: APIRouter = APIRouter(
@@ -54,7 +55,7 @@ async def get_user_organizations(current_user: User = Depends(get_current_user))
     return organizations
 
 @router.get("/organization/{organization_uuid}", response_model=OrganizationResponse)
-async def get_organization(data: OrganizationUuidRequest) -> Organization:
+async def get_organization(organization_uuid: UUID) -> Organization:
     """
     Get a specific organization
 
@@ -64,13 +65,13 @@ async def get_organization(data: OrganizationUuidRequest) -> Organization:
     Returns:
         `Organization`: The organization
     """
-    organization: Organization | None = await Organization.get_or_none(uuid=data.organization_uuid)
+    organization: Organization | None = await Organization.get_or_none(uuid=organization_uuid)
     if not organization:
         raise HTTPException(status_code=404, detail="Organization not found")
     return organization
 
 @router.delete("/organization/delete/{organization_uuid}", response_model=MessageResponse)
-async def delete_organization(data: OrganizationUuidRequest, current_user: User = Depends(get_current_user)) -> dict[str, str]:
+async def delete_organization(organization_uuid: UUID, current_user: User = Depends(get_current_user)) -> dict[str, str]:
     """
     Delete a specific organization
 
@@ -81,14 +82,14 @@ async def delete_organization(data: OrganizationUuidRequest, current_user: User 
         `MessageResponse`: A message indicating that the organization was deleted
     """
     # TODO: Only be able to delete organizations that the user is an admin of
-    organization: Organization | None = await Organization.get_or_none(uuid=data.organization_uuid)
+    organization: Organization | None = await Organization.get_or_none(uuid=organization_uuid)
     if not organization:
         raise HTTPException(status_code=404, detail="Organization not found")
     await organization.delete()
     return {"message": "Organization deleted"}
 
 @router.get("/organization/{organization_uuid}/members", response_model=list[OrganizationMemberResponse])
-async def get_organization_members(data: OrganizationUuidRequest) -> list[OrganizationMember]:
+async def get_organization_members(organization_uuid: UUID) -> list[OrganizationMember]:
     """
     Get all members of a specific organization
 
@@ -98,7 +99,7 @@ async def get_organization_members(data: OrganizationUuidRequest) -> list[Organi
     Returns:
         list[OrganizationMember]: A list of all organization members
     """
-    organization: Organization | None = await Organization.get_or_none(uuid=data.organization_uuid)
+    organization: Organization | None = await Organization.get_or_none(uuid=organization_uuid)
     if not organization:
         raise HTTPException(status_code=404, detail="Organization not found")
     members: list[OrganizationMember] = await OrganizationMember.filter(organization=organization)
