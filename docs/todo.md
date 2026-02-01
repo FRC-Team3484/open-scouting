@@ -45,19 +45,19 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [x] Host in experimental
   - [x] Switch to postgres for dev and prod
   - [x] Add database to docker compose
-  - [ ] Use [umami](https://github.com/umami-software/umami) for page view analytics?
+  - [ ] Use [umami](https://github.com/umami-software/umami) for public page view analytics?
 - [x] Add link to Open Scouting v1.0.0 to try v2.0.0
 - [ ] Clean up backend
-  - [ ] Move routes to separate files
-  - [ ] Create initial support for API keys
-  - [ ] Properly secure routes, and only allow some routes to logged in users and superusers
-  - [ ] Add comments
+  - [x] Move routes to separate files
+  - [x] Properly secure routes, and only allow some routes to logged in users and superusers
+  - [x] Add comments
+  - [ ] Fix frontend calls accordingly
+- [ ] Create proper error pages (404 and 500)
 - [ ] Create a changelog pop up and proper client/server versioning
 - [ ] Profile
   - [ ] Edit profile
   - [ ] Change password
   - [ ] Verification codes when enabled
-  - [ ] Create API keys
   - [ ] Profile picture management
 - [ ] Clean up frontend
   - [ ] Make type-safe
@@ -77,6 +77,11 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [ ] Create a section on the home page to show ongoing events
 - [ ] Create a page to show all events
 - [ ] Use [Weblate](https://weblate.org) for localization
+- [ ] API key support
+  - Seperate `/api` backend route for API calls
+  - Only these routes are visible in swagger docs in prod mode
+  - The rest of the routes are "internal" and only used by the app
+  - Some internal routes can be replaced by these API routes later
 
 ## Other
 - [ ] Be able to sync pit scouting data from the local data management drawer
