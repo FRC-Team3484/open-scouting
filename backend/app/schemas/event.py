@@ -12,8 +12,8 @@ class EventResponse(BaseModel):
     type: str
     city: str
     country: str
-    start_date: str
-    end_date: str
+    start_date: datetime
+    end_date: datetime
     pits_generated: bool
     custom: bool
     created_at: datetime

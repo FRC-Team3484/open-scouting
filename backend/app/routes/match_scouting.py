@@ -13,7 +13,7 @@ router: APIRouter = APIRouter(
 @router.post("/scouting/submit", response_model=MatchScoutingResponse)
 async def submit_match_scouting(
     data: MatchScoutingRequest
-) -> MatchScoutingSubmission:
+) -> MatchScoutingResponse:
     """
     Submit a match scouting form
 
@@ -72,4 +72,12 @@ async def submit_match_scouting(
             submission=submission
         )
 
-    return submission
+    return MatchScoutingResponse(
+        uuid=submission.uuid,
+        user=submission.user.uuid if submission.user else None,
+        event=submission.event.uuid,
+        team_number=submission.team_number,
+        match_number=submission.match_number,
+        match_type=submission.match_type,
+        created_at=submission.created_at
+    )

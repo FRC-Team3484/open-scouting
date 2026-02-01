@@ -28,7 +28,7 @@ async def create_organization(data: OrganizationRequest, current_user: User = De
     return organization
 
 @router.get("/organization/all/list", response_model=list[OrganizationResponse])
-async def get_organizations() -> list[Organization]:
+async def get_organizations() -> list[OrganizationResponse]:
     """
     Get all organizations on the server
 
@@ -36,10 +36,18 @@ async def get_organizations() -> list[Organization]:
         list[Organization]: A list of all organizations
     """
     organizations: list[Organization] = await Organization.all()
-    return organizations
+    return [
+        OrganizationResponse(
+            uuid=organization.uuid,
+            name=organization.name,
+            description=organization.description,
+            created_at=organization.created_at,
+        )
+        for organization in organizations
+    ]
 
 @router.get("/organization/me/list", response_model=list[OrganizationResponse])
-async def get_user_organizations(current_user: User = Depends(get_current_user)) -> list[Organization]:
+async def get_user_organizations(current_user: User = Depends(get_current_user)) -> list[OrganizationResponse]:
     """
     Get all organizations that the current user is a member of
 
@@ -52,7 +60,15 @@ async def get_user_organizations(current_user: User = Depends(get_current_user))
     organization_members: list[OrganizationMember] = await OrganizationMember.filter(user=user)
     organizations: list[Organization] = await Organization.filter(uuid__in=[m.organization_id for m in organization_members])
 
-    return organizations
+    return [
+        OrganizationResponse(
+            uuid=organization.uuid,
+            name=organization.name,
+            description=organization.description,
+            created_at=organization.created_at,
+        )
+        for organization in organizations
+    ]
 
 @router.get("/organization/{organization_uuid}", response_model=OrganizationResponse)
 async def get_organization(organization_uuid: UUID) -> Organization:
@@ -89,7 +105,7 @@ async def delete_organization(organization_uuid: UUID, current_user: User = Depe
     return {"message": "Organization deleted"}
 
 @router.get("/organization/{organization_uuid}/members", response_model=list[OrganizationMemberResponse])
-async def get_organization_members(organization_uuid: UUID) -> list[OrganizationMember]:
+async def get_organization_members(organization_uuid: UUID) -> list[OrganizationMemberResponse]:
     """
     Get all members of a specific organization
 
@@ -103,4 +119,14 @@ async def get_organization_members(organization_uuid: UUID) -> list[Organization
     if not organization:
         raise HTTPException(status_code=404, detail="Organization not found")
     members: list[OrganizationMember] = await OrganizationMember.filter(organization=organization)
-    return members
+    
+    return [
+        OrganizationMemberResponse(
+            uuid=member.uuid,
+            organization=member.organization_id,
+            user=member.user_id,
+            role=member.role,
+            created_at=member.created_at,
+        )
+        for member in members
+    ]

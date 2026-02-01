@@ -9,13 +9,13 @@ class OrganizationRequest(BaseModel):
     description: str
 
 class OrganizationResponse(BaseModel):
-    uuid: str
+    uuid: UUID
     name: str
     description: str
     created_at: datetime
 
 class OrganizationMemberResponse(BaseModel):
-    uuid: str
+    uuid: UUID
     organization: UUID
     user: UUID
     role: str

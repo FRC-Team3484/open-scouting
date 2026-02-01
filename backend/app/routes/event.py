@@ -9,15 +9,30 @@ router: APIRouter = APIRouter(
 )
 
 @router.get("/event/custom/{season_uuid}", response_model=list[EventResponse])
-async def get_custom_events(season_uuid: str) -> list[Event]:
+async def get_custom_events(season_uuid: str) -> list[EventResponse]:
     season: Season = await get_season(season_uuid)
 
-    return await Event.filter(season=season, custom=True)
+    return [
+        EventResponse(
+            uuid=event.uuid,
+            season=season.uuid,
+            event_code=event.event_code,
+            name=event.name,
+            type=event.type,
+            city=event.city,
+            country=event.country,
+            start_date=event.start_date,
+            end_date=event.end_date,
+            pits_generated=event.pits_generated,
+            custom=event.custom,
+            created_at=event.created_at
+        ) for event in await Event.filter(season=season, custom=True)
+    ]
 
 @router.post("/event/custom/{season_uuid}/create", response_model=EventResponse)
 async def create_custom_event(
         data: CustomEventRequest
-    ) -> Event:
+    ) -> EventResponse:
     
     season: Season = await get_season(data.season_uuid)
 
@@ -33,4 +48,17 @@ async def create_custom_event(
         custom=True
     )
 
-    return event
+    return EventResponse(
+        uuid=event.uuid,
+        season=season.uuid,
+        event_code=event.event_code,
+        name=event.name,
+        type=event.type,
+        city=event.city,
+        country=event.country,
+        start_date=event.start_date,
+        end_date=event.end_date,
+        pits_generated=event.pits_generated,
+        custom=event.custom,
+        created_at=event.created_at
+    )

@@ -23,7 +23,7 @@ class MatchScoutingRequest(BaseModel):
 
 class MatchScoutingResponse(BaseModel):
     uuid: UUID
-    user: UUID
+    user: UUID | None
     event: UUID
     team_number: int
     match_number: int

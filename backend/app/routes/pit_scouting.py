@@ -1,10 +1,11 @@
 import json
 import os
+from uuid import UUID
 import httpx
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from ..dependencies import get_current_user, require_superuser
+from ..dependencies import require_superuser
 from ..models import Event, Organization, PitScoutingAnswer, PitScoutingField, Season, TeamPit, User
 from ..schemas.generic import MessageResponse
 from ..schemas.pit_scouting import EditPitFieldRequest, PitFieldsRequest, PitFieldResponse, CreatePitFieldRequest, DeletePitFieldRequest, GetPitsForSeasonRequest, SubmitPitFieldAnswerRequest
@@ -17,7 +18,7 @@ router: APIRouter = APIRouter(
 TBA_API_KEY = os.getenv("TBA_API_KEY")
 
 @router.get("/pits/fields/{season_uuid}", response_model=list[PitFieldResponse])
-async def get_pit_fields(data: PitFieldsRequest) -> list[PitScoutingField]:
+async def get_pit_fields(season_uuid: UUID) -> list[PitFieldResponse]:
     """
     Get all pit scouting fields for a season
 
@@ -27,10 +28,22 @@ async def get_pit_fields(data: PitFieldsRequest) -> list[PitScoutingField]:
     Returns:
         list[PitFieldResponse]: A list of all pit scouting fields for the season
     """
-    season: Season = await get_season(data.season_uuid)
+    season: Season = await get_season(season_uuid)
 
     fields: list[PitScoutingField] = await PitScoutingField.filter(season=season)
-    return fields
+
+    return [
+        PitFieldResponse(
+            uuid=field.uuid,
+            season=season.uuid,
+            name=field.name,
+            field_type=field.field_type,
+            options=field.options,
+            order=field.order,
+            organization=field.organization.uuid if field.organization else None,
+            created_at=field.created_at
+        ) for field in fields
+    ]
 
 @router.delete("/pits/fields/{season_uuid}/clear", response_model=MessageResponse)
 async def clear_pit_fields(data: PitFieldsRequest, superuser: User = Depends(require_superuser)):
@@ -54,7 +67,7 @@ async def clear_pit_fields(data: PitFieldsRequest, superuser: User = Depends(req
 async def create_pit_field(
         data: CreatePitFieldRequest,
         superuser: User = Depends(require_superuser)
-    ) -> PitScoutingField:
+    ) -> PitFieldResponse:
     """
     Create a new pit scouting field
 
@@ -84,13 +97,23 @@ async def create_pit_field(
         order=data.order,
         organization=organization
     )
-    return field
+
+    return PitFieldResponse(
+        uuid=field.uuid,
+        season=season.uuid,
+        name=field.name,
+        field_type=field.field_type,
+        options=field.options,
+        order=field.order,
+        organization=field.organization.uuid if field.organization else None,
+        created_at=field.created_at
+    )
 
 @router.patch("/pits/fields/{season_uuid}/edit/{field_uuid}", response_model=PitFieldResponse)
 async def edit_pit_field(
         data: EditPitFieldRequest,
         superuser: User = Depends(require_superuser)
-    ) -> PitScoutingField:
+    ) -> PitFieldResponse:
     """
     Edit a pit scouting field
 
@@ -123,13 +146,23 @@ async def edit_pit_field(
     field.organization = organization
 
     await field.save()
-    return field
+
+    return PitFieldResponse(
+        uuid=field.uuid,
+        season=season.uuid,
+        name=field.name,
+        field_type=field.field_type,
+        options=field.options,
+        order=field.order,
+        organization=field.organization.uuid if field.organization else None,
+        created_at=field.created_at
+    )
 
 @router.delete("/pits/fields/{field_uuid}/delete", response_model=PitFieldResponse)
 async def delete_pit_field(
         data: DeletePitFieldRequest,
         superuser: User = Depends(require_superuser)
-    ) -> PitScoutingField:
+    ) -> PitFieldResponse:
     """
     Delete a pit scouting field
 
@@ -147,7 +180,17 @@ async def delete_pit_field(
         raise HTTPException(status_code=404, detail="Field not found")
 
     await field.delete()
-    return field
+
+    return PitFieldResponse(
+        uuid=field.uuid,
+        season=season.uuid,
+        name=field.name,
+        field_type=field.field_type,
+        options=field.options,
+        order=field.order,
+        organization=field.organization.uuid if field.organization else None,
+        created_at=field.created_at
+    )
 
 # TODO: This needs a proper response_model
 @router.post("/pits/get/{season_uuid}")

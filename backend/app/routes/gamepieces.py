@@ -13,7 +13,7 @@ router: APIRouter = APIRouter(
 )
 
 @router.get("/gamepieces", response_model=list[GamepieceResponse])
-async def get_gamepieces() -> list[GamePiece]:
+async def get_gamepieces() -> list[GamepieceResponse]:
     """
     Get all game pieces on the server
 
@@ -21,7 +21,15 @@ async def get_gamepieces() -> list[GamePiece]:
         list[GamepieceResponse]: A list of all game pieces
     """
     gamepieces: list[GamePiece] = await GamePiece.all()
-    return gamepieces
+    return [
+        GamepieceResponse(
+            uuid=gp.uuid,
+            season=gp.season.uuid,
+            name=gp.name,
+            created_at=gp.created_at,
+        )
+        for gp in gamepieces
+    ]
 
 @router.post("/gamepieces/create", response_model=GamepieceResponse)
 async def create_gamepiece(data: GamepieceRequest, superuser: User = Depends(require_superuser)) -> GamePiece:
@@ -41,7 +49,7 @@ async def create_gamepiece(data: GamepieceRequest, superuser: User = Depends(req
     return gamepiece
 
 @router.get("/gamepieces/season/{season_uuid}", response_model=list[GamepieceResponse])
-async def get_season_gamepieces(season_uuid: UUID) -> list[GamePiece]:
+async def get_season_gamepieces(season_uuid: UUID) -> list[GamepieceResponse]:
     """
     Get all game pieces for a season
 
@@ -53,7 +61,16 @@ async def get_season_gamepieces(season_uuid: UUID) -> list[GamePiece]:
     """
     season: Season = await get_season(season_uuid)
     gamepieces: list[GamePiece] = await GamePiece.filter(season=season)
-    return gamepieces
+
+    return [
+        GamepieceResponse(
+            uuid=gp.uuid,
+            season=season.uuid,
+            name=gp.name,
+            created_at=gp.created_at,
+        )
+        for gp in gamepieces
+    ]
 
 @router.delete("/gamepieces/delete/{gamepiece_uuid}", response_model=MessageResponse)
 async def delete_gamepiece(gamepiece_uuid: str, superuser: User = Depends(require_superuser)) -> dict[str, str]:
