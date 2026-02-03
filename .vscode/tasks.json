@@ -49,4 +49,17 @@
         "runOn": "folderOpen"
       }
     },
+    {
+      "label": "Load OpenAPI types into the frontend from the backend",
+      "type": "shell",
+      "command": "npx openapi-typescript http://localhost:8000/openapi.json -o ./src/lib/openapi.d.ts",
+      "options": {
+        "cwd": "${workspaceFolder}/frontend"
+      },
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always"
+      },
+    }
 }

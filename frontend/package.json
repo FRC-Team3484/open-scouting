@@ -26,6 +26,7 @@
 		"bits-ui": "^2.14.4",
 		"clsx": "^2.1.1",
 		"layerchart": "^2.0.0-next.43",
+		"openapi-typescript": "^7.10.1",
 		"phosphor-svelte": "^3.0.1",
 		"prettier": "^3.7.4",
 		"prettier-plugin-svelte": "^3.4.1",
@@ -45,6 +46,7 @@
 	"dependencies": {
 		"@thisux/sveltednd": "^0.0.20",
 		"dexie": "^4.2.1",
-		"mode-watcher": "^1.1.0"
+		"mode-watcher": "^1.1.0",
+		"openapi-fetch": "^0.15.0"
 	}
 }
