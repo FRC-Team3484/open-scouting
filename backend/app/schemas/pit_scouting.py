@@ -13,9 +13,9 @@ class PitFieldResponse(BaseModel):
     season: UUID
     name: str
     field_type: str
-    options: str
+    options: list[Any]
     order: int
-    organization: UUID
+    organization: UUID | None
     created_at: datetime
 
 class CreatePitFieldRequest(BaseModel):

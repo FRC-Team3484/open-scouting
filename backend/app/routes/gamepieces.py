@@ -32,7 +32,7 @@ async def get_gamepieces() -> list[GamepieceResponse]:
     ]
 
 @router.post("/gamepieces/create", response_model=GamepieceResponse)
-async def create_gamepiece(data: GamepieceRequest, superuser: User = Depends(require_superuser)) -> GamePiece:
+async def create_gamepiece(data: GamepieceRequest, superuser: User = Depends(require_superuser)) -> GamepieceResponse:
     """
     Create a new game piece
 
@@ -46,7 +46,13 @@ async def create_gamepiece(data: GamepieceRequest, superuser: User = Depends(req
     """
     season: Season = await get_season(data.season_uuid)
     gamepiece: GamePiece = await GamePiece.create(season=season, name=data.name)
-    return gamepiece
+    
+    return GamepieceResponse(
+        uuid=gamepiece.uuid,
+        season=season.uuid,
+        name=gamepiece.name,
+        created_at=gamepiece.created_at,
+    )
 
 @router.get("/gamepieces/season/{season_uuid}", response_model=list[GamepieceResponse])
 async def get_season_gamepieces(season_uuid: UUID) -> list[GamepieceResponse]:

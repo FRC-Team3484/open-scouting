@@ -4,27 +4,29 @@ from uuid import UUID
 from pydantic import BaseModel, RootModel
 
 
-class MatchScoutingField(BaseModel):
-    uuid: UUID | None
+class MatchScoutingFieldResponse(BaseModel):
+    uuid: UUID | None = None
     name: str
     field_type: str
     stat_type: str
-    game_piece_id: UUID | None
+    game_piece_id: UUID | None = None
     required: bool
-    options: list[Any]
+    options: list[Any] | None = None
     order: int
-    organization_id: UUID | None
-    fields: list[MatchScoutingField]
+    organization_id: UUID | None = None
 
-class MatchScoutingFieldsResponse(RootModel[list[MatchScoutingField]]):
-    root: list[MatchScoutingField]
-
-class MatchScoutingFieldRequest(MatchScoutingField):
+class MatchScoutingFieldRequest(BaseModel):
+    name: str
     season_uuid: UUID
-    organization_uuid: UUID | None
-    game_piece_uuid: UUID | None
-    parent_uuid: UUID | None
-    field_uuid: UUID | None
+    field_type: str
+    stat_type: str
+    required: bool
+    order: int
+    organization_uuid: UUID | None = None
+    parent_uuid: UUID | None = None
+    
+    options: list[Any] | None = None
+    game_piece_uuid: UUID | None = None
 
 class MatchScoutingFieldRequestUUID(MatchScoutingFieldRequest):
     field_uuid: UUID

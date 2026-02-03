@@ -8,7 +8,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from ..dependencies import require_superuser
 from ..models import GamePiece, MatchScoutingField, Organization, Season, User
 from ..schemas.generic import MessageResponse
-from ..schemas.fields import MatchScoutingFieldRequestUUID, MatchScoutingFieldsResponse, MatchScoutingFieldRequest
+from ..schemas.fields import MatchScoutingFieldRequestUUID, MatchScoutingFieldRequest, MatchScoutingFieldResponse
 from ..utils import get_season
 
 
@@ -16,7 +16,8 @@ router: APIRouter = APIRouter(
     tags=["Match Scouting Fields"],
 )
 
-@router.get("/fields/season/{season_uuid}", response_model=MatchScoutingFieldsResponse)
+# TODO: This needs a proper response_model
+@router.get("/fields/season/{season_uuid}")
 async def get_season_fields(season_uuid: UUID) -> list[Any]:
     """
     Get all match scouting fields for a season
@@ -104,11 +105,11 @@ async def clear_season_fields(data: MatchScoutingFieldRequest, superuser: User =
     await MatchScoutingField.filter(season=season).delete()
     return {"message": "Fields cleared"}
 
-@router.post("/fields/season/{season_uuid}/create", response_model=MatchScoutingFieldRequest)
+@router.post("/fields/season/{season_uuid}/create", response_model=MatchScoutingFieldResponse)
 async def create_season_field(
         data: MatchScoutingFieldRequest,
         superuser: User = Depends(require_superuser)
-    ) -> MatchScoutingField:
+    ) -> MatchScoutingFieldResponse:
     """
     Create a new match scouting field
 
@@ -139,14 +140,14 @@ async def create_season_field(
     else:
         game_piece = None
 
-    if data.organization_uuid != "":
+    if data.organization_uuid != "" and data.organization_uuid is not None:
         organization = await Organization.get_or_none(uuid=data.organization_uuid)
         if not organization:
             raise HTTPException(status_code=404, detail="Organization not found")
     else:
         organization = None
 
-    if data.parent_uuid != "":
+    if data.parent_uuid != "" and data.parent_uuid is not None:
         parent = await MatchScoutingField.get_or_none(uuid=data.parent_uuid)
         if not parent:
             raise HTTPException(status_code=404, detail="Section not found")
@@ -165,7 +166,18 @@ async def create_season_field(
         order=data.order, 
         organization=organization
     )
-    return field
+    return MatchScoutingFieldResponse(
+        uuid=field.uuid,
+        season=field.season.uuid,
+        name=field.name,
+        field_type=field.field_type,
+        stat_type=field.stat_type,
+        game_piece_uuid=field.game_piece.uuid if field.game_piece else None,
+        required=field.required,
+        options=field.options,
+        order=field.order,
+        organization_uuid=field.organization.uuid if field.organization else None,
+    )
 
 @router.post("/fields/season/{season_uuid}/edit/{field_uuid}", response_model=MatchScoutingFieldRequest)
 async def edit_season_field(
