@@ -4,9 +4,9 @@ export default defineConfig({
     api: {
         output: {
             mode: 'tags-split',
-            target: 'src/api/api.ts',
-            schemas: 'src/api/model',
-            client: 'svelte-query',
+            target: 'src/lib/api/api.ts',
+            schemas: 'src/lib/api/model',
+            client: 'fetch',
             mock: true,
         },
         input: {
