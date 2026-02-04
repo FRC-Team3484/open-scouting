@@ -10,6 +10,7 @@ import type {
   HTTPValidationError
 } from '.././model';
 
+import { customInstance } from '.././client';
 
 /**
  * For a year, list of event codes, and list of team numbers, return a JSON object 
@@ -58,20 +59,14 @@ export const getGetDataFiltersDataFiltersGetUrl = (params: GetDataFiltersDataFil
 
 export const getDataFiltersDataFiltersGet = async (params: GetDataFiltersDataFiltersGetParams, options?: RequestInit): Promise<getDataFiltersDataFiltersGetResponse> => {
   
-  const res = await fetch(getGetDataFiltersDataFiltersGetUrl(params),
+  return customInstance<getDataFiltersDataFiltersGetResponse>(getGetDataFiltersDataFiltersGetUrl(params),
   {      
     ...options,
     method: 'GET'
     
     
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: getDataFiltersDataFiltersGetResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getDataFiltersDataFiltersGetResponse
-}
+);}
 
 
 /**
@@ -192,19 +187,13 @@ export const getGetDataDataGetGetUrl = (params: GetDataDataGetGetParams,) => {
 
 export const getDataDataGetGet = async (params: GetDataDataGetGetParams, options?: RequestInit): Promise<getDataDataGetGetResponse> => {
   
-  const res = await fetch(getGetDataDataGetGetUrl(params),
+  return customInstance<getDataDataGetGetResponse>(getGetDataDataGetGetUrl(params),
   {      
     ...options,
     method: 'GET'
     
     
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: getDataDataGetGetResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getDataDataGetGetResponse
-}
+);}
 
 

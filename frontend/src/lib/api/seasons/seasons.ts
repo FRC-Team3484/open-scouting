@@ -11,6 +11,7 @@ import type {
   SeasonResponse
 } from '.././model';
 
+import { customInstance } from '.././client';
 
 /**
  * Get all seasons on the server
@@ -41,20 +42,14 @@ export const getGetSeasonsSeasonsGetUrl = () => {
 
 export const getSeasonsSeasonsGet = async ( options?: RequestInit): Promise<getSeasonsSeasonsGetResponse> => {
   
-  const res = await fetch(getGetSeasonsSeasonsGetUrl(),
+  return customInstance<getSeasonsSeasonsGetResponse>(getGetSeasonsSeasonsGetUrl(),
   {      
     ...options,
     method: 'GET'
     
     
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: getSeasonsSeasonsGetResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getSeasonsSeasonsGetResponse
-}
+);}
 
 
 /**
@@ -86,20 +81,14 @@ export const getGetActiveSeasonSeasonsActiveGetUrl = () => {
 
 export const getActiveSeasonSeasonsActiveGet = async ( options?: RequestInit): Promise<getActiveSeasonSeasonsActiveGetResponse> => {
   
-  const res = await fetch(getGetActiveSeasonSeasonsActiveGetUrl(),
+  return customInstance<getActiveSeasonSeasonsActiveGetResponse>(getGetActiveSeasonSeasonsActiveGetUrl(),
   {      
     ...options,
     method: 'GET'
     
     
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: getActiveSeasonSeasonsActiveGetResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getActiveSeasonSeasonsActiveGetResponse
-}
+);}
 
 
 /**
@@ -143,7 +132,7 @@ export const getCreateSeasonSeasonsCreatePostUrl = () => {
 
 export const createSeasonSeasonsCreatePost = async (seasonCreate: SeasonCreate, options?: RequestInit): Promise<createSeasonSeasonsCreatePostResponse> => {
   
-  const res = await fetch(getCreateSeasonSeasonsCreatePostUrl(),
+  return customInstance<createSeasonSeasonsCreatePostResponse>(getCreateSeasonSeasonsCreatePostUrl(),
   {      
     ...options,
     method: 'POST',
@@ -151,13 +140,7 @@ export const createSeasonSeasonsCreatePost = async (seasonCreate: SeasonCreate, 
     body: JSON.stringify(
       seasonCreate,)
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: createSeasonSeasonsCreatePostResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as createSeasonSeasonsCreatePostResponse
-}
+);}
 
 
 /**
@@ -201,19 +184,13 @@ export const getDeleteSeasonSeasonsDeleteSeasonUuidDeleteUrl = (seasonUuid: stri
 
 export const deleteSeasonSeasonsDeleteSeasonUuidDelete = async (seasonUuid: string, options?: RequestInit): Promise<deleteSeasonSeasonsDeleteSeasonUuidDeleteResponse> => {
   
-  const res = await fetch(getDeleteSeasonSeasonsDeleteSeasonUuidDeleteUrl(seasonUuid),
+  return customInstance<deleteSeasonSeasonsDeleteSeasonUuidDeleteResponse>(getDeleteSeasonSeasonsDeleteSeasonUuidDeleteUrl(seasonUuid),
   {      
     ...options,
     method: 'DELETE'
     
     
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: deleteSeasonSeasonsDeleteSeasonUuidDeleteResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as deleteSeasonSeasonsDeleteSeasonUuidDeleteResponse
-}
+);}
 
 

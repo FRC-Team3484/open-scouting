@@ -10,6 +10,7 @@ import type {
   MatchScoutingResponse
 } from '.././model';
 
+import { customInstance } from '.././client';
 
 /**
  * Submit a match scouting form
@@ -52,7 +53,7 @@ export const getSubmitMatchScoutingScoutingSubmitPostUrl = () => {
 
 export const submitMatchScoutingScoutingSubmitPost = async (matchScoutingRequest: MatchScoutingRequest, options?: RequestInit): Promise<submitMatchScoutingScoutingSubmitPostResponse> => {
   
-  const res = await fetch(getSubmitMatchScoutingScoutingSubmitPostUrl(),
+  return customInstance<submitMatchScoutingScoutingSubmitPostResponse>(getSubmitMatchScoutingScoutingSubmitPostUrl(),
   {      
     ...options,
     method: 'POST',
@@ -60,12 +61,6 @@ export const submitMatchScoutingScoutingSubmitPost = async (matchScoutingRequest
     body: JSON.stringify(
       matchScoutingRequest,)
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: submitMatchScoutingScoutingSubmitPostResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as submitMatchScoutingScoutingSubmitPostResponse
-}
+);}
 
 

@@ -12,6 +12,7 @@ import type {
   OrganizationResponse
 } from '.././model';
 
+import { customInstance } from '.././client';
 
 /**
  * Create a new organization
@@ -52,7 +53,7 @@ export const getCreateOrganizationOrganizationCreatePostUrl = () => {
 
 export const createOrganizationOrganizationCreatePost = async (organizationRequest: OrganizationRequest, options?: RequestInit): Promise<createOrganizationOrganizationCreatePostResponse> => {
   
-  const res = await fetch(getCreateOrganizationOrganizationCreatePostUrl(),
+  return customInstance<createOrganizationOrganizationCreatePostResponse>(getCreateOrganizationOrganizationCreatePostUrl(),
   {      
     ...options,
     method: 'POST',
@@ -60,13 +61,7 @@ export const createOrganizationOrganizationCreatePost = async (organizationReque
     body: JSON.stringify(
       organizationRequest,)
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: createOrganizationOrganizationCreatePostResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as createOrganizationOrganizationCreatePostResponse
-}
+);}
 
 
 /**
@@ -98,20 +93,14 @@ export const getGetOrganizationsOrganizationAllListGetUrl = () => {
 
 export const getOrganizationsOrganizationAllListGet = async ( options?: RequestInit): Promise<getOrganizationsOrganizationAllListGetResponse> => {
   
-  const res = await fetch(getGetOrganizationsOrganizationAllListGetUrl(),
+  return customInstance<getOrganizationsOrganizationAllListGetResponse>(getGetOrganizationsOrganizationAllListGetUrl(),
   {      
     ...options,
     method: 'GET'
     
     
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: getOrganizationsOrganizationAllListGetResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getOrganizationsOrganizationAllListGetResponse
-}
+);}
 
 
 /**
@@ -143,20 +132,14 @@ export const getGetUserOrganizationsOrganizationMeListGetUrl = () => {
 
 export const getUserOrganizationsOrganizationMeListGet = async ( options?: RequestInit): Promise<getUserOrganizationsOrganizationMeListGetResponse> => {
   
-  const res = await fetch(getGetUserOrganizationsOrganizationMeListGetUrl(),
+  return customInstance<getUserOrganizationsOrganizationMeListGetResponse>(getGetUserOrganizationsOrganizationMeListGetUrl(),
   {      
     ...options,
     method: 'GET'
     
     
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: getUserOrganizationsOrganizationMeListGetResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getUserOrganizationsOrganizationMeListGetResponse
-}
+);}
 
 
 /**
@@ -198,20 +181,14 @@ export const getGetOrganizationOrganizationOrganizationUuidGetUrl = (organizatio
 
 export const getOrganizationOrganizationOrganizationUuidGet = async (organizationUuid: string, options?: RequestInit): Promise<getOrganizationOrganizationOrganizationUuidGetResponse> => {
   
-  const res = await fetch(getGetOrganizationOrganizationOrganizationUuidGetUrl(organizationUuid),
+  return customInstance<getOrganizationOrganizationOrganizationUuidGetResponse>(getGetOrganizationOrganizationOrganizationUuidGetUrl(organizationUuid),
   {      
     ...options,
     method: 'GET'
     
     
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: getOrganizationOrganizationOrganizationUuidGetResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getOrganizationOrganizationOrganizationUuidGetResponse
-}
+);}
 
 
 /**
@@ -253,20 +230,14 @@ export const getDeleteOrganizationOrganizationDeleteOrganizationUuidDeleteUrl = 
 
 export const deleteOrganizationOrganizationDeleteOrganizationUuidDelete = async (organizationUuid: string, options?: RequestInit): Promise<deleteOrganizationOrganizationDeleteOrganizationUuidDeleteResponse> => {
   
-  const res = await fetch(getDeleteOrganizationOrganizationDeleteOrganizationUuidDeleteUrl(organizationUuid),
+  return customInstance<deleteOrganizationOrganizationDeleteOrganizationUuidDeleteResponse>(getDeleteOrganizationOrganizationDeleteOrganizationUuidDeleteUrl(organizationUuid),
   {      
     ...options,
     method: 'DELETE'
     
     
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: deleteOrganizationOrganizationDeleteOrganizationUuidDeleteResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as deleteOrganizationOrganizationDeleteOrganizationUuidDeleteResponse
-}
+);}
 
 
 /**
@@ -308,19 +279,13 @@ export const getGetOrganizationMembersOrganizationOrganizationUuidMembersGetUrl 
 
 export const getOrganizationMembersOrganizationOrganizationUuidMembersGet = async (organizationUuid: string, options?: RequestInit): Promise<getOrganizationMembersOrganizationOrganizationUuidMembersGetResponse> => {
   
-  const res = await fetch(getGetOrganizationMembersOrganizationOrganizationUuidMembersGetUrl(organizationUuid),
+  return customInstance<getOrganizationMembersOrganizationOrganizationUuidMembersGetResponse>(getGetOrganizationMembersOrganizationOrganizationUuidMembersGetUrl(organizationUuid),
   {      
     ...options,
     method: 'GET'
     
     
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: getOrganizationMembersOrganizationOrganizationUuidMembersGetResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getOrganizationMembersOrganizationOrganizationUuidMembersGetResponse
-}
+);}
 
 

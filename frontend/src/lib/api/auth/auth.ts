@@ -14,6 +14,7 @@ import type {
   UserResponse
 } from '.././model';
 
+import { customInstance } from '.././client';
 
 /**
  * Create a new user
@@ -56,7 +57,7 @@ export const getSignupAuthSignupPostUrl = () => {
 
 export const signupAuthSignupPost = async (signupRequest: SignupRequest, options?: RequestInit): Promise<signupAuthSignupPostResponse> => {
   
-  const res = await fetch(getSignupAuthSignupPostUrl(),
+  return customInstance<signupAuthSignupPostResponse>(getSignupAuthSignupPostUrl(),
   {      
     ...options,
     method: 'POST',
@@ -64,13 +65,7 @@ export const signupAuthSignupPost = async (signupRequest: SignupRequest, options
     body: JSON.stringify(
       signupRequest,)
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: signupAuthSignupPostResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as signupAuthSignupPostResponse
-}
+);}
 
 
 /**
@@ -127,7 +122,7 @@ if(bodyLoginForAccessTokenTokenPost.client_secret !== undefined && bodyLoginForA
  formUrlEncoded.append(`client_secret`, bodyLoginForAccessTokenTokenPost.client_secret);
  }
 
-  const res = await fetch(getLoginForAccessTokenTokenPostUrl(),
+  return customInstance<loginForAccessTokenTokenPostResponse>(getLoginForAccessTokenTokenPostUrl(),
   {      
     ...options,
     method: 'POST',
@@ -135,13 +130,7 @@ if(bodyLoginForAccessTokenTokenPost.client_secret !== undefined && bodyLoginForA
     body: 
       formUrlEncoded,
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: loginForAccessTokenTokenPostResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as loginForAccessTokenTokenPostResponse
-}
+);}
 
 
 /**
@@ -175,20 +164,14 @@ export const getGetUsersUsersGetUrl = () => {
 
 export const getUsersUsersGet = async ( options?: RequestInit): Promise<getUsersUsersGetResponse> => {
   
-  const res = await fetch(getGetUsersUsersGetUrl(),
+  return customInstance<getUsersUsersGetResponse>(getGetUsersUsersGetUrl(),
   {      
     ...options,
     method: 'GET'
     
     
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: getUsersUsersGetResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getUsersUsersGetResponse
-}
+);}
 
 
 /**
@@ -232,20 +215,14 @@ export const getDeleteUserUsersDeleteUsernameDeleteUrl = (username: string,) => 
 
 export const deleteUserUsersDeleteUsernameDelete = async (username: string, options?: RequestInit): Promise<deleteUserUsersDeleteUsernameDeleteResponse> => {
   
-  const res = await fetch(getDeleteUserUsersDeleteUsernameDeleteUrl(username),
+  return customInstance<deleteUserUsersDeleteUsernameDeleteResponse>(getDeleteUserUsersDeleteUsernameDeleteUrl(username),
   {      
     ...options,
     method: 'DELETE'
     
     
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: deleteUserUsersDeleteUsernameDeleteResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as deleteUserUsersDeleteUsernameDeleteResponse
-}
+);}
 
 
 /**
@@ -277,20 +254,14 @@ export const getGetUserSettingsUsersMeGetSettingsGetUrl = () => {
 
 export const getUserSettingsUsersMeGetSettingsGet = async ( options?: RequestInit): Promise<getUserSettingsUsersMeGetSettingsGetResponse> => {
   
-  const res = await fetch(getGetUserSettingsUsersMeGetSettingsGetUrl(),
+  return customInstance<getUserSettingsUsersMeGetSettingsGetResponse>(getGetUserSettingsUsersMeGetSettingsGetUrl(),
   {      
     ...options,
     method: 'GET'
     
     
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: getUserSettingsUsersMeGetSettingsGetResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getUserSettingsUsersMeGetSettingsGetResponse
-}
+);}
 
 
 /**
@@ -332,7 +303,7 @@ export const getUpdateUserSettingsUsersMeUpdateSettingsPostUrl = () => {
 
 export const updateUserSettingsUsersMeUpdateSettingsPost = async (baseSettings: BaseSettings, options?: RequestInit): Promise<updateUserSettingsUsersMeUpdateSettingsPostResponse> => {
   
-  const res = await fetch(getUpdateUserSettingsUsersMeUpdateSettingsPostUrl(),
+  return customInstance<updateUserSettingsUsersMeUpdateSettingsPostResponse>(getUpdateUserSettingsUsersMeUpdateSettingsPostUrl(),
   {      
     ...options,
     method: 'POST',
@@ -340,13 +311,7 @@ export const updateUserSettingsUsersMeUpdateSettingsPost = async (baseSettings: 
     body: JSON.stringify(
       baseSettings,)
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: updateUserSettingsUsersMeUpdateSettingsPostResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as updateUserSettingsUsersMeUpdateSettingsPostResponse
-}
+);}
 
 
 /**
@@ -390,20 +355,14 @@ export const getSetSuperuserUsersSetSuperuserUsernamePostUrl = (username: string
 
 export const setSuperuserUsersSetSuperuserUsernamePost = async (username: string, options?: RequestInit): Promise<setSuperuserUsersSetSuperuserUsernamePostResponse> => {
   
-  const res = await fetch(getSetSuperuserUsersSetSuperuserUsernamePostUrl(username),
+  return customInstance<setSuperuserUsersSetSuperuserUsernamePostResponse>(getSetSuperuserUsersSetSuperuserUsernamePostUrl(username),
   {      
     ...options,
     method: 'POST'
     
     
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: setSuperuserUsersSetSuperuserUsernamePostResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as setSuperuserUsersSetSuperuserUsernamePostResponse
-}
+);}
 
 
 /**
@@ -435,19 +394,13 @@ export const getValidateUserAuthValidateGetUrl = () => {
 
 export const validateUserAuthValidateGet = async ( options?: RequestInit): Promise<validateUserAuthValidateGetResponse> => {
   
-  const res = await fetch(getValidateUserAuthValidateGetUrl(),
+  return customInstance<validateUserAuthValidateGetResponse>(getValidateUserAuthValidateGetUrl(),
   {      
     ...options,
     method: 'GET'
     
     
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: validateUserAuthValidateGetResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as validateUserAuthValidateGetResponse
-}
+);}
 
 

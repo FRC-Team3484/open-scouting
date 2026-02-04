@@ -11,6 +11,7 @@ import type {
   MessageResponse
 } from '.././model';
 
+import { customInstance } from '.././client';
 
 /**
  * Get all game pieces on the server
@@ -41,20 +42,14 @@ export const getGetGamepiecesGamepiecesGetUrl = () => {
 
 export const getGamepiecesGamepiecesGet = async ( options?: RequestInit): Promise<getGamepiecesGamepiecesGetResponse> => {
   
-  const res = await fetch(getGetGamepiecesGamepiecesGetUrl(),
+  return customInstance<getGamepiecesGamepiecesGetResponse>(getGetGamepiecesGamepiecesGetUrl(),
   {      
     ...options,
     method: 'GET'
     
     
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: getGamepiecesGamepiecesGetResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getGamepiecesGamepiecesGetResponse
-}
+);}
 
 
 /**
@@ -98,7 +93,7 @@ export const getCreateGamepieceGamepiecesCreatePostUrl = () => {
 
 export const createGamepieceGamepiecesCreatePost = async (gamepieceRequest: GamepieceRequest, options?: RequestInit): Promise<createGamepieceGamepiecesCreatePostResponse> => {
   
-  const res = await fetch(getCreateGamepieceGamepiecesCreatePostUrl(),
+  return customInstance<createGamepieceGamepiecesCreatePostResponse>(getCreateGamepieceGamepiecesCreatePostUrl(),
   {      
     ...options,
     method: 'POST',
@@ -106,13 +101,7 @@ export const createGamepieceGamepiecesCreatePost = async (gamepieceRequest: Game
     body: JSON.stringify(
       gamepieceRequest,)
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: createGamepieceGamepiecesCreatePostResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as createGamepieceGamepiecesCreatePostResponse
-}
+);}
 
 
 /**
@@ -154,20 +143,14 @@ export const getGetSeasonGamepiecesGamepiecesSeasonSeasonUuidGetUrl = (seasonUui
 
 export const getSeasonGamepiecesGamepiecesSeasonSeasonUuidGet = async (seasonUuid: string, options?: RequestInit): Promise<getSeasonGamepiecesGamepiecesSeasonSeasonUuidGetResponse> => {
   
-  const res = await fetch(getGetSeasonGamepiecesGamepiecesSeasonSeasonUuidGetUrl(seasonUuid),
+  return customInstance<getSeasonGamepiecesGamepiecesSeasonSeasonUuidGetResponse>(getGetSeasonGamepiecesGamepiecesSeasonSeasonUuidGetUrl(seasonUuid),
   {      
     ...options,
     method: 'GET'
     
     
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: getSeasonGamepiecesGamepiecesSeasonSeasonUuidGetResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getSeasonGamepiecesGamepiecesSeasonSeasonUuidGetResponse
-}
+);}
 
 
 /**
@@ -211,19 +194,13 @@ export const getDeleteGamepieceGamepiecesDeleteGamepieceUuidDeleteUrl = (gamepie
 
 export const deleteGamepieceGamepiecesDeleteGamepieceUuidDelete = async (gamepieceUuid: string, options?: RequestInit): Promise<deleteGamepieceGamepiecesDeleteGamepieceUuidDeleteResponse> => {
   
-  const res = await fetch(getDeleteGamepieceGamepiecesDeleteGamepieceUuidDeleteUrl(gamepieceUuid),
+  return customInstance<deleteGamepieceGamepiecesDeleteGamepieceUuidDeleteResponse>(getDeleteGamepieceGamepiecesDeleteGamepieceUuidDeleteUrl(gamepieceUuid),
   {      
     ...options,
     method: 'DELETE'
     
     
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: deleteGamepieceGamepiecesDeleteGamepieceUuidDeleteResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as deleteGamepieceGamepiecesDeleteGamepieceUuidDeleteResponse
-}
+);}
 
 

@@ -10,6 +10,7 @@ import type {
   HTTPValidationError
 } from '.././model';
 
+import { customInstance } from '.././client';
 
 /**
  * Get all custom events for a season
@@ -50,20 +51,14 @@ export const getGetCustomEventsEventCustomSeasonUuidGetUrl = (seasonUuid: string
 
 export const getCustomEventsEventCustomSeasonUuidGet = async (seasonUuid: string, options?: RequestInit): Promise<getCustomEventsEventCustomSeasonUuidGetResponse> => {
   
-  const res = await fetch(getGetCustomEventsEventCustomSeasonUuidGetUrl(seasonUuid),
+  return customInstance<getCustomEventsEventCustomSeasonUuidGetResponse>(getGetCustomEventsEventCustomSeasonUuidGetUrl(seasonUuid),
   {      
     ...options,
     method: 'GET'
     
     
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: getCustomEventsEventCustomSeasonUuidGetResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getCustomEventsEventCustomSeasonUuidGetResponse
-}
+);}
 
 
 /**
@@ -107,7 +102,7 @@ export const getCreateCustomEventEventCustomSeasonUuidCreatePostUrl = (seasonUui
 export const createCustomEventEventCustomSeasonUuidCreatePost = async (seasonUuid: string,
     customEventRequest: CustomEventRequest, options?: RequestInit): Promise<createCustomEventEventCustomSeasonUuidCreatePostResponse> => {
   
-  const res = await fetch(getCreateCustomEventEventCustomSeasonUuidCreatePostUrl(seasonUuid),
+  return customInstance<createCustomEventEventCustomSeasonUuidCreatePostResponse>(getCreateCustomEventEventCustomSeasonUuidCreatePostUrl(seasonUuid),
   {      
     ...options,
     method: 'POST',
@@ -115,12 +110,6 @@ export const createCustomEventEventCustomSeasonUuidCreatePost = async (seasonUui
     body: JSON.stringify(
       customEventRequest,)
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: createCustomEventEventCustomSeasonUuidCreatePostResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as createCustomEventEventCustomSeasonUuidCreatePostResponse
-}
+);}
 
 

@@ -11,6 +11,7 @@ import type {
   MessageResponse
 } from '.././model';
 
+import { customInstance } from '.././client';
 
 /**
  * Get all match scouting fields for a season
@@ -51,20 +52,14 @@ export const getGetSeasonFieldsFieldsSeasonSeasonUuidGetUrl = (seasonUuid: strin
 
 export const getSeasonFieldsFieldsSeasonSeasonUuidGet = async (seasonUuid: string, options?: RequestInit): Promise<getSeasonFieldsFieldsSeasonSeasonUuidGetResponse> => {
   
-  const res = await fetch(getGetSeasonFieldsFieldsSeasonSeasonUuidGetUrl(seasonUuid),
+  return customInstance<getSeasonFieldsFieldsSeasonSeasonUuidGetResponse>(getGetSeasonFieldsFieldsSeasonSeasonUuidGetUrl(seasonUuid),
   {      
     ...options,
     method: 'GET'
     
     
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: getSeasonFieldsFieldsSeasonSeasonUuidGetResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getSeasonFieldsFieldsSeasonSeasonUuidGetResponse
-}
+);}
 
 
 /**
@@ -108,20 +103,14 @@ export const getClearSeasonFieldsFieldsSeasonSeasonUuidClearDeleteUrl = (seasonU
 
 export const clearSeasonFieldsFieldsSeasonSeasonUuidClearDelete = async (seasonUuid: string, options?: RequestInit): Promise<clearSeasonFieldsFieldsSeasonSeasonUuidClearDeleteResponse> => {
   
-  const res = await fetch(getClearSeasonFieldsFieldsSeasonSeasonUuidClearDeleteUrl(seasonUuid),
+  return customInstance<clearSeasonFieldsFieldsSeasonSeasonUuidClearDeleteResponse>(getClearSeasonFieldsFieldsSeasonSeasonUuidClearDeleteUrl(seasonUuid),
   {      
     ...options,
     method: 'DELETE'
     
     
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: clearSeasonFieldsFieldsSeasonSeasonUuidClearDeleteResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as clearSeasonFieldsFieldsSeasonSeasonUuidClearDeleteResponse
-}
+);}
 
 
 /**
@@ -167,7 +156,7 @@ export const getCreateSeasonFieldFieldsSeasonSeasonUuidCreatePostUrl = (seasonUu
 export const createSeasonFieldFieldsSeasonSeasonUuidCreatePost = async (seasonUuid: string,
     matchScoutingFieldRequest: MatchScoutingFieldRequest, options?: RequestInit): Promise<createSeasonFieldFieldsSeasonSeasonUuidCreatePostResponse> => {
   
-  const res = await fetch(getCreateSeasonFieldFieldsSeasonSeasonUuidCreatePostUrl(seasonUuid),
+  return customInstance<createSeasonFieldFieldsSeasonSeasonUuidCreatePostResponse>(getCreateSeasonFieldFieldsSeasonSeasonUuidCreatePostUrl(seasonUuid),
   {      
     ...options,
     method: 'POST',
@@ -175,13 +164,7 @@ export const createSeasonFieldFieldsSeasonSeasonUuidCreatePost = async (seasonUu
     body: JSON.stringify(
       matchScoutingFieldRequest,)
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: createSeasonFieldFieldsSeasonSeasonUuidCreatePostResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as createSeasonFieldFieldsSeasonSeasonUuidCreatePostResponse
-}
+);}
 
 
 /**
@@ -230,7 +213,7 @@ export const editSeasonFieldFieldsSeasonSeasonUuidEditFieldUuidPost = async (sea
     fieldUuid: string,
     matchScoutingFieldRequest: MatchScoutingFieldRequest, options?: RequestInit): Promise<editSeasonFieldFieldsSeasonSeasonUuidEditFieldUuidPostResponse> => {
   
-  const res = await fetch(getEditSeasonFieldFieldsSeasonSeasonUuidEditFieldUuidPostUrl(seasonUuid,fieldUuid),
+  return customInstance<editSeasonFieldFieldsSeasonSeasonUuidEditFieldUuidPostResponse>(getEditSeasonFieldFieldsSeasonSeasonUuidEditFieldUuidPostUrl(seasonUuid,fieldUuid),
   {      
     ...options,
     method: 'POST',
@@ -238,13 +221,7 @@ export const editSeasonFieldFieldsSeasonSeasonUuidEditFieldUuidPost = async (sea
     body: JSON.stringify(
       matchScoutingFieldRequest,)
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: editSeasonFieldFieldsSeasonSeasonUuidEditFieldUuidPostResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as editSeasonFieldFieldsSeasonSeasonUuidEditFieldUuidPostResponse
-}
+);}
 
 
 /**
@@ -278,20 +255,14 @@ export const getGetMatchScoutingFieldPresetsFieldsGetPresetsGetUrl = () => {
 
 export const getMatchScoutingFieldPresetsFieldsGetPresetsGet = async ( options?: RequestInit): Promise<getMatchScoutingFieldPresetsFieldsGetPresetsGetResponse> => {
   
-  const res = await fetch(getGetMatchScoutingFieldPresetsFieldsGetPresetsGetUrl(),
+  return customInstance<getMatchScoutingFieldPresetsFieldsGetPresetsGetResponse>(getGetMatchScoutingFieldPresetsFieldsGetPresetsGetUrl(),
   {      
     ...options,
     method: 'GET'
     
     
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: getMatchScoutingFieldPresetsFieldsGetPresetsGetResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getMatchScoutingFieldPresetsFieldsGetPresetsGetResponse
-}
+);}
 
 
 /**
@@ -335,19 +306,13 @@ export const getDeleteFieldFieldsDeleteFieldUuidDeleteUrl = (fieldUuid: string,)
 
 export const deleteFieldFieldsDeleteFieldUuidDelete = async (fieldUuid: string, options?: RequestInit): Promise<deleteFieldFieldsDeleteFieldUuidDeleteResponse> => {
   
-  const res = await fetch(getDeleteFieldFieldsDeleteFieldUuidDeleteUrl(fieldUuid),
+  return customInstance<deleteFieldFieldsDeleteFieldUuidDeleteResponse>(getDeleteFieldFieldsDeleteFieldUuidDeleteUrl(fieldUuid),
   {      
     ...options,
     method: 'DELETE'
     
     
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: deleteFieldFieldsDeleteFieldUuidDeleteResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as deleteFieldFieldsDeleteFieldUuidDeleteResponse
-}
+);}
 
 

@@ -14,6 +14,7 @@ import type {
   SubmitPitFieldAnswerRequest
 } from '.././model';
 
+import { customInstance } from '.././client';
 
 /**
  * Get all pit scouting fields for a season
@@ -54,20 +55,14 @@ export const getGetPitFieldsPitsFieldsSeasonUuidGetUrl = (seasonUuid: string,) =
 
 export const getPitFieldsPitsFieldsSeasonUuidGet = async (seasonUuid: string, options?: RequestInit): Promise<getPitFieldsPitsFieldsSeasonUuidGetResponse> => {
   
-  const res = await fetch(getGetPitFieldsPitsFieldsSeasonUuidGetUrl(seasonUuid),
+  return customInstance<getPitFieldsPitsFieldsSeasonUuidGetResponse>(getGetPitFieldsPitsFieldsSeasonUuidGetUrl(seasonUuid),
   {      
     ...options,
     method: 'GET'
     
     
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: getPitFieldsPitsFieldsSeasonUuidGetResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getPitFieldsPitsFieldsSeasonUuidGetResponse
-}
+);}
 
 
 /**
@@ -112,20 +107,14 @@ export const getClearPitFieldsPitsFieldsSeasonUuidClearDeleteUrl = (seasonUuid: 
 
 export const clearPitFieldsPitsFieldsSeasonUuidClearDelete = async (seasonUuid: string, options?: RequestInit): Promise<clearPitFieldsPitsFieldsSeasonUuidClearDeleteResponse> => {
   
-  const res = await fetch(getClearPitFieldsPitsFieldsSeasonUuidClearDeleteUrl(seasonUuid),
+  return customInstance<clearPitFieldsPitsFieldsSeasonUuidClearDeleteResponse>(getClearPitFieldsPitsFieldsSeasonUuidClearDeleteUrl(seasonUuid),
   {      
     ...options,
     method: 'DELETE'
     
     
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: clearPitFieldsPitsFieldsSeasonUuidClearDeleteResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as clearPitFieldsPitsFieldsSeasonUuidClearDeleteResponse
-}
+);}
 
 
 /**
@@ -171,7 +160,7 @@ export const getCreatePitFieldPitsFieldsSeasonUuidCreatePostUrl = (seasonUuid: s
 export const createPitFieldPitsFieldsSeasonUuidCreatePost = async (seasonUuid: string,
     createPitFieldRequest: CreatePitFieldRequest, options?: RequestInit): Promise<createPitFieldPitsFieldsSeasonUuidCreatePostResponse> => {
   
-  const res = await fetch(getCreatePitFieldPitsFieldsSeasonUuidCreatePostUrl(seasonUuid),
+  return customInstance<createPitFieldPitsFieldsSeasonUuidCreatePostResponse>(getCreatePitFieldPitsFieldsSeasonUuidCreatePostUrl(seasonUuid),
   {      
     ...options,
     method: 'POST',
@@ -179,13 +168,7 @@ export const createPitFieldPitsFieldsSeasonUuidCreatePost = async (seasonUuid: s
     body: JSON.stringify(
       createPitFieldRequest,)
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: createPitFieldPitsFieldsSeasonUuidCreatePostResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as createPitFieldPitsFieldsSeasonUuidCreatePostResponse
-}
+);}
 
 
 /**
@@ -234,7 +217,7 @@ export const editPitFieldPitsFieldsSeasonUuidEditFieldUuidPatch = async (seasonU
     fieldUuid: string,
     editPitFieldRequest: EditPitFieldRequest, options?: RequestInit): Promise<editPitFieldPitsFieldsSeasonUuidEditFieldUuidPatchResponse> => {
   
-  const res = await fetch(getEditPitFieldPitsFieldsSeasonUuidEditFieldUuidPatchUrl(seasonUuid,fieldUuid),
+  return customInstance<editPitFieldPitsFieldsSeasonUuidEditFieldUuidPatchResponse>(getEditPitFieldPitsFieldsSeasonUuidEditFieldUuidPatchUrl(seasonUuid,fieldUuid),
   {      
     ...options,
     method: 'PATCH',
@@ -242,13 +225,7 @@ export const editPitFieldPitsFieldsSeasonUuidEditFieldUuidPatch = async (seasonU
     body: JSON.stringify(
       editPitFieldRequest,)
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: editPitFieldPitsFieldsSeasonUuidEditFieldUuidPatchResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as editPitFieldPitsFieldsSeasonUuidEditFieldUuidPatchResponse
-}
+);}
 
 
 /**
@@ -293,20 +270,14 @@ export const getDeletePitFieldPitsFieldsFieldUuidDeleteDeleteUrl = (fieldUuid: s
 
 export const deletePitFieldPitsFieldsFieldUuidDeleteDelete = async (fieldUuid: string, options?: RequestInit): Promise<deletePitFieldPitsFieldsFieldUuidDeleteDeleteResponse> => {
   
-  const res = await fetch(getDeletePitFieldPitsFieldsFieldUuidDeleteDeleteUrl(fieldUuid),
+  return customInstance<deletePitFieldPitsFieldsFieldUuidDeleteDeleteResponse>(getDeletePitFieldPitsFieldsFieldUuidDeleteDeleteUrl(fieldUuid),
   {      
     ...options,
     method: 'DELETE'
     
     
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: deletePitFieldPitsFieldsFieldUuidDeleteDeleteResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as deletePitFieldPitsFieldsFieldUuidDeleteDeleteResponse
-}
+);}
 
 
 /**
@@ -350,7 +321,7 @@ export const getGetPitsPitsGetSeasonUuidPostUrl = (seasonUuid: string,) => {
 export const getPitsPitsGetSeasonUuidPost = async (seasonUuid: string,
     getPitsForSeasonRequest: GetPitsForSeasonRequest, options?: RequestInit): Promise<getPitsPitsGetSeasonUuidPostResponse> => {
   
-  const res = await fetch(getGetPitsPitsGetSeasonUuidPostUrl(seasonUuid),
+  return customInstance<getPitsPitsGetSeasonUuidPostResponse>(getGetPitsPitsGetSeasonUuidPostUrl(seasonUuid),
   {      
     ...options,
     method: 'POST',
@@ -358,13 +329,7 @@ export const getPitsPitsGetSeasonUuidPost = async (seasonUuid: string,
     body: JSON.stringify(
       getPitsForSeasonRequest,)
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: getPitsPitsGetSeasonUuidPostResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getPitsPitsGetSeasonUuidPostResponse
-}
+);}
 
 
 /**
@@ -416,7 +381,7 @@ export const submitPitPitsSubmitSeasonUuidTeamNumberPost = async (seasonUuid: st
     teamNumber: number,
     submitPitFieldAnswerRequest: SubmitPitFieldAnswerRequest, options?: RequestInit): Promise<submitPitPitsSubmitSeasonUuidTeamNumberPostResponse> => {
   
-  const res = await fetch(getSubmitPitPitsSubmitSeasonUuidTeamNumberPostUrl(seasonUuid,teamNumber),
+  return customInstance<submitPitPitsSubmitSeasonUuidTeamNumberPostResponse>(getSubmitPitPitsSubmitSeasonUuidTeamNumberPostUrl(seasonUuid,teamNumber),
   {      
     ...options,
     method: 'POST',
@@ -424,12 +389,6 @@ export const submitPitPitsSubmitSeasonUuidTeamNumberPost = async (seasonUuid: st
     body: JSON.stringify(
       submitPitFieldAnswerRequest,)
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: submitPitPitsSubmitSeasonUuidTeamNumberPostResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as submitPitPitsSubmitSeasonUuidTeamNumberPostResponse
-}
+);}
 
 
