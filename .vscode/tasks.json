@@ -50,9 +50,9 @@
       }
     },
     {
-      "label": "Load OpenAPI types into the frontend from the backend",
+      "label": "Generate orval types",
       "type": "shell",
-      "command": "npx openapi-typescript http://localhost:8000/openapi.json -o ./src/lib/openapi.d.ts",
+      "command": "npx orval",
       "options": {
         "cwd": "${workspaceFolder}/frontend"
       },
