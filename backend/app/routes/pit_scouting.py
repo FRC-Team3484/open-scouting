@@ -46,25 +46,27 @@ async def get_pit_fields(season_uuid: UUID) -> list[PitFieldResponse]:
     ]
 
 @router.delete("/pits/fields/{season_uuid}/clear", response_model=MessageResponse)
-async def clear_pit_fields(data: PitFieldsRequest, superuser: User = Depends(require_superuser)):
+async def clear_pit_fields(season_uuid: UUID, superuser: User = Depends(require_superuser)):
     """
     Clear all pit scouting fields for a season
 
     Requires superuser access
 
     Parameters:
+        season_uuid (`UUID`): The UUID of the season to clear fields for
         data (`PitFieldsRequest`): The UUID of the season to clear fields for
 
     Returns:
         `MessageResponse`: A message indicating that the fields were cleared
     """
-    season: Season = await get_season(data.season_uuid)
+    season: Season = await get_season(season_uuid)
 
     await PitScoutingField.filter(season=season).delete()
     return {"message": "Fields cleared"}
 
 @router.post("/pits/fields/{season_uuid}/create", response_model=PitFieldResponse)
 async def create_pit_field(
+        season_uuid: UUID,
         data: CreatePitFieldRequest,
         superuser: User = Depends(require_superuser)
     ) -> PitFieldResponse:
@@ -74,13 +76,14 @@ async def create_pit_field(
     Requires superuser access
 
     Parameters:
+        season_uuid (`UUID`): The UUID of the season to create the field for
         data (`CreatePitFieldRequest`): The data to create the field
 
     Returns:
         `PitFieldResponse`: The created field
     """
 
-    season: Season = await get_season(data.season_uuid)
+    season: Season = await get_season(season_uuid)
 
     if data.organization_uuid != "":
         organization: Organization | None = await Organization.get_or_none(uuid=data.organization_uuid)
@@ -111,6 +114,8 @@ async def create_pit_field(
 
 @router.patch("/pits/fields/{season_uuid}/edit/{field_uuid}", response_model=PitFieldResponse)
 async def edit_pit_field(
+        season_uuid: UUID,
+        field_uuid: UUID,
         data: EditPitFieldRequest,
         superuser: User = Depends(require_superuser)
     ) -> PitFieldResponse:
@@ -120,15 +125,17 @@ async def edit_pit_field(
     Requires superuser access
 
     Parameters:
+        season_uuid (`UUID`): The UUID of the season to edit the field for
+        field_uuid (`UUID`): The UUID of the field to edit
         data (`EditPitFieldRequest`): The data to edit the field
 
     Returns:
         `PitFieldResponse`: The edited field
     """
     
-    season: Season = await get_season(data.season_uuid)
+    season: Season = await get_season(season_uuid)
 
-    field: PitScoutingField | None = await PitScoutingField.get_or_none(uuid=data.field_uuid)
+    field: PitScoutingField | None = await PitScoutingField.get_or_none(uuid=field_uuid)
     if not field:
         raise HTTPException(status_code=404, detail="Field not found")
 
@@ -158,55 +165,49 @@ async def edit_pit_field(
         created_at=field.created_at
     )
 
-@router.delete("/pits/fields/{field_uuid}/delete", response_model=PitFieldResponse)
+@router.delete("/pits/fields/{field_uuid}/delete", response_model=MessageResponse)
 async def delete_pit_field(
-        data: DeletePitFieldRequest,
+        field_uuid: UUID,
         superuser: User = Depends(require_superuser)
-    ) -> PitFieldResponse:
+    ) -> MessageResponse:
     """
     Delete a pit scouting field
 
     Requires superuser access
 
     Parameters:
+        field_uuid (`UUID`): The UUID of the field to delete
         data (`DeletePitFieldRequest`): The UUID of the field to delete
 
     Returns:
-        `PitFieldResponse`: The deleted field
+        `MessageResponse`: A message indicating that the field was deleted
     """
 
-    field: PitScoutingField | None = await PitScoutingField.get_or_none(uuid=data.field_uuid)
+    field: PitScoutingField | None = await PitScoutingField.get_or_none(uuid=field_uuid)
     if not field:
         raise HTTPException(status_code=404, detail="Field not found")
 
     await field.delete()
 
-    return PitFieldResponse(
-        uuid=field.uuid,
-        season=season.uuid,
-        name=field.name,
-        field_type=field.field_type,
-        options=field.options,
-        order=field.order,
-        organization=field.organization.uuid if field.organization else None,
-        created_at=field.created_at
-    )
+    return MessageResponse(message="Field deleted")
 
 # TODO: This needs a proper response_model
 @router.post("/pits/get/{season_uuid}")
 async def get_pits(
+        season_uuid: UUID,
         data: GetPitsForSeasonRequest
     ):
     """
     Get all pits for a season
 
     Parameters:
+        season_uuid (`UUID`): The UUID of the season to get pits for
         data (`GetPitsForSeasonRequest`): The UUID of the season to get pits for
 
     Returns:
         list: A list of all pits for the season
     """
-    season: Season = await get_season(data.season_uuid)
+    season: Season = await get_season(season_uuid)
 
     event, _ = await Event.get_or_create(
         season=season,
@@ -264,6 +265,8 @@ async def get_pits(
 
 @router.post("/pits/submit/{season_uuid}/{team_number}", response_model=MessageResponse)
 async def submit_pit(
+        season_uuid: UUID,
+        team_number: int,
         data: SubmitPitFieldAnswerRequest
     ):
     """
@@ -275,27 +278,29 @@ async def submit_pit(
     If a pit does not exist, that means it was created by the client of a user. It should be created.
 
     Parameters:
+        season_uuid (`UUID`): The UUID of the season to get pits for
+        team_number (`int`): The team number to get pits for
         data (`SubmitPitFieldAnswerRequest`): The UUID of the season and event to get pits for
 
     Returns:
         MessageResponse: A message indicating that the pits were submitted
     """
     
-    season: Season = await get_season(data.season_uuid)
+    season: Season = await get_season(season_uuid)
 
     event = await Event.get_or_none(event_code=data.event_code, season=season).first()
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
 
     pit, created = await TeamPit.get_or_create(
-        team_number=data.team_number,
+        team_number=team_number,
         season=season,
         event=event,
         nickname=data.nickname
     )
 
     if created:
-        print("Created pit", pit.uuid, "for team", data.team_number, "and event", event.uuid)
+        print("Created pit", pit.uuid, "for team", team_number, "and event", event.uuid)
 
     for answer in json.loads(data.answers):
         field = await PitScoutingField.get_or_none(uuid=answer["field_uuid"])

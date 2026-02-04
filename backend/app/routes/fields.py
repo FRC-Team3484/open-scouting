@@ -88,7 +88,7 @@ async def get_season_fields(season_uuid: UUID) -> list[Any]:
     return tree
 
 @router.delete("/fields/season/{season_uuid}/clear", response_model=MessageResponse)
-async def clear_season_fields(data: MatchScoutingFieldRequest, superuser: User = Depends(require_superuser)) -> dict[str, str]:
+async def clear_season_fields(season_uuid: UUID, superuser: User = Depends(require_superuser)) -> dict[str, str]:
     """
     Clear all match scouting fields for a season
 
@@ -107,6 +107,7 @@ async def clear_season_fields(data: MatchScoutingFieldRequest, superuser: User =
 
 @router.post("/fields/season/{season_uuid}/create", response_model=MatchScoutingFieldResponse)
 async def create_season_field(
+        season_uuid: UUID,
         data: MatchScoutingFieldRequest,
         superuser: User = Depends(require_superuser)
     ) -> MatchScoutingFieldResponse:
@@ -116,12 +117,13 @@ async def create_season_field(
     Requires superuser access
 
     Parameters:
+        season_uuid (`UUID`): The UUID of the season to create the field for
         data (MatchScoutingFieldRequest): The data to create the field
 
     Returns:
         `MatchScoutingField`: The created field
     """
-    season: Season = await get_season(data.season_uuid)
+    season: Season = await get_season(season_uuid)
 
     if data.stat_type == "auton_score" or data.stat_type == "auton_miss" or data.stat_type == "teleop_score" or data.stat_type == "teleop_miss":
         game_piece = await GamePiece.get_or_none(uuid=data.game_piece_uuid)
@@ -181,6 +183,8 @@ async def create_season_field(
 
 @router.post("/fields/season/{season_uuid}/edit/{field_uuid}", response_model=MatchScoutingFieldRequest)
 async def edit_season_field(
+        season_uuid: UUID,
+        field_uuid: UUID,
         data: MatchScoutingFieldRequest,
         superuser: User = Depends(require_superuser)
     ) -> MatchScoutingField:
@@ -190,17 +194,19 @@ async def edit_season_field(
     Requires superuser access
 
     Parameters:
+        season_uuid (`UUID`): The UUID of the season to edit the field for
+        field_uuid (`UUID`): The UUID of the field to edit
         data (MatchScoutingFieldRequest): The data to edit the field
 
     Returns:
         `MatchScoutingField`: The edited field
     """
 
-    field = await MatchScoutingField.get_or_none(uuid=data.field_uuid)
+    field = await MatchScoutingField.get_or_none(uuid=field_uuid)
     if not field:
         raise HTTPException(status_code=404, detail="Field not found")
         
-    season: Season = await get_season(data.season_uuid)
+    season: Season = await get_season(season_uuid)
 
     if data.stat_type == "auton_score" or data.stat_type == "auton_miss" or data.stat_type == "teleop_score" or data.stat_type == "teleop_miss":
         game_piece = await GamePiece.get_or_none(uuid=data.game_piece_uuid)
@@ -247,7 +253,7 @@ async def get_match_scouting_field_presets(superuser: User = Depends(require_sup
     return presets
 
 @router.delete("/fields/delete/{field_uuid}", response_model=MessageResponse)
-async def delete_field(data: MatchScoutingFieldRequestUUID, superuser: User = Depends(require_superuser)) -> dict[str, str]:
+async def delete_field(field_uuid: UUID, superuser: User = Depends(require_superuser)) -> dict[str, str]:
     """
     Delete a match scouting field
 
@@ -259,7 +265,7 @@ async def delete_field(data: MatchScoutingFieldRequestUUID, superuser: User = De
     Returns:
         `MessageResponse`: A message indicating that the field was deleted
     """
-    field: MatchScoutingField | None = await MatchScoutingField.get_or_none(uuid=data.field_uuid)
+    field: MatchScoutingField | None = await MatchScoutingField.get_or_none(uuid=field_uuid)
     if not field:
         raise HTTPException(status_code=404, detail="Field not found")
     await field.delete()

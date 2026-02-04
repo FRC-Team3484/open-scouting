@@ -1,3 +1,4 @@
+from uuid import UUID
 from fastapi import APIRouter, HTTPException
 
 from ..models import Event, Season
@@ -10,6 +11,15 @@ router: APIRouter = APIRouter(
 
 @router.get("/event/custom/{season_uuid}", response_model=list[EventResponse])
 async def get_custom_events(season_uuid: str) -> list[EventResponse]:
+    """
+    Get all custom events for a season
+
+    Parameters:
+        season_uuid (`UUID`): The UUID of the season to get custom events for
+
+    Returns:
+        list[EventResponse]: A list of all custom events for the season
+    """
     season: Season = await get_season(season_uuid)
 
     return [
@@ -31,10 +41,21 @@ async def get_custom_events(season_uuid: str) -> list[EventResponse]:
 
 @router.post("/event/custom/{season_uuid}/create", response_model=EventResponse)
 async def create_custom_event(
+        season_uuid: UUID,
         data: CustomEventRequest
     ) -> EventResponse:
+    """
+    Create a custom event for a season
+
+    Parameters:
+        season_uuid (`UUID`): The UUID of the season to create a custom event for
+        data (`CustomEventRequest`): The UUID of the season to create a custom event for
+
+    Returns:
+        EventResponse: The created custom event
+    """
     
-    season: Season = await get_season(data.season_uuid)
+    season: Season = await get_season(season_uuid)
 
     event, _ = await Event.get_or_create(
         season=season,
