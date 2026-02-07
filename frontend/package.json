@@ -25,6 +25,7 @@
 		"@vite-pwa/sveltekit": "^1.1.0",
 		"bits-ui": "^2.14.4",
 		"clsx": "^2.1.1",
+		"formsnap": "^2.0.1",
 		"layerchart": "^2.0.0-next.43",
 		"orval": "^8.2.0",
 		"phosphor-svelte": "^3.0.1",
@@ -46,6 +47,7 @@
 	"dependencies": {
 		"@thisux/sveltednd": "^0.0.20",
 		"dexie": "^4.2.1",
-		"mode-watcher": "^1.1.0"
+		"mode-watcher": "^1.1.0",
+		"sveltekit-superforms": "^2.29.1"
 	}
 }
