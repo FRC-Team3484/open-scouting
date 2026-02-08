@@ -1,47 +1,73 @@
 <script lang="ts">
-    import * as Card from "$lib/components/ui/card/index.js";
-	import { apiFetch } from "$lib/utils/api";
-	import { onMount } from "svelte";
-	import Button from "../ui/button/button.svelte";
+    import { onMount } from "svelte";
+	import { toast } from "svelte-sonner";
+
 	import { PlusCircle, X } from "phosphor-svelte";
+    import * as Card from "$lib/components/ui/card/index.js";
     import * as Dialog from "$lib/components/ui/dialog/index.js";
-    import * as Field from "$lib/components/ui/field/index.js";
-	import Separator from "../ui/separator/separator.svelte";
+	import Button from "../ui/button/button.svelte";
 	import Input from "../ui/input/input.svelte";
     import * as AlertDialog from "$lib/components/ui/alert-dialog/index.js";
+    import * as Form from "$lib/components/ui/form/index.js";
+
+    import { getSeasonGamepiecesGamepiecesSeasonSeasonUuidGet, createGamepieceGamepiecesCreatePost, deleteGamepieceGamepiecesDeleteGamepieceUuidDelete } from "$lib/api/gamepieces/gamepieces"
+    import { type GamepieceResponse } from "$lib/api/model";
+    import { CreateGamepieceGamepiecesCreatePostBody } from "$lib/zod/gamepieces/gamepieces";
+	import { superForm } from "sveltekit-superforms";
+	import { zod4Client } from "sveltekit-superforms/adapters";
+	import Label from "../ui/label/label.svelte";
 
     let { season_uuid } = $props();
 
-    let game_pieces = $state([]);
+    let game_pieces: GamepieceResponse[] = $state([]);
+
+    const form = superForm(
+        {
+            season_uuid: season_uuid,
+            name: ""
+        },
+        {
+            validators: zod4Client(CreateGamepieceGamepiecesCreatePostBody)
+        }
+    )
+    const { form: formData, enhance } = form
 
     async function getGamePieces() {
-        game_pieces = await apiFetch(`/gamepieces/season/${season_uuid}`);
+        const response = await getSeasonGamepiecesGamepiecesSeasonSeasonUuidGet(season_uuid);
+        if (response.status === 200) {
+            game_pieces = response.data;
+        } else {
+            toast.error("Failed to get game pieces", { duration: 5000 });
+        }
     }
 
     async function createGamePiece(event: Event) {
         event.preventDefault();
 
-        const form = event.currentTarget as HTMLFormElement;
-        const formData = new FormData(form);
+        const result = await form.validateForm();
 
-        const body = new FormData();
-        body.append("name", formData.get("name")!.toString());
-        body.append("season_uuid", season_uuid);
+        if (!result.valid) {
+            return;
+        }
 
-        await apiFetch(`/gamepieces/create`, {
-            method: "POST",
-            data: body,
-            token: localStorage.getItem("access_token")
+        await createGamepieceGamepiecesCreatePost($formData).then((request) => {
+            if (request.status === 200) {
+                getGamePieces();
+                form.reset();
+            } else {
+                toast.error("Failed to create game piece", { duration: 5000 });
+            }
         });
-        getGamePieces();
     }
 
     async function deleteGamePiece(uuid: string) {
-        await apiFetch(`/gamepieces/delete/${uuid}`, {
-            method: "DELETE",
-            token: localStorage.getItem("access_token")
+        await deleteGamepieceGamepiecesDeleteGamepieceUuidDelete(uuid).then((request) => {
+            if (request.status === 200) {
+                getGamePieces();
+            } else {
+                toast.error("Failed to delete game piece", { duration: 5000 });
+            }
         });
-        getGamePieces();
     }
 
     onMount(async () => {
@@ -106,20 +132,21 @@
                         <Dialog.Description>Create a new game piece</Dialog.Description>
                     </Dialog.Header>
 
-                    <form method="post" on:submit={createGamePiece} class="flex flex-col gap-4">
-                        <Field.Group class="gap-4">
-                            <Field.Set class="flex flex-col gap-2">
-                                <Field.Label>Name</Field.Label>
-                                <Input type="text" name="name" label="Name" required />
-                                <Field.Description>The name of the game piece</Field.Description>
-                            </Field.Set>
-                        </Field.Group>
+                    <form onsubmit={createGamePiece} class="flex flex-col gap-4">
+                        <Form.Field {form} name="name">
+                            <Form.Control>
+                                {#snippet children({ props })}
+                                    <Label>Name</Label>
+                                    <Input {...props} bind:value={$formData.name} />
+                                {/snippet}
+                            </Form.Control>
+                            <Form.Description>The name of the game piece</Form.Description>
+                            <Form.FieldErrors />
+                        </Form.Field>
 
-                        <Dialog.Footer>
-                            <Dialog.Close>
-                                <Button type="submit">Create</Button>
-                            </Dialog.Close>
-                        </Dialog.Footer>
+                        <Dialog.Close>
+                            <Form.Button>Create Game Piece</Form.Button>
+                        </Dialog.Close>
                     </form>
                 </Dialog.Content>
             </Dialog.Root>
