@@ -1,6 +1,6 @@
 import { PUBLIC_FAST_API_URL } from "$env/static/public";
 
-export const getAuthToken = () => localStorage.getItem('token');
+export const getAuthToken = () => localStorage.getItem('access_token');
 
 export const customInstance = async <T>(
     url: string,
