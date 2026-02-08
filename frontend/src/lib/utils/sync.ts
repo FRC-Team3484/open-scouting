@@ -2,6 +2,14 @@ import { menuState } from "$lib/stores/menu";
 import { apiFetch, theBlueAllianceApiFetch } from "./api";
 import { db } from "./db";
 
+import { getSeasonsSeasonsGet } from "$lib/api/seasons/seasons";
+import { getSeasonFieldsFieldsSeasonSeasonUuidGet } from "$lib/api/match-scouting-fields/match-scouting-fields"
+import { getSeasonGamepiecesGamepiecesSeasonSeasonUuidGet } from "$lib/api/gamepieces/gamepieces"
+import { getPitFieldsPitsFieldsSeasonUuidGet, submitPitPitsSubmitSeasonUuidTeamNumberPost, getPitsPitsGetSeasonUuidPost } from "$lib/api/pit-scouting/pit-scouting"
+import { getCustomEventsEventCustomSeasonUuidGet } from "$lib/api/events/events"
+import { submitMatchScoutingScoutingSubmitPost } from "$lib/api/match-scouting/match-scouting";
+import type { SeasonResponse, GamepieceResponse, PitFieldResponse, EventResponse, MatchScoutingRequest, SubmitPitFieldAnswerRequest, GetPitsForSeasonRequest } from "$lib/api/model";
+
 /**
  * Fetches season data and stores it locally
  * 
@@ -9,15 +17,25 @@ import { db } from "./db";
  *    and store them using Dexie for later use
  */
 async function fetchSeasonData() {
-    const seasonsResponse = await apiFetch("/seasons");
+    const seasonsResponse: Array<SeasonResponse> = (await getSeasonsSeasonsGet()).data;
 
-    for (const season in seasonsResponse) {
-        const fieldData = await apiFetch(`/fields/season/${seasonsResponse[season].uuid}`);
-        const gamePieceData = await apiFetch(`/gamepieces/season/${seasonsResponse[season].uuid}`);
-        const pitData = await apiFetch(`/pits/fields/${seasonsResponse[season].uuid}`);
+    for (const season of seasonsResponse) {
+        const fieldData = (await getSeasonFieldsFieldsSeasonSeasonUuidGet(season.uuid)).data;
+        let gamePieceData: Array<GamepieceResponse> = [];
+        let pitData: Array<PitFieldResponse> = [];
+
+        const gamePieceRequest = await getSeasonGamepiecesGamepiecesSeasonSeasonUuidGet(season.uuid);
+        if (gamePieceRequest.status !== 422) {
+            gamePieceData = gamePieceRequest.data;
+        }
+
+        const pitRequest = await getPitFieldsPitsFieldsSeasonUuidGet(season.uuid);
+        if (pitRequest.status !== 422) {
+            pitData = pitRequest.data;
+        }
 
         await db.season_data.put({
-            year: seasonsResponse[season].year,
+            year: season.year,
             fields: fieldData,
             game_pieces: gamePieceData,
             pit_scouting_questions: pitData,
@@ -33,40 +51,44 @@ async function fetchSeasonData() {
  *    and store them locally using Dexie for later use
  */
 async function fetchEventData() {
-    const seasonsResponse = await apiFetch("/seasons");
+    const seasonsResponse: Array<SeasonResponse> = (await getSeasonsSeasonsGet()).data;
 
-    for (const season in seasonsResponse) {
-        const eventsResponse = await theBlueAllianceApiFetch(`/events/${seasonsResponse[season].year}`);
+    for (const season of seasonsResponse) {
+        const eventsResponse = await theBlueAllianceApiFetch(`/events/${season.year}`);
 
-        for (const event in eventsResponse) {
+        for (const event of eventsResponse) {
             await db.event.put({
-                uuid: eventsResponse[event].key,
-                year: seasonsResponse[season].year,
-                event_code: eventsResponse[event].event_code,
-                name: eventsResponse[event].name,
-                type: eventsResponse[event].event_type_string,
-                city: eventsResponse[event].city,
-                country: eventsResponse[event].country,
-                start_date: eventsResponse[event].start_date,
-                end_date: eventsResponse[event].end_date,
+                uuid: event.key,
+                year: season.year,
+                event_code: event.event_code,
+                name: event.name,
+                type: event.event_type_string,
+                city: event.city,
+                country: event.country,
+                start_date: event.start_date,
+                end_date: event.end_date,
                 custom: false,
                 fetch_time: new Date()
             });
         }
 
-        const customEventsResponse = await apiFetch(`/event/custom/${seasonsResponse[season].uuid}`);
+        const customEventsRequest = await getCustomEventsEventCustomSeasonUuidGet(season.uuid);
+        let customEventsData: Array<EventResponse> = [];
+        if (customEventsRequest.status !== 422) {
+            customEventsData = customEventsRequest.data;
+        }
 
-        for (const event in customEventsResponse) {
+        for (const event of customEventsData) {
             await db.event.put({
-                uuid: customEventsResponse[event].uuid,
-                year: seasonsResponse[season].year,
-                event_code: customEventsResponse[event].event_code,
-                name: customEventsResponse[event].name,
-                type: customEventsResponse[event].type,
-                city: customEventsResponse[event].city,
-                country: customEventsResponse[event].country,
-                start_date: customEventsResponse[event].start_date,
-                end_date: customEventsResponse[event].end_date,
+                uuid: event.uuid,
+                year: season.year,
+                event_code: event.event_code,
+                name: event.name,
+                type: event.type,
+                city: event.city,
+                country: event.country,
+                start_date: event.start_date,
+                end_date: event.end_date,
                 custom: true,
                 fetch_time: new Date()
             });
@@ -117,27 +139,27 @@ async function pushMatchScoutingData() {
         });
 
         for (const match of unsynced) {
-            const body = new FormData();
-            body.append("submission_uuid", match.uuid);
-            body.append("fields", JSON.stringify(match.data));
-            body.append("user_uuid", match.user_uuid);
-            body.append("year", match.year);
-            body.append("team_number", match.team_number);
-            body.append("match_number", match.match_number);
-            body.append("match_type", match.match_type);
-            body.append("event_code", match.event_code);
-            body.append("event_name", match.event_name);
-            body.append("event_type", match.event_type);
-            body.append("event_city", match.event_city);
-            body.append("event_country", match.event_country);
-            body.append("event_start_date", match.event_start_date);
-            body.append("event_end_date", match.event_end_date);
+            const body: MatchScoutingRequest = {
+                submission_uuid: match.uuid,
+                fields: match.data,
+                user_uuid: match.user_uuid,
+                year: match.year,
+                team_number: match.team_number,
+                match_number: match.match_number,
+                match_type: match.match_type,
+                event_code: match.event_code,
+                event_name: match.event_name,
+                event_type: match.event_type,
+                event_city: match.event_city,
+                event_country: match.event_country,
+                event_start_date: match.event_start_date,
+                event_end_date: match.event_end_date
+            }
 
-            await apiFetch("/scouting/submit", {
-                method: "POST",
-                data: body
-            }).then(() => {
-                db.match_scouting.update(match.uuid, { synced: true });
+            await submitMatchScoutingScoutingSubmitPost(body).then((data) => {
+                if (data.status === 200) {
+                    db.match_scouting.update(match.uuid, { synced: true });
+                }
             });
         }
 
@@ -171,23 +193,24 @@ async function pushPitScoutingData(event_data, season_uuid) {
         });
 
         for (const pit of unsyncedPits) {
-            const body = new FormData();
-            body.append("event_code", event_data.event_code);
-            body.append("event_name", event_data.event_name);
-            body.append("event_type", event_data.event_type);
-            body.append("event_city", event_data.event_city);
-            body.append("event_country", event_data.event_country);
-            body.append("event_start_date", event_data.event_start_date);
-            body.append("event_end_date", event_data.event_end_date);
+            const body: SubmitPitFieldAnswerRequest = {
+                season_uuid: season_uuid,
+                team_number: pit.team_number,
+                event_code: event_data.event_code,
+                event_name: event_data.event_name,
+                event_type: event_data.event_type,
+                event_city: event_data.event_city,
+                event_country: event_data.event_country,
+                event_start_date: event_data.event_start_date,
+                event_end_date: event_data.event_end_date,
+                answers: pit.answers,
+                nickname: pit.nickname
+            }
 
-            body.append("answers", JSON.stringify(pit.answers));
-            body.append("nickname", pit.nickname);
-
-            await apiFetch(`/pits/submit/${season_uuid}/${pit.team_number}`, {
-                method: "POST",
-                data: body
-            }).then(() => {
-                db.pit_scouting.update(pit.uuid, { synced: true });
+            await submitPitPitsSubmitSeasonUuidTeamNumberPost(season_uuid, pit.team_number, body).then((data) => {
+                if (data.status === 200) {
+                    db.pit_scouting.update(pit.uuid, { synced: true });
+                }
             });
 
             console.log("Pit scouting data uploaded", pit.uuid);
@@ -211,21 +234,19 @@ async function pushPitScoutingData(event_data, season_uuid) {
  * @param season_uuid The season uuid
  */
 async function fetchPitScoutingData(event_data, season_uuid) {
-    const body = new FormData();
-    body.append("event_code", event_data.event_code);
-    body.append("event_name", event_data.event_name);
-    body.append("event_type", event_data.event_type);
-    body.append("event_city", event_data.event_city);
-    body.append("event_country", event_data.event_country);
-    body.append("event_start_date", event_data.event_start_date);
-    body.append("event_end_date", event_data.event_end_date);
+    const body: GetPitsForSeasonRequest = {
+        event_code: event_data.event_code,
+        event_name: event_data.event_name,
+        event_type: event_data.event_type,
+        event_city: event_data.event_city,
+        event_country: event_data.event_country,
+        event_start_date: event_data.event_start_date,
+        event_end_date: event_data.event_end_date
+    }
 
-    const pit_data = await apiFetch(`/pits/get/${season_uuid}`, {
-        method: "POST",
-        data: body
-    });
+    const pitDataRequest = (await getPitsPitsGetSeasonUuidPost(season_uuid, body)).data;
 
-    for (const pit of pit_data) {
+    for (const pit of pitDataRequest) {
         const pit_in_db = await db.pit_scouting.get(pit.uuid);
         const synced = pit_in_db ? pit_in_db.synced : true;
 
