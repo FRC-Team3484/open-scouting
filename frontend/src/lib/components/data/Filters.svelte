@@ -2,54 +2,59 @@
     import * as Card from "$lib/components/ui/card/index.js";
     import * as Select from "$lib/components/ui/select/index.js";
     import * as AlertDialog from "$lib/components/ui/alert-dialog/index.js";
-	import { apiFetch } from "$lib/utils/api";
 	import { Buildings, Calendar, Faders, Info, Users } from "phosphor-svelte";
 	import { onMount } from "svelte";
 	import FilterList from "./FilterList.svelte";
 	import Button from "../ui/button/button.svelte";
+	import { getSeasonsSeasonsGet } from "$lib/api/seasons/seasons";
+	import type { GetDataFiltersDataFiltersGetParams, SeasonResponse } from "$lib/api/model";
+	import { getDataFiltersDataFiltersGet } from "$lib/api/data/data";
+	import { toast } from "svelte-sonner";
     
     let { filters = $bindable() } = $props();
 
-    let seasons = $state([]);
-    let seasons_label = $derived(seasons.find((s) => s.value === filters.year)?.label ?? "Select Year");
+    let seasons: SeasonResponse[] = $state([]);
+    let seasons_label = $derived(seasons.find((s) => s.year === filters.year)?.name ?? "Select Year");
     let events = $state([]);
     let teams = $state([]);
 
     async function loadSeasons() {
-        const seasonsRequest = await apiFetch(`/seasons`);
-
-        seasons = seasonsRequest.map((season) => ({
-            label: `${season.year} - ${season.name}`,
-            value: season.year,
-            active: season.active
-        }));
+        seasons = (await getSeasonsSeasonsGet()).data;
 
         if (!filters.year && seasons.length > 0) {
             const activeSeason = seasons.find((s) => s.active);
-            filters.year = activeSeason ? activeSeason.value : seasons[0].value;
+            filters.year = activeSeason ? activeSeason.year : seasons[0]?.year;
         }
     }
 
     async function loadFilters() {
         if (!filters.year) return;
 
-        const params = new URLSearchParams();
-        params.set("year", String(filters.year));
+        const params: GetDataFiltersDataFiltersGetParams = {
+            year: filters.year,
+            event_codes: "",
+            team_numbers: ""
+        }
 
         if (filters.event_codes.length) {
-            params.set("event_codes", filters.event_codes.join(","));
+            params.event_codes = filters.event_codes.join(",");
         }
 
         if (filters.team_numbers.length) {
-            params.set("team_numbers", filters.team_numbers.join(","));
+            params.team_numbers = filters.team_numbers.join(",");
         }
 
-        const filtersRequest = await apiFetch(
-            `/data/filters?${params.toString()}`
-        );
-
-        events = filtersRequest.events;
-        teams = filtersRequest.teams;
+        // TODO: This needs a proper response schema
+        await getDataFiltersDataFiltersGet(params).then((response) => {
+            if (response.status === 200) {
+                events = response.data.events;
+                teams = response.data.teams;
+            } else {
+                toast.error("Error loading filters", { duration: 5000 });
+            }
+        }).catch(() => {
+            toast.error("Error loading filters", { duration: 5000 });
+        });
     }
 
     onMount(async () => {

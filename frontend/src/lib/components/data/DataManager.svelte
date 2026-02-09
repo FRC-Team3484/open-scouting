@@ -1,11 +1,12 @@
 <script lang="ts">
     import * as Card from "$lib/components/ui/card/index.js";
-	import { apiFetch } from "$lib/utils/api";
 	import { ArrowClockwise, CircleNotch } from "phosphor-svelte";
 	import Button from "../ui/button/button.svelte";
 	import TeamData from "./TeamData.svelte";
 	import { toast } from "svelte-sonner";
 	import Separator from "../ui/separator/separator.svelte";
+	import { getDataDataGetGet } from "$lib/api/data/data";
+	import type { GetDataDataGetGetParams } from "$lib/api/model";
 
     let { filters } = $props();
 
@@ -14,28 +15,34 @@
 
     async function loadData() {
         if (filters.year > 0) {
-            const params = new URLSearchParams();
-            params.set("year", String(filters.year));
+            const params: GetDataDataGetGetParams = {
+                year: filters.year,
+                event_codes: "",
+                team_numbers: ""
+            }
 
             if (filters.event_codes.length) {
-                params.set("event_codes", filters.event_codes.join(","));
+                params.event_codes = filters.event_codes.join(",");
             }
 
             if (filters.team_numbers.length) {
-                params.set("team_numbers", filters.team_numbers.join(","));
+                params.team_numbers = filters.team_numbers.join(",");
             }
 
-            const dataRequest = await apiFetch(
-                `/data/get?${params.toString()}`
-            ).then((response) => {
-                data = response;
-            }).catch((e) => {
-                console.error(e);
+            console.log(params);
+            
+            // TODO: This needs a proper response schema
+            await getDataDataGetGet(params).then((response) => {
+                if (response.status === 200) {
+                    data = response.data;
+                } else {
+                    data = "error";
+                    toast.error("Error loading data", { duration: 5000 });
+                }
+            }).catch((error) => {
                 data = "error";
                 toast.error("Error loading data", { duration: 5000 });
             });
-
-            console.log(data);
         }
     }
 
