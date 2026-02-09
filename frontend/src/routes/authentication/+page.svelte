@@ -13,7 +13,6 @@
 	import SignInForm from "$lib/components/auth/SignInForm.svelte";
 
     let page: "signin" | "signup" = "signin";
-    let message: string | null = null;
 
     const API_URL = env.PUBLIC_FAST_API_URL;
 
@@ -29,13 +28,6 @@
     <div class="flex flex-col w-full md:w-1/2 items-center gap-4">
         <Logo text={false} />
         <p class="text-2xl font-bold">Authentication</p>
-
-        {#if message}
-            <Alert.Root variant="destructive">
-                <Info weight="bold" />
-                <Alert.Title>{message}</Alert.Title>
-            </Alert.Root>
-        {/if}
 
         {#if page === "signin"}
             <Card.Root class="w-full">

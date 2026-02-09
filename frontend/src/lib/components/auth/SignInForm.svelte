@@ -2,38 +2,55 @@
     import { superForm } from "sveltekit-superforms";
 
     import * as Form from "$lib/components/ui/form/index";
+    import * as Alert from "$lib/components/ui/alert/index";
     import Input from "../ui/input/input.svelte";
-	import { zod4Client } from "sveltekit-superforms/adapters";
 	import Label from "../ui/label/label.svelte";
-	import Separator from "../ui/separator/separator.svelte";
 	import { loginForAccessTokenTokenPost } from "$lib/api/auth/auth";
-	import { ArrowRight } from "phosphor-svelte";
+	import { ArrowRight, Warning } from "phosphor-svelte";
 
     let { page = $bindable() } = $props();
 
-    const form = superForm(
-        {
-            username: "",
-            password: "",
+    let message = $state("");
+
+    const defaultValues = {
+        username: "",
+        password: "",
+    }
+
+    const form = superForm(defaultValues, {
+            SPA: true,
+            async onUpdate({ form }) {
+                if (!form.data.username && !form.data.password) {
+                    return;
+                }
+                
+                const res = await loginForAccessTokenTokenPost($formData);
+
+                if (res.status === 200) {
+                    localStorage.setItem("access_token", res.data.access_token);
+                    window.location.href = "/";
+                } else {
+                    message = res.data.detail || "Something went wrong";
+                }
+            }
         }
     )
     const { form: formData, enhance } = form
-
-    async function signIn() {
-        if (!$formData.username && !$formData.password) {
-            return;
-        }
-        
-        const res = await loginForAccessTokenTokenPost($formData);
-
-        if (res.status === 200) {
-            localStorage.setItem("access_token", res.data.access_token);
-            window.location.href = "/";
-        }
-    }
 </script>
 
-<form method="POST" use:enhance class="flex flex-col gap-2 m-8 text-left" on:submit|preventDefault={signIn}>        
+{#if message}
+    <Alert.Root variant="destructive" class="text-left">
+        <Warning weight="bold" />
+        <Alert.Title>
+            There was a problem
+        </Alert.Title>
+        <Alert.Description>
+            {message}
+        </Alert.Description>
+    </Alert.Root>
+{/if}
+
+<form class="flex flex-col gap-2 mx-4 text-left" use:enhance>        
     <Form.Field {form} name="username">
         <Form.Control>
             {#snippet children({ props })}
