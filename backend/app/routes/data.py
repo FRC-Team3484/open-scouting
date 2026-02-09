@@ -1,5 +1,6 @@
 from collections import defaultdict
 import json
+from statistics import mean
 
 from fastapi import APIRouter
 
