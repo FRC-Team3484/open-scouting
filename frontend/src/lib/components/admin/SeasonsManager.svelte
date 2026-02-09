@@ -1,30 +1,64 @@
 <script lang="ts">
-    import * as Card from "$lib/components/ui/card/index.js";
-	import { apiFetch } from "$lib/utils/api";
-	import { CheckCircle, PlusCircle, X } from "phosphor-svelte";
 	import { onMount } from "svelte";
+	import { toast } from "svelte-sonner";
+	import { CheckCircle, PlusCircle, X } from "phosphor-svelte";
+	import { zod4Client } from "sveltekit-superforms/adapters";
+	import { superForm } from "sveltekit-superforms";
+
 	import Separator from "../ui/separator/separator.svelte";
     import Button from "../ui/button/button.svelte";
     import * as Dialog from "../ui/dialog/index.js";
-    import * as Field from "../ui/field/index.js";
     import Input from "../ui/input/input.svelte";
+    import * as Form from "../ui/form/index.js";
+    import * as Card from "$lib/components/ui/card/index.js";
+	import Checkbox from "../ui/checkbox/checkbox.svelte";
+	import Label from "../ui/label/label.svelte";
+	import Badge from "../ui/badge/badge.svelte";
 
     import CustomDialog from "../generic/Dialog.svelte";
-	import Checkbox from "../ui/checkbox/checkbox.svelte";
-	import { toast } from "svelte-sonner";
 
-    let seasons = [];
+	import { CreateSeasonSeasonsCreatePostBody } from "$lib/zod/seasons/seasons";
+	import { createSeasonSeasonsCreatePost, deleteSeasonSeasonsDeleteSeasonUuidDelete, getSeasonsSeasonsGet } from "$lib/api/seasons/seasons";
+	import type { SeasonResponse } from "$lib/api/model";
 
-    let showDeleteDialog = false;
-    let selectedSeason = null;
+    let seasons: SeasonResponse[] = [];
+
+    let showDeleteDialog: boolean = false;
+    let selectedSeason: SeasonResponse | null = null;
+
+    const createSeasonDefaultValues = {
+        year: new Date().getFullYear(),
+        name: "",
+        active: false
+    }
+
+    const createSeasonForm = superForm(createSeasonDefaultValues, {
+        SPA: true,
+        validators: zod4Client(CreateSeasonSeasonsCreatePostBody),
+        async onUpdate({ form }) {
+            if (form.valid) {
+                await createSeasonSeasonsCreatePost(form.data).then((request) => {
+                    if (request.status === 200) {
+                        toast.success("Season created", { duration: 5000 });
+                        fetchSeasons();
+                    } else {
+                        toast.error("Failed to create season", { duration: 5000 });
+                    }
+                })
+            }
+        }
+    })
+
+    const { form: formData, enhance } = createSeasonForm
 
     async function deleteSeason() {
         showDeleteDialog = false;
+        if (!selectedSeason) {
+            return;
+        }
+
         try {
-            await apiFetch(`/seasons/delete/${selectedSeason.uuid}`, {
-                method: "DELETE",
-                token: localStorage.getItem("access_token")
-            });
+            await deleteSeasonSeasonsDeleteSeasonUuidDelete(selectedSeason.uuid);
 
             toast.success("Season deleted", { duration: 5000 });
             await fetchSeasons();
@@ -34,34 +68,8 @@
         
     }
 
-    async function addSeason(event: Event) {
-        event.preventDefault();
-
-        const form = event.currentTarget as HTMLFormElement;
-        const formData = new FormData(form);
-
-        // Convert checkbox and ensure everything is a string
-        const body = new FormData();
-        body.append("year", formData.get("year")!.toString());
-        body.append("name", formData.get("name")!.toString());
-        body.append("active", formData.get("active") ? "true" : "false");
-
-        try {
-            await apiFetch(`/seasons/create`, {
-                method: "POST",
-                data: body,
-                token: localStorage.getItem("access_token")
-            });
-
-            toast.success("Season created", { duration: 5000 });
-            await fetchSeasons();
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
     async function fetchSeasons() {
-        seasons = await apiFetch(`/seasons`);
+        seasons = (await getSeasonsSeasonsGet()).data;
     }
 
     onMount(async () => {
@@ -81,13 +89,15 @@
             {#each seasons as season}
                 <Card.Root>
                     <Card.Content>
-                        <div class="flex flex-row gap-2 items-center">
-                            {#if season.active}
-                                <CheckCircle weight="bold" />
-                            {/if}
-                            <p>{season.year}</p>
-                            <p>{season.label}</p>
-                            <Separator orientation="vertical" />
+                        <div class="flex flex-row gap-2 items-center justify-between">
+                            <div class="flex flex-row gap-2 items-center">
+                                {#if season.active}
+                                    <Badge><CheckCircle weight="bold" /> Active</Badge>
+                                {/if}
+                                <p>{season.year}</p>
+                                <p class="font-bold">{season.name}</p>
+                                <Separator orientation="vertical" />
+                            </div>
                             <Button size="icon" variant="destructive" onclick={() => {showDeleteDialog = true; selectedSeason = season}}><X weight="bold"/></Button>
                         </div>
                     </Card.Content>
@@ -103,39 +113,44 @@
                     <Dialog.Title>Add Season</Dialog.Title>
                     <Dialog.Description>Create a new season</Dialog.Description>
 
-                    <form method="post" on:submit={addSeason}>
-                        <Field.Group>
-                            <Field.Set>
-                                <Field.Field>
-                                    <Field.Label>Year</Field.Label>
-                                    <Input type="number" name="year" defaultValue={new Date().getFullYear()} required />
-                                </Field.Field>
-                                <Field.Field>
-                                    <Field.Label>Name</Field.Label>
-                                    <Input type="text" name="name" required />
-                                </Field.Field>
+                    <form method="post" use:enhance>
+                        <Form.Field form={createSeasonForm} name="year">
+                            <Form.Control>
+                                {#snippet children({ props })}
+                                    <Label>Year</Label>
+                                    <Input {...props} bind:value={$formData.year} type="number" />
+                                {/snippet}
+                            </Form.Control>
+                            <Form.Description>The year of the season</Form.Description>
+                            <Form.FieldErrors />
+                        </Form.Field>
 
-                                <Field.Field orientation="horizontal">
-                                    <Checkbox id="active" checked name="active"/>
-                                    <Field.Content>
-                                        <Field.Label for="active">
-                                            Make active season
-                                        </Field.Label>
-                                        <Field.Description>
-                                            Make this season the active (default) season. The other seasons will be deactivated.
-                                        </Field.Description>
-                                    </Field.Content>
-                                </Field.Field>
-                            </Field.Set>
-                        </Field.Group>
+                        <Form.Field form={createSeasonForm} name="name">
+                            <Form.Control>
+                                {#snippet children({ props })}
+                                    <Label>Name</Label>
+                                    <Input {...props} bind:value={$formData.name} />
+                                {/snippet}
+                            </Form.Control>
+                            <Form.Description>The name of the season</Form.Description>
+                            <Form.FieldErrors />
+                        </Form.Field>
 
-                        <Dialog.Footer>
-                            <Dialog.Close>
-                                <Button type="submit">Submit</Button>
-                            </Dialog.Close>
-                        </Dialog.Footer>
+                        <Form.Field form={createSeasonForm} name="active">
+                            <Form.Control>
+                                {#snippet children({ props })}
+                                    <Label>Active</Label>
+                                    <Checkbox {...props} bind:checked={$formData.active} />
+                                {/snippet}
+                            </Form.Control>
+                            <Form.Description>Make this season the active (default) season. The other seasons will be deactivated.</Form.Description>
+                            <Form.FieldErrors />
+                        </Form.Field>
+
+                        <Dialog.Close>
+                            <Form.Button type="submit">Create Season</Form.Button>
+                        </Dialog.Close>
                     </form>
-                    
                 </Dialog.Content>
             </Dialog.Root>
         </div>

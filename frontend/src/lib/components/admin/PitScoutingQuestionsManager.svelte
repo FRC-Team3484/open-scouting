@@ -5,10 +5,11 @@
     import * as Select from "$lib/components/ui/select/index.js";
     
 	import PitScoutingFields from "../generic/PitScoutingFields.svelte";
-	import { apiFetch } from "$lib/utils/api";
+	import { getSeasonsSeasonsGet } from "$lib/api/seasons/seasons";
+	import type { SeasonResponse } from "$lib/api/model";
 
-    let seasons = $state([]);
-    let season_value = $state("");
+    let seasons: SeasonResponse[] = $state([]);
+    let season_value: string | undefined = $state("");
 
     const seasons_label = $derived(
         seasons.find((f) => f.uuid === season_value)?.name ?? "Select a season"
@@ -18,12 +19,12 @@
     let season_uuid = $state("");
 
     async function get_seasons() {
-        seasons = await apiFetch(`/seasons`);
+        seasons = (await getSeasonsSeasonsGet()).data;
         season_value = seasons.find((f) => f.active)?.uuid;
         update_season_values(season_value);
     }
 
-    function update_season_values(value: string) {
+    function update_season_values(value: string | undefined) {
         const season = seasons.find(s => s.uuid === value);
         if (!season) return;
 
