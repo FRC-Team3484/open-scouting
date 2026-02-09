@@ -26,8 +26,20 @@
             season_uuid: season_uuid,
             name: ""
         },
-        {
-            validators: zod4Client(CreateGamepieceGamepiecesCreatePostBody)
+        {   
+            SPA: true,
+            validators: zod4Client(CreateGamepieceGamepiecesCreatePostBody),
+            async onUpdate({ form }) {
+                if (form.valid) {
+                    await createGamepieceGamepiecesCreatePost($formData).then((request) => {
+                        if (request.status === 200) {
+                            getGamePieces();
+                        } else {
+                            toast.error("Failed to create game piece", { duration: 5000 });
+                        }
+                    });
+                }
+            }
         }
     )
     const { form: formData, enhance } = form
@@ -39,25 +51,6 @@
         } else {
             toast.error("Failed to get game pieces", { duration: 5000 });
         }
-    }
-
-    async function createGamePiece(event: Event) {
-        event.preventDefault();
-
-        const result = await form.validateForm();
-
-        if (!result.valid) {
-            return;
-        }
-
-        await createGamepieceGamepiecesCreatePost($formData).then((request) => {
-            if (request.status === 200) {
-                getGamePieces();
-                form.reset();
-            } else {
-                toast.error("Failed to create game piece", { duration: 5000 });
-            }
-        });
     }
 
     async function deleteGamePiece(uuid: string) {
@@ -132,7 +125,7 @@
                         <Dialog.Description>Create a new game piece</Dialog.Description>
                     </Dialog.Header>
 
-                    <form onsubmit={createGamePiece} class="flex flex-col gap-4">
+                    <form use:enhance class="flex flex-col gap-4">
                         <Form.Field {form} name="name">
                             <Form.Control>
                                 {#snippet children({ props })}
