@@ -54,11 +54,6 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [ ] Fix frontend calls accordingly
 - [ ] Create proper error pages (404 and 500)
 - [ ] Create a changelog pop up and proper client/server versioning
-- [ ] Profile
-  - [ ] Edit profile
-  - [ ] Change password
-  - [ ] Verification codes when enabled
-  - [ ] Profile picture management
 - [ ] Clean up frontend
   - [ ] Make type-safe
   - [ ] Organize imports
@@ -71,17 +66,33 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [ ] Release `v2.0.0`
 
 ## `v2.1.0`
+- [ ] Profile
+  - [ ] Edit profile
+  - [ ] Change password
+  - [ ] Verification codes when enabled
+  - [ ] Profile picture management
 - [ ] Organizations
 - [ ] Import and export field data
 - [ ] Captcha in authentication
-- [ ] Create a section on the home page to show ongoing events
-- [ ] Create a page to show all events
-- [ ] Use [Weblate](https://weblate.org) for localization
+
+## `v2.2.0`
+- [ ] Event page
+  - [ ] Create a section on the home page to show ongoing events
+  - [ ] Create a page to show all events
 - [ ] API key support
   - Seperate `/api` backend route for API calls
   - Only these routes are visible in swagger docs in prod mode
   - The rest of the routes are "internal" and only used by the app
   - Some internal routes can be replaced by these API routes later
+- [ ] Repair mode
+  - Handle various common repairs to the database
+  - Handle when a match scouting field or pit scouting field is archived/deleted, and how to tie it back to a new field
+  - Handle when a season is archived/deleted, and how to attach related data to a new season
+  - Handle when legacy v1.0.0 match scouting data is imported, and how to attach it to existing fields
+
+## `v2.3.0`
+- [ ] Use [Weblate](https://weblate.org) for localization
+- [ ] Use IDs for choice and multiple choice fields for translations
 
 ## Other
 - [ ] Be able to sync pit scouting data from the local data management drawer
@@ -91,13 +102,13 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [x] Multiple choice fields don't show options when match scouting
 - [ ] Boolean fields don't reset properly when match scouting
 - [ ] Multiple choice, choice, and boolean fields don't reset properly when match scouting
-- [ ] Use IDs for choice and multiple choice fields for translations
 - [ ] Fields can't be edited in production
 - [x] Increase mobile readability
 - [x] Hide favorite events when not signed in
 - [ ] Be able to make a season active in the admin page
 - [ ] Implement a better way to mark added fuel
   - Small number fields can have an option for +1 / +5 / +10 buttons?
+- [ ] Count passed/assisted fuel scores
 - [x] Creating accounts from the frontend was never implemented
 - [x] Use empty profile pictures instead of ones from GitHub
 - [x] Make `BaseDialog` a Drawer on smaller screens
