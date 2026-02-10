@@ -4,7 +4,7 @@
 
 	let { field, editable, getFields } = $props();
 
-	let options = JSON.parse(field.options);
+	let options = field.options.choices
 
 	// Store selected values as an array of IDs
 	let value = $state<string[]>(["na"]);
