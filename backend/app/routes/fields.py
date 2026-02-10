@@ -51,7 +51,7 @@ async def get_season_fields(season_uuid: UUID) -> list[Any]:
             "name": field.name,
             "field_type": field.field_type,
             "stat_type": field.stat_type,
-            "game_piece_id": str(field.game_piece_id) if field.game_piece_id else None,
+            "game_piece_uuid": str(field.game_piece_id) if field.game_piece_id else None,
             "required": field.required,
             "options": field.options,
             "order": field.order,
@@ -181,7 +181,7 @@ async def create_season_field(
         organization_uuid=field.organization.uuid if field.organization else None,
     )
 
-@router.post("/fields/season/{season_uuid}/edit/{field_uuid}", response_model=MatchScoutingFieldRequest)
+@router.post("/fields/season/{season_uuid}/edit/{field_uuid}", response_model=MatchScoutingFieldResponse)
 async def edit_season_field(
         season_uuid: UUID,
         field_uuid: UUID,
@@ -215,7 +215,7 @@ async def edit_season_field(
     else:
         game_piece = None
 
-    if data.organization_uuid != "":
+    if data.organization_uuid != "" and data.organization_uuid is not None:
         organization = await Organization.get_or_none(uuid=data.organization_uuid)
         if not organization:
             raise HTTPException(status_code=404, detail="Organization not found")

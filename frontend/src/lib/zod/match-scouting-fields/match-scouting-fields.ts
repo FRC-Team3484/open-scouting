@@ -70,7 +70,13 @@ export const CreateSeasonFieldFieldsSeasonSeasonUuidCreatePostBody = zod.object(
   "order": zod.number(),
   "organization_uuid": zod.union([zod.string().uuid(),zod.null()]).optional(),
   "parent_uuid": zod.union([zod.string().uuid(),zod.null()]).optional(),
-  "options": zod.union([zod.array(zod.unknown()),zod.null()]).optional(),
+  "options": zod.object({
+  "choices": zod.array(zod.unknown()),
+  "default": zod.number(),
+  "minimum": zod.number(),
+  "maximum": zod.number()
+}),
+  "choices": zod.array(zod.unknown()).optional(),
   "game_piece_uuid": zod.union([zod.string().uuid(),zod.null()]).optional()
 })
 
@@ -79,9 +85,15 @@ export const CreateSeasonFieldFieldsSeasonSeasonUuidCreatePostResponse = zod.obj
   "name": zod.string(),
   "field_type": zod.string(),
   "stat_type": zod.string(),
-  "game_piece_id": zod.union([zod.string().uuid(),zod.null()]).optional(),
+  "game_piece_uuid": zod.union([zod.string().uuid(),zod.null()]).optional(),
   "required": zod.boolean(),
-  "options": zod.union([zod.array(zod.unknown()),zod.null()]).optional(),
+  "options": zod.object({
+  "choices": zod.array(zod.unknown()),
+  "default": zod.number(),
+  "minimum": zod.number(),
+  "maximum": zod.number()
+}),
+  "choices": zod.array(zod.unknown()).optional(),
   "order": zod.number(),
   "organization_id": zod.union([zod.string().uuid(),zod.null()]).optional()
 })
@@ -114,21 +126,32 @@ export const EditSeasonFieldFieldsSeasonSeasonUuidEditFieldUuidPostBody = zod.ob
   "order": zod.number(),
   "organization_uuid": zod.union([zod.string().uuid(),zod.null()]).optional(),
   "parent_uuid": zod.union([zod.string().uuid(),zod.null()]).optional(),
-  "options": zod.union([zod.array(zod.unknown()),zod.null()]).optional(),
+  "options": zod.object({
+  "choices": zod.array(zod.unknown()),
+  "default": zod.number(),
+  "minimum": zod.number(),
+  "maximum": zod.number()
+}),
+  "choices": zod.array(zod.unknown()).optional(),
   "game_piece_uuid": zod.union([zod.string().uuid(),zod.null()]).optional()
 })
 
 export const EditSeasonFieldFieldsSeasonSeasonUuidEditFieldUuidPostResponse = zod.object({
+  "uuid": zod.union([zod.string().uuid(),zod.null()]).optional(),
   "name": zod.string(),
-  "season_uuid": zod.string().uuid(),
   "field_type": zod.string(),
   "stat_type": zod.string(),
+  "game_piece_uuid": zod.union([zod.string().uuid(),zod.null()]).optional(),
   "required": zod.boolean(),
+  "options": zod.object({
+  "choices": zod.array(zod.unknown()),
+  "default": zod.number(),
+  "minimum": zod.number(),
+  "maximum": zod.number()
+}),
+  "choices": zod.array(zod.unknown()).optional(),
   "order": zod.number(),
-  "organization_uuid": zod.union([zod.string().uuid(),zod.null()]).optional(),
-  "parent_uuid": zod.union([zod.string().uuid(),zod.null()]).optional(),
-  "options": zod.union([zod.array(zod.unknown()),zod.null()]).optional(),
-  "game_piece_uuid": zod.union([zod.string().uuid(),zod.null()]).optional()
+  "organization_id": zod.union([zod.string().uuid(),zod.null()]).optional()
 })
 
 /**

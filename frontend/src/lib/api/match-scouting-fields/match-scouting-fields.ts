@@ -182,7 +182,7 @@ Returns:
  * @summary Edit Season Field
  */
 export type editSeasonFieldFieldsSeasonSeasonUuidEditFieldUuidPostResponse200 = {
-  data: MatchScoutingFieldRequest
+  data: MatchScoutingFieldResponse
   status: 200
 }
 

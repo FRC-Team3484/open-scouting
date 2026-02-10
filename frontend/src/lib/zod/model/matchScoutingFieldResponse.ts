@@ -4,15 +4,17 @@
  * FastAPI
  * OpenAPI spec version: 0.1.0
  */
+import type { MatchScoutingFieldOptions } from './matchScoutingFieldOptions';
 
 export interface MatchScoutingFieldResponse {
   uuid?: string | null;
   name: string;
   field_type: string;
   stat_type: string;
-  game_piece_id?: string | null;
+  game_piece_uuid?: string | null;
   required: boolean;
-  options?: unknown[] | null;
+  options: MatchScoutingFieldOptions;
+  choices?: unknown[];
   order: number;
   organization_id?: string | null;
 }
