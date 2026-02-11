@@ -1,15 +1,27 @@
 <script lang="ts">
-	import { createEventDispatcher, onMount } from "svelte";
+	import { onMount } from "svelte";
+	import { toast } from "svelte-sonner";
 	import { CircleNotch, DownloadSimple, Export, FolderPlus, Info, PlusCircle, Trash, Warning, XCircle } from "phosphor-svelte";
 
     import { addFieldDialogOpen, addSectionDialogOpen } from "$lib/stores/dialog";
-    import { apiFetch } from "$lib/utils/api";
 
 	import Skeleton from "../ui/skeleton/skeleton.svelte";
     import * as Card from "$lib/components/ui/card/index.js";
     import * as Dialog from "$lib/components/ui/dialog/index.js";
 	import Button from "../ui/button/button.svelte";
     import * as Select from "$lib/components/ui/select/index.js";
+	import Separator from "../ui/separator/separator.svelte";
+	import Input from "../ui/input/input.svelte";
+	import * as Alert from "../ui/alert/index.js";
+
+	import { db } from "$lib/utils/db";
+	import { validateTokenOnline } from "$lib/utils/user";
+	import { pushMatchScoutingData } from "$lib/utils/sync";
+    
+	import { clearSeasonFieldsFieldsSeasonSeasonUuidClearDelete, createSeasonFieldFieldsSeasonSeasonUuidCreatePost, getMatchScoutingFieldPresetsFieldsGetPresetsGet, getSeasonFieldsFieldsSeasonSeasonUuidGet } from "$lib/api/match-scouting-fields/match-scouting-fields";
+	import { getSeasonGamepiecesGamepiecesSeasonSeasonUuidGet } from "$lib/api/gamepieces/gamepieces";
+	import type { GamepieceResponse } from "$lib/api/model";
+
 	import StringField from "./fields/StringField.svelte";
 	import LargeNumberField from "./fields/LargeNumberField.svelte";
 	import SmallNumberField from "./fields/SmallNumberField.svelte";
@@ -17,19 +29,13 @@
 	import ChoiceField from "./fields/ChoiceField.svelte";
 	import MultipleChoiceField from "./fields/MultipleChoiceField.svelte";
 	import Section from "./fields/Section.svelte";
+
 	import AddSectionDialog from "./dialogs/AddSectionDialog.svelte";
 	import AddFieldDialog from "./dialogs/AddFieldDialog.svelte";
 	import MathScoutingSubmit from "./MathScoutingSubmit.svelte";
-	import { db } from "$lib/utils/db";
-	import { toast } from "svelte-sonner";
-	import { validateTokenOnline } from "$lib/utils/user";
-	import Separator from "../ui/separator/separator.svelte";
 	import MatchScoutingTeamInfo from "./MatchScoutingMatchInfo.svelte";
-	import { pushMatchScoutingData } from "$lib/utils/sync";
-	import Input from "../ui/input/input.svelte";
-	import * as Alert from "../ui/alert/index.js";
-	import { Description } from "../ui/alert-dialog";
-
+    
+    
     let matchScoutingTeamInfoChild;
 
     type Node = {
@@ -46,7 +52,7 @@
     };
 
     let fields: Node[] = $state([]);
-    let gamePieces = $state([]);
+    let gamePieces: GamepieceResponse[] = $state([]);
 
     type ChoiceType = {id: string; name: string }[];
     let choices: ChoiceType[] = [];
@@ -64,7 +70,8 @@
 
     async function getStructure() {
         if (editable) {
-            fields = await apiFetch(`/fields/season/${season_uuid}`);
+            // TODO: this needs a proper response schema
+            fields = (await getSeasonFieldsFieldsSeasonSeasonUuidGet(season_uuid)).data;
         } else {
             const season = await db.season_data.get(parseInt(year));
             fields = season?.fields
@@ -73,7 +80,11 @@
 
     async function getGamePieces() {
         if (editable) {
-            gamePieces = await apiFetch(`/gamepieces/season/${season_uuid}`);
+            await getSeasonGamepiecesGamepiecesSeasonSeasonUuidGet(season_uuid).then((response) => {
+                if (response.status === 200) {
+                    gamePieces = response.data
+                }
+            });
         } else {
             const season = await db.season_data.get(parseInt(year));
             gamePieces = season?.game_pieces
@@ -159,80 +170,66 @@
     }
 
     async function getPresets() {
-        presets = await apiFetch(`/fields/get_presets`);
+        // TODO: this needs a proper response schema
+        await getMatchScoutingFieldPresetsFieldsGetPresetsGet().then((response) => {
+            if (response.status === 200) {
+                presets = response.data
+            }
+        });
     }
 
-    async function createFieldRecursive(field, parentUuid) {
-        const body = new FormData();
-
-        body.append("name", field.name);
-        body.append("field_type", field.field_type);
-        body.append("stat_type", field.stat_type);
-        body.append("required", field.required ? "true" : "false");
-        body.append("order", field.order?.toString() ?? "0");
-        body.append("organization_uuid", "");
-        body.append("parent_uuid", parentUuid ?? "");
-
-        // Options handling
-        if (field.field_type === "choice" || field.field_type === "multiple_choice") {
-            body.append("options", field.options?.[0] ?? JSON.stringify([]));
-        } else {
-            body.append("options", field.options?.[0] ?? JSON.stringify([]));
-        }
-
-        // Game piece handling
-        if (
-            field.stat_type === "teleop_score" ||
-            field.stat_type === "teleop_miss" ||
-            field.stat_type === "auton_score" ||
-            field.stat_type === "auton_miss"
-        ) {
-            body.append("game_piece_uuid", field.game_piece_id ?? "");
-        } else {
-            body.append("game_piece_uuid", "");
+    async function createFieldRecursive(field, parentUuid: string) {
+        const body = {
+            uuid: field.uuid,
+            name: field.name,
+            season_uuid: season_uuid,
+            field_type: field.field_type,
+            stat_type: field.stat_type,
+            required: field.required,
+            order: field.order,
+            organization_uuid: field.organization_uuid ?? null as string | null,
+            parent_uuid: parentUuid ?? null as string | null,
+            options: field.options ?? {
+                choices: [],
+                minimum: 0,
+                maximum: 0,
+                default: 0
+            },
+            game_piece_uuid: field.game_piece_uuid ?? null as string | null,
         }
 
         // Create field / section
-        let created;
-
-        try {
-            created = await apiFetch(
-                `/fields/season/${season_uuid}/create`,
-                {
-                    method: "POST",
-                    data: body,
-                    token: localStorage.getItem("access_token"),
+        await createSeasonFieldFieldsSeasonSeasonUuidCreatePost(season_uuid, body).then(async (response) => {
+            if (response.status === 200) {
+                const newUuid = field?.uuid;
+                if (!newUuid) return;
+    
+                // Recurse into children
+                if (field.field_type === "section" && Array.isArray(field.fields)) {
+                    for (const child of field.fields) {
+                        await createFieldRecursive(child, newUuid);
+                    }
                 }
-            );
-        } catch (error) {
+            }
+
+        }).catch((error) => {
             console.error("Failed to create field:", field.name, error);
             return;
-        }
-
-        const newUuid = created?.uuid;
-        if (!newUuid) return;
-
-        // Recurse into children
-        if (field.field_type === "section" && Array.isArray(field.fields)) {
-            for (const child of field.fields) {
-                await createFieldRecursive(child, newUuid);
-            }
-        }
+        });
     }
 
     async function importFieldsToServer(newFields) {
-        await apiFetch(`/fields/season/${season_uuid}/clear`, {
-            method: "DELETE",
-            token: localStorage.getItem("access_token")
+        await clearSeasonFieldsFieldsSeasonSeasonUuidClearDelete(season_uuid).then(async (response) => {
+            if (response.status === 200) {
+                for (const field of newFields) {
+                    await createFieldRecursive(field, null);
+                }
+        
+                // Refresh structure once everything is done
+                toast.success("Fields imported", { duration: 5000 });
+                getStructure();
+            }
         });
-
-        for (const field of newFields) {
-            await createFieldRecursive(field, "");
-        }
-
-        // Refresh structure once everything is done
-        toast.success("Fields imported", { duration: 5000 });
-        getStructure();
     }
 
     function importAsFile() {

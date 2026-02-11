@@ -22,11 +22,6 @@
     let dialogTitle = $state("Add Section");
     let dialogDescription = $state("Create a new section");
 
-    let addSectionAnswers = $state({
-        name: "",
-        
-    });
-
     const defaultValues = {
         name: "",
         season_uuid: season_uuid,
@@ -52,7 +47,9 @@
         validators: zod4Client(CreateSeasonFieldFieldsSeasonSeasonUuidCreatePostBody),
         async onUpdate({ form }) {
             if (form.valid) {
-                form.data.parent_uuid = $addSectionParentUuid;
+                if ($addSectionParentUuid) {
+                    form.data.parent_uuid = $addSectionParentUuid;
+                }
 
                 if (Object.keys($addSectionEditData).length > 0) {
                     await editSeasonFieldFieldsSeasonSeasonUuidEditFieldUuidPost(season_uuid, $addSectionEditData.uuid, form.data).then((response) => {
