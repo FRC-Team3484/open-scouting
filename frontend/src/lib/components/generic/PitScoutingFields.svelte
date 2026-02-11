@@ -9,7 +9,6 @@
 
 	import AddPitScoutingQuestionDialog from "./dialogs/AddPitScoutingQuestionDialog.svelte";
 	import { addPitScoutingQuestionDialogOpen } from "$lib/stores/dialog";
-	import { apiFetch } from "$lib/utils/api";
 	import { db } from "$lib/utils/db";
 	import TextQuestion from "./pit_questions/admin/TextQuestion.svelte";
 	import NumberQuestion from "./pit_questions/admin/NumberQuestion.svelte";
@@ -17,6 +16,7 @@
 	import ChoiceQuestion from "./pit_questions/admin/ChoiceQuestion.svelte";
 	import { toast } from "svelte-sonner";
 	import Input from "../ui/input/input.svelte";
+	import { clearPitFieldsPitsFieldsSeasonUuidClearDelete, createPitFieldPitsFieldsSeasonUuidCreatePost, getPitFieldsPitsFieldsSeasonUuidGet } from "$lib/api/pit-scouting/pit-scouting";
 
     let { season_uuid, year, event_data = {}, editable } = $props();
 
@@ -26,7 +26,7 @@
 
     async function getQuestions() {
         if (editable) {
-            questions = await apiFetch(`/pits/fields/${season_uuid}`);
+            questions = (await getPitFieldsPitsFieldsSeasonUuidGet(season_uuid)).data;
         } else {
             const season = await db.season_data.get(parseInt(year));
             questions = season?.pit_scouting_questions;
@@ -44,41 +44,31 @@
     }
 
     async function importQuestionsToServer(newQuestions) {
-        // Clear existing pit questions
-        await apiFetch(`/pits/fields/${season_uuid}/clear`, {
-            method: "DELETE",
-            token: localStorage.getItem("access_token")
+        await clearPitFieldsPitsFieldsSeasonUuidClearDelete(season_uuid).then(async (response) => {
+            if (response.status === 200) {
+                for (const question of newQuestions) {
+                    const body = {
+                        season_uuid: question.season,
+                        name: question.name,
+                        field_type: question.field_type,
+                        options: question.options ?? {
+                            choices: [],
+                        },
+                        order: 0,
+                        organization_uuid: null as string | null,
+                    }
+
+                    console.log(body)
+
+                    await createPitFieldPitsFieldsSeasonUuidCreatePost(question.season, body).catch((error) => {
+                        console.error("Failed to create question:", question.name, error)
+                    });
+                }
+
+                getQuestions();
+                toast.success("Questions imported", { duration: 5000 });
+            }
         });
-
-        // Create questions in order
-        for (let i = 0; i < newQuestions.length; i++) {
-            const question = newQuestions[i];
-
-            const body = new FormData();
-            body.append("name", question.name);
-            body.append("field_type", question.field_type);
-            body.append("order", question.order?.toString() ?? i.toString());
-            body.append("organization_uuid", "");
-
-            if (question.field_type === "choice") {
-                body.append("options", JSON.stringify(question.options ?? []));
-            } else {
-                body.append("options", "[]");
-            }
-
-            try {
-                await apiFetch(`/pits/fields/${season_uuid}/create`, {
-                    method: "POST",
-                    data: body,
-                    token: localStorage.getItem("access_token")
-                });
-            } catch (error) {
-                console.error("Failed to import pit question:", question.name, error);
-            }
-        }
-
-        getQuestions();
-        toast.success("Questions imported", { duration: 5000 });
     }
 
     function importAsFile() {
@@ -137,7 +127,7 @@
                     
                         <Dialog.Content>
                             <Dialog.Title>Import Pit Scouting Questions</Dialog.Title>
-                            <Dialog.Description>Not yet implemented</Dialog.Description>
+                            <Dialog.Description>Import questions from a JSON file</Dialog.Description>
 
                             <p class="font-bold">Upload a JSON file:</p>
                             <div class="flex flex-row gap-2 flex-wrap">

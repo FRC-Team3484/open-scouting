@@ -8,7 +8,7 @@
 
     let value = $state("na");
     const selectedOptionLabel = $derived(
-        question.options.find((o) => o.id === value) ?? { id: "na", name: "N/A" }
+        question.options.choices.find((o) => o.id === value) ?? { id: "na", name: "N/A" }
     )
 
     let resetBase;
@@ -34,7 +34,7 @@
             <Select.Content>
                 <Select.Label>Options</Select.Label>
                 <Select.Item value="na">N/A</Select.Item>
-                {#each question.options as option}
+                {#each question.options.choices as option}
                     <Select.Item value={option.id}>
                         {option.name}
                     </Select.Item>

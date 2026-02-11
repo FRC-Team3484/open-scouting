@@ -5,9 +5,9 @@
     let { question, editable = false, getQuestions = () => {} } = $props();
 
 	let value = $state("na");
-
-	let selectedOption = (
-		question.options.find((o) => o.id === value) ?? { id: "na", name: "N/A" }
+	
+	let selectedOption = $derived(
+		question.options.choices.find((o) => o.id === value) ?? { id: "na", name: "N/A" }
 	);
 </script>
 
@@ -20,7 +20,7 @@
 		<Select.Content>
 			<Select.Label>Options</Select.Label>
 			<Select.Item value="na">N/A</Select.Item>
-			{#each question.options as option}
+			{#each question.options.choices as option}
 				<Select.Item value={option.id}>
 					{option.name}
 				</Select.Item>
