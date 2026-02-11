@@ -8,7 +8,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from ..dependencies import require_superuser
 from ..models import GamePiece, MatchScoutingField, Organization, Season, User
 from ..schemas.generic import MessageResponse
-from ..schemas.fields import MatchScoutingFieldRequestUUID, MatchScoutingFieldRequest, MatchScoutingFieldResponse
+from ..schemas.fields import MatchScoutingFieldRequest, MatchScoutingFieldResponse
 from ..utils import get_season
 
 
@@ -152,22 +152,40 @@ async def create_season_field(
     if data.parent_uuid != "" and data.parent_uuid is not None:
         parent = await MatchScoutingField.get_or_none(uuid=data.parent_uuid)
         if not parent:
+            print("section not found", data.parent_uuid)
             raise HTTPException(status_code=404, detail="Section not found")
     else:
-        parent = None
+        parent = None        
 
-    field = await MatchScoutingField.create(
-        parent=parent,
-        season=season, 
-        name=data.name, 
-        field_type=data.field_type, 
-        stat_type=data.stat_type, 
-        game_piece=game_piece, 
-        required=data.required, 
-        options=data.options, 
-        order=data.order, 
-        organization=organization
-    )
+    # When importing from a preset, uuid is provided
+    if data.uuid != "" and data.uuid is not None:
+        field = await MatchScoutingField.create(
+            uuid=data.uuid,
+            parent=parent,
+            season=season, 
+            name=data.name, 
+            field_type=data.field_type, 
+            stat_type=data.stat_type, 
+            game_piece=game_piece, 
+            required=data.required, 
+            options=data.options, 
+            order=data.order, 
+            organization=organization
+        )
+    else:
+        field = await MatchScoutingField.create(
+            parent=parent,
+            season=season, 
+            name=data.name, 
+            field_type=data.field_type, 
+            stat_type=data.stat_type, 
+            game_piece=game_piece, 
+            required=data.required, 
+            options=data.options, 
+            order=data.order, 
+            organization=organization
+        )
+
     return MatchScoutingFieldResponse(
         uuid=field.uuid,
         season=field.season.uuid,

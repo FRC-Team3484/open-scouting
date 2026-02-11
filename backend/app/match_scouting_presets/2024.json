@@ -4,11 +4,14 @@
     "name": "Auton",
     "field_type": "section",
     "stat_type": "section",
-    "game_piece_id": null,
+    "game_piece_uuid": null,
     "required": false,
-    "options": [
-      "[]"
-    ],
+    "options": {
+      "choices": [],
+      "default": 0,
+      "maximum": 0,
+      "minimum": 0
+    },
     "order": 0,
     "organization_id": null,
     "fields": [
@@ -17,11 +20,14 @@
         "name": "Note Scored in Speaker",
         "field_type": "small_number",
         "stat_type": "auton_score",
-        "game_piece_id": "b2b3f862-f311-4900-8c30-f02a52054eec",
+        "game_piece_uuid": "b2b3f862-f311-4900-8c30-f02a52054eec",
         "required": false,
-        "options": [
-          "[]"
-        ],
+        "options": {
+          "choices": [],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
         "order": 0,
         "organization_id": null,
         "fields": []
@@ -31,11 +37,14 @@
         "name": "Note Scored in Amp",
         "field_type": "small_number",
         "stat_type": "auton_score",
-        "game_piece_id": "b2b3f862-f311-4900-8c30-f02a52054eec",
+        "game_piece_uuid": "b2b3f862-f311-4900-8c30-f02a52054eec",
         "required": false,
-        "options": [
-          "[]"
-        ],
+        "options": {
+          "choices": [],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
         "order": 0,
         "organization_id": null,
         "fields": []
@@ -47,11 +56,14 @@
     "name": "Teleop",
     "field_type": "section",
     "stat_type": "section",
-    "game_piece_id": null,
+    "game_piece_uuid": null,
     "required": false,
-    "options": [
-      "[]"
-    ],
+    "options": {
+      "choices": [],
+      "default": 0,
+      "maximum": 0,
+      "minimum": 0
+    },
     "order": 0,
     "organization_id": null,
     "fields": [
@@ -60,11 +72,14 @@
         "name": "Speaker",
         "field_type": "section",
         "stat_type": "section",
-        "game_piece_id": null,
+        "game_piece_uuid": null,
         "required": false,
-        "options": [
-          "[]"
-        ],
+          "options": {
+          "choices": [],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
         "order": 0,
         "organization_id": null,
         "fields": [
@@ -73,11 +88,14 @@
             "name": "Note Scored in Speaker",
             "field_type": "small_number",
             "stat_type": "teleop_score",
-            "game_piece_id": "b2b3f862-f311-4900-8c30-f02a52054eec",
+            "game_piece_uuid": "b2b3f862-f311-4900-8c30-f02a52054eec",
             "required": false,
-            "options": [
-              "[]"
-            ],
+            "options": {
+              "choices": [],
+              "default": 0,
+              "maximum": 0,
+              "minimum": 0
+            },
             "order": 0,
             "organization_id": null,
             "fields": []
@@ -87,11 +105,14 @@
             "name": "Note Missed Speaker",
             "field_type": "small_number",
             "stat_type": "teleop_miss",
-            "game_piece_id": "b2b3f862-f311-4900-8c30-f02a52054eec",
+            "game_piece_uuid": "b2b3f862-f311-4900-8c30-f02a52054eec",
             "required": false,
-            "options": [
-              "[]"
-            ],
+            "options": {
+              "choices": [],
+              "default": 0,
+              "maximum": 0,
+              "minimum": 0
+            },
             "order": 0,
             "organization_id": null,
             "fields": []
@@ -103,11 +124,14 @@
         "name": "Amp",
         "field_type": "section",
         "stat_type": "section",
-        "game_piece_id": null,
+        "game_piece_uuid": null,
         "required": false,
-        "options": [
-          "[]"
-        ],
+        "options": {
+          "choices": [],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
         "order": 0,
         "organization_id": null,
         "fields": [
@@ -116,11 +140,14 @@
             "name": "Note Scored in Amp",
             "field_type": "small_number",
             "stat_type": "teleop_score",
-            "game_piece_id": "b2b3f862-f311-4900-8c30-f02a52054eec",
+            "game_piece_uuid": "b2b3f862-f311-4900-8c30-f02a52054eec",
             "required": false,
-            "options": [
-              "[]"
-            ],
+            "options": {
+              "choices": [],
+              "default": 0,
+              "maximum": 0,
+              "minimum": 0
+            },
             "order": 0,
             "organization_id": null,
             "fields": []
@@ -130,11 +157,14 @@
             "name": "Note Missed Amp",
             "field_type": "small_number",
             "stat_type": "teleop_miss",
-            "game_piece_id": "b2b3f862-f311-4900-8c30-f02a52054eec",
+            "game_piece_uuid": "b2b3f862-f311-4900-8c30-f02a52054eec",
             "required": false,
-            "options": [
-              "[]"
-            ],
+            "options": {
+              "choices": [],
+              "default": 0,
+              "maximum": 0,
+              "minimum": 0
+            },
             "order": 0,
             "organization_id": null,
             "fields": []
@@ -148,11 +178,14 @@
     "name": "Extra Information",
     "field_type": "section",
     "stat_type": "section",
-    "game_piece_id": null,
+    "game_piece_uuid": null,
     "required": false,
-    "options": [
-      "[]"
-    ],
+    "options": {
+      "choices": [],
+      "default": 0,
+      "maximum": 0,
+      "minimum": 0
+    },
     "order": 0,
     "organization_id": null,
     "fields": [
@@ -161,11 +194,14 @@
         "name": "Left Starting Zone",
         "field_type": "boolean",
         "stat_type": "capability",
-        "game_piece_id": null,
+        "game_piece_uuid": null,
         "required": false,
-        "options": [
-          "[]"
-        ],
+        "options": {
+          "choices": [],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
         "order": 0,
         "organization_id": null,
         "fields": []
@@ -175,11 +211,27 @@
         "name": "Launch Distance",
         "field_type": "multiple_choice",
         "stat_type": "capability",
-        "game_piece_id": null,
+        "game_piece_uuid": null,
         "required": false,
-        "options": [
-          "[{\"id\":\"26e7556b-0b8f-49cb-b80d-717e246ae752\",\"name\":\"Close\"},{\"id\":\"be5a9f2c-5d96-492b-8e8c-c0600f1e0196\",\"name\":\"Mid Field\"},{\"id\":\"1ef349eb-523e-46f6-a5b8-a1f96b2a2ef0\",\"name\":\"Far\"}]"
-        ],
+        "options": {
+          "choices": [
+            {
+              "id": "26e7556b-0b8f-49cb-b80d-717e246ae752",
+              "name": "Close"
+            },
+            {
+              "id": "be5a9f2c-5d96-492b-8e8c-c0600f1e0196",
+              "name": "Mid Field"
+            },
+            {
+              "id": "1ef349eb-523e-46f6-a5b8-a1f96b2a2ef0",
+              "name": "Far"
+            }
+          ],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
         "order": 0,
         "organization_id": null,
         "fields": []
@@ -189,11 +241,14 @@
         "name": "Floor Pickup",
         "field_type": "boolean",
         "stat_type": "capability",
-        "game_piece_id": null,
+        "game_piece_uuid": null,
         "required": false,
-        "options": [
-          "[]"
-        ],
+        "options": {
+          "choices": [],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
         "order": 0,
         "organization_id": null,
         "fields": []
@@ -203,11 +258,14 @@
         "name": "Climb",
         "field_type": "boolean",
         "stat_type": "capability",
-        "game_piece_id": null,
+        "game_piece_uuid": null,
         "required": false,
-        "options": [
-          "[]"
-        ],
+        "options": {
+          "choices": [],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
         "order": 0,
         "organization_id": null,
         "fields": []
@@ -217,11 +275,14 @@
         "name": "Scored Trap",
         "field_type": "boolean",
         "stat_type": "capability",
-        "game_piece_id": null,
+        "game_piece_uuid": null,
         "required": false,
-        "options": [
-          "[]"
-        ],
+        "options": {
+          "choices": [],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
         "order": 0,
         "organization_id": null,
         "fields": []
@@ -231,11 +292,14 @@
         "name": "Feeder Station Pickup",
         "field_type": "boolean",
         "stat_type": "capability",
-        "game_piece_id": null,
+        "game_piece_uuid": null,
         "required": false,
-        "options": [
-          "[]"
-        ],
+        "options": {
+          "choices": [],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
         "order": 0,
         "organization_id": null,
         "fields": []
@@ -245,11 +309,14 @@
         "name": "Moved During Auto",
         "field_type": "boolean",
         "stat_type": "capability",
-        "game_piece_id": null,
+        "game_piece_uuid": null,
         "required": false,
-        "options": [
-          "[]"
-        ],
+        "options": {
+          "choices": [],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
         "order": 0,
         "organization_id": null,
         "fields": []
@@ -261,11 +328,14 @@
     "name": "Additional Notes",
     "field_type": "section",
     "stat_type": "section",
-    "game_piece_id": null,
+    "game_piece_uuid": null,
     "required": false,
-    "options": [
-      "[]"
-    ],
+    "options": {
+      "choices": [],
+      "default": 0,
+      "maximum": 0,
+      "minimum": 0
+    },
     "order": 0,
     "organization_id": null,
     "fields": [
@@ -274,11 +344,14 @@
         "name": "Additional Notes or Comments",
         "field_type": "string",
         "stat_type": "other",
-        "game_piece_id": null,
+        "game_piece_uuid": null,
         "required": false,
-        "options": [
-          "[]"
-        ],
+        "options": {
+          "choices": [],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
         "order": 0,
         "organization_id": null,
         "fields": []

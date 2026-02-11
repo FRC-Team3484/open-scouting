@@ -4,11 +4,14 @@
     "name": "Auton",
     "field_type": "section",
     "stat_type": "section",
-    "game_piece_id": null,
+    "game_piece_uuid": null,
     "required": false,
-    "options": [
-      "[]"
-    ],
+    "options": {
+      "choices": [],
+      "default": 0,
+      "maximum": 0,
+      "minimum": 0
+    },
     "order": 0,
     "organization_id": null,
     "fields": [
@@ -17,11 +20,14 @@
         "name": "Left Starting Zone",
         "field_type": "boolean",
         "stat_type": "capability",
-        "game_piece_id": null,
+        "game_piece_uuid": null,
         "required": false,
-        "options": [
-          "[]"
-        ],
+        "options": {
+      "choices": [],
+      "default": 0,
+      "maximum": 0,
+      "minimum": 0
+    },
         "order": 0,
         "organization_id": null,
         "fields": []
@@ -31,11 +37,14 @@
         "name": "Coral Scored in Reef",
         "field_type": "small_number",
         "stat_type": "auton_score",
-        "game_piece_id": "9d73ace4-e32b-42ef-a651-ae43e8180632",
+        "game_piece_uuid": "9d73ace4-e32b-42ef-a651-ae43e8180632",
         "required": false,
-        "options": [
-          "[]"
-        ],
+        "options": {
+          "choices": [],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
         "order": 0,
         "organization_id": null,
         "fields": []
@@ -45,11 +54,14 @@
         "name": "Coral Dropped",
         "field_type": "small_number",
         "stat_type": "auton_miss",
-        "game_piece_id": "9d73ace4-e32b-42ef-a651-ae43e8180632",
+        "game_piece_uuid": "9d73ace4-e32b-42ef-a651-ae43e8180632",
         "required": false,
-        "options": [
-          "[]"
-        ],
+        "options": {
+          "choices": [],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
         "order": 0,
         "organization_id": null,
         "fields": []
@@ -59,11 +71,14 @@
         "name": "Algae Removed",
         "field_type": "small_number",
         "stat_type": "auton_score",
-        "game_piece_id": "49e7403b-7b61-4347-8082-6f72b907d2e2",
+        "game_piece_uuid": "49e7403b-7b61-4347-8082-6f72b907d2e2",
         "required": false,
-        "options": [
-          "[]"
-        ],
+        "options": {
+          "choices": [],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
         "order": 0,
         "organization_id": null,
         "fields": []
@@ -73,11 +88,14 @@
         "name": "Algae Scored in Net",
         "field_type": "small_number",
         "stat_type": "auton_score",
-        "game_piece_id": "49e7403b-7b61-4347-8082-6f72b907d2e2",
+        "game_piece_uuid": "49e7403b-7b61-4347-8082-6f72b907d2e2",
         "required": false,
-        "options": [
-          "[]"
-        ],
+        "options": {
+          "choices": [],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
         "order": 0,
         "organization_id": null,
         "fields": []
@@ -87,11 +105,14 @@
         "name": "Algae Scored in Processor",
         "field_type": "small_number",
         "stat_type": "auton_score",
-        "game_piece_id": "49e7403b-7b61-4347-8082-6f72b907d2e2",
+        "game_piece_uuid": "49e7403b-7b61-4347-8082-6f72b907d2e2",
         "required": false,
-        "options": [
-          "[]"
-        ],
+        "options": {
+          "choices": [],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
         "order": 0,
         "organization_id": null,
         "fields": []
@@ -101,11 +122,14 @@
         "name": "Algae Score Failed",
         "field_type": "small_number",
         "stat_type": "auton_miss",
-        "game_piece_id": "49e7403b-7b61-4347-8082-6f72b907d2e2",
+        "game_piece_uuid": "49e7403b-7b61-4347-8082-6f72b907d2e2",
         "required": false,
-        "options": [
-          "[]"
-        ],
+        "options": {
+          "choices": [],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
         "order": 0,
         "organization_id": null,
         "fields": []
@@ -117,11 +141,14 @@
     "name": "Teleop",
     "field_type": "section",
     "stat_type": "section",
-    "game_piece_id": null,
+    "game_piece_uuid": null,
     "required": false,
-    "options": [
-      "[]"
-    ],
+    "options": {
+      "choices": [],
+      "default": 0,
+      "maximum": 0,
+      "minimum": 0
+    },
     "order": 0,
     "organization_id": null,
     "fields": [
@@ -130,11 +157,14 @@
         "name": "Coral Scored in Reef",
         "field_type": "small_number",
         "stat_type": "teleop_score",
-        "game_piece_id": "9d73ace4-e32b-42ef-a651-ae43e8180632",
+        "game_piece_uuid": "9d73ace4-e32b-42ef-a651-ae43e8180632",
         "required": false,
-        "options": [
-          "[]"
-        ],
+        "options": {
+          "choices": [],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
         "order": 0,
         "organization_id": null,
         "fields": []
@@ -144,11 +174,14 @@
         "name": "Coral Dropped",
         "field_type": "small_number",
         "stat_type": "teleop_miss",
-        "game_piece_id": "9d73ace4-e32b-42ef-a651-ae43e8180632",
+        "game_piece_uuid": "9d73ace4-e32b-42ef-a651-ae43e8180632",
         "required": false,
-        "options": [
-          "[]"
-        ],
+        "options": {
+          "choices": [],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
         "order": 0,
         "organization_id": null,
         "fields": []
@@ -158,11 +191,14 @@
         "name": "Algae Removed",
         "field_type": "small_number",
         "stat_type": "teleop_score",
-        "game_piece_id": "49e7403b-7b61-4347-8082-6f72b907d2e2",
+        "game_piece_uuid": "49e7403b-7b61-4347-8082-6f72b907d2e2",
         "required": false,
-        "options": [
-          "[]"
-        ],
+        "options": {
+          "choices": [],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
         "order": 0,
         "organization_id": null,
         "fields": []
@@ -172,11 +208,14 @@
         "name": "Algae Scored in Net",
         "field_type": "small_number",
         "stat_type": "teleop_score",
-        "game_piece_id": "9d73ace4-e32b-42ef-a651-ae43e8180632",
+        "game_piece_uuid": "9d73ace4-e32b-42ef-a651-ae43e8180632",
         "required": false,
-        "options": [
-          "[]"
-        ],
+        "options": {
+          "choices": [],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
         "order": 0,
         "organization_id": null,
         "fields": []
@@ -186,11 +225,14 @@
         "name": "Algae Scored in Processor",
         "field_type": "small_number",
         "stat_type": "teleop_score",
-        "game_piece_id": "9d73ace4-e32b-42ef-a651-ae43e8180632",
+        "game_piece_uuid": "9d73ace4-e32b-42ef-a651-ae43e8180632",
         "required": false,
-        "options": [
-          "[]"
-        ],
+        "options": {
+          "choices": [],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
         "order": 0,
         "organization_id": null,
         "fields": []
@@ -200,11 +242,14 @@
         "name": "Algae Score Failed",
         "field_type": "small_number",
         "stat_type": "teleop_miss",
-        "game_piece_id": "49e7403b-7b61-4347-8082-6f72b907d2e2",
+        "game_piece_uuid": "49e7403b-7b61-4347-8082-6f72b907d2e2",
         "required": false,
-        "options": [
-          "[]"
-        ],
+        "options": {
+          "choices": [],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
         "order": 0,
         "organization_id": null,
         "fields": []
@@ -216,11 +261,14 @@
     "name": "Extra Information",
     "field_type": "section",
     "stat_type": "section",
-    "game_piece_id": null,
+    "game_piece_uuid": null,
     "required": false,
-    "options": [
-      "[]"
-    ],
+    "options": {
+      "choices": [],
+      "default": 0,
+      "maximum": 0,
+      "minimum": 0
+    },
     "order": 0,
     "organization_id": null,
     "fields": [
@@ -229,11 +277,31 @@
         "name": "Coral Levels",
         "field_type": "multiple_choice",
         "stat_type": "capability",
-        "game_piece_id": null,
+        "game_piece_uuid": null,
         "required": false,
-        "options": [
-          "[{\"id\":\"6b7eb23c-4f80-44f9-b2d4-d8ce991508d4\",\"name\":\"Level 1\"},{\"id\":\"3cb8ae3c-f88b-4a07-927a-dbe87fc896bb\",\"name\":\"Level 2\"},{\"id\":\"15bdc381-87a1-4039-aa9e-958d7987cf69\",\"name\":\"Level 3\"},{\"id\":\"b4ecc002-2a50-47e3-b211-6224f6653aaf\",\"name\":\"Level 4\"}]"
-        ],
+        "options": {
+          "choices": [
+            {
+              "id": "6b7eb23c-4f80-44f9-b2d4-d8ce991508d4",
+              "name": "Level 1"
+            },
+            {
+              "id": "3cb8ae3c-f88b-4a07-927a-dbe87fc896bb",
+              "name": "Level 2"
+            },
+            {
+              "id": "15bdc381-87a1-4039-aa9e-958d7987cf69",
+              "name": "Level 3"
+            },
+            {
+              "id": "b4ecc002-2a50-47e3-b211-6224f6653aaf",
+              "name": "Level 4"
+            }
+          ],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
         "order": 0,
         "organization_id": null,
         "fields": []
@@ -243,11 +311,14 @@
         "name": "Feeder Station Pickup",
         "field_type": "boolean",
         "stat_type": "capability",
-        "game_piece_id": null,
+        "game_piece_uuid": null,
         "required": false,
-        "options": [
-          "[]"
-        ],
+        "options": {
+          "choices": [],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
         "order": 0,
         "organization_id": null,
         "fields": []
@@ -257,11 +328,27 @@
         "name": "End Location",
         "field_type": "multiple_choice",
         "stat_type": "capability",
-        "game_piece_id": null,
+        "game_piece_uuid": null,
         "required": false,
-        "options": [
-          "[{\"id\":\"c012935b-adfc-46d6-a384-2c9c8a5ccb71\",\"name\":\"Barge Zone\"},{\"id\":\"e0bd74e2-4d51-4a4e-88cc-14bb14ff9f7c\",\"name\":\"Shallow Cage\"},{\"id\":\"7c3849ab-171b-4ac5-9c56-852ca9fae058\",\"name\":\"Deep Cage\"}]"
-        ],
+        "options": {
+          "choices": [
+            {
+              "id": "c012935b-adfc-46d6-a384-2c9c8a5ccb71",
+              "name": "Barge Zone"
+            },
+            {
+              "id": "e0bd74e2-4d51-4a4e-88cc-14bb14ff9f7c",
+              "name": "Shallow Cage"
+            },
+            {
+              "id": "7c3849ab-171b-4ac5-9c56-852ca9fae058",
+              "name": "Deep Cage"
+            }
+          ],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
         "order": 0,
         "organization_id": null,
         "fields": []
@@ -271,11 +358,35 @@
         "name": "Driver Skill",
         "field_type": "choice",
         "stat_type": "capability",
-        "game_piece_id": null,
+        "game_piece_uuid": null,
         "required": false,
-        "options": [
-          "[{\"id\":\"ffd06917-1562-444f-8c7a-5505eb268092\",\"name\":\"1 - Poor\"},{\"id\":\"2b580654-82e7-49bc-b852-9cb22799d39d\",\"name\":\"2 - Okay\"},{\"id\":\"dec8cccb-6e89-4594-9181-634c79834220\",\"name\":\"3 - Decent\"},{\"id\":\"059d0ed4-88fa-4514-a25c-c0426817d469\",\"name\":\"4 - Good\"},{\"id\":\"ebb4856b-b74c-45ba-8279-878592f6e209\",\"name\":\"5 - Great\"}]"
-        ],
+        "options": {
+          "choices": [
+            {
+              "id": "ffd06917-1562-444f-8c7a-5505eb268092",
+              "name": "1 - Poor"
+            },
+            {
+              "id": "2b580654-82e7-49bc-b852-9cb22799d39d",
+              "name": "2 - Okay"
+            },
+            {
+              "id": "dec8cccb-6e89-4594-9181-634c79834220",
+              "name": "3 - Decent"
+            },
+            {
+              "id": "059d0ed4-88fa-4514-a25c-c0426817d469",
+              "name": "4 - Good"
+            },
+            {
+              "id": "ebb4856b-b74c-45ba-8279-878592f6e209",
+              "name": "5 - Great"
+            }
+          ],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
         "order": 0,
         "organization_id": null,
         "fields": []
@@ -285,11 +396,35 @@
         "name": "Defense",
         "field_type": "choice",
         "stat_type": "capability",
-        "game_piece_id": null,
+        "game_piece_uuid": null,
         "required": false,
-        "options": [
-          "[{\"id\":\"6249438b-b3fa-408b-a18a-bb1a4a2bd4be\",\"name\":\"1 - Poor\"},{\"id\":\"71b27e53-fde9-47e2-b0df-d91a5250f80d\",\"name\":\"2 - Okay\"},{\"id\":\"b928c352-640d-4f1d-ace3-c1490f4ce5e3\",\"name\":\"3 - Decent\"},{\"id\":\"161db35a-c059-496a-a005-bfcd25cd9469\",\"name\":\"4 - Good\"},{\"id\":\"24c64c68-3355-4b4f-b5bc-6902deb86cf8\",\"name\":\"5 - Great\"}]"
-        ],
+        "options": {
+          "choices": [
+            {
+              "id": "6249438b-b3fa-408b-a18a-bb1a4a2bd4be",
+              "name": "1 - Poor"
+            },
+            {
+              "id": "71b27e53-fde9-47e2-b0df-d91a5250f80d",
+              "name": "2 - Okay"
+            },
+            {
+              "id": "b928c352-640d-4f1d-ace3-c1490f4ce5e3",
+              "name": "3 - Decent"
+            },
+            {
+              "id": "161db35a-c059-496a-a005-bfcd25cd9469",
+              "name": "4 - Good"
+            },
+            {
+              "id": "24c64c68-3355-4b4f-b5bc-6902deb86cf8",
+              "name": "5 - Great"
+            }
+          ],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
         "order": 0,
         "organization_id": null,
         "fields": []
@@ -299,11 +434,31 @@
         "name": "Penalties",
         "field_type": "choice",
         "stat_type": "capability",
-        "game_piece_id": null,
+        "game_piece_uuid": null,
         "required": false,
-        "options": [
-          "[{\"id\":\"595a95ab-0726-4c06-828b-e0389de570bc\",\"name\":\"Minor Foul\"},{\"id\":\"f3043a69-e234-4aaf-851f-d62f05e6af1f\",\"name\":\"Major Foul\"},{\"id\":\"ed52fa1d-dd6f-433b-a2c9-9aedc9b60537\",\"name\":\"Yellow Card\"},{\"id\":\"70a19a5e-1040-41e4-ac9d-647c7758a3bc\",\"name\":\"Red Card\"}]"
-        ],
+        "options": {
+          "choices": [
+            {
+              "id": "595a95ab-0726-4c06-828b-e0389de570bc",
+              "name": "Minor Foul"
+            },
+            {
+              "id": "f3043a69-e234-4aaf-851f-d62f05e6af1f",
+              "name": "Major Foul"
+            },
+            {
+              "id": "ed52fa1d-dd6f-433b-a2c9-9aedc9b60537",
+              "name": "Yellow Card"
+            },
+            {
+              "id": "70a19a5e-1040-41e4-ac9d-647c7758a3bc",
+              "name": "Red Card"
+            }
+          ],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
         "order": 0,
         "organization_id": null,
         "fields": []
@@ -313,11 +468,14 @@
         "name": "Robot was damaged and/or disabled during the match",
         "field_type": "boolean",
         "stat_type": "capability",
-        "game_piece_id": null,
+        "game_piece_uuid": null,
         "required": false,
-        "options": [
-          "[]"
-        ],
+        "options": {
+          "choices": [],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
         "order": 0,
         "organization_id": null,
         "fields": []
@@ -329,7 +487,7 @@
     "name": "Additional Notes",
     "field_type": "section",
     "stat_type": "section",
-    "game_piece_id": null,
+    "game_piece_uuid": null,
     "required": false,
     "options": [
       "[]"
@@ -342,11 +500,14 @@
         "name": "Additional Notes or Comments",
         "field_type": "string",
         "stat_type": "other",
-        "game_piece_id": null,
+        "game_piece_uuid": null,
         "required": false,
-        "options": [
-          "[]"
-        ],
+        "options": {
+          "choices": [],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
         "order": 0,
         "organization_id": null,
         "fields": []

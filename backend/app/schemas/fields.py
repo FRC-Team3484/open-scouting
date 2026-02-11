@@ -24,6 +24,7 @@ class MatchScoutingFieldResponse(BaseModel):
     organization_id: UUID | None = None
 
 class MatchScoutingFieldRequest(BaseModel):
+    uuid: UUID | None = None
     name: str
     season_uuid: UUID
     field_type: str
