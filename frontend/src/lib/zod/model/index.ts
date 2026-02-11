@@ -29,6 +29,7 @@ export * from './messageResponse';
 export * from './organizationMemberResponse';
 export * from './organizationRequest';
 export * from './organizationResponse';
+export * from './pitFieldOptions';
 export * from './pitFieldResponse';
 export * from './seasonCreate';
 export * from './seasonResponse';

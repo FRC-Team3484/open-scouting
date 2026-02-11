@@ -62,6 +62,7 @@ export const CreateSeasonFieldFieldsSeasonSeasonUuidCreatePostParams = zod.objec
 })
 
 export const CreateSeasonFieldFieldsSeasonSeasonUuidCreatePostBody = zod.object({
+  "uuid": zod.union([zod.string().uuid(),zod.null()]).optional(),
   "name": zod.string(),
   "season_uuid": zod.string().uuid(),
   "field_type": zod.string(),
@@ -118,6 +119,7 @@ export const EditSeasonFieldFieldsSeasonSeasonUuidEditFieldUuidPostParams = zod.
 })
 
 export const EditSeasonFieldFieldsSeasonSeasonUuidEditFieldUuidPostBody = zod.object({
+  "uuid": zod.union([zod.string().uuid(),zod.null()]).optional(),
   "name": zod.string(),
   "season_uuid": zod.string().uuid(),
   "field_type": zod.string(),

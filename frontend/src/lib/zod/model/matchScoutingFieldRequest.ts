@@ -7,6 +7,7 @@
 import type { MatchScoutingFieldOptions } from './matchScoutingFieldOptions';
 
 export interface MatchScoutingFieldRequest {
+  uuid?: string | null;
   name: string;
   season_uuid: string;
   field_type: string;

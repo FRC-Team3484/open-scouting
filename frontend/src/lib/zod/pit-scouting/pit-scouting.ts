@@ -26,7 +26,9 @@ export const GetPitFieldsPitsFieldsSeasonUuidGetResponseItem = zod.object({
   "season": zod.string().uuid(),
   "name": zod.string(),
   "field_type": zod.string(),
-  "options": zod.array(zod.unknown()),
+  "options": zod.object({
+  "choices": zod.array(zod.unknown())
+}),
   "order": zod.number(),
   "organization": zod.union([zod.string().uuid(),zod.null()]),
   "created_at": zod.string().datetime({})
@@ -75,9 +77,11 @@ export const CreatePitFieldPitsFieldsSeasonUuidCreatePostBody = zod.object({
   "season_uuid": zod.string().uuid(),
   "name": zod.string(),
   "field_type": zod.string(),
-  "options": zod.string(),
+  "options": zod.object({
+  "choices": zod.array(zod.unknown())
+}),
   "order": zod.number(),
-  "organization_uuid": zod.string().uuid()
+  "organization_uuid": zod.union([zod.string().uuid(),zod.null()]).optional()
 })
 
 export const CreatePitFieldPitsFieldsSeasonUuidCreatePostResponse = zod.object({
@@ -85,7 +89,9 @@ export const CreatePitFieldPitsFieldsSeasonUuidCreatePostResponse = zod.object({
   "season": zod.string().uuid(),
   "name": zod.string(),
   "field_type": zod.string(),
-  "options": zod.array(zod.unknown()),
+  "options": zod.object({
+  "choices": zod.array(zod.unknown())
+}),
   "order": zod.number(),
   "organization": zod.union([zod.string().uuid(),zod.null()]),
   "created_at": zod.string().datetime({})
@@ -114,9 +120,11 @@ export const EditPitFieldPitsFieldsSeasonUuidEditFieldUuidPatchBody = zod.object
   "season_uuid": zod.string().uuid(),
   "name": zod.string(),
   "field_type": zod.string(),
-  "options": zod.string(),
+  "options": zod.object({
+  "choices": zod.array(zod.unknown())
+}),
   "order": zod.number(),
-  "organization_uuid": zod.string().uuid(),
+  "organization_uuid": zod.union([zod.string().uuid(),zod.null()]).optional(),
   "field_uuid": zod.string().uuid()
 })
 
@@ -125,7 +133,9 @@ export const EditPitFieldPitsFieldsSeasonUuidEditFieldUuidPatchResponse = zod.ob
   "season": zod.string().uuid(),
   "name": zod.string(),
   "field_type": zod.string(),
-  "options": zod.array(zod.unknown()),
+  "options": zod.object({
+  "choices": zod.array(zod.unknown())
+}),
   "order": zod.number(),
   "organization": zod.union([zod.string().uuid(),zod.null()]),
   "created_at": zod.string().datetime({})

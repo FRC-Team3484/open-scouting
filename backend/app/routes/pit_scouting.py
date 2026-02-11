@@ -8,7 +8,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from ..dependencies import require_superuser
 from ..models import Event, Organization, PitScoutingAnswer, PitScoutingField, Season, TeamPit, User
 from ..schemas.generic import MessageResponse
-from ..schemas.pit_scouting import EditPitFieldRequest, PitFieldsRequest, PitFieldResponse, CreatePitFieldRequest, DeletePitFieldRequest, GetPitsForSeasonRequest, SubmitPitFieldAnswerRequest
+from ..schemas.pit_scouting import PitFieldResponse, PitFieldRequest, GetPitsForSeasonRequest, SubmitPitFieldAnswerRequest
 from ..utils import get_season
 
 router: APIRouter = APIRouter(
@@ -67,7 +67,7 @@ async def clear_pit_fields(season_uuid: UUID, superuser: User = Depends(require_
 @router.post("/pits/fields/{season_uuid}/create", response_model=PitFieldResponse)
 async def create_pit_field(
         season_uuid: UUID,
-        data: CreatePitFieldRequest,
+        data: PitFieldRequest,
         superuser: User = Depends(require_superuser)
     ) -> PitFieldResponse:
     """
@@ -82,10 +82,9 @@ async def create_pit_field(
     Returns:
         `PitFieldResponse`: The created field
     """
-
     season: Season = await get_season(season_uuid)
 
-    if data.organization_uuid != "":
+    if data.organization_uuid != "" and data.organization_uuid is not None:
         organization: Organization | None = await Organization.get_or_none(uuid=data.organization_uuid)
         if not organization:
             raise HTTPException(status_code=404, detail="Organization not found")
@@ -116,7 +115,7 @@ async def create_pit_field(
 async def edit_pit_field(
         season_uuid: UUID,
         field_uuid: UUID,
-        data: EditPitFieldRequest,
+        data: PitFieldRequest,
         superuser: User = Depends(require_superuser)
     ) -> PitFieldResponse:
     """
@@ -127,7 +126,7 @@ async def edit_pit_field(
     Parameters:
         season_uuid (`UUID`): The UUID of the season to edit the field for
         field_uuid (`UUID`): The UUID of the field to edit
-        data (`EditPitFieldRequest`): The data to edit the field
+        data (`PitFieldRequest`): The data to edit the field
 
     Returns:
         `PitFieldResponse`: The edited field
@@ -139,7 +138,7 @@ async def edit_pit_field(
     if not field:
         raise HTTPException(status_code=404, detail="Field not found")
 
-    if data.organization_uuid != "":
+    if data.organization_uuid != "" and data.organization_uuid is not None:
         organization: Organization | None = await Organization.get_or_none(uuid=data.organization_uuid)
         if not organization:
             raise HTTPException(status_code=404, detail="Organization not found")

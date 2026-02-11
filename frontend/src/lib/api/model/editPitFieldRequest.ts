@@ -4,13 +4,14 @@
  * FastAPI
  * OpenAPI spec version: 0.1.0
  */
+import type { PitFieldOptions } from './pitFieldOptions';
 
 export interface EditPitFieldRequest {
   season_uuid: string;
   name: string;
   field_type: string;
-  options: string;
+  options: PitFieldOptions;
   order: number;
-  organization_uuid: string;
+  organization_uuid?: string | null;
   field_uuid: string;
 }

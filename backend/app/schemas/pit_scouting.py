@@ -13,21 +13,21 @@ class PitFieldResponse(BaseModel):
     season: UUID
     name: str
     field_type: str
-    options: list[Any]
+    options: PitFieldOptions
     order: int
     organization: UUID | None
     created_at: datetime
 
-class CreatePitFieldRequest(BaseModel):
+class PitFieldOptions(BaseModel):
+    choices: list[Any]
+
+class PitFieldRequest(BaseModel):
     season_uuid: UUID
     name: str
     field_type: str
-    options: str
+    options: PitFieldOptions
     order: int
-    organization_uuid: UUID
-
-class EditPitFieldRequest(CreatePitFieldRequest):
-    field_uuid: UUID
+    organization_uuid: UUID | None = None
 
 class DeletePitFieldRequest(BaseModel):
     field_uuid: UUID

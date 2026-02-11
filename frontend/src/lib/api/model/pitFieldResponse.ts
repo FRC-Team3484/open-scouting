@@ -4,13 +4,14 @@
  * FastAPI
  * OpenAPI spec version: 0.1.0
  */
+import type { PitFieldOptions } from './pitFieldOptions';
 
 export interface PitFieldResponse {
   uuid: string;
   season: string;
   name: string;
   field_type: string;
-  options: unknown[];
+  options: PitFieldOptions;
   order: number;
   organization: string | null;
   created_at: string;
