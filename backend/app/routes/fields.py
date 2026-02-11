@@ -100,7 +100,7 @@ async def clear_season_fields(season_uuid: UUID, superuser: User = Depends(requi
     Returns:
         `MessageResponse`: A message indicating that the fields were cleared
     """
-    season: Season = await get_season(data.season_uuid)
+    season: Season = await get_season(season_uuid)
 
     await MatchScoutingField.filter(season=season).delete()
     return {"message": "Fields cleared"}
