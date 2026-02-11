@@ -67,6 +67,8 @@
         dataType: "json",
         validators: zod4Client(CreateSeasonFieldFieldsSeasonSeasonUuidCreatePostBody),
         async onUpdate({ form }) {
+            form.data.parent_uuid = $addFieldParentUuid;
+
             if (form.valid) {
                 if (Object.keys($addFieldEditData).length > 0) {
                     await editSeasonFieldFieldsSeasonSeasonUuidEditFieldUuidPost(season_uuid, $addFieldEditData.uuid, form.data).then((response) => {
@@ -81,8 +83,6 @@
                         }
                     })
                 }
-
-                console.log(form.data);
     
                 addFieldParentUuid.set("");
                 addFieldDialogOpen.set(false);
