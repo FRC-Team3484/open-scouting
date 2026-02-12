@@ -1,4 +1,4 @@
-import { PUBLIC_FAST_API_URL } from "$env/static/public";
+import { env } from "$env/dynamic/public";
 import { getUserSettingsUsersMeGetSettingsGet, updateUserSettingsUsersMeUpdateSettingsPost } from "$lib/api/auth/auth";
 
 async function validateTokenOnline() {
@@ -8,7 +8,7 @@ async function validateTokenOnline() {
         return;
     };
 
-    const res = await fetch(PUBLIC_FAST_API_URL + "/auth/validate", {
+    const res = await fetch(env.PUBLIC_FAST_API_URL + "/auth/validate", {
         headers: { Authorization: `Bearer ${token}` },
     });
 

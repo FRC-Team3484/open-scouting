@@ -1,4 +1,4 @@
-import { TBA_API_KEY } from "$env/static/private";
+import { env } from "$env/dynamic/private";
 import type { RequestHandler } from "./$types";
 
 export const GET: RequestHandler = async ({ params, url }) => {
@@ -10,7 +10,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
 
     const response = await fetch(fullUrl, {
         headers: {
-            "X-TBA-Auth-Key": TBA_API_KEY,
+            "X-TBA-Auth-Key": env.TBA_API_KEY,
         },
     });
 

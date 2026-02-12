@@ -1,4 +1,4 @@
-import { PUBLIC_FAST_API_URL } from "$env/static/public";
+import { env } from "$env/dynamic/public";
 
 export const getAuthToken = () => localStorage.getItem('access_token');
 
@@ -16,7 +16,7 @@ export const customInstance = async <T>(
         body?: BodyType<unknown>;
     }
     ): Promise<{ data: T; status: number; headers: Headers }> => {
-    let targetUrl = `${PUBLIC_FAST_API_URL}${url}`;
+    let targetUrl = `${env.PUBLIC_FAST_API_URL}${url}`;
 
     if (params) {
         targetUrl += '?' + new URLSearchParams(params);
