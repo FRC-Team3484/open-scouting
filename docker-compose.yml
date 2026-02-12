@@ -12,7 +12,7 @@ services:
       - /mnt/openscouting_db/postgres:/var/lib/postgresql/data
 
   frontend:
-    image: ghcr.io/FRC-Team3484/open-scouting-frontend:latest
+    image: ghcr.io/frc-team3484/open-scouting-frontend:latest
     restart: unless-stopped
     expose:
       - "3000"
@@ -21,7 +21,7 @@ services:
       PUBLIC_FAST_API_URL: https://open-scouting-dev.nfoert.dev/api
 
   backend:
-    image: ghcr.io/FRC-Team3484/open-scouting-backend:latest
+    image: ghcr.io/frc-team3484/open-scouting-backend:latest
     restart: unless-stopped
     expose:
       - "8000"
