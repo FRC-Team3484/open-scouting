@@ -63,6 +63,7 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [ ] Deprecate `open-scouting-utils` repo
 - [ ] Update doc in `FRC-Team3484/docs` for how to maintain Open Scouting
 - [ ] Update docs
+- [ ] Update `build-and-push.yml` to use the correct branch
 - [ ] Release `v2.0.0`
 
 ## `v2.1.0`

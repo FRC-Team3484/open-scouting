@@ -4,7 +4,7 @@ WORKDIR /app
 ENV NODE_OPTIONS=--max-old-space-size=2048
 
 COPY package*.json ./
-RUN npm install
+RUN npm ci
 COPY . .
 RUN npm run build
 
@@ -14,7 +14,7 @@ WORKDIR /app
 
 COPY --from=builder /app/build ./build
 COPY --from=builder /app/package*.json ./
-RUN npm install --omit=dev
+RUN npm ci --omit=dev
 
 ENV NODE_ENV=production
 EXPOSE 3000
