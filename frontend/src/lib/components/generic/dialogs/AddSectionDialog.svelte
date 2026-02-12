@@ -1,11 +1,8 @@
 <script lang="ts">
     import { addSectionDialogOpen, addSectionEditData, addSectionParentUuid } from "$lib/stores/dialog";
-	import { apiFetch } from "$lib/utils/api";
     
-    import * as Field from "$lib/components/ui/field";
     import * as Dialog from "$lib/components/ui/dialog";
 	import { Input } from "$lib/components/ui/input";
-	import Button from "$lib/components/ui/button/button.svelte";
     import * as Form from "$lib/components/ui/form";
 
     import BaseDialog from "./BaseDialog.svelte";

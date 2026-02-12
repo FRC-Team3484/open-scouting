@@ -1,21 +1,30 @@
 <script lang="ts">
-	import * as Field from "$lib/components/ui/field";
+	import { onMount } from "svelte";
+	import { superForm } from "sveltekit-superforms";
+	import { zod4Client } from "sveltekit-superforms/adapters";
+	import { toast } from "svelte-sonner";
+
 	import Input from "$lib/components/ui/input/input.svelte";
 	import * as Select from "$lib/components/ui/select";
 	import * as Dialog from "$lib/components/ui/dialog";
+	import * as Form from "$lib/components/ui/form";
+	import Label from "$lib/components/ui/label/label.svelte";
+	import Separator from "$lib/components/ui/separator/separator.svelte";
+	
+	import { CreateCustomEventEventCustomSeasonUuidCreatePostBody } from "$lib/zod/events/events";
+	import { getSeasonsSeasonsGet } from "$lib/api/seasons/seasons";
+	import type { SeasonResponse } from "$lib/api/model";
+	import { createCustomEventEventCustomSeasonUuidCreatePost } from "$lib/api/events/events";
 
 	import { createCustomEventDialogOpen } from "$lib/stores/dialog";
-	import { apiFetch } from "$lib/utils/api";
-	import { onMount } from "svelte";
 	import BaseDialog from "./BaseDialog.svelte";
-	import { get } from "svelte/store";
-	import Button from "$lib/components/ui/button/button.svelte";
 	import { db } from "$lib/utils/db";
-	import { toast } from "svelte-sonner";
 
-	let seasons: any = $state([]);
-	let selectedSeasonLabel = $derived(
-		seasons.find((s) => s.uuid === selectedSeason)?.name ?? "Select Season"
+	let { getEvents } = $props();
+
+	let seasons: SeasonResponse[] = $state([]);
+	let selectedSeasonLabel: string = $derived(
+		seasons.find((s) => s.uuid === $formData.season_uuid)?.name ?? "Select Season"
 	)
 	const eventTypes = [
 		{ value: "district", label: "District" },
@@ -25,55 +34,64 @@
 		{ value: "other", label: "Other" },
 	]
 	let selectedEventTypeLabel = $derived(
-		eventTypes.find((et) => et.value === eventType)?.label ?? "Select Event Type"
+		eventTypes.find((et) => et.value === $formData.event_type)?.label ?? "Select Event Type"
 	)
 
-    let selectedSeason = $state("");
-	let eventName = $state("");
-	let eventType = $state("");
-	let eventCity = $state("");
-	let eventCountry = $state("");
-	let eventStartDate = $state("");
-	let eventEndDate = $state("");
+	const defaultValues = {
+		season_uuid: "",
+		event_code: "",
+		event_name: "",
+		event_type: "",
+		event_city: "",
+		event_country: "",
+		event_start_date: "",
+		event_end_date: "",
+	}
+
+	const form = superForm(defaultValues, {
+		SPA: true,
+		validators: zod4Client(CreateCustomEventEventCustomSeasonUuidCreatePostBody),
+		async onUpdate({ form }) {
+			if (form.valid) {
+				form.data.event_code = crypto.randomUUID();
+
+				await createCustomEventEventCustomSeasonUuidCreatePost(form.data.season_uuid, form.data).then(async (response) => {
+					if (response.status !== 200) {
+						toast.error("Failed to create event", { duration: 5000 });
+					} else {
+						await db.event.put({
+							uuid: response.data.uuid,
+							year: seasons.find((s) => s.uuid === form.data.season_uuid).year,
+							event_code: form.data.event_code,
+							name: form.data.event_name,
+							type: form.data.event_type,
+							city: form.data.event_city,
+							country: form.data.event_country,
+							start_date: form.data.event_start_date,
+							end_date: form.data.event_end_date,
+							custom: true,
+							fetch_time: new Date()
+						});
+
+						createCustomEventDialogOpen.set(false);
+						getEvents();
+						toast.success("Custom event created", { duration: 5000 });
+					}
+				})
+			}
+		}
+	});
+
+	const { form: formData, enhance } = form
 
 	async function getYears() {
-		const response = await apiFetch(`/seasons`);
+		const response = (await getSeasonsSeasonsGet()).data
 
         seasons = response;
         const active_year = seasons.find(year => year.active);
         if (active_year) {
-            selectedSeason = active_year.uuid;
+            $formData.season_uuid = active_year.uuid;
         }
-	}
-
-	async function createCustomEvent(event: Event) {
-		event.preventDefault();
-
-		const form = event.currentTarget as HTMLFormElement;
-		const formData = new FormData(form);
-
-		formData.append("event_code", crypto.randomUUID());
-
-		const response = await apiFetch(`/event/custom/${selectedSeason}/create`, {
-			method: "POST",
-			data: formData,
-		});
-
-		await db.event.put({
-			uuid: response.uuid,
-			year: selectedSeason.year,
-			event_code: response.event_code,
-			name: eventName,
-			type: eventType,
-			city: eventCity,
-			country: eventCountry,
-			start_date: eventStartDate,
-			end_date: eventEndDate,
-			custom: true,
-			fetch_time: new Date()
-		});
-
-		toast.success("Custom event created", { duration: 5000 });
 	}
 
 	onMount(async () => {
@@ -81,66 +99,113 @@
 	})
 </script>
 
-<BaseDialog title={"Create Custom Event"} description={"Create a cuustom event when an event is missing on The Blue Alliance"} bind:open={$createCustomEventDialogOpen}>
-	<form method="post" onsubmit={createCustomEvent} class="flex flex-col gap-4">
-		<Field.Group class="gap-4">
-			<Field.Set class="flex flex-col gap-2">
-				<Field.Label>Season</Field.Label>
-				<Select.Root type="single" name="season" label="Season" required bind:value={selectedSeason}>
-					<Select.Trigger>
-						{selectedSeasonLabel}
-					</Select.Trigger>
-					<Select.Content>
-						<Select.Label>Seasons</Select.Label>
-						{#each seasons as season}
-							<Select.Item value={season.uuid} label={season.year + " - " + season.name} />
-						{/each}
-					</Select.Content>
-				</Select.Root>
-				<Field.Description>The season for when the event is held</Field.Description>
+<BaseDialog title={"Create Custom Event"} description={"Create a custom event when an event is missing on The Blue Alliance"} bind:open={$createCustomEventDialogOpen}>
+	<form method="post" use:enhance class="flex flex-col gap-4">
+		<Form.Field {form} name="season_uuid">
+			<Form.Control>
+				{#snippet children({ props })}
+					<Label>Season</Label>
+					<Select.Root type="single" name="season" required bind:value={$formData.season_uuid}>
+						<Select.Trigger>
+							{selectedSeasonLabel}
+						</Select.Trigger>
+						<Select.Content>
+							<Select.Label>Seasons</Select.Label>
+							{#each seasons as season}
+								<Select.Item value={season.uuid} label={season.year + " - " + season.name} />
+							{/each}
+						</Select.Content>
+					</Select.Root>
+				{/snippet}
+			</Form.Control>
+			<Form.Description>The season for when the event is held</Form.Description>
+			<Form.FieldErrors />
+		</Form.Field>
 
-				<Field.Label>Event Name</Field.Label>
-				<Input type="text" name="event_name" placeholder="Event Name" bind:value={eventName} />
-				<Field.Description>The name of the event</Field.Description>
+		<Form.Field {form} name="event_name">
+			<Form.Control>
+				{#snippet children({ props })}
+					<Label>Name</Label>
+					<Input {...props} bind:value={$formData.event_name} />
+				{/snippet}
+			</Form.Control>
+			<Form.Description>The name of the event</Form.Description>
+			<Form.FieldErrors />
+		</Form.Field>
 
-				<Field.Label>Event Type</Field.Label>
-				<Select.Root type="single" name="event_type" label="Event Type" required bind:value={eventType}>
-					<Select.Trigger>
-						{selectedEventTypeLabel}
-					</Select.Trigger>
-					<Select.Content>
-						<Select.Label>Event Types</Select.Label>
-						{#each eventTypes as type}
-							<Select.Item value={type.value} label={type.label} />
-						{/each}
-					</Select.Content>
-				</Select.Root>
-				<Field.Description>The type of event</Field.Description>
-			</Field.Set>
+		<Form.Field {form} name="event_type">
+			<Form.Control>
+				{#snippet children({ props })}
+					<Label>Type</Label>
+					<Select.Root type="single" name="event_type" required bind:value={$formData.event_type}>
+						<Select.Trigger>
+							{selectedEventTypeLabel}
+						</Select.Trigger>
+						<Select.Content>
+							<Select.Label>Event Types</Select.Label>
+							{#each eventTypes as eventType}
+								<Select.Item value={eventType.value} label={eventType.label} />
+							{/each}
+						</Select.Content>
+					</Select.Root>
+				{/snippet}
+			</Form.Control>
+			<Form.Description>The type of the event</Form.Description>
+			<Form.FieldErrors />
+		</Form.Field>
 
-			<Field.Set class="flex flex-col gap-2">
-				<Field.Label>Country</Field.Label>
-				<Input type="text" name="event_country" placeholder="Country" bind:value={eventCountry} />
-				<Field.Description>The country where the event is located</Field.Description>
+		<Separator orientation="horizontal" />
 
-				<Field.Label>City</Field.Label>
-				<Input type="text" name="event_city" placeholder="City" bind:value={eventCity} />
-				<Field.Description>The city where the event is located</Field.Description>
+		<Form.Field {form} name="event_country">
+			<Form.Control>
+				{#snippet children({ props })}
+					<Label>Country</Label>
+					<Input {...props} bind:value={$formData.event_country} />
+				{/snippet}
+			</Form.Control>
+			<Form.Description>The country of the event</Form.Description>
+			<Form.FieldErrors />
+		</Form.Field>
 
-				<Field.Label>Start Date</Field.Label>
-				<Input type="date" name="event_start_date" placeholder="Start Date" bind:value={eventStartDate} />
-				<Field.Description>The start date of the event</Field.Description>
+		<Form.Field {form} name="event_city">
+			<Form.Control>
+				{#snippet children({ props })}
+					<Label>City</Label>
+					<Input {...props} bind:value={$formData.event_city} />
+				{/snippet}
+			</Form.Control>
+			<Form.Description>The city of the event</Form.Description>
+			<Form.FieldErrors />
+		</Form.Field>
 
-				<Field.Label>End Date</Field.Label>
-				<Input type="date" name="event_end_date" placeholder="End Date" bind:value={eventEndDate} />
-				<Field.Description>The end date of the event</Field.Description>
-			</Field.Set>
-		</Field.Group>
+		<Form.Field {form} name="event_start_date">
+			<Form.Control>
+				{#snippet children({ props })}
+					<Label>Start Date</Label>
+					<Input {...props} type="date" bind:value={$formData.event_start_date} />
+				{/snippet}
+			</Form.Control>
+			<Form.Description>The start date of the event</Form.Description>
+			<Form.FieldErrors />
+		</Form.Field>
+
+		<Form.Field {form} name="event_end_date">
+			<Form.Control>
+				{#snippet children({ props })}
+					<Label>End Date</Label>
+					<Input {...props} type="date" bind:value={$formData.event_end_date} />
+				{/snippet}
+			</Form.Control>
+			<Form.Description>The end date of the event</Form.Description>
+			<Form.FieldErrors />
+		</Form.Field>
+
+		<Separator orientation="horizontal" />
 
 		<Dialog.Footer>
+			<Form.Button type="submit">Create</Form.Button>
 			<Dialog.Close>
-				<Button type="button" variant="outline">Cancel</Button>
-				<Button type="submit" disabled={!selectedSeason || !eventName || !eventType || !eventCity || !eventCountry || !eventStartDate || !eventEndDate}>Create Event</Button>
+				<Form.Button type="button" variant="outline">Cancel</Form.Button>
 			</Dialog.Close>
 		</Dialog.Footer>
 	</form>

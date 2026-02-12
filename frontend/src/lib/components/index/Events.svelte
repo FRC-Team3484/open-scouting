@@ -124,4 +124,4 @@
     </Card.Content>
 </Card.Root>
 
-<CreateCustomEventDialog />
+<CreateCustomEventDialog getEvents={getEvents} />
