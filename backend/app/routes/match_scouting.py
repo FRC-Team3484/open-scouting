@@ -25,7 +25,7 @@ async def submit_match_scouting(
     Returns:
         `MatchScoutingSubmission`: The submitted match scouting form
     """
-    fields = json.loads(data.fields)
+    fields = data.fields
 
     user: User | None
 
