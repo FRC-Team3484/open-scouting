@@ -10,9 +10,8 @@
 	import { ArrowRight, ArrowLeft, Building, SignOut, SignIn } from "phosphor-svelte";
 	import { signOut, validateTokenOnline } from "$lib/utils/user";
 	import { onMount } from "svelte";
-	import { apiFetch, theBlueAllianceApiFetch } from "$lib/utils/api";
 	import Skeleton from "../ui/skeleton/skeleton.svelte";
-	import Separator from "../ui/separator/separator.svelte";
+	import { getUserOrganizationsOrganizationMeListGet } from "$lib/api/organizations/organizations";
 
     let { handleNavigate, setUser } = $props();
 
@@ -38,10 +37,7 @@
         try {
             user = await validateTokenOnline();
             if (user) {
-                const response = await apiFetch(`/organization/me/list`, {
-                    token: await localStorage.getItem("access_token"),
-                });
-                organizations = response;
+                organizations = await getUserOrganizationsOrganizationMeListGet();
             }
         } catch (error) {
             console.error(error);

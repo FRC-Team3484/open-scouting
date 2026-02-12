@@ -1,23 +1,23 @@
 <script lang="ts">
-	import { apiFetch } from "$lib/utils/api";
 	import { onMount } from "svelte";
     import * as Card from "$lib/components/ui/card/index.js";
     import * as Select from "$lib/components/ui/select/index.js";
 	import Label from "../ui/label/label.svelte";
 	import Button from "../ui/button/button.svelte";
 	import { ArrowRight } from "phosphor-svelte";
+	import { getSeasonsSeasonsGet } from "$lib/api/seasons/seasons";
 
     let years: any = null;
     let selected_year = {year: null, name: null, uuid: null};
 
     onMount(async () => {
-        const response = await apiFetch(`/seasons`);
-
-        years = response;
-        const active_year = years.find(year => year.active);
-        if (active_year) {
-            selected_year = {year: active_year.year, name: active_year.name, uuid: active_year.uuid};
-        }
+        const response = await getSeasonsSeasonsGet().then((response) => {
+            years = response.data
+            const active_year = years.find(year => year.active);
+            if (active_year) {
+                selected_year = {year: active_year.year, name: active_year.name, uuid: active_year.uuid};
+            }
+        });
     });
 
     export let handleNavigate: (nextPage: string) => void;

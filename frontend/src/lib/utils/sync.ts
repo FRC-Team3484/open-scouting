@@ -1,5 +1,5 @@
 import { menuState } from "$lib/stores/menu";
-import { apiFetch, theBlueAllianceApiFetch } from "./api";
+import { theBlueAllianceApiFetch } from "./api";
 import { db } from "./db";
 
 import { getSeasonsSeasonsGet } from "$lib/api/seasons/seasons";

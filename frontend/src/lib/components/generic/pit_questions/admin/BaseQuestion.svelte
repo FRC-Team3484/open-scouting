@@ -1,22 +1,21 @@
 <script lang="ts">
+	import { deletePitFieldPitsFieldsFieldUuidDeleteDelete } from "$lib/api/pit-scouting/pit-scouting";
 	import Button from "$lib/components/ui/button/button.svelte";
     import * as Card from "$lib/components/ui/card/index.js";
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
 	import { addPitScoutingQuestionData, addPitScoutingQuestionDialogOpen } from "$lib/stores/dialog";
-	import { apiFetch } from "$lib/utils/api";
 	import { DotsThree, Pencil, Trash } from "phosphor-svelte";
 	import { toast } from "svelte-sonner";
 
     let { question, editable = false, getQuestions = () => {}, children } = $props();
 
     async function deleteQuestion() {
-        await apiFetch(`/pits/fields/${question.uuid}/delete`, {
-            method: "DELETE",
-            token: localStorage.getItem("access_token")
+        await deletePitFieldPitsFieldsFieldUuidDeleteDelete(question.uuid).then(async (response) => {
+            await getQuestions();
+            toast.success("Question deleted", { duration: 5000 });
+        }).catch(() => {
+            toast.error("Failed to delete question", { duration: 5000 });
         });
-
-        await getQuestions();
-        toast.success("Question deleted", { duration: 5000 });
     }
 
     function editQuestion() {

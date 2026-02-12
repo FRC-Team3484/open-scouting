@@ -1,5 +1,5 @@
 import { PUBLIC_FAST_API_URL } from "$env/static/public";
-import { apiFetch } from "./api";
+import { getUserSettingsUsersMeGetSettingsGet, updateUserSettingsUsersMeUpdateSettingsPost } from "$lib/api/auth/auth";
 
 async function validateTokenOnline() {
     const token = localStorage.getItem("access_token");
@@ -25,17 +25,11 @@ async function signOut() {
 }
 
 async function getUserSettings() {
-    return await apiFetch("/users/me/get_settings", {
-        token: localStorage.getItem("access_token")
-    })
+    return (await getUserSettingsUsersMeGetSettingsGet()).data;
 }
 
 async function setUserSettings(settings) {
-    await apiFetch("/users/me/update_settings", {
-        method: "POST",
-        data: settings,
-        token: await localStorage.getItem("access_token")
-    });
+    await updateUserSettingsUsersMeUpdateSettingsPost(settings);
 }
 
 async function getUserSetting(key) {

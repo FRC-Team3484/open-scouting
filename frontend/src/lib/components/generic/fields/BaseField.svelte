@@ -1,21 +1,21 @@
 <script lang="ts">
-	import { apiFetch } from "$lib/utils/api";
 	import { DotsThree, Pencil, Trash } from "phosphor-svelte";
     
 	import Button from "$lib/components/ui/button/button.svelte";
     import * as Card from "$lib/components/ui/card/index.js";
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
 	import { addFieldDialogOpen, addFieldEditData, addFieldParentUuid } from "$lib/stores/dialog";
+	import { deleteFieldFieldsDeleteFieldUuidDelete } from "$lib/api/match-scouting-fields/match-scouting-fields";
+	import { toast } from "svelte-sonner";
 
     let { field, editable = false, getFields = () => {}, children } = $props();
 
     async function deleteField() {
-        await apiFetch(`/fields/delete/${field.uuid}`, {
-            method: "DELETE",
-            token: localStorage.getItem("access_token")
-        })
-
-        await getFields();
+        await deleteFieldFieldsDeleteFieldUuidDelete(field.uuid).catch(() => {
+            toast.error("Failed to delete field", { duration: 5000 });
+        }).then(async () => {
+            await getFields(); 
+        });
     }
 
     function editField() {

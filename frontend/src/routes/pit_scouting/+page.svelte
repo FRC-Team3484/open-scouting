@@ -3,7 +3,6 @@
 	import { liveQuery } from "dexie";
 	import { CircleNotch } from "phosphor-svelte";
 
-	import { apiFetch } from "$lib/utils/api";
 	import { db } from "$lib/utils/db";
 	import { validateTokenOnline } from "$lib/utils/user";
 	import PageContainer from "$lib/components/layout/PageContainer.svelte";
@@ -12,6 +11,7 @@
 	import Pit from "$lib/components/pit_scouting/Pit.svelte";
 	import SyncManager from "$lib/components/pit_scouting/SyncManager.svelte";
 	import PitStatus from "$lib/components/pit_scouting/PitStatus.svelte";
+	import { getSeasonsSeasonsGet } from "$lib/api/seasons/seasons";
 
     let season_uuid: string = $state("");
     let year: string = $state("");
@@ -31,9 +31,9 @@
 
     let user = $state(null);
 
-    function get_season_uuid(year: string) {
-        apiFetch(`/seasons`).then((seasons) => {
-            season_uuid = seasons.find((season) => season.year == year).uuid
+    async function get_season_uuid(year: string) {
+        await getSeasonsSeasonsGet().then((response) => {
+            season_uuid = response.data.find((season) => season.year == year).uuid
         })
     }
 
@@ -55,7 +55,7 @@
             throw new Error("season_uuid is required as a URL parameter");
         }
 
-        get_season_uuid(year);
+        await get_season_uuid(year);
         get_pit_questions();
 
         user = await validateTokenOnline();

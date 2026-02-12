@@ -26,6 +26,7 @@
             type="button"
             onclick={() => {
                 const input = document.querySelector(`input[name="${field.uuid}"]`) as HTMLInputElement | null;
+                console.log(input)
                 input?.stepDown();
             }}>
             <Minus weight="bold" />

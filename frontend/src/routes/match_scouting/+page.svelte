@@ -1,8 +1,8 @@
 <script lang="ts">
+	import { getSeasonsSeasonsGet } from "$lib/api/seasons/seasons";
 	import MatchScoutingFields from "$lib/components/generic/MatchScoutingFields.svelte";
 	import PageContainer from "$lib/components/layout/PageContainer.svelte";
 	import Header from "$lib/components/match_scouting/Header.svelte";
-	import { apiFetch } from "$lib/utils/api";
 	import { CircleNotch } from "phosphor-svelte";
 	import { onMount } from "svelte";
 
@@ -20,9 +20,9 @@
         event_end_date: ""
     });
 
-    function get_season_uuid(year: string) {
-        apiFetch(`/seasons`).then((seasons) => {
-            season_uuid = seasons.find((season) => season.year == year).uuid
+    async function get_season_uuid(year: string) {
+        await getSeasonsSeasonsGet().then((response) => {
+            season_uuid = response.data.find((season) => season.year == year).uuid
         })
     }
 
@@ -33,7 +33,7 @@
             throw new Error("season_uuid is required as a URL parameter");
         }
 
-        get_season_uuid(year);
+        await get_season_uuid(year);
     });
 </script>
 
