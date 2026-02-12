@@ -1,8 +1,7 @@
-from random import choices
 from typing import Any
 from uuid import UUID
 
-from pydantic import BaseModel, Field, RootModel
+from pydantic import BaseModel, Field
 
 class MatchScoutingFieldOptions(BaseModel):
     choices: list[Any]

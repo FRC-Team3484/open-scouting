@@ -1,5 +1,5 @@
 from uuid import UUID
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 
 from ..models import Event, Season
 from ..schemas.event import EventResponse, CustomEventRequest

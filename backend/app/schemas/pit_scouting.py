@@ -8,6 +8,9 @@ from pydantic import BaseModel
 class PitFieldsRequest(BaseModel):
     season_uuid: UUID
 
+class PitFieldOptions(BaseModel):
+    choices: list[Any]
+
 class PitFieldResponse(BaseModel):
     uuid: UUID
     season: UUID
@@ -17,9 +20,6 @@ class PitFieldResponse(BaseModel):
     order: int
     organization: UUID | None
     created_at: datetime
-
-class PitFieldOptions(BaseModel):
-    choices: list[Any]
 
 class PitFieldRequest(BaseModel):
     season_uuid: UUID
