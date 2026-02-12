@@ -47,11 +47,11 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [x] Add database to docker compose
   - [ ] Use [umami](https://github.com/umami-software/umami) for public page view analytics?
 - [x] Add link to Open Scouting v1.0.0 to try v2.0.0
-- [ ] Clean up backend
+- [x] Clean up backend
   - [x] Move routes to separate files
   - [x] Properly secure routes, and only allow some routes to logged in users and superusers
   - [x] Add comments
-  - [ ] Fix frontend calls accordingly
+  - [x] Fix frontend calls accordingly
 - [ ] Create proper error pages (404 and 500)
 - [ ] Create a changelog pop up and proper client/server versioning
 - [ ] Clean up frontend
