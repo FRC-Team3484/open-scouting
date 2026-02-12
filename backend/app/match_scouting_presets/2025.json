@@ -42,7 +42,7 @@
         "options": {
           "choices": [],
           "default": 0,
-          "maximum": 0,
+          "maximum": 100,
           "minimum": 0
         },
         "order": 0,
@@ -59,7 +59,7 @@
         "options": {
           "choices": [],
           "default": 0,
-          "maximum": 0,
+          "maximum": 100,
           "minimum": 0
         },
         "order": 0,
@@ -76,7 +76,7 @@
         "options": {
           "choices": [],
           "default": 0,
-          "maximum": 0,
+          "maximum": 100,
           "minimum": 0
         },
         "order": 0,
@@ -93,7 +93,7 @@
         "options": {
           "choices": [],
           "default": 0,
-          "maximum": 0,
+          "maximum": 100,
           "minimum": 0
         },
         "order": 0,
@@ -110,7 +110,7 @@
         "options": {
           "choices": [],
           "default": 0,
-          "maximum": 0,
+          "maximum": 100,
           "minimum": 0
         },
         "order": 0,
@@ -127,7 +127,7 @@
         "options": {
           "choices": [],
           "default": 0,
-          "maximum": 0,
+          "maximum": 100,
           "minimum": 0
         },
         "order": 0,
@@ -162,7 +162,7 @@
         "options": {
           "choices": [],
           "default": 0,
-          "maximum": 0,
+          "maximum": 100,
           "minimum": 0
         },
         "order": 0,
@@ -179,7 +179,7 @@
         "options": {
           "choices": [],
           "default": 0,
-          "maximum": 0,
+          "maximum": 100,
           "minimum": 0
         },
         "order": 0,
@@ -196,7 +196,7 @@
         "options": {
           "choices": [],
           "default": 0,
-          "maximum": 0,
+          "maximum": 100,
           "minimum": 0
         },
         "order": 0,
@@ -213,7 +213,7 @@
         "options": {
           "choices": [],
           "default": 0,
-          "maximum": 0,
+          "maximum": 100,
           "minimum": 0
         },
         "order": 0,
@@ -230,7 +230,7 @@
         "options": {
           "choices": [],
           "default": 0,
-          "maximum": 0,
+          "maximum": 100,
           "minimum": 0
         },
         "order": 0,
@@ -247,7 +247,7 @@
         "options": {
           "choices": [],
           "default": 0,
-          "maximum": 0,
+          "maximum": 100,
           "minimum": 0
         },
         "order": 0,

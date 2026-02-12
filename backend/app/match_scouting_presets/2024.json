@@ -25,7 +25,7 @@
         "options": {
           "choices": [],
           "default": 0,
-          "maximum": 0,
+          "maximum": 20,
           "minimum": 0
         },
         "order": 0,
@@ -42,7 +42,7 @@
         "options": {
           "choices": [],
           "default": 0,
-          "maximum": 0,
+          "maximum": 20,
           "minimum": 0
         },
         "order": 0,
@@ -93,7 +93,7 @@
             "options": {
               "choices": [],
               "default": 0,
-              "maximum": 0,
+              "maximum": 50,
               "minimum": 0
             },
             "order": 0,
@@ -110,7 +110,7 @@
             "options": {
               "choices": [],
               "default": 0,
-              "maximum": 0,
+              "maximum": 50,
               "minimum": 0
             },
             "order": 0,
@@ -145,7 +145,7 @@
             "options": {
               "choices": [],
               "default": 0,
-              "maximum": 0,
+              "maximum": 50,
               "minimum": 0
             },
             "order": 0,
@@ -162,7 +162,7 @@
             "options": {
               "choices": [],
               "default": 0,
-              "maximum": 0,
+              "maximum": 50,
               "minimum": 0
             },
             "order": 0,

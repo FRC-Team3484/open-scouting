@@ -42,7 +42,7 @@
         "options": {
           "choices": [],
           "default": 0,
-          "maximum": 0,
+          "maximum": 500,
           "minimum": 0
         },
         "order": 0,
@@ -111,7 +111,7 @@
         "options": {
           "choices": [],
           "default": 0,
-          "maximum": 0,
+          "maximum": 500,
           "minimum": 0
         },
         "order": 0,
