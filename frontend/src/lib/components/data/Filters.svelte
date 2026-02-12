@@ -58,7 +58,7 @@
     }
 
     onMount(async () => {
-        loadSeasons();
+        await loadSeasons();
     });
 
     $effect(() => {
@@ -108,7 +108,7 @@
                         <Select.Content>
                             <Select.Label>Seasons</Select.Label>
                             {#each seasons as season}
-                                <Select.Item value={season.value} label={season.label} />
+                                <Select.Item value={season.year} label={season.name} />
                             {/each}
                         </Select.Content>
                     </Select.Root>

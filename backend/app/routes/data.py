@@ -1,8 +1,9 @@
 from collections import defaultdict
 import json
 from statistics import mean
+from typing import Annotated
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
 
 from ..models import MatchScoutingAnswer, MatchScoutingField, MatchScoutingSubmission, Season, TeamPit
 from ..utils import get_season
@@ -16,8 +17,8 @@ router: APIRouter = APIRouter(
 @router.get("/data/filters")
 async def get_data_filters(
         year: int,
-        event_codes: str,
-        team_numbers: str
+        event_codes: Annotated[str | None, Query()] = None,
+        team_numbers: Annotated[str | None, Query()] = None
     ):
     """
     For a year, list of event codes, and list of team numbers, return a JSON object 
@@ -30,6 +31,18 @@ async def get_data_filters(
     If a year and multiple team numbers are given, return all event codes which have data on the server for those team numbers and year.
     """
     season: Season = await get_season(year=year)
+
+    if event_codes:
+        event_codes = [
+            int(n) for n in event_codes.split(",")
+            if n.strip().isdigit()
+        ]
+
+    if team_numbers:
+        team_numbers = [
+            int(n) for n in team_numbers.split(",")
+            if n.strip().isdigit()
+        ]
 
     qs = MatchScoutingSubmission.filter(
         event__season=season
@@ -60,8 +73,8 @@ async def get_data_filters(
 @router.get("/data/get")
 async def get_data(
         year: int,
-        event_codes: str,
-        team_numbers: str
+        event_codes: Annotated[str | None, Query()] = None,
+        team_numbers: Annotated[str | None, Query()] = None
     ):
     """
     Given a year, event codes, and team numbers, return the data that matches those filters
@@ -144,8 +157,19 @@ async def get_data(
         ...
     ]
     """
-
     season: Season = await get_season(year=year)
+
+    if event_codes:
+        event_codes = [
+            n.strip() for n in event_codes.split(",")
+            if n.strip().isalpha()
+        ]
+
+    if team_numbers:
+        team_numbers = [
+            int(n) for n in team_numbers.split(",")
+            if n.strip().isdigit()
+        ]
 
     submissions_qs = MatchScoutingSubmission.filter(
         event__season=season
