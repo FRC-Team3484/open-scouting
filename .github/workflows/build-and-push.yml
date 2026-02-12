@@ -34,8 +34,8 @@ jobs:
           file: ./frontend/Dockerfile
           push: true
           tags: |
-            ghcr.io/nfoert/open-scouting-frontend:latest
-            ghcr.io/nfoert/open-scouting-frontend:${{ github.sha }}
+            ghcr.io/frc-team3484/open-scouting-frontend:latest
+            ghcr.io/frc-team3484/open-scouting-frontend:${{ github.sha }}
 
       - name: Build & push backend image
         uses: docker/build-push-action@v5
@@ -44,5 +44,5 @@ jobs:
           file: ./backend/Dockerfile
           push: true
           tags: |
-            ghcr.io/nfoert/open-scouting-backend:latest
-            ghcr.io/nfoert/open-scouting-backend:${{ github.sha }}
+            ghcr.io/frc-team3484/open-scouting-backend:latest
+            ghcr.io/frc-team3484/open-scouting-backend:${{ github.sha }}
