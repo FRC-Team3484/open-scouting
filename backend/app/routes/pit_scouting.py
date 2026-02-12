@@ -301,7 +301,7 @@ async def submit_pit(
     if created:
         print("Created pit", pit.uuid, "for team", team_number, "and event", event.uuid)
 
-    for answer in json.loads(data.answers):
+    for answer in data.answers:
         field = await PitScoutingField.get_or_none(uuid=answer["field_uuid"])
 
         if not field:

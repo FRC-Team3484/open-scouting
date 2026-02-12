@@ -28,8 +28,6 @@
             if (filters.team_numbers.length) {
                 params.team_numbers = filters.team_numbers.join(",");
             }
-
-            console.log(params);
             
             // TODO: This needs a proper response schema
             await getDataDataGetGet(params).then((response) => {

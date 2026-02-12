@@ -56,7 +56,7 @@
         }
 
         await get_season_uuid(year);
-        get_pit_questions();
+        await get_pit_questions();
 
         user = await validateTokenOnline();
     });

@@ -203,8 +203,8 @@ async function pushPitScoutingData(event_data, season_uuid) {
                 event_country: event_data.event_country,
                 event_start_date: event_data.event_start_date,
                 event_end_date: event_data.event_end_date,
-                answers: pit.answers,
-                nickname: pit.nickname
+                answers: pit.answers || [],
+                nickname: pit.nickname || ""
             }
 
             await submitPitPitsSubmitSeasonUuidTeamNumberPost(season_uuid, pit.team_number, body).then((data) => {
@@ -235,6 +235,7 @@ async function pushPitScoutingData(event_data, season_uuid) {
  */
 async function fetchPitScoutingData(event_data, season_uuid) {
     const body: GetPitsForSeasonRequest = {
+        season_uuid: season_uuid,
         event_code: event_data.event_code,
         event_name: event_data.event_name,
         event_type: event_data.event_type,
@@ -245,6 +246,8 @@ async function fetchPitScoutingData(event_data, season_uuid) {
     }
 
     const pitDataRequest = (await getPitsPitsGetSeasonUuidPost(season_uuid, body)).data;
+
+    console.log(pitDataRequest)
 
     for (const pit of pitDataRequest) {
         const pit_in_db = await db.pit_scouting.get(pit.uuid);

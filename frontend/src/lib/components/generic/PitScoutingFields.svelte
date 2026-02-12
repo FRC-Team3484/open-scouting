@@ -48,7 +48,7 @@
             if (response.status === 200) {
                 for (const question of newQuestions) {
                     const body = {
-                        season_uuid: question.season,
+                        season_uuid: season_uuid,
                         name: question.name,
                         field_type: question.field_type,
                         options: question.options ?? {
@@ -58,9 +58,7 @@
                         organization_uuid: null as string | null,
                     }
 
-                    console.log(body)
-
-                    await createPitFieldPitsFieldsSeasonUuidCreatePost(question.season, body).catch((error) => {
+                    await createPitFieldPitsFieldsSeasonUuidCreatePost(season_uuid, body).catch((error) => {
                         console.error("Failed to create question:", question.name, error)
                     });
                 }
