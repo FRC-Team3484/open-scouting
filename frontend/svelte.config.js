@@ -11,6 +11,9 @@ const config = {
 		adapter: adapter(),
 		serviceWorker: {
 			register: false
+		},
+		env: {
+			dir: ".."
 		}
 	}
 };

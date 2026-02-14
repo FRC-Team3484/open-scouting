@@ -11,10 +11,10 @@ from .routes import auth, organizations, seasons, gamepieces, fields, match_scou
 app: FastAPI = FastAPI(root_path="/api")
 
 load_dotenv()
-ENV = os.getenv("ENV", "development")
 
 origins = os.getenv("CORS_ORIGINS", "*").split(",")
 TBA_API_KEY = os.getenv("TBA_API_KEY")
+VERSION = os.getenv("PUBLIC_VERSION")
 
 if TBA_API_KEY is None or TBA_API_KEY == "":
     print("TBA_API_KEY is not set. Pit scouting will not work as expected.")
@@ -57,3 +57,8 @@ TORTOISE_ORM = {
         },
     },
 }
+
+print("----------\n")
+print("Open Scouting (Backend)")
+print(f"{VERSION}")
+print("\n----------")
