@@ -18,7 +18,8 @@ services:
       - "3000"
     environment:
       NODE_ENV: production
-      PUBLIC_FAST_API_URL: https://open-scouting-dev.nfoert.dev/api
+    env_file:
+      - .env
 
   backend:
     image: ghcr.io/frc-team3484/open-scouting-backend:latest
@@ -26,7 +27,7 @@ services:
     expose:
       - "8000"
     env_file:
-      - ./backend/.env.production
+      - .env
     depends_on:
       - postgres
 
