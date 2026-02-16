@@ -20,7 +20,7 @@
     {
       "label": "Start SvelteKit Frontend",
       "type": "shell",
-      "command": "npm run dev -- --open",
+      "command": "npm run dev --",
       "options": {
         "cwd": "${workspaceFolder}/frontend"
       },
