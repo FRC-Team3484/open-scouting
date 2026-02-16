@@ -4,9 +4,7 @@
 	import Button from "../ui/button/button.svelte";
 	import { CaretDown, CaretUp } from "phosphor-svelte";
 
-    let { title, children } = $props();
-
-    let expanded = $state(false);
+    let { title, children, expanded = false } = $props();
 </script>
 
 <Card.Root>
