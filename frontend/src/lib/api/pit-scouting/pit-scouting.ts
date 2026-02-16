@@ -5,11 +5,10 @@
  * OpenAPI spec version: 0.1.0
  */
 import type {
-  CreatePitFieldRequest,
-  EditPitFieldRequest,
   GetPitsForSeasonRequest,
   HTTPValidationError,
   MessageResponse,
+  PitFieldRequest,
   PitFieldResponse,
   SubmitPitFieldAnswerRequest
 } from '.././model';
@@ -158,7 +157,7 @@ export const getCreatePitFieldPitsFieldsSeasonUuidCreatePostUrl = (seasonUuid: s
 }
 
 export const createPitFieldPitsFieldsSeasonUuidCreatePost = async (seasonUuid: string,
-    createPitFieldRequest: CreatePitFieldRequest, options?: RequestInit): Promise<createPitFieldPitsFieldsSeasonUuidCreatePostResponse> => {
+    pitFieldRequest: PitFieldRequest, options?: RequestInit): Promise<createPitFieldPitsFieldsSeasonUuidCreatePostResponse> => {
   
   return customInstance<createPitFieldPitsFieldsSeasonUuidCreatePostResponse>(getCreatePitFieldPitsFieldsSeasonUuidCreatePostUrl(seasonUuid),
   {      
@@ -166,7 +165,7 @@ export const createPitFieldPitsFieldsSeasonUuidCreatePost = async (seasonUuid: s
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(
-      createPitFieldRequest,)
+      pitFieldRequest,)
   }
 );}
 
@@ -179,7 +178,7 @@ Requires superuser access
 Parameters:
     season_uuid (`UUID`): The UUID of the season to edit the field for
     field_uuid (`UUID`): The UUID of the field to edit
-    data (`EditPitFieldRequest`): The data to edit the field
+    data (`PitFieldRequest`): The data to edit the field
 
 Returns:
     `PitFieldResponse`: The edited field
@@ -215,7 +214,7 @@ export const getEditPitFieldPitsFieldsSeasonUuidEditFieldUuidPatchUrl = (seasonU
 
 export const editPitFieldPitsFieldsSeasonUuidEditFieldUuidPatch = async (seasonUuid: string,
     fieldUuid: string,
-    editPitFieldRequest: EditPitFieldRequest, options?: RequestInit): Promise<editPitFieldPitsFieldsSeasonUuidEditFieldUuidPatchResponse> => {
+    pitFieldRequest: PitFieldRequest, options?: RequestInit): Promise<editPitFieldPitsFieldsSeasonUuidEditFieldUuidPatchResponse> => {
   
   return customInstance<editPitFieldPitsFieldsSeasonUuidEditFieldUuidPatchResponse>(getEditPitFieldPitsFieldsSeasonUuidEditFieldUuidPatchUrl(seasonUuid,fieldUuid),
   {      
@@ -223,7 +222,7 @@ export const editPitFieldPitsFieldsSeasonUuidEditFieldUuidPatch = async (seasonU
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(
-      editPitFieldRequest,)
+      pitFieldRequest,)
   }
 );}
 

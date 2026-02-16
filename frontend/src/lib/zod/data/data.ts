@@ -20,8 +20,8 @@ If a year and multiple team numbers are given, return all event codes which have
  */
 export const GetDataFiltersDataFiltersGetQueryParams = zod.object({
   "year": zod.number(),
-  "event_codes": zod.string(),
-  "team_numbers": zod.string()
+  "event_codes": zod.union([zod.string(),zod.null()]).optional(),
+  "team_numbers": zod.union([zod.string(),zod.null()]).optional()
 })
 
 export const GetDataFiltersDataFiltersGetResponse = zod.unknown()
@@ -110,8 +110,8 @@ Finally, for other, simply return the same field information and the value, as t
  */
 export const GetDataDataGetGetQueryParams = zod.object({
   "year": zod.number(),
-  "event_codes": zod.string(),
-  "team_numbers": zod.string()
+  "event_codes": zod.union([zod.string(),zod.null()]).optional(),
+  "team_numbers": zod.union([zod.string(),zod.null()]).optional()
 })
 
 export const GetDataDataGetGetResponse = zod.unknown()

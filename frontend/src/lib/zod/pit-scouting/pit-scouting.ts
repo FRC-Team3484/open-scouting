@@ -105,7 +105,7 @@ Requires superuser access
 Parameters:
     season_uuid (`UUID`): The UUID of the season to edit the field for
     field_uuid (`UUID`): The UUID of the field to edit
-    data (`EditPitFieldRequest`): The data to edit the field
+    data (`PitFieldRequest`): The data to edit the field
 
 Returns:
     `PitFieldResponse`: The edited field
@@ -124,8 +124,7 @@ export const EditPitFieldPitsFieldsSeasonUuidEditFieldUuidPatchBody = zod.object
   "choices": zod.array(zod.unknown())
 }),
   "order": zod.number(),
-  "organization_uuid": zod.union([zod.string().uuid(),zod.null()]).optional(),
-  "field_uuid": zod.string().uuid()
+  "organization_uuid": zod.union([zod.string().uuid(),zod.null()]).optional()
 })
 
 export const EditPitFieldPitsFieldsSeasonUuidEditFieldUuidPatchResponse = zod.object({
@@ -222,7 +221,7 @@ export const SubmitPitPitsSubmitSeasonUuidTeamNumberPostBody = zod.object({
   "event_country": zod.string(),
   "event_start_date": zod.string(),
   "event_end_date": zod.string(),
-  "answers": zod.record(zod.string(), zod.unknown()),
+  "answers": zod.array(zod.unknown()),
   "nickname": zod.string()
 })
 

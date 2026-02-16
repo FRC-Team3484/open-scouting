@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from tortoise.contrib.fastapi import register_tortoise
 
-from .routes import auth, organizations, seasons, gamepieces, fields, match_scouting, pit_scouting, data, event
+from .routes import main, auth, organizations, seasons, gamepieces, fields, match_scouting, pit_scouting, data, event
 
 # Setup
 app: FastAPI = FastAPI(root_path="/api")
@@ -29,6 +29,7 @@ app.add_middleware(
 )
 
 # Create routes
+app.include_router(main.router)
 app.include_router(auth.router)
 app.include_router(organizations.router)
 app.include_router(seasons.router)
