@@ -27,6 +27,7 @@
             .map(key =>
                 key.replace(/^.*\/logs\//, "").replace(/\.svelte$/, "")
             )
+            .reverse()
     );
 
     function close() {

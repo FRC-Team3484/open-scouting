@@ -117,3 +117,4 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [ ] Have the application version hardcoded somewhere, instead of relying on the `.env`
 - [ ] Proper frontend data sync erroring
 - [ ] Document field presets
+- [ ] Update `phosphor-icons` and migrate to `Icon` suffixes
