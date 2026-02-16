@@ -10,6 +10,7 @@
 	import NavBar from "$lib/components/generic/NavBar.svelte";
 
 	import "$lib/utils/sync";
+	import Changelog from "$lib/components/generic/changelog/Changelog.svelte";
 
 	let { children } = $props();
 
@@ -46,6 +47,7 @@
 	<ModeWatcher />
 	<Toaster position="top-right" closeButton />
 	<Menu />
+	<Changelog />
 
 	<!-- Pad the top for navigation bar -->
 	<main class="flex-1 pt-24 md:pt-28">

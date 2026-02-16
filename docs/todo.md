@@ -52,8 +52,8 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [x] Properly secure routes, and only allow some routes to logged in users and superusers
   - [x] Add comments
   - [x] Fix frontend calls accordingly
-- [ ] Create proper error pages (404 and 500)
-- [ ] Create a changelog pop up and proper client/server versioning
+- [x] Create proper error pages (404 and 500)
+- [x] Create a changelog pop up and proper client/server versioning
 - [ ] Clean up frontend
   - [ ] Make type-safe
   - [ ] Organize imports
