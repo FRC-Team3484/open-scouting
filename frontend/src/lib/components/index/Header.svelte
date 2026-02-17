@@ -11,8 +11,8 @@
     let details = false;
     let progress = 1;
 
-    export let handleNavigate: (nextPage: string) => void;
-export let page: string;
+    export let startOver: () => void;
+    export let page: string;
     export let user: any;
     export let year: number;
     export let event: any;
@@ -48,7 +48,7 @@ export let page: string;
                         <Logo text={false} style="tiny" href="/"/>
                         <p class="text-lg font-bold font-mono text-left">Open <br>Scouting</p>
                     </div>
-                    <Button onclick={() => handleNavigate("auth")} class="max-w-fill" variant="ghost"><ArrowLeft weight="bold" /> Start Over</Button>
+                    <Button onclick={() => startOver()} class="max-w-fill" variant="ghost" disabled={progress == 1}><ArrowLeft weight="bold" /> Start Over</Button>
                 </div>
 
                 <Separator orientation="vertical" class="min-h-16" />

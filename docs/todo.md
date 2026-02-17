@@ -37,7 +37,7 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [x] Create frontend UI
   - [x] Be able to export data
   - [x] Add summaries
-- [ ] Copy link to event
+- [x] Copy link to event
 - [x] Create custom events
   - [x] Backend functions
   - [x] Create UI for creating events
