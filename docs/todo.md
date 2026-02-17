@@ -31,12 +31,12 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
     - [x] Add new pits
     - [x] Sync data to the server
     - [x] Show pits with no and incomplete data, and be able to jump to them
-- [ ] Data view
+- [x] Data view
   - [x] Create backend function
   - [x] Create frontend filters
   - [x] Create frontend UI
-  - [ ] Be able to export data
-  - [ ] Add summaries
+  - [x] Be able to export data
+  - [x] Add summaries
 - [ ] Copy link to event
 - [x] Create custom events
   - [x] Backend functions
