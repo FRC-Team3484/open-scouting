@@ -16,6 +16,7 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [ ] Manage events
   - [ ] Manage match scouting data
   - [ ] Manage pit scouting data
+  - [ ] Archive match scouting fields or pit scouting questions when deleted
 - [x] Match scouting
   - [x] Render fields and be submittable
   - [x] Save match scouting data locally
@@ -58,8 +59,6 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [ ] Make type-safe
   - [ ] Organize imports
   - [ ] Add comments
-- [ ] Correctly handle when match scouting fields or pit scouting questions are deleted by the admin
-- [ ] Import legacy match scouting data from v1.0.0
 - [ ] Deprecate `open-scouting-utils` repo
 - [ ] Update doc in `FRC-Team3484/docs` for how to maintain Open Scouting
 - [ ] Update docs
@@ -72,14 +71,13 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [ ] Change password
   - [ ] Verification codes when enabled
   - [ ] Profile picture management
-- [ ] Organizations
 - [ ] Import and export field data
 - [ ] Captcha in authentication
-
-## `v2.2.0`
 - [ ] Event page
   - [ ] Create a section on the home page to show ongoing events
   - [ ] Create a page to show all events
+
+## `v2.2.0`
 - [ ] API key support
   - Seperate `/api` backend route for API calls
   - Only these routes are visible in swagger docs in prod mode
@@ -90,8 +88,12 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - Handle when a match scouting field or pit scouting field is archived/deleted, and how to tie it back to a new field
   - Handle when a season is archived/deleted, and how to attach related data to a new season
   - Handle when legacy v1.0.0 match scouting data is imported, and how to attach it to existing fields
+- [ ] Import legacy match scouting data from v1.0.0
 
 ## `v2.3.0`
+- [ ] Organizations
+
+## `v2.4.0`
 - [ ] Use [Weblate](https://weblate.org) for localization
 - [ ] Use IDs for choice and multiple choice fields for translations
 
@@ -118,3 +120,5 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [ ] Proper frontend data sync erroring
 - [ ] Document field presets
 - [ ] Update `phosphor-icons` and migrate to `Icon` suffixes
+- [ ] Bake the version string into the frontend and backend somewhere
+- [ ] Do the `ghcr.io` images needed to be marked as public?
