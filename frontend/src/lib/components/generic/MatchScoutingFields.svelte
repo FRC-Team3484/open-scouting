@@ -34,6 +34,7 @@
 	import AddFieldDialog from "./dialogs/AddFieldDialog.svelte";
 	import MathScoutingSubmit from "./MathScoutingSubmit.svelte";
 	import MatchScoutingTeamInfo from "./MatchScoutingMatchInfo.svelte";
+	import CoarseSmallNumberField from "./fields/CoarseSmallNumberField.svelte";
     
     
     let matchScoutingTeamInfoChild;
@@ -411,6 +412,8 @@
                     <LargeNumberField field={field} editable={editable} getFields={getStructure}/>
                 {:else if field.field_type === "small_number"}
                     <SmallNumberField field={field} editable={editable} getFields={getStructure}/>
+                {:else if field.field_type === "coarse_small_number"}
+                    <CoarseSmallNumberField field={field} editable={editable} getFields={getStructure}/>
                 {:else if field.field_type === "boolean"}
                     <BooleanField field={field} editable={editable} getFields={getStructure}/>
                 {:else if field.field_type === "choice"}

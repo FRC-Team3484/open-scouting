@@ -26,6 +26,7 @@
         { name: "string", label: "String" },
         { name: "large_number", label: "Large Number" },
         { name: "small_number", label: "Small Number" },
+        { name: "coarse_small_number", label: "Coarse Small Number" },
         { name: "boolean", label: "Boolean" },
         { name: "choice", label: "Choice" },
         { name: "multiple_choice", label: "Multiple Choice" },
@@ -260,7 +261,7 @@
                 <Form.FieldErrors />
             </Form.Field>
 
-        {:else if $formData.field_type === "small_number"}
+        {:else if $formData.field_type === "small_number" || $formData.field_type === "coarse_small_number"}
             <Separator />
 
             <Form.Field {form} name="options.default">

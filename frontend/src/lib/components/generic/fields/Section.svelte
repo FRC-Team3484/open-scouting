@@ -8,6 +8,7 @@
 	import ChoiceField from "./ChoiceField.svelte";
 	import MultipleChoiceField from "./MultipleChoiceField.svelte";
 	import Section from "./Section.svelte";
+	import CoarseSmallNumberField from "./CoarseSmallNumberField.svelte";
 
 	let { field, editable, getFields } = $props();
 </script>
@@ -21,6 +22,8 @@
 				<LargeNumberField field={child} editable={editable} getFields={getFields} />
 			{:else if child.field_type === "small_number"}
 				<SmallNumberField field={child} editable={editable} getFields={getFields} />
+			{:else if child.field_type === "coarse_small_number"}
+				<CoarseSmallNumberField field={child} editable={editable} getFields={getFields} />
 			{:else if child.field_type === "boolean"}
 				<BooleanField field={child} editable={editable} getFields={getFields} />
 			{:else if child.field_type === "choice"}
