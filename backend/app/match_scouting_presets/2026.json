@@ -35,7 +35,7 @@
       {
         "uuid": "9bb5a85e-7806-4e5e-ac90-8b5f39e1dbc1",
         "name": "Fuel Scored in Hub",
-        "field_type": "small_number",
+        "field_type": "coarse_small_number",
         "stat_type": "auton_score",
         "game_piece_uuid": "4f8ff96f-e722-4982-b904-3340389e35a6",
         "required": false,
@@ -104,7 +104,7 @@
       {
         "uuid": "28e537ed-4cba-489b-ad85-9bf93791629d",
         "name": "Fuel Scored in Hub",
-        "field_type": "small_number",
+        "field_type": "coarse_small_number",
         "stat_type": "teleop_score",
         "game_piece_uuid": "4f8ff96f-e722-4982-b904-3340389e35a6",
         "required": false,

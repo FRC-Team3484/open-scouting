@@ -109,7 +109,7 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [x] Increase mobile readability
 - [x] Hide favorite events when not signed in
 - [ ] Be able to make a season active in the admin page
-- [ ] Implement a better way to mark added fuel
+- [x] Implement a better way to mark added fuel
   - Small number fields can have an option for +1 / +5 / +10 buttons?
 - [ ] Count passed/assisted fuel scores
 - [x] Creating accounts from the frontend was never implemented
