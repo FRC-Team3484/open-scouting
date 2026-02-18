@@ -1,9 +1,7 @@
 <script lang="ts">
-	import { ArrowArcLeft, Database, NumberCircleFour, NumberCircleOne, NumberCircleThree, NumberCircleTwo, Table } from "phosphor-svelte";
+	import { Database, Table } from "phosphor-svelte";
 	import MajorFeature from "../MajorFeature.svelte";
 	import Generic from "./Generic.svelte";
-
-
 </script>
 
 {#snippet summary()}

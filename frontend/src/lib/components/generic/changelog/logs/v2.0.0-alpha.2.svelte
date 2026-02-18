@@ -1,9 +1,7 @@
 <script lang="ts">
-	import { ArrowArcLeft, CalendarCheck, ChartBar, Confetti, Database, FilmScript, List, NumberCircleFour, NumberCircleOne, NumberCircleThree, NumberCircleTwo, Sidebar, Table, Textbox, Warning } from "phosphor-svelte";
+	import { Confetti, List, Sidebar, Textbox, Warning } from "phosphor-svelte";
 	import MajorFeature from "../MajorFeature.svelte";
 	import Generic from "./Generic.svelte";
-
-
 </script>
 
 {#snippet summary()}
