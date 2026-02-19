@@ -18,6 +18,14 @@ router: APIRouter = APIRouter(
 
 TBA_API_KEY = os.getenv("TBA_API_KEY")
 
+def to_date_string(value: str) -> str:
+    try:
+        dt = datetime.fromisoformat(value)
+    except ValueError:
+        dt = datetime.strptime(value, "%Y-%m-%d")
+
+    return dt.date().isoformat()
+
 @router.get("/pits/fields/{season_uuid}", response_model=list[PitFieldResponse])
 async def get_pit_fields(season_uuid: UUID) -> list[PitFieldResponse]:
     """
@@ -239,8 +247,8 @@ async def get_pits(
         type=data.event_type,
         city=data.event_city,
         country=data.event_country,
-        start_date=datetime.strptime(data.event_start_date, "%Y-%m-%dT%H:%M:%S"),
-        end_date=datetime.strptime(data.event_end_date, "%Y-%m-%dT%H:%M:%S")
+        start_date=to_date_string(data.event_start_date),
+        end_date=to_date_string(data.event_end_date),
     )
 
     # If pits have not been generated yet, get teams from TBA and create TeamPits
