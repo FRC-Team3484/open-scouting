@@ -1,4 +1,5 @@
 from datetime import datetime
+from mailbox import Message
 import os
 from uuid import UUID
 import httpx
@@ -8,7 +9,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from ..dependencies import require_superuser
 from ..models import Event, Organization, PitScoutingAnswer, PitScoutingField, Season, TeamPit, User
 from ..schemas.generic import MessageResponse
-from ..schemas.pit_scouting import PitFieldResponse, PitFieldRequest, GetPitsForSeasonRequest, SubmitPitFieldAnswerRequest
+from ..schemas.pit_scouting import PitFieldResponse, PitFieldRequest, GetPitsForSeasonRequest, ReorderPitFieldsRequest, SubmitPitFieldAnswerRequest
 from ..utils import get_season
 
 router: APIRouter = APIRouter(
@@ -163,6 +164,29 @@ async def edit_pit_field(
         organization=field.organization.uuid if field.organization else None,
         created_at=field.created_at
     )
+
+@router.patch("/pits/fields/{season_uuid}/reorder", response_model=MessageResponse)
+async def move_pit_fields(
+        season_uuid: UUID,
+        data: ReorderPitFieldsRequest,
+) -> MessageResponse:
+    """
+    Reorder pit scouting fields for a season
+
+    Parameters:
+        season_uuid (`UUID`): The UUID of the season to reorder fields for
+        data (`ReorderPitFieldsRequest`): The data to reorder the fields
+
+    Returns:
+        `MessageResponse`: A message indicating that the fields were reordered
+    """
+
+    season: Season = await get_season(season_uuid)
+
+    for field in data:
+        await PitScoutingField.filter(uuid=field.uuid, season=season).update(order=field.order)
+
+    return MessageResponse(message="Fields reordered")
 
 @router.delete("/pits/fields/{field_uuid}/delete", response_model=MessageResponse)
 async def delete_pit_field(

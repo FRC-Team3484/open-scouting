@@ -10,6 +10,7 @@ import type {
   MessageResponse,
   PitFieldRequest,
   PitFieldResponse,
+  ReorderPitFieldsRequest,
   SubmitPitFieldAnswerRequest
 } from '.././model';
 
@@ -223,6 +224,58 @@ export const editPitFieldPitsFieldsSeasonUuidEditFieldUuidPatch = async (seasonU
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(
       pitFieldRequest,)
+  }
+);}
+
+
+/**
+ * Reorder pit scouting fields for a season
+
+Parameters:
+    season_uuid (`UUID`): The UUID of the season to reorder fields for
+    data (`ReorderPitFieldsRequest`): The data to reorder the fields
+
+Returns:
+    `MessageResponse`: A message indicating that the fields were reordered
+ * @summary Move Pit Fields
+ */
+export type movePitFieldsPitsFieldsSeasonUuidReorderPatchResponse200 = {
+  data: MessageResponse
+  status: 200
+}
+
+export type movePitFieldsPitsFieldsSeasonUuidReorderPatchResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+    
+export type movePitFieldsPitsFieldsSeasonUuidReorderPatchResponseSuccess = (movePitFieldsPitsFieldsSeasonUuidReorderPatchResponse200) & {
+  headers: Headers;
+};
+export type movePitFieldsPitsFieldsSeasonUuidReorderPatchResponseError = (movePitFieldsPitsFieldsSeasonUuidReorderPatchResponse422) & {
+  headers: Headers;
+};
+
+export type movePitFieldsPitsFieldsSeasonUuidReorderPatchResponse = (movePitFieldsPitsFieldsSeasonUuidReorderPatchResponseSuccess | movePitFieldsPitsFieldsSeasonUuidReorderPatchResponseError)
+
+export const getMovePitFieldsPitsFieldsSeasonUuidReorderPatchUrl = (seasonUuid: string,) => {
+
+
+  
+
+  return `/pits/fields/${seasonUuid}/reorder`
+}
+
+export const movePitFieldsPitsFieldsSeasonUuidReorderPatch = async (seasonUuid: string,
+    reorderPitFieldsRequest: ReorderPitFieldsRequest, options?: RequestInit): Promise<movePitFieldsPitsFieldsSeasonUuidReorderPatchResponse> => {
+  
+  return customInstance<movePitFieldsPitsFieldsSeasonUuidReorderPatchResponse>(getMovePitFieldsPitsFieldsSeasonUuidReorderPatchUrl(seasonUuid),
+  {      
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      reorderPitFieldsRequest,)
   }
 );}
 

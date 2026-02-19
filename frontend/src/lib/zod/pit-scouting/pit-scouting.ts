@@ -141,6 +141,31 @@ export const EditPitFieldPitsFieldsSeasonUuidEditFieldUuidPatchResponse = zod.ob
 })
 
 /**
+ * Reorder pit scouting fields for a season
+
+Parameters:
+    season_uuid (`UUID`): The UUID of the season to reorder fields for
+    data (`ReorderPitFieldsRequest`): The data to reorder the fields
+
+Returns:
+    `MessageResponse`: A message indicating that the fields were reordered
+ * @summary Move Pit Fields
+ */
+export const MovePitFieldsPitsFieldsSeasonUuidReorderPatchParams = zod.object({
+  "season_uuid": zod.string().uuid()
+})
+
+export const MovePitFieldsPitsFieldsSeasonUuidReorderPatchBodyItem = zod.object({
+  "uuid": zod.string().uuid(),
+  "order": zod.number()
+})
+export const MovePitFieldsPitsFieldsSeasonUuidReorderPatchBody = zod.array(MovePitFieldsPitsFieldsSeasonUuidReorderPatchBodyItem)
+
+export const MovePitFieldsPitsFieldsSeasonUuidReorderPatchResponse = zod.object({
+  "message": zod.string()
+})
+
+/**
  * Delete a pit scouting field
 
 Requires superuser access

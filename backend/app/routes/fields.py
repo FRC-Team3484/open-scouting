@@ -8,7 +8,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from ..dependencies import require_superuser
 from ..models import GamePiece, MatchScoutingField, Organization, Season, User
 from ..schemas.generic import MessageResponse
-from ..schemas.fields import MatchScoutingFieldRequest, MatchScoutingFieldResponse
+from ..schemas.fields import MatchScoutingFieldRequest, MatchScoutingFieldResponse, ReorderMatchScoutingFieldsRequest
 from ..utils import get_season
 
 
@@ -250,6 +250,28 @@ async def edit_season_field(
     field.organization = organization
     await field.save()
     return field
+
+@router.patch("/fields/{season_uuid}/reorder", response_model=MessageResponse)
+async def move_match_scouting_fields(
+        season_uuid: UUID,
+        data: ReorderMatchScoutingFieldsRequest,
+) -> MessageResponse:
+    """
+    Reorder match scouting fields for a season
+
+    Parameters:
+        season_uuid (`UUID`): The UUID of the season to reorder fields for
+        data (`ReorderMatchScoutingFieldsRequest`): The data to reorder the fields
+
+    Returns:
+        `MessageResponse`: A message indicating that the fields were reordered
+    """
+    season: Season = await get_season(season_uuid)
+
+    for field in data:
+        await MatchScoutingField.filter(uuid=field.uuid, season=season).update(order=field.order)
+
+    return MessageResponse(message="Fields reordered")
 
 @router.get("/fields/get_presets")
 async def get_match_scouting_field_presets(superuser: User = Depends(require_superuser)) -> list[Any]:    

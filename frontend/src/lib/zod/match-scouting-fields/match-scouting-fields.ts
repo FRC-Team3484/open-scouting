@@ -157,6 +157,31 @@ export const EditSeasonFieldFieldsSeasonSeasonUuidEditFieldUuidPostResponse = zo
 })
 
 /**
+ * Reorder match scouting fields for a season
+
+Parameters:
+    season_uuid (`UUID`): The UUID of the season to reorder fields for
+    data (`ReorderMatchScoutingFieldsRequest`): The data to reorder the fields
+
+Returns:
+    `MessageResponse`: A message indicating that the fields were reordered
+ * @summary Move Match Scouting Fields
+ */
+export const MoveMatchScoutingFieldsFieldsSeasonUuidReorderPatchParams = zod.object({
+  "season_uuid": zod.string().uuid()
+})
+
+export const MoveMatchScoutingFieldsFieldsSeasonUuidReorderPatchBodyItem = zod.object({
+  "uuid": zod.string().uuid(),
+  "order": zod.number()
+})
+export const MoveMatchScoutingFieldsFieldsSeasonUuidReorderPatchBody = zod.array(MoveMatchScoutingFieldsFieldsSeasonUuidReorderPatchBodyItem)
+
+export const MoveMatchScoutingFieldsFieldsSeasonUuidReorderPatchResponse = zod.object({
+  "message": zod.string()
+})
+
+/**
  * Get all JSON match scouting field presets
 
 Requires superuser access
