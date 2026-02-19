@@ -24,26 +24,30 @@
         
         if (get_username && get_team_number) {
             username = get_username;
-        } else {
+        } else if (user) {
             username = user.username;
+        } else {
+            username = "";
         }
 
-        const event = await db.event
+        await db.event
             .where("event_code")
             .equals(get_event)
             .and(ev => ev.year === parseInt(get_year))
-            .first();
+            .first().then((event) => 
+        {   
+            if (event) {
+                event_data.year = event.year;
+                event_data.event_code = event.event_code;
+                event_data.event_name = event.name;
+                event_data.event_type = event.type;
+                event_data.event_city = event.city;
+                event_data.event_country = event.country;
+                event_data.event_start_date = event.start_date;
+                event_data.event_end_date = event.end_date;
+            }
+        });
 
-        if (event) {
-            event_data.year = event.year;
-            event_data.event_code = event.event_code;
-            event_data.event_name = event.name;
-            event_data.event_type = event.type;
-            event_data.event_city = event.city;
-            event_data.event_country = event.country;
-            event_data.event_start_date = event.start_date;
-            event_data.event_end_date = event.end_date;
-        }
     }
 
     onMount(async () => {
