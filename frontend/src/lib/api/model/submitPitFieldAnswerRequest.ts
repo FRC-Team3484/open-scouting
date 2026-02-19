@@ -6,6 +6,7 @@
  */
 
 export interface SubmitPitFieldAnswerRequest {
+  uuid: string;
   season_uuid: string;
   team_number: number;
   event_code: string;

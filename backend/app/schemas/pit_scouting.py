@@ -43,6 +43,7 @@ class GetPitsForSeasonRequest(BaseModel):
     event_end_date: str
 
 class SubmitPitFieldAnswerRequest(BaseModel):
+    uuid: UUID
     season_uuid: UUID
     team_number: int
     

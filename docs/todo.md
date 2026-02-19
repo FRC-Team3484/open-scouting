@@ -17,6 +17,7 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [ ] Manage match scouting data
   - [ ] Manage pit scouting data
   - [ ] Archive match scouting fields or pit scouting questions when deleted
+  - [ ] Be able to make a season active in the admin page
 - [x] Match scouting
   - [x] Render fields and be submittable
   - [x] Save match scouting data locally
@@ -101,14 +102,13 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [ ] Be able to sync pit scouting data from the local data management drawer
 - [x] Menu drawers are not scrollable on smaller screens
 - [x] Fix logo squashing on smaller screens
-- [ ] When a new pit is created from multiple clients when pit scouting, make sure duplicate pits aren't created
+- [x] When a new pit is created from multiple clients when pit scouting, make sure duplicate pits aren't created
 - [x] Multiple choice fields don't show options when match scouting
 - [ ] Boolean fields don't reset properly when match scouting
 - [ ] Multiple choice, choice, and boolean fields don't reset properly when match scouting
-- [ ] Fields can't be edited in production
+- [x] Fields can't be edited in production
 - [x] Increase mobile readability
 - [x] Hide favorite events when not signed in
-- [ ] Be able to make a season active in the admin page
 - [x] Implement a better way to mark added fuel
   - Small number fields can have an option for +1 / +5 / +10 buttons?
 - [ ] Count passed/assisted fuel scores
@@ -122,3 +122,4 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [ ] Update `phosphor-icons` and migrate to `Icon` suffixes
 - [ ] Bake the version string into the frontend and backend somewhere
 - [ ] Do the `ghcr.io` images needed to be marked as public?
+- [ ] Fallback for missing `localStorage` and `IndexedDB` (like incognito mode)

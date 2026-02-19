@@ -212,6 +212,7 @@ export const SubmitPitPitsSubmitSeasonUuidTeamNumberPostParams = zod.object({
 })
 
 export const SubmitPitPitsSubmitSeasonUuidTeamNumberPostBody = zod.object({
+  "uuid": zod.string().uuid(),
   "season_uuid": zod.string().uuid(),
   "team_number": zod.number(),
   "event_code": zod.string(),

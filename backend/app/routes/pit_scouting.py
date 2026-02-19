@@ -291,6 +291,7 @@ async def submit_pit(
         raise HTTPException(status_code=404, detail="Event not found")
 
     pit, created = await TeamPit.get_or_create(
+        uuid=data.uuid,
         team_number=team_number,
         season=season,
         event=event,
