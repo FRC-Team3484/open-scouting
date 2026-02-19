@@ -31,6 +31,7 @@
     async function getQuestions() {
         if (editable) {
             questions = (await getPitFieldsPitsFieldsSeasonUuidGet(season_uuid)).data;
+            questions = questions.sort((a, b) => a.order - b.order);
         } else {
             const season = await db.season_data.get(parseInt(year));
             questions = season?.pit_scouting_questions.sort((a, b) => a.order - b.order) ?? [];

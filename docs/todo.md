@@ -9,9 +9,9 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [ ] Manage match scouting fields and game pieces
     - [x] Create and edit fields
     - [ ] Make reorderable
-  - [ ] Manage pit scouting questions
+  - [x] Manage pit scouting questions
     - [x] Create and edit questions
-    - [ ] Make reorderable
+    - [x] Make reorderable
   - [ ] Manage users
   - [ ] Manage events
   - [ ] Manage match scouting data
