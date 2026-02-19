@@ -4,7 +4,8 @@
     import * as Card from "$lib/components/ui/card/index.js";
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
 	import { addPitScoutingQuestionData, addPitScoutingQuestionDialogOpen } from "$lib/stores/dialog";
-	import { DotsThree, Pencil, Trash } from "phosphor-svelte";
+	import { DotsSix, DotsSixVertical, DotsThree, Pencil, Trash } from "phosphor-svelte";
+	import { dragHandle } from "svelte-dnd-action";
 	import { toast } from "svelte-sonner";
 
     let { question, editable = false, getQuestions = () => {}, children } = $props();
@@ -28,6 +29,9 @@
     <Card.Header>
         <div class="flex flex-row gap-2 items-center justify-between flex-wrap">
             <div class="flex flex-row gap-2 items-center">
+                <div class="text-muted-foreground" use:dragHandle>
+                    <DotsSixVertical weight="bold" />
+                </div>
                 <p>
                     {question.name}
                 </p>

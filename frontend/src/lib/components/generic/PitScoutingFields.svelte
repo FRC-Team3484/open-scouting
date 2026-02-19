@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { onMount } from "svelte";
+    import { onMount } from "svelte";
+    import { dndzone, dragHandleZone, overrideItemIdKeyNameBeforeInitialisingDndZones } from "svelte-dnd-action"
     
     import Separator from "../ui/separator/separator.svelte";
     import * as Card from "$lib/components/ui/card/index.js";
@@ -16,7 +17,10 @@
 	import ChoiceQuestion from "./pit_questions/admin/ChoiceQuestion.svelte";
 	import { toast } from "svelte-sonner";
 	import Input from "../ui/input/input.svelte";
-	import { clearPitFieldsPitsFieldsSeasonUuidClearDelete, createPitFieldPitsFieldsSeasonUuidCreatePost, getPitFieldsPitsFieldsSeasonUuidGet } from "$lib/api/pit-scouting/pit-scouting";
+	import { clearPitFieldsPitsFieldsSeasonUuidClearDelete, createPitFieldPitsFieldsSeasonUuidCreatePost, getPitFieldsPitsFieldsSeasonUuidGet, movePitFieldsPitsFieldsSeasonUuidReorderPatch } from "$lib/api/pit-scouting/pit-scouting";
+	import type { ReorderPitFieldsRequest } from "$lib/api/model";
+
+    overrideItemIdKeyNameBeforeInitialisingDndZones("uuid");
 
     let { season_uuid, year, event_data = {}, editable } = $props();
 
@@ -29,7 +33,7 @@
             questions = (await getPitFieldsPitsFieldsSeasonUuidGet(season_uuid)).data;
         } else {
             const season = await db.season_data.get(parseInt(year));
-            questions = season?.pit_scouting_questions;
+            questions = season?.pit_scouting_questions.sort((a, b) => a.order - b.order) ?? [];
         }
     }
 
@@ -98,6 +102,32 @@
         }
     }
 
+    function handleDndConsider(e) {
+        questions = e.detail.items;
+    }
+
+    async function handleDndFinalize(e) {
+        questions = e.detail.items;
+        
+        let body: ReorderPitFieldsRequest = []
+
+        for (const question of questions) {
+            question.order = questions.indexOf(question);
+
+            body.push({
+                uuid: question.uuid,
+                order: question.order
+            })
+        }
+
+
+        await movePitFieldsPitsFieldsSeasonUuidReorderPatch(season_uuid, body).then((response) => {
+            if (response.status !== 200) {
+                toast.error("Failed to reorder questions", { duration: 5000 });
+            }
+        });
+    }
+
     onMount(async () => {
         getQuestions();
     });
@@ -149,7 +179,7 @@
     </div>
 {/if}
 
-<div class="flex flex-col gap-4 mt-4">
+<div class="flex flex-col gap-4 mt-4" use:dragHandleZone={ {items: questions, flipDurationMs: 100 }} on:consider={handleDndConsider} on:finalize={handleDndFinalize}>
     {#each questions as question (question.uuid)}
         {#if question.field_type !== "undefined"}
             {#if question.field_type === "text"}
