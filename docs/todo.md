@@ -130,4 +130,4 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [ ] Pit scouting boolean's never return true
 - [ ] Click the entirety of the collapsable list to expand and collapse it
 - [ ] Better mobile pit scouting experience
-- [ ] Fix view data button in the nav bar
+- [x] Fix view data button in the nav bar
