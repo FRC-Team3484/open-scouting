@@ -1,3 +1,4 @@
+from datetime import datetime
 import os
 from uuid import UUID
 import httpx
@@ -214,8 +215,8 @@ async def get_pits(
         type=data.event_type,
         city=data.event_city,
         country=data.event_country,
-        start_date=data.event_start_date,
-        end_date=data.event_end_date
+        start_date=datetime.strptime(data.event_start_date, "%Y-%m-%dT%H:%M:%S"),
+        end_date=datetime.strptime(data.event_end_date, "%Y-%m-%dT%H:%M:%S")
     )
 
     # If pits have not been generated yet, get teams from TBA and create TeamPits
