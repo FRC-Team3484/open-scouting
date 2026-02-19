@@ -200,6 +200,7 @@ async function pushPitScoutingData(event_data, season_uuid) {
 
         for (const pit of unsyncedPits) {
             const body: SubmitPitFieldAnswerRequest = {
+                uuid: pit.uuid,
                 season_uuid: season_uuid,
                 team_number: pit.team_number,
                 event_code: event_data.event_code,
@@ -253,7 +254,7 @@ async function fetchPitScoutingData(event_data, season_uuid) {
 
     const pitDataRequest = (await getPitsPitsGetSeasonUuidPost(season_uuid, body)).data;
 
-    console.log(pitDataRequest)
+    console.log(body)
 
     for (const pit of pitDataRequest) {
         const pit_in_db = await db.pit_scouting.get(pit.uuid);
