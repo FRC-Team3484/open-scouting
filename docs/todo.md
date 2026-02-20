@@ -126,8 +126,9 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [ ] Fallback for missing `localStorage` and `IndexedDB` (like incognito mode)
 - [x] Fix position to watch box when there's no data in TBA
 - [x] Fix iOS double click on `small_number` buttons
-- [ ] Make boolean check boxes a switch instead
-- [ ] Pit scouting boolean's never return true
+- [x] Make boolean check boxes a switch instead
+- [x] Pit scouting boolean's never return true
 - [ ] Click the entirety of the collapsable list to expand and collapse it
 - [ ] Better mobile pit scouting experience
 - [x] Fix view data button in the nav bar
+- [ ] Prevent devices from sleeping on pit scouting and match scouting pages
