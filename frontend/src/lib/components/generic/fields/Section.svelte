@@ -35,7 +35,7 @@
 </script>
 
 <BaseSection field={field} editable={editable} getFields={getFields}>
-	<div class="flex flex-col gap-4" use:dragHandleZone={{items: field.fields, flipDurationMs: 100}} onconsider={onConsider} onfinalize={onFinalize}>
+	<div class="flex flex-col gap-4" use:dragHandleZone={{items: field.fields, flipDurationMs: 100, dropTargetStyle: {outline: 'var(--primary) dashed 2px', borderRadius: 'var(--radius)'}}} onconsider={onConsider} onfinalize={onFinalize}>
 		{#each field.fields as child (child.uuid)}
 			<div animate:flip={{duration: 100}}>
 				{#if child.field_type === "string"}

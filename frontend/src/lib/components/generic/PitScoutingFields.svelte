@@ -180,7 +180,7 @@
     </div>
 {/if}
 
-<div class="flex flex-col gap-4 mt-4" use:dragHandleZone={ {items: questions, flipDurationMs: 100 }} on:consider={handleDndConsider} on:finalize={handleDndFinalize}>
+<div class="flex flex-col gap-4 mt-4" use:dragHandleZone={ {items: questions, flipDurationMs: 100, dropTargetStyle: {outline: 'var(--primary) dashed 2px', borderRadius: 'var(--radius)'} }} on:consider={handleDndConsider} on:finalize={handleDndFinalize}>
     {#each questions as question (question.uuid)}
         {#if question.field_type !== "undefined"}
             {#if question.field_type === "text"}

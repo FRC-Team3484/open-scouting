@@ -6,9 +6,9 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [x] Base frontend and backend
 - [ ] Admin page
   - [x] Manage Seasons
-  - [ ] Manage match scouting fields and game pieces
+  - [x] Manage match scouting fields and game pieces
     - [x] Create and edit fields
-    - [ ] Make reorderable
+    - [x] Make reorderable
   - [x] Manage pit scouting questions
     - [x] Create and edit questions
     - [x] Make reorderable
