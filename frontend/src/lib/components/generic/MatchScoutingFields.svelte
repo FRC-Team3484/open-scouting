@@ -441,7 +441,7 @@
             
         {#if fields.length > 0}
             <Separator orientation="horizontal" />
-            <form method="post" onsubmit={submit} class="flex flex-col gap-2">
+            <form method="post" onsubmit={submit} class="flex flex-col gap-2 items-center">
                 {#if editable}
                     <Card.Root class="w-auto min-w-64">
                         <Card.Content>
