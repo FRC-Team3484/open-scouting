@@ -57,5 +57,12 @@
 				{/if}
 			</div>
 		{/each}
+
+		{#if field.fields.length === 0 && editable}
+			<div class="flex flex-col items-center justify-center py-16 px-16 border-2 border-dashed border-muted-foreground rounded-md">
+				<p class="text-muted-foreground">No fields</p>
+				<p class="text-muted-foreground text-sm">Drag and drop fields here</p>
+			</div>
+		{/if}
 	</div>
 </BaseSection>
