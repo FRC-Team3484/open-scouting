@@ -23,6 +23,7 @@
 
         <div class="flex flex-row gap-2 items-center">
             <Button
+                class="touch-manipulation"
                 type="button"
                 size="lg"
                 onclick={() => {
@@ -32,6 +33,7 @@
                 <Plus weight="bold" /> 1
             </Button>
             <Button
+                class="touch-manipulation"
                 type="button"
                 size="lg"
                 onclick={() => {
@@ -41,6 +43,7 @@
                 <Plus weight="bold" /> 5
             </Button>
             <Button
+                class="touch-manipulation"
                 type="button"
                 size="lg"
                 onclick={() => {
@@ -53,6 +56,7 @@
 
         <div class="flex flex-row gap-2 items-center">
             <Button
+                class="touch-manipulation"
                 type="button"
                 variant="outline"
                 onclick={() => {
@@ -62,6 +66,7 @@
                 <Minus weight="bold" /> 1
             </Button>
             <Button
+                class="touch-manipulation"
                 type="button"
                 variant="outline"
                 onclick={() => {
@@ -71,6 +76,7 @@
                 <Minus weight="bold" /> 5
             </Button>
             <Button
+                class="touch-manipulation"
                 type="button"
                 variant="outline"
                 onclick={() => {

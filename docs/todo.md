@@ -125,7 +125,7 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [ ] Do the `ghcr.io` images needed to be marked as public?
 - [ ] Fallback for missing `localStorage` and `IndexedDB` (like incognito mode)
 - [x] Fix position to watch box when there's no data in TBA
-- [ ] Fix iOS double click on `small_number` buttons
+- [x] Fix iOS double click on `small_number` buttons
 - [ ] Make boolean check boxes a switch instead
 - [ ] Pit scouting boolean's never return true
 - [ ] Click the entirety of the collapsable list to expand and collapse it

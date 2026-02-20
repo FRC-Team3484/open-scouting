@@ -10,5 +10,5 @@
 <BaseField field={field} editable={editable} getFields={getFields}>
     <!-- Use a hidden input to return a boolean value always, instead of only when checked if using a checkbox -->
     <input type="hidden" name={field.uuid} value={checked ? "true" : "false"} />
-    <Checkbox placeholder={field.name} required={field.required} bind:checked />
+    <Checkbox class="touch-manipulation" placeholder={field.name} required={field.required} bind:checked />
 </BaseField>

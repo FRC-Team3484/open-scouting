@@ -23,6 +23,7 @@
 
         <!-- Decrease button -->
         <Button
+            class="touch-manipulation"
             type="button"
             onclick={() => {
                 const input = document.querySelector(`input[name="${field.uuid}"]`) as HTMLInputElement | null;
@@ -33,6 +34,7 @@
 
         <!-- Increase button -->
         <Button
+            class="touch-manipulation"
             type="button"
             onclick={() => {
                 const input = document.querySelector(`input[name="${field.uuid}"]`) as HTMLInputElement | null;
