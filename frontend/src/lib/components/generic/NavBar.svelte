@@ -19,7 +19,7 @@
         <ExperimentalWarning />
 
         <Button variant="outline" href="/" class="ml-4">Home</Button>
-        <Button variant="outline" href="/" disabled>View Data</Button>
+        <Button variant="outline" href="/data">View Data</Button>
         <Button variant="outline" href="/" disabled>Events</Button>
     </div>
 
@@ -50,7 +50,7 @@
                     </div>
                     <Separator orientation="horizontal" />
                     <Drawer.Close><Button variant="outline" href="/" class="w-full">Home</Button></Drawer.Close>
-                    <Drawer.Close><Button variant="outline" href="/" class="w-full" disabled>View Data</Button></Drawer.Close>
+                    <Drawer.Close><Button variant="outline" href="/data" class="w-full">View Data</Button></Drawer.Close>
                     <Drawer.Close><Button variant="outline" href="/" class="w-full" disabled>Events</Button></Drawer.Close>
                 </div>
 

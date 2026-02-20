@@ -1,7 +1,7 @@
-from typing import Any
+from typing import Any, Iterator
 from uuid import UUID
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, RootModel
 
 class MatchScoutingFieldOptions(BaseModel):
     choices: list[Any]
@@ -39,3 +39,14 @@ class MatchScoutingFieldRequest(BaseModel):
 
 class MatchScoutingFieldRequestUUID(MatchScoutingFieldRequest):
     field_uuid: UUID
+
+class ReorderMatchScoutingField(BaseModel):
+    uuid: UUID
+    order: int
+    parent_uuid: UUID | None
+
+class ReorderMatchScoutingFieldsRequest(RootModel[list[ReorderMatchScoutingField]]):
+    root: list[ReorderMatchScoutingField]
+
+    def __iter__(self) -> Iterator[ReorderMatchScoutingField]:
+        return iter(self.root)

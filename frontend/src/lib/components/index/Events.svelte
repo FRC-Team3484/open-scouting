@@ -35,7 +35,7 @@
 
         return (
             (eventName.includes(searchValue) || eventCode.includes(searchValue)) &&
-            (showPastEvents || event.start_date >= new Date().toISOString())
+            (showPastEvents || event.end_date >= new Date().toISOString())
         );
     }));
 

@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { onMount } from "svelte";
+	import { flip } from "svelte/animate";
 	import { toast } from "svelte-sonner";
+	import { dragHandleZone, overrideItemIdKeyNameBeforeInitialisingDndZones } from "svelte-dnd-action";
 	import { CircleNotch, DownloadSimple, Export, FolderPlus, Info, PlusCircle, Trash, Warning, XCircle } from "phosphor-svelte";
 
     import { addFieldDialogOpen, addSectionDialogOpen } from "$lib/stores/dialog";
@@ -18,7 +20,7 @@
 	import { validateTokenOnline } from "$lib/utils/user";
 	import { pushMatchScoutingData } from "$lib/utils/sync";
     
-	import { clearSeasonFieldsFieldsSeasonSeasonUuidClearDelete, createSeasonFieldFieldsSeasonSeasonUuidCreatePost, getMatchScoutingFieldPresetsFieldsGetPresetsGet, getSeasonFieldsFieldsSeasonSeasonUuidGet } from "$lib/api/match-scouting-fields/match-scouting-fields";
+	import { clearSeasonFieldsFieldsSeasonSeasonUuidClearDelete, createSeasonFieldFieldsSeasonSeasonUuidCreatePost, getMatchScoutingFieldPresetsFieldsGetPresetsGet, getSeasonFieldsFieldsSeasonSeasonUuidGet, moveMatchScoutingFieldsFieldsSeasonUuidReorderPatch } from "$lib/api/match-scouting-fields/match-scouting-fields";
 	import { getSeasonGamepiecesGamepiecesSeasonSeasonUuidGet } from "$lib/api/gamepieces/gamepieces";
 	import type { GamepieceResponse } from "$lib/api/model";
 
@@ -34,7 +36,9 @@
 	import AddFieldDialog from "./dialogs/AddFieldDialog.svelte";
 	import MathScoutingSubmit from "./MathScoutingSubmit.svelte";
 	import MatchScoutingTeamInfo from "./MatchScoutingMatchInfo.svelte";
+	import CoarseSmallNumberField from "./fields/CoarseSmallNumberField.svelte";
     
+    overrideItemIdKeyNameBeforeInitialisingDndZones("uuid");
     
     let matchScoutingTeamInfoChild;
 
@@ -76,6 +80,8 @@
             const season = await db.season_data.get(parseInt(year));
             fields = season?.fields
         }
+
+        fields = normalizeOrders(fields);
     }
 
     async function getGamePieces() {
@@ -124,8 +130,6 @@
                 filteredFields[key] = value as string;
             }
         }
-
-        console.log(filteredFields);
 
         await db.match_scouting.add({
             uuid: crypto.randomUUID(),
@@ -267,7 +271,54 @@
         }
     }
 
+    function normalizeOrders(items) {
+        return items.map((item, index) => ({
+            ...item,
+            order: index,
+            fields: Array.isArray(item.fields)
+                ? normalizeOrders(item.fields)
+                : item.fields
+        }));
+    }
+
+    function handleDndConsider(e) {
+        fields = e.detail.items;
+    }
+
+    async function handleDndFinalize(e) {
+        fields = normalizeOrders(e.detail.items);
+        await updateOrders();
+    }
+
+    function flattenFields(fields, result = [], parent_uuid = null) {
+        for (const item of fields) {
+            result.push({
+                uuid: item.uuid,
+                order: item.order,
+                parent_uuid: parent_uuid
+            });
+            
+            if (Array.isArray(item.fields)) {
+                flattenFields(item.fields, result, item.uuid);
+            }
+        }
+        return result;
+    }
+
+    async function updateOrders() {
+        const flatFields = flattenFields(fields);
+
+        console.log(flatFields);
+
+        await moveMatchScoutingFieldsFieldsSeasonUuidReorderPatch(season_uuid, flatFields).then((response) => {
+            if (response.status !== 200) {
+                toast.error("Failed to reorder fields", { duration: 5000 });
+            }
+        });
+    }
+
     onMount(async () => {
+        
         while (!season_uuid) {
             await new Promise(resolve => setTimeout(resolve, 100));
         }
@@ -386,54 +437,60 @@
                     </div>
                 </Card.Content>
             </Card.Root>
-
-            <Separator orientation="horizontal" />
         {/if}
-        
-        <form method="post" onsubmit={submit} class="flex flex-col gap-2">
-            {#if editable}
-                <Card.Root class="w-auto min-w-64">
-                    <Card.Content>
-                        <div class="flex flex-row gap-2 items-center">
-                            <Info weight="bold"/>
-                            <p class="text-sm">Team number, match number, and match type fields are visible during full match scouting</p>
-                        </div>
-                    </Card.Content>
-                </Card.Root>
-            {:else}
-                <MatchScoutingTeamInfo event_data={event_data} bind:this={matchScoutingTeamInfoChild} />
-            {/if}
             
-            {#each fields as field (field.uuid)}
-                {#if field.field_type === "string"}
-                    <StringField field={field} editable={editable} getFields={getStructure}/>
-                {:else if field.field_type === "large_number"}
-                    <LargeNumberField field={field} editable={editable} getFields={getStructure}/>
-                {:else if field.field_type === "small_number"}
-                    <SmallNumberField field={field} editable={editable} getFields={getStructure}/>
-                {:else if field.field_type === "boolean"}
-                    <BooleanField field={field} editable={editable} getFields={getStructure}/>
-                {:else if field.field_type === "choice"}
-                    <ChoiceField field={field} editable={editable} getFields={getStructure}/>
-                {:else if field.field_type === "multiple_choice"}
-                    <MultipleChoiceField field={field} editable={editable} getFields={getStructure}/>
-                {:else if field.field_type === "section"}
-                    <Section 
-                        field={field} 
-                        editable={editable} 
-                        getFields={getStructure}
-                    />
+        {#if fields.length > 0}
+            <Separator orientation="horizontal" />
+            <form method="post" onsubmit={submit} class="flex flex-col gap-2 items-center">
+                {#if editable}
+                    <Card.Root class="w-auto min-w-64">
+                        <Card.Content>
+                            <div class="flex flex-row gap-2 items-center">
+                                <Info weight="bold"/>
+                                <p class="text-sm">Team number, match number, and match type fields are visible during full match scouting</p>
+                            </div>
+                        </Card.Content>
+                    </Card.Root>
+                {:else}
+                    <MatchScoutingTeamInfo event_data={event_data} bind:this={matchScoutingTeamInfoChild} />
                 {/if}
-            {/each}
+                
+                <div class="flex flex-col gap-2 max-w-screen w-full md:w-lg" use:dragHandleZone={{items: fields, flipDurationMs: 100, dropTargetStyle: {outline: 'var(--primary) dashed 2px', borderRadius: 'var(--radius)'}}} onconsider={handleDndConsider} onfinalize={handleDndFinalize}>
+                    {#each fields as field (field.uuid)}
+                        <div animate:flip={{duration: 100}}>
+                            {#if field.field_type === "string"}
+                                <StringField field={field} editable={editable} getFields={getStructure}/>
+                            {:else if field.field_type === "large_number"}
+                                <LargeNumberField field={field} editable={editable} getFields={getStructure}/>
+                            {:else if field.field_type === "small_number"}
+                                <SmallNumberField field={field} editable={editable} getFields={getStructure}/>
+                            {:else if field.field_type === "coarse_small_number"}
+                                <CoarseSmallNumberField field={field} editable={editable} getFields={getStructure}/>
+                            {:else if field.field_type === "boolean"}
+                                <BooleanField field={field} editable={editable} getFields={getStructure}/>
+                            {:else if field.field_type === "choice"}
+                                <ChoiceField field={field} editable={editable} getFields={getStructure}/>
+                            {:else if field.field_type === "multiple_choice"}
+                                <MultipleChoiceField field={field} editable={editable} getFields={getStructure}/>
+                            {:else if field.field_type === "section"}
+                                <Section 
+                                    bind:field={fields[fields.indexOf(field)]} 
+                                    editable={editable} 
+                                    getFields={getStructure}
+                                    updateOrders={updateOrders}
+                                />
+                            {/if}
+                        </div>
+                    {/each}
+                </div>
 
-            {#if fields.length == 0}
-                <p class="text-muted-foreground">No fields found</p>
-            {/if}
-
-            {#if !editable}
-                <MathScoutingSubmit />
-            {/if}
-        </form>
+                {#if !editable}
+                    <MathScoutingSubmit />
+                {/if}
+            </form>
+        {:else}
+            <p class="text-muted-foreground">No fields found</p>
+        {/if}
     {/if}
 </div>
 

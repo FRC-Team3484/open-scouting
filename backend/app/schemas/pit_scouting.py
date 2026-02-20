@@ -1,8 +1,8 @@
 from datetime import datetime
-from typing import Any
+from typing import Any, Iterator
 from uuid import UUID
 
-from pydantic import BaseModel
+from pydantic import BaseModel, RootModel
 
 
 class PitFieldsRequest(BaseModel):
@@ -43,6 +43,7 @@ class GetPitsForSeasonRequest(BaseModel):
     event_end_date: str
 
 class SubmitPitFieldAnswerRequest(BaseModel):
+    uuid: UUID
     season_uuid: UUID
     team_number: int
     
@@ -56,3 +57,14 @@ class SubmitPitFieldAnswerRequest(BaseModel):
 
     answers: list[Any]
     nickname: str
+
+class ReorderPitField(BaseModel):
+    uuid: UUID
+    order: int
+
+class ReorderPitFieldsRequest(RootModel[list[ReorderPitField]]):
+    root: list[ReorderPitField]
+
+    def __iter__(self) -> Iterator[ReorderPitField]:
+        return iter(self.root)
+

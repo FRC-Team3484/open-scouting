@@ -8,7 +8,8 @@ import type {
   HTTPValidationError,
   MatchScoutingFieldRequest,
   MatchScoutingFieldResponse,
-  MessageResponse
+  MessageResponse,
+  ReorderMatchScoutingFieldsRequest
 } from '.././model';
 
 import { customInstance } from '.././client';
@@ -220,6 +221,58 @@ export const editSeasonFieldFieldsSeasonSeasonUuidEditFieldUuidPost = async (sea
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(
       matchScoutingFieldRequest,)
+  }
+);}
+
+
+/**
+ * Reorder match scouting fields for a season
+
+Parameters:
+    season_uuid (`UUID`): The UUID of the season to reorder fields for
+    data (`ReorderMatchScoutingFieldsRequest`): The data to reorder the fields
+
+Returns:
+    `MessageResponse`: A message indicating that the fields were reordered
+ * @summary Move Match Scouting Fields
+ */
+export type moveMatchScoutingFieldsFieldsSeasonUuidReorderPatchResponse200 = {
+  data: MessageResponse
+  status: 200
+}
+
+export type moveMatchScoutingFieldsFieldsSeasonUuidReorderPatchResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+    
+export type moveMatchScoutingFieldsFieldsSeasonUuidReorderPatchResponseSuccess = (moveMatchScoutingFieldsFieldsSeasonUuidReorderPatchResponse200) & {
+  headers: Headers;
+};
+export type moveMatchScoutingFieldsFieldsSeasonUuidReorderPatchResponseError = (moveMatchScoutingFieldsFieldsSeasonUuidReorderPatchResponse422) & {
+  headers: Headers;
+};
+
+export type moveMatchScoutingFieldsFieldsSeasonUuidReorderPatchResponse = (moveMatchScoutingFieldsFieldsSeasonUuidReorderPatchResponseSuccess | moveMatchScoutingFieldsFieldsSeasonUuidReorderPatchResponseError)
+
+export const getMoveMatchScoutingFieldsFieldsSeasonUuidReorderPatchUrl = (seasonUuid: string,) => {
+
+
+  
+
+  return `/fields/${seasonUuid}/reorder`
+}
+
+export const moveMatchScoutingFieldsFieldsSeasonUuidReorderPatch = async (seasonUuid: string,
+    reorderMatchScoutingFieldsRequest: ReorderMatchScoutingFieldsRequest, options?: RequestInit): Promise<moveMatchScoutingFieldsFieldsSeasonUuidReorderPatchResponse> => {
+  
+  return customInstance<moveMatchScoutingFieldsFieldsSeasonUuidReorderPatchResponse>(getMoveMatchScoutingFieldsFieldsSeasonUuidReorderPatchUrl(seasonUuid),
+  {      
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      reorderMatchScoutingFieldsRequest,)
   }
 );}
 

@@ -4,7 +4,7 @@
 
 	import Button from "../ui/button/button.svelte";
 	import Separator from "../ui/separator/separator.svelte";
-    import { ArrowRight, Article, Bug, CheckCircle, CircleNotch, Clock, DiscordLogo, FloppyDisk, GithubLogo, House, List, Moon, Sun, Warning, X } from "phosphor-svelte";
+    import { ArrowRight, Article, Bug, CheckCircle, CircleNotch, Clock, DiscordLogo, FloppyDisk, GithubLogo, House, List, Moon, Notepad, Sun, Warning, X } from "phosphor-svelte";
 
 	import AboutDrawer from "./AboutDrawer.svelte";
 	import ManageDataDrawer from "./ManageDataDrawer.svelte";
@@ -14,6 +14,7 @@
 	import User from "../generic/User.svelte";
 	import { online } from "svelte/reactivity/window";
 	import { toast } from "svelte-sonner";
+	import { changelogDialogOpen } from "$lib/stores/dialog";
 
     let user = null;
 
@@ -116,6 +117,7 @@
             <Separator orientation="horizontal" />
 
             <div class="flex flex-col gap-4">
+                <Button variant="outline" onclick={() => {$changelogDialogOpen = true; menu_open = false}}><Notepad weight="bold" /> Changelog</Button>
                 <ManageDataDrawer/>
                 <AboutDrawer />
             </div>

@@ -1,3 +1,5 @@
+from datetime import datetime
+from mailbox import Message
 import os
 from uuid import UUID
 import httpx
@@ -7,7 +9,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from ..dependencies import require_superuser
 from ..models import Event, Organization, PitScoutingAnswer, PitScoutingField, Season, TeamPit, User
 from ..schemas.generic import MessageResponse
-from ..schemas.pit_scouting import PitFieldResponse, PitFieldRequest, GetPitsForSeasonRequest, SubmitPitFieldAnswerRequest
+from ..schemas.pit_scouting import PitFieldResponse, PitFieldRequest, GetPitsForSeasonRequest, ReorderPitFieldsRequest, SubmitPitFieldAnswerRequest
 from ..utils import get_season
 
 router: APIRouter = APIRouter(
@@ -15,6 +17,14 @@ router: APIRouter = APIRouter(
 )
 
 TBA_API_KEY = os.getenv("TBA_API_KEY")
+
+def to_date_string(value: str) -> str:
+    try:
+        dt = datetime.fromisoformat(value)
+    except ValueError:
+        dt = datetime.strptime(value, "%Y-%m-%d")
+
+    return dt.date().isoformat()
 
 @router.get("/pits/fields/{season_uuid}", response_model=list[PitFieldResponse])
 async def get_pit_fields(season_uuid: UUID) -> list[PitFieldResponse]:
@@ -163,6 +173,29 @@ async def edit_pit_field(
         created_at=field.created_at
     )
 
+@router.patch("/pits/fields/{season_uuid}/reorder", response_model=MessageResponse)
+async def move_pit_fields(
+        season_uuid: UUID,
+        data: ReorderPitFieldsRequest,
+) -> MessageResponse:
+    """
+    Reorder pit scouting fields for a season
+
+    Parameters:
+        season_uuid (`UUID`): The UUID of the season to reorder fields for
+        data (`ReorderPitFieldsRequest`): The data to reorder the fields
+
+    Returns:
+        `MessageResponse`: A message indicating that the fields were reordered
+    """
+
+    season: Season = await get_season(season_uuid)
+
+    for field in data:
+        await PitScoutingField.filter(uuid=field.uuid, season=season).update(order=field.order)
+
+    return MessageResponse(message="Fields reordered")
+
 @router.delete("/pits/fields/{field_uuid}/delete", response_model=MessageResponse)
 async def delete_pit_field(
         field_uuid: UUID,
@@ -214,8 +247,8 @@ async def get_pits(
         type=data.event_type,
         city=data.event_city,
         country=data.event_country,
-        start_date=data.event_start_date,
-        end_date=data.event_end_date
+        start_date=to_date_string(data.event_start_date),
+        end_date=to_date_string(data.event_end_date),
     )
 
     # If pits have not been generated yet, get teams from TBA and create TeamPits
@@ -291,6 +324,7 @@ async def submit_pit(
         raise HTTPException(status_code=404, detail="Event not found")
 
     pit, created = await TeamPit.get_or_create(
+        uuid=data.uuid,
         team_number=team_number,
         season=season,
         event=event,

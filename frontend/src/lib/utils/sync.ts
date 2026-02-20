@@ -1,4 +1,7 @@
+import { compare } from "semver-ts";
+import { env } from "$env/dynamic/public";
 import { menuState } from "$lib/stores/menu";
+import { changelogDialogOpen, changelogDialogVersion } from "$lib/stores/dialog"
 import { theBlueAllianceApiFetch } from "./api";
 import { db } from "./db";
 
@@ -9,6 +12,9 @@ import { getPitFieldsPitsFieldsSeasonUuidGet, submitPitPitsSubmitSeasonUuidTeamN
 import { getCustomEventsEventCustomSeasonUuidGet } from "$lib/api/events/events"
 import { submitMatchScoutingScoutingSubmitPost } from "$lib/api/match-scouting/match-scouting";
 import type { SeasonResponse, GamepieceResponse, PitFieldResponse, EventResponse, MatchScoutingRequest, SubmitPitFieldAnswerRequest, GetPitsForSeasonRequest } from "$lib/api/model";
+import { getServerStatusStatusGet } from "$lib/api/generic/generic";
+import { browser } from "$app/environment";
+
 
 /**
  * Fetches season data and stores it locally
@@ -194,6 +200,7 @@ async function pushPitScoutingData(event_data, season_uuid) {
 
         for (const pit of unsyncedPits) {
             const body: SubmitPitFieldAnswerRequest = {
+                uuid: pit.uuid,
                 season_uuid: season_uuid,
                 team_number: pit.team_number,
                 event_code: event_data.event_code,
@@ -247,7 +254,7 @@ async function fetchPitScoutingData(event_data, season_uuid) {
 
     const pitDataRequest = (await getPitsPitsGetSeasonUuidPost(season_uuid, body)).data;
 
-    console.log(pitDataRequest)
+    console.log(body)
 
     for (const pit of pitDataRequest) {
         const pit_in_db = await db.pit_scouting.get(pit.uuid);
@@ -275,10 +282,62 @@ async function fetchPitScoutingData(event_data, season_uuid) {
     }
 }
 
+async function getServerStatus() {
+    if (!browser) return;
+
+    await getServerStatusStatusGet().then((response) => {
+        if (response.data) {
+            const server_version: string | null = response.data.version;
+            const local_version: string = env.PUBLIC_VERSION;
+
+            if (server_version !== null) {
+                if (compare(server_version, local_version) === 0) {
+                    console.info(`Open Scouting ${local_version} is up to date`);
+
+                } else if (compare(server_version, local_version) === 1) {
+                    console.warn(`Open Scouting Client ${local_version} is out of date. Server version is ${server_version}`);
+
+                } else if (compare(server_version, local_version) === -1) {
+                    console.warn(`Open Scouting Client ${local_version} is incompatible with the server. Server version is ${server_version}`);
+                }
+
+                const lastOpenedVersion = localStorage.getItem("version");
+                const showChangelogs = localStorage.getItem("showChangelogs");
+
+                if (lastOpenedVersion === null || lastOpenedVersion != local_version) {
+                    localStorage.setItem("version", local_version);
+                    if (showChangelogs === "true") {
+                        changelogDialogOpen.set(true);
+                        changelogDialogVersion.set(local_version);
+                    }
+                }
+
+                if (showChangelogs === null) {
+                    localStorage.setItem("showChangelogs", "true");
+                }
+            } else {
+                console.error("Could not get server version");
+                return false;
+            }
+
+            return true;
+        }
+        
+    }).catch((error) => {
+        console.error(error);
+        return false;
+    });
+}
+
 /**
  * If the locally stored data is out of date, download it and ask the menu to show that status
  */
 async function main() {
+    setTimeout(() => {
+        getServerStatus();
+        
+    }, 500);
+
     if (await isOldData()) {
         console.log("Data is out of date. Fetching...");
         menuState.set({

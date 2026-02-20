@@ -217,6 +217,7 @@ async def get_data(
         "auton": defaultdict(list),
         "capability": [],
         "other": [],
+        "summary": [],
     })
 
     # Helper: numeric conversion
@@ -329,6 +330,65 @@ async def get_data(
                 "field_name": field.name,
                 "values": raw_values
             })
+
+    # ------------------------
+    # Build summary per team (only numeric and capability fields)
+    # ------------------------
+    numeric_stat_types = {"auton_score", "auton_miss", "teleop_score", "teleop_miss"}
+
+    for team_number in list(teams.keys()):
+        summary_items = []
+        # find all field entries for this team
+        for (t_num, field_uuid), raw_values in field_values.items():
+            if t_num != team_number:
+                continue
+            field = fields_by_uuid.get(field_uuid)
+            if not field:
+                continue
+            stat_type = field.stat_type
+
+            # Numeric summary entries: include list of values and avg
+            if stat_type in numeric_stat_types:
+                numeric_values = [parse_number(v["value"]) for v in raw_values if parse_number(v["value"]) is not None]
+                if not numeric_values:
+                    continue
+                summary_items.append({
+                    "field_name": field.name,
+                    "stat_type": stat_type,
+                    "avg": mean(numeric_values),
+                    "values": numeric_values
+                })
+
+            # Capability summary entries: include dict of value -> percentage
+            elif stat_type == "capability":
+                counts = defaultdict(int)
+                for v in raw_values:
+                    raw = v["value"]
+                    try:
+                        decoded = json.loads(raw)
+                    except (TypeError, json.JSONDecodeError):
+                        decoded = raw
+
+                    if isinstance(decoded, list):
+                        for item in decoded:
+                            counts[item] += 1
+                    else:
+                        counts[decoded] += 1
+
+                total = sum(counts.values())
+                if total == 0:
+                    continue
+
+                percentages = {val: round((count / total) * 100, 2) for val, count in counts.items()}
+
+                summary_items.append({
+                    "field_name": field.name,
+                    "stat_type": "capability",
+                    "avg": "",
+                    "values": percentages
+                })
+
+        teams[team_number]["summary"] = summary_items
 
     # Convert defaultdicts to lists
     result = []

@@ -6,6 +6,7 @@
 	import TeamScores from "./TeamScores.svelte";
 	import TeamCapabilities from "./TeamCapabilities.svelte";
 	import TeamOthers from "./TeamOthers.svelte";
+	import TeamSummary from "./TeamSummary.svelte";
 
     let { team } = $props();
 
@@ -32,6 +33,9 @@
 
             {#if expanded}
                 <div class="flex flex-col gap-4" transition:slide>
+                    <!-- Summary -->
+                    <TeamSummary fields={team.summary} />
+
                     <!-- Autonomous -->
                     <TeamScores title="Autonomous" gamePieces={team.auton} />
 

@@ -89,7 +89,6 @@
                 team_number = team_number_result;
                 console.log(team_number_result);
             } catch (e) {
-                team_number = "";
                 get_info_error = true;
             }
             
@@ -117,7 +116,7 @@
     })
 </script>
 
-<Card.Root class="w-auto min-w-64">
+<Card.Root class="w-auto min-w-64 md:min-w-128">
     <Card.Content>
         <div class="flex flex-col gap-4 items-start">
             <p class="text-lg font-bold">Match Information</p>
@@ -145,53 +144,62 @@
                 </Select.Root>
             </div>
 
-            {#if selected_match_type === "qualification" || selected_match_type === "semifinals" || selected_match_type === "finals"}
-                <Separator orientation="horizontal" />
+            {#if matches.length > 0}
+                {#if selected_match_type === "qualification" || selected_match_type === "semifinals" || selected_match_type === "finals"}
+                    <Separator orientation="horizontal" />
 
-                <div class="flex flex-row gap-2 justify-between items-center">
-                    <p class="text-lg font-bold">Robot to Watch</p>
-                    <Dialog.Root>
-                        <Dialog.Trigger>
-                            <Button variant="ghost" size="icon"><Info weight="bold" /></Button>
-                        </Dialog.Trigger>
+                    <div class="flex flex-row gap-2 justify-between items-center">
+                        <p class="text-lg font-bold">Robot to Watch</p>
+                        <Dialog.Root>
+                            <Dialog.Trigger>
+                                <Button variant="ghost" size="icon"><Info weight="bold" /></Button>
+                            </Dialog.Trigger>
 
-                        <Dialog.Content>
-                            <Dialog.Title>Robot to Watch</Dialog.Title>
-                            <Dialog.Description>
-                                Each scout can be assigned a robot position to watch. Each position is based on the driver station order or team numbers on the screen. (Usually left to right)
-                                Once a robot position is selected, Open Scouting will automatically fill in the team and match numbers while you scout.
-                            </Dialog.Description>
+                            <Dialog.Content>
+                                <Dialog.Title>Robot to Watch</Dialog.Title>
+                                <Dialog.Description>
+                                    Each scout can be assigned a robot position to watch. Each position is based on the driver station order or team numbers on the screen. (Usually left to right)
+                                    Once a robot position is selected, Open Scouting will automatically fill in the team and match numbers while you scout.
+                                </Dialog.Description>
 
-                            <Dialog.Footer>
-                                <Dialog.Close>
-                                    <Button variant="outline">Close</Button>
-                                </Dialog.Close>
-                            </Dialog.Footer>
-                        </Dialog.Content>
-                    </Dialog.Root>
-                </div>
-
-                <div class="flex flex-col items-start gap-2">
-                    <Label for="match_type">Position</Label>
-                    <Select.Root type="single" bind:value={selected_position} name="position" onValueChange={getTeamInfo}>
-                        <Select.Trigger>{selected_position_label}</Select.Trigger>
-                        <Select.Content>
-                            <Select.Label>Match Types</Select.Label>
-                                {#each positions as position}
-                                    <Select.Item value={position.value} label={position.label} />
-                                {/each}
-                        </Select.Content>
-                    </Select.Root>
-                </div>
-
-                {#if get_info_error}
-                    <div transition:slide>
-                        <Alert.Root variant="destructive">
-                            <Warning weight="bold" />
-                            <Alert.Title>Unable to get team number from the provided information</Alert.Title>
-                        </Alert.Root>
+                                <Dialog.Footer>
+                                    <Dialog.Close>
+                                        <Button variant="outline">Close</Button>
+                                    </Dialog.Close>
+                                </Dialog.Footer>
+                            </Dialog.Content>
+                        </Dialog.Root>
                     </div>
+
+                    <div class="flex flex-col items-start gap-2">
+                        <Label for="match_type">Position</Label>
+                        <Select.Root type="single" bind:value={selected_position} name="position" onValueChange={getTeamInfo}>
+                            <Select.Trigger>{selected_position_label}</Select.Trigger>
+                            <Select.Content>
+                                <Select.Label>Match Types</Select.Label>
+                                    {#each positions as position}
+                                        <Select.Item value={position.value} label={position.label} />
+                                    {/each}
+                            </Select.Content>
+                        </Select.Root>
+                    </div>
+
+                    {#if get_info_error}
+                        <div transition:slide>
+                            <Alert.Root class="items-left text-left" variant="destructive">
+                                <Info weight="bold" />
+                                <Alert.Title>Unable to autofill team number</Alert.Title>
+                                <Alert.Description>The provided information is incomplete or invalid</Alert.Description>
+                            </Alert.Root>
+                        </div>
+                    {/if}
                 {/if}
+            {:else}
+                <Alert.Root class="items-left text-left">
+                    <Info weight="bold" />
+                    <Alert.Title>No match data avaliable for this event</Alert.Title>
+                    <Alert.Description>Team numbers are not able to be autofilled</Alert.Description>
+                </Alert.Root>
             {/if}
         </div>
     </Card.Content>

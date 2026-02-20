@@ -1,6 +1,7 @@
 <script lang="ts">
     import * as Card from "$lib/components/ui/card/index.js";
-	import { ArrowClockwise, CircleNotch } from "phosphor-svelte";
+    import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
+	import { ArrowClockwise, CircleNotch, Export, FileCsv, FileText } from "phosphor-svelte";
 	import Button from "../ui/button/button.svelte";
 	import TeamData from "./TeamData.svelte";
 	import { toast } from "svelte-sonner";
@@ -44,6 +45,130 @@
         }
     }
 
+    function exportAsJson() {
+        const jsonData = JSON.stringify(data);
+        const blob = new Blob([jsonData], {type: 'application/json'});
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = `open-scouting-data-${filters.year}.json`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+    }
+
+    export function exportAsCsv() {
+        if (!Array.isArray(data) || data.length === 0) return;
+
+        const rows: string[][] = [];
+
+        rows.push([
+            "team_number",
+            "nickname",
+            "section",
+            "game_piece",
+            "field_name",
+            "field_type",
+            "stat_type",
+            "min",
+            "max",
+            "avg",
+            "values"
+        ]);
+
+        for (const team of data) {
+            const teamNumber = team.team_number ?? "";
+            const nickname = team.nickname ?? "";
+
+            // Teleop and Auton
+            for (const section of ["teleop", "auton"]) {
+            const bucket = team[section];
+            if (!bucket) continue;
+
+            for (const [gamePiece, fields] of Object.entries(bucket)) {
+                for (const field of fields as any[]) {
+                rows.push([
+                    String(teamNumber),
+                    nickname,
+                    section,
+                    gamePiece,
+                    field.field_name ?? "",
+                    field.field_type ?? "",
+                    field.stat_type ?? "",
+                    field.min ?? "",
+                    field.max ?? "",
+                    field.avg ?? "",
+                    JSON.stringify(field.values ?? [])
+                ]);
+                }
+            }
+            }
+
+            // Capabilities
+            if (Array.isArray(team.capability)) {
+            for (const field of team.capability) {
+                rows.push([
+                String(teamNumber),
+                nickname,
+                "capability",
+                "",
+                field.field_name ?? "",
+                field.field_type ?? "",
+                "capability",
+                "",
+                "",
+                "",
+                JSON.stringify(field.percentages ?? [])
+                ]);
+            }
+            }
+
+            // Other
+            if (Array.isArray(team.other)) {
+            for (const field of team.other) {
+                rows.push([
+                String(teamNumber),
+                nickname,
+                "other",
+                "",
+                field.field_name ?? "",
+                field.field_type ?? "",
+                "other",
+                "",
+                "",
+                "",
+                JSON.stringify(field.values ?? [])
+                ]);
+            }
+            }
+        }
+
+        // Generate
+        const csvContent = rows
+            .map(row =>
+            row
+                .map(cell =>
+                `"${String(cell).replace(/"/g, '""')}"`
+                )
+                .join(",")
+            )
+            .join("\n");
+
+        // Download
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `open-scouting-data-${filters.year}.csv`;
+        document.body.appendChild(link);
+        link.click();
+
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    }
+
     $effect(() => {
         // Don't load data unless a filter has been selected, because unfiltered data may take a long time to render
         if (filters.year != 0 && filters.event_codes.length > 0 || filters.team_numbers.length > 0) {
@@ -85,6 +210,23 @@
                     <div class="flex flex-row gap-2 items-center">
                         <p class="text-sm text-muted-foreground">Loaded {data.length} {data.length == 1 ? "team" : "teams"} with data</p>
                         <Button size="sm" variant="outline" onclick={() => loadData()}><ArrowClockwise weight="bold" /> Refresh</Button>
+                        <DropdownMenu.Root>
+                            <DropdownMenu.Trigger>
+                                <Button size="sm" variant="outline"><Export weight="bold" /> Export</Button>
+                            </DropdownMenu.Trigger>
+
+                            <DropdownMenu.Content class="w-56" align="start">
+                                <DropdownMenu.Label>Export as...</DropdownMenu.Label>
+                                <DropdownMenu.Group>
+                                    <DropdownMenu.Item onclick={exportAsJson}>
+                                        <FileText weight="bold" /> JSON
+                                    </DropdownMenu.Item>
+                                    <DropdownMenu.Item onclick={exportAsCsv}>
+                                        <FileCsv weight="bold" /> CSV
+                                    </DropdownMenu.Item>
+                                </DropdownMenu.Group>
+                            </DropdownMenu.Content>
+                        </DropdownMenu.Root>
                     </div>
                 </Card.Content>
             </Card.Root>

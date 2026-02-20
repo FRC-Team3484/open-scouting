@@ -6,16 +6,18 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [x] Base frontend and backend
 - [ ] Admin page
   - [x] Manage Seasons
-  - [ ] Manage match scouting fields and game pieces
+  - [x] Manage match scouting fields and game pieces
     - [x] Create and edit fields
-    - [ ] Make reorderable
-  - [ ] Manage pit scouting questions
+    - [x] Make reorderable
+  - [x] Manage pit scouting questions
     - [x] Create and edit questions
-    - [ ] Make reorderable
+    - [x] Make reorderable
   - [ ] Manage users
   - [ ] Manage events
   - [ ] Manage match scouting data
   - [ ] Manage pit scouting data
+  - [ ] Archive match scouting fields or pit scouting questions when deleted
+  - [ ] Be able to make a season active in the admin page
 - [x] Match scouting
   - [x] Render fields and be submittable
   - [x] Save match scouting data locally
@@ -31,13 +33,13 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
     - [x] Add new pits
     - [x] Sync data to the server
     - [x] Show pits with no and incomplete data, and be able to jump to them
-- [ ] Data view
+- [x] Data view
   - [x] Create backend function
   - [x] Create frontend filters
   - [x] Create frontend UI
-  - [ ] Be able to export data
-  - [ ] Add summaries
-- [ ] Copy link to event
+  - [x] Be able to export data
+  - [x] Add summaries
+- [x] Copy link to event
 - [x] Create custom events
   - [x] Backend functions
   - [x] Create UI for creating events
@@ -52,14 +54,12 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [x] Properly secure routes, and only allow some routes to logged in users and superusers
   - [x] Add comments
   - [x] Fix frontend calls accordingly
-- [ ] Create proper error pages (404 and 500)
-- [ ] Create a changelog pop up and proper client/server versioning
+- [x] Create proper error pages (404 and 500)
+- [x] Create a changelog pop up and proper client/server versioning
 - [ ] Clean up frontend
   - [ ] Make type-safe
   - [ ] Organize imports
   - [ ] Add comments
-- [ ] Correctly handle when match scouting fields or pit scouting questions are deleted by the admin
-- [ ] Import legacy match scouting data from v1.0.0
 - [ ] Deprecate `open-scouting-utils` repo
 - [ ] Update doc in `FRC-Team3484/docs` for how to maintain Open Scouting
 - [ ] Update docs
@@ -72,14 +72,13 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [ ] Change password
   - [ ] Verification codes when enabled
   - [ ] Profile picture management
-- [ ] Organizations
 - [ ] Import and export field data
 - [ ] Captcha in authentication
-
-## `v2.2.0`
 - [ ] Event page
   - [ ] Create a section on the home page to show ongoing events
   - [ ] Create a page to show all events
+
+## `v2.2.0`
 - [ ] API key support
   - Seperate `/api` backend route for API calls
   - Only these routes are visible in swagger docs in prod mode
@@ -90,24 +89,28 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - Handle when a match scouting field or pit scouting field is archived/deleted, and how to tie it back to a new field
   - Handle when a season is archived/deleted, and how to attach related data to a new season
   - Handle when legacy v1.0.0 match scouting data is imported, and how to attach it to existing fields
+- [ ] Import legacy match scouting data from v1.0.0
 
 ## `v2.3.0`
+- [ ] Organizations
+
+## `v2.4.0`
 - [ ] Use [Weblate](https://weblate.org) for localization
 - [ ] Use IDs for choice and multiple choice fields for translations
+- [ ] Theme support
 
 ## Other
 - [ ] Be able to sync pit scouting data from the local data management drawer
 - [x] Menu drawers are not scrollable on smaller screens
 - [x] Fix logo squashing on smaller screens
-- [ ] When a new pit is created from multiple clients when pit scouting, make sure duplicate pits aren't created
+- [x] When a new pit is created from multiple clients when pit scouting, make sure duplicate pits aren't created
 - [x] Multiple choice fields don't show options when match scouting
 - [ ] Boolean fields don't reset properly when match scouting
 - [ ] Multiple choice, choice, and boolean fields don't reset properly when match scouting
-- [ ] Fields can't be edited in production
+- [x] Fields can't be edited in production
 - [x] Increase mobile readability
 - [x] Hide favorite events when not signed in
-- [ ] Be able to make a season active in the admin page
-- [ ] Implement a better way to mark added fuel
+- [x] Implement a better way to mark added fuel
   - Small number fields can have an option for +1 / +5 / +10 buttons?
 - [ ] Count passed/assisted fuel scores
 - [x] Creating accounts from the frontend was never implemented
@@ -117,3 +120,15 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [ ] Have the application version hardcoded somewhere, instead of relying on the `.env`
 - [ ] Proper frontend data sync erroring
 - [ ] Document field presets
+- [ ] Update `phosphor-icons` and migrate to `Icon` suffixes
+- [ ] Bake the version string into the frontend and backend somewhere
+- [ ] Do the `ghcr.io` images needed to be marked as public?
+- [ ] Fallback for missing `localStorage` and `IndexedDB` (like incognito mode)
+- [x] Fix position to watch box when there's no data in TBA
+- [x] Fix iOS double click on `small_number` buttons
+- [x] Make boolean check boxes a switch instead
+- [x] Pit scouting boolean's never return true
+- [ ] Click the entirety of the collapsable list to expand and collapse it
+- [ ] Better mobile pit scouting experience
+- [x] Fix view data button in the nav bar
+- [ ] Prevent devices from sleeping on pit scouting and match scouting pages

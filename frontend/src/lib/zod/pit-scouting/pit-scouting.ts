@@ -105,7 +105,7 @@ Requires superuser access
 Parameters:
     season_uuid (`UUID`): The UUID of the season to edit the field for
     field_uuid (`UUID`): The UUID of the field to edit
-    data (`EditPitFieldRequest`): The data to edit the field
+    data (`PitFieldRequest`): The data to edit the field
 
 Returns:
     `PitFieldResponse`: The edited field
@@ -124,8 +124,7 @@ export const EditPitFieldPitsFieldsSeasonUuidEditFieldUuidPatchBody = zod.object
   "choices": zod.array(zod.unknown())
 }),
   "order": zod.number(),
-  "organization_uuid": zod.union([zod.string().uuid(),zod.null()]).optional(),
-  "field_uuid": zod.string().uuid()
+  "organization_uuid": zod.union([zod.string().uuid(),zod.null()]).optional()
 })
 
 export const EditPitFieldPitsFieldsSeasonUuidEditFieldUuidPatchResponse = zod.object({
@@ -139,6 +138,31 @@ export const EditPitFieldPitsFieldsSeasonUuidEditFieldUuidPatchResponse = zod.ob
   "order": zod.number(),
   "organization": zod.union([zod.string().uuid(),zod.null()]),
   "created_at": zod.string().datetime({})
+})
+
+/**
+ * Reorder pit scouting fields for a season
+
+Parameters:
+    season_uuid (`UUID`): The UUID of the season to reorder fields for
+    data (`ReorderPitFieldsRequest`): The data to reorder the fields
+
+Returns:
+    `MessageResponse`: A message indicating that the fields were reordered
+ * @summary Move Pit Fields
+ */
+export const MovePitFieldsPitsFieldsSeasonUuidReorderPatchParams = zod.object({
+  "season_uuid": zod.string().uuid()
+})
+
+export const MovePitFieldsPitsFieldsSeasonUuidReorderPatchBodyItem = zod.object({
+  "uuid": zod.string().uuid(),
+  "order": zod.number()
+})
+export const MovePitFieldsPitsFieldsSeasonUuidReorderPatchBody = zod.array(MovePitFieldsPitsFieldsSeasonUuidReorderPatchBodyItem)
+
+export const MovePitFieldsPitsFieldsSeasonUuidReorderPatchResponse = zod.object({
+  "message": zod.string()
 })
 
 /**
@@ -213,6 +237,7 @@ export const SubmitPitPitsSubmitSeasonUuidTeamNumberPostParams = zod.object({
 })
 
 export const SubmitPitPitsSubmitSeasonUuidTeamNumberPostBody = zod.object({
+  "uuid": zod.string().uuid(),
   "season_uuid": zod.string().uuid(),
   "team_number": zod.number(),
   "event_code": zod.string(),
@@ -222,7 +247,7 @@ export const SubmitPitPitsSubmitSeasonUuidTeamNumberPostBody = zod.object({
   "event_country": zod.string(),
   "event_start_date": zod.string(),
   "event_end_date": zod.string(),
-  "answers": zod.record(zod.string(), zod.unknown()),
+  "answers": zod.array(zod.unknown()),
   "nickname": zod.string()
 })
 

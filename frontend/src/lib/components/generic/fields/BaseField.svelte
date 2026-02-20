@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { DotsThree, Pencil, Trash } from "phosphor-svelte";
+	import { DotsSixVertical, DotsThree, Pencil, Trash } from "phosphor-svelte";
     
 	import Button from "$lib/components/ui/button/button.svelte";
     import * as Card from "$lib/components/ui/card/index.js";
@@ -7,6 +7,7 @@
 	import { addFieldDialogOpen, addFieldEditData, addFieldParentUuid } from "$lib/stores/dialog";
 	import { deleteFieldFieldsDeleteFieldUuidDelete } from "$lib/api/match-scouting-fields/match-scouting-fields";
 	import { toast } from "svelte-sonner";
+	import { dragHandle } from "svelte-dnd-action";
 
     let { field, editable = false, getFields = () => {}, children } = $props();
 
@@ -29,6 +30,11 @@
     <Card.Header>
         <div class="flex flex-row gap-2 items-center justify-between flex-wrap">
             <div class="flex flex-row gap-2 items-center">
+                {#if editable}
+                    <div class="text-muted-foreground" use:dragHandle>
+                        <DotsSixVertical weight="bold" />
+                    </div>
+                {/if}
                 <p>
                     {field.name}
                     {#if field.required}

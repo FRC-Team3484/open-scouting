@@ -7,6 +7,6 @@
 
 export type GetDataFiltersDataFiltersGetParams = {
 year: number;
-event_codes: string;
-team_numbers: string;
+event_codes?: string | null;
+team_numbers?: string | null;
 };

@@ -4,7 +4,8 @@
     import * as Card from "$lib/components/ui/card/index.js";
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
 	import { addFieldDialogOpen, addFieldParentUuid, addSectionDialogOpen, addSectionEditData, addSectionParentUuid } from "$lib/stores/dialog";
-	import { CaretDown, CaretUp, DotsThree, FolderPlus, Pencil, PlusCircle, Trash } from "phosphor-svelte";
+	import { CaretDown, CaretUp, DotsSixVertical, DotsThree, FolderPlus, Pencil, PlusCircle, Trash } from "phosphor-svelte";
+	import { dragHandle } from "svelte-dnd-action";
 	import { toast } from "svelte-sonner";
 	import { slide } from "svelte/transition";
 
@@ -35,6 +36,11 @@
     <Card.Header>
         <div class="flex flex-row gap-2 items-center justify-between flex-wrap">
             <div class="flex flex-row gap-2 items-center">
+                {#if editable}
+                    <div class="text-muted-foreground" use:dragHandle>
+                        <DotsSixVertical weight="bold" />
+                    </div>
+                {/if}
                 <p>{section.name}</p>
                 {#if editable}
                     <p class="text-sm opacity-80">{section.field_type}</p>

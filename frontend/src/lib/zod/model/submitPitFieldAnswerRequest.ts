@@ -4,9 +4,9 @@
  * FastAPI
  * OpenAPI spec version: 0.1.0
  */
-import type { SubmitPitFieldAnswerRequestAnswers } from './submitPitFieldAnswerRequestAnswers';
 
 export interface SubmitPitFieldAnswerRequest {
+  uuid: string;
   season_uuid: string;
   team_number: number;
   event_code: string;
@@ -16,6 +16,6 @@ export interface SubmitPitFieldAnswerRequest {
   event_country: string;
   event_start_date: string;
   event_end_date: string;
-  answers: SubmitPitFieldAnswerRequestAnswers;
+  answers: unknown[];
   nickname: string;
 }
