@@ -173,7 +173,8 @@ export const MoveMatchScoutingFieldsFieldsSeasonUuidReorderPatchParams = zod.obj
 
 export const MoveMatchScoutingFieldsFieldsSeasonUuidReorderPatchBodyItem = zod.object({
   "uuid": zod.string().uuid(),
-  "order": zod.number()
+  "order": zod.number(),
+  "parent_uuid": zod.union([zod.string().uuid(),zod.null()])
 })
 export const MoveMatchScoutingFieldsFieldsSeasonUuidReorderPatchBody = zod.array(MoveMatchScoutingFieldsFieldsSeasonUuidReorderPatchBodyItem)
 

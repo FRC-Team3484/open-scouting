@@ -4,6 +4,7 @@ from pathlib import Path
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
+from tortoise.fields import SET_NULL
 
 from ..dependencies import require_superuser
 from ..models import GamePiece, MatchScoutingField, Organization, Season, User
@@ -269,7 +270,11 @@ async def move_match_scouting_fields(
     season: Season = await get_season(season_uuid)
 
     for field in data:
-        await MatchScoutingField.filter(uuid=field.uuid, season=season).update(order=field.order)
+        if field.parent_uuid:
+            parent = await MatchScoutingField.get_or_none(uuid=field.parent_uuid)
+            await MatchScoutingField.filter(uuid=field.uuid, season=season).update(order=field.order, parent=parent)
+        else:
+            await MatchScoutingField.filter(uuid=field.uuid, season=season).update(order=field.order, parent_id=None)
 
     return MessageResponse(message="Fields reordered")
 

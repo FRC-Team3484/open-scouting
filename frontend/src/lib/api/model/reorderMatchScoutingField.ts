@@ -8,4 +8,5 @@
 export interface ReorderMatchScoutingField {
   uuid: string;
   order: number;
+  parent_uuid: string | null;
 }

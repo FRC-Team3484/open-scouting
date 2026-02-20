@@ -43,6 +43,7 @@ class MatchScoutingFieldRequestUUID(MatchScoutingFieldRequest):
 class ReorderMatchScoutingField(BaseModel):
     uuid: UUID
     order: int
+    parent_uuid: UUID | None
 
 class ReorderMatchScoutingFieldsRequest(RootModel[list[ReorderMatchScoutingField]]):
     root: list[ReorderMatchScoutingField]
