@@ -455,7 +455,7 @@
                     <MatchScoutingTeamInfo event_data={event_data} bind:this={matchScoutingTeamInfoChild} />
                 {/if}
                 
-                <div class="flex flex-col gap-2" use:dragHandleZone={{items: fields, flipDurationMs: 100, dropTargetStyle: {outline: 'var(--primary) dashed 2px', borderRadius: 'var(--radius)'}}} onconsider={handleDndConsider} onfinalize={handleDndFinalize}>
+                <div class="flex flex-col gap-2 max-w-screen w-full md:w-lg" use:dragHandleZone={{items: fields, flipDurationMs: 100, dropTargetStyle: {outline: 'var(--primary) dashed 2px', borderRadius: 'var(--radius)'}}} onconsider={handleDndConsider} onfinalize={handleDndFinalize}>
                     {#each fields as field (field.uuid)}
                         <div animate:flip={{duration: 100}}>
                             {#if field.field_type === "string"}
