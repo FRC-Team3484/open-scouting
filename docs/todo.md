@@ -132,3 +132,7 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [ ] Better mobile pit scouting experience
 - [x] Fix view data button in the nav bar
 - [ ] Prevent devices from sleeping on pit scouting and match scouting pages
+- [ ] When selecting a year that is not the current year, automatically mark "show past events" to true
+- [ ] Improve menu and drawer scrolling on mobile
+- [ ] The event list covers the menu button on mobile
+- [ ] Fix strange dnd zone error sometimes
