@@ -1,12 +1,8 @@
-import os
-from dotenv import load_dotenv
 from fastapi import APIRouter
 
 from ..models import Season
 from ..schemas.main import ServerStatusResponse
-
-load_dotenv()
-VERSION = os.getenv("PUBLIC_VERSION")
+from ..constants import VERSION
 
 
 router: APIRouter = APIRouter(
