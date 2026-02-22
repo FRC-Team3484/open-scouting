@@ -24,7 +24,7 @@
     let favorite_events: [] = $state([]);
 
     let search = $state("");
-    let showPastEvents = $state(false);
+    let showPastEvents = $derived(year != new Date().getFullYear());
 
     let user = $state(null);
 
