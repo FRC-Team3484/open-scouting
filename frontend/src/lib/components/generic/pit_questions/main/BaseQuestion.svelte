@@ -16,26 +16,24 @@
     }
 </script>
 
-<Card.Root class="w-full">
-    <Card.Header>
-        <div class="flex flex-col gap-2 justify-between flex-wrap">
-            <div class="flex flex-row gap-2 flex-wrap">
-                <p class="font-bold">{question.name}</p>
-                <Badge variant="outline">{answers.length} {answers.length == 1 ? "answer" : "answers"}</Badge>
-            </div>
-
-            {#if mode == "none"}
-                <div class="flex flex-row gap-2 flex-wrap">
-                    <Button onclick={() => mode = "add"}><PlusCircle weight="bold" /> Add Answer</Button>
-                    <Button onclick={() => mode = "view"}><Eye weight="bold" /> View Answers</Button>
-                </div>
-            {:else if mode == "add" || mode == "view"}
-                <div class="flex flex-row gap-2 flex-wrap">
-                    <Button onclick={() => mode = "none"}><X weight="bold" /> Close</Button>
-                </div>
-            {/if}
+<Card.Root class="w-full items-start px-4">
+    <div class="flex flex-col gap-2 justify-between flex-wrap">
+        <div class="flex flex-col md:flex-row gap-2 flex-wrap items-start">
+            <p class="font-bold text-left">{question.name}</p>
+            <Badge variant="outline">{answers.length} {answers.length == 1 ? "answer" : "answers"}</Badge>
         </div>
-    </Card.Header>
+
+        {#if mode == "none"}
+            <div class="flex flex-row gap-2 flex-wrap">
+                <Button size="sm" onclick={() => mode = "add"}><PlusCircle weight="bold" /> Add Answer</Button>
+                <Button size="sm" variant="outline" onclick={() => mode = "view"}><Eye weight="bold" /> View Answers</Button>
+            </div>
+        {:else if mode == "add" || mode == "view"}
+            <div class="flex flex-row gap-2 flex-wrap">
+                <Button size="sm" variant="outline" onclick={() => mode = "none"}><X weight="bold" /> Close</Button>
+            </div>
+        {/if}
+    </div>
 
     {#if mode == "add"}
         <Card.Content>
@@ -46,14 +44,14 @@
 
     {:else if mode == "view"}
         <Card.Content>
-            <div class="flex flex-row gap-2 items-start w-full" transition:slide>
+            <div class="flex flex-row gap-2 w-full" transition:slide>
                 {#if answers.length == 0}
                     <p class="text-muted-foreground">No answers yet</p>
                 {:else}
                     <div class="flex flex-col gap-2">
                         {#each answers as answer}
-                            <div class="flex flex-row items-end flex-wrap">
-                                <p class="font-bold">{answer.value}</p>
+                            <div class="flex flex-row items-center flex-wrap text-left">
+                                <p class="wrap-anywhere">{answer.value}</p>
                                 <User weight="bold" class="text-muted-foreground ml-2 mr-1"/>
                                 <p class="text-muted-foreground text-sm">{answer.username}</p>
                                 <Calendar weight="bold" class="text-muted-foreground ml-2 mr-1"/>

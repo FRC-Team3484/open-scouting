@@ -129,11 +129,11 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [x] Make boolean check boxes a switch instead
 - [x] Pit scouting boolean's never return true
 - [ ] Click the entirety of the collapsable list to expand and collapse it
-- [ ] Better mobile pit scouting experience
+- [x] Better mobile pit scouting experience
 - [x] Fix view data button in the nav bar
 - [ ] Prevent devices from sleeping on pit scouting and match scouting pages
 - [x] When selecting a year that is not the current year, automatically mark "show past events" to true
 - [ ] Improve menu and drawer scrolling on mobile
-- [ ] The event list covers the menu button on mobile
+- [x] The event list covers the menu button on mobile
 - [ ] Fix strange dnd zone error sometimes
 - [x] Dev mode `.env` flag
