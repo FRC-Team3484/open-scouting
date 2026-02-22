@@ -52,7 +52,7 @@
     }
 
     async function getEvents() {
-        events = await db.event.toArray();
+        events = await db.event.where("year").equals(year).toArray();
     }
 
     onMount(async () => {
