@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { env } from "$env/dynamic/public";
 	import PageContainer from "$lib/components/layout/PageContainer.svelte";
 	import { validateTokenOnline } from "$lib/utils/user";
 	import { onMount } from "svelte";
@@ -14,7 +15,7 @@
 
     let user = null;
     let page = $state("start");
-    let show_warning_dialog = true;
+    let show_warning_dialog = $state(!(env.PUBLIC_MODE == "dev"));
 
     onMount(async () => {
         user = await validateTokenOnline();
