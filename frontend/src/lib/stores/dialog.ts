@@ -1,4 +1,4 @@
-import { env } from "$env/dynamic/public";
+import { VERSION } from "$lib/utils/constants";
 import { writable } from "svelte/store";
 
 export const addFieldDialogOpen = writable(false);
@@ -15,4 +15,4 @@ export const addPitScoutingQuestionData = writable({});
 export const createCustomEventDialogOpen = writable(false);
 
 export const changelogDialogOpen = writable(false);
-export const changelogDialogVersion = writable(env.PUBLIC_VERSION)
+export const changelogDialogVersion = writable(VERSION)
