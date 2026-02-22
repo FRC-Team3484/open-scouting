@@ -48,7 +48,7 @@
 
 <Button
     variant="outline"
-    class={`fixed bottom-2 right-2 !aspect-square !rounded-full md:!w-16 md:!h-16 !w-10 !h-10 backdrop-blur-lg ${$menuState.state === "warning" ? "!bg-amber-500/30 !border-amber-700" : ""}`}
+    class={`fixed bottom-2 right-2 z-999 !aspect-square !rounded-full md:!w-16 md:!h-16 !w-10 !h-10 backdrop-blur-lg ${$menuState.state === "warning" ? "!bg-amber-500/30 !border-amber-700" : ""}`}
     onclick={() => menu_open = true}
 >
     {#key $menuState.state}
