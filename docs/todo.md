@@ -136,3 +136,4 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [ ] Improve menu and drawer scrolling on mobile
 - [ ] The event list covers the menu button on mobile
 - [ ] Fix strange dnd zone error sometimes
+- [ ] Dev mode `.env` flag

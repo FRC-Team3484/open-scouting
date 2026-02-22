@@ -306,7 +306,7 @@ async function getServerStatus() {
 
                 if (lastOpenedVersion === null || lastOpenedVersion != local_version) {
                     localStorage.setItem("version", local_version);
-                    if (showChangelogs === "true") {
+                    if (showChangelogs === "true" || showChangelogs === null) {
                         changelogDialogOpen.set(true);
                         changelogDialogVersion.set(local_version);
                     }
