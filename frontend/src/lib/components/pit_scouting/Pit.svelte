@@ -45,7 +45,7 @@
 <Card.Root class="w-full md:w-auto min-w-64 md:min-w-128" data-teamNumber={pit.team_number}>
     <Card.Content>
         <div class="flex flex-col gap-2 md:gap-4">
-            <div class="flex flex-row gap-2 items-center justify-between">
+            <div class="flex flex-row gap-2 items-center justify-between cursor-pointer" onclick={() => expanded = !expanded} tabindex="0" onkeydown={(e) => { if (e.key === "Enter") { expanded = !expanded; }}} role="button">
                 <div class="flex flex-row gap-2 items-center flex-wrap">
                     {#if show_avatar && avatar_loaded}
                         <img src={`https://www.thebluealliance.com/avatar/2026/frc${pit.team_number}.png`} class="w-10 h-10 aspect-square rounded-md bg-accent p-1" onerror={() => avatar_loaded = false}>
