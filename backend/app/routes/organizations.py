@@ -1,6 +1,7 @@
 from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException
 
+from ..utils import IS_DEV
 from ..dependencies import get_current_user, require_user
 from ..models import Organization, OrganizationMember, User
 from ..schemas.generic import MessageResponse
@@ -10,6 +11,7 @@ from ..schemas.organizations import OrganizationMemberResponse, OrganizationRequ
 router: APIRouter = APIRouter(
     tags=["Organizations"],
     dependencies=[Depends(require_user)],
+    include_in_schema=IS_DEV
 )
 
 @router.post("/organization/create", response_model=OrganizationResponse)

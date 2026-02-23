@@ -11,7 +11,7 @@ from .constants import VERSION
 from .routes import main, auth, organizations, seasons, gamepieces, fields, match_scouting, pit_scouting, data, event
 
 # Setup
-app: FastAPI = FastAPI(root_path="/api")
+app: FastAPI = FastAPI(root_path="/api", version=VERSION)
 
 load_dotenv()
 

@@ -3,10 +3,11 @@ from fastapi import APIRouter
 
 from ..models import Event, Season
 from ..schemas.event import EventResponse, CustomEventRequest
-from ..utils import get_season
+from ..utils import get_season, IS_DEV
 
 router: APIRouter = APIRouter(
     tags=["Events"],
+    include_in_schema=IS_DEV
 )
 
 @router.get("/event/custom/{season_uuid}", response_model=list[EventResponse])

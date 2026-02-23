@@ -5,12 +5,14 @@ from typing import Annotated
 
 from fastapi import APIRouter, Query
 
+from ..utils import IS_DEV
 from ..models import MatchScoutingAnswer, MatchScoutingField, MatchScoutingSubmission, Season, TeamPit
 from ..utils import get_season
 
 
 router: APIRouter = APIRouter(
     tags=["Data"],
+    include_in_schema=IS_DEV
 )
 
 # TODO: This needs a proper response_model

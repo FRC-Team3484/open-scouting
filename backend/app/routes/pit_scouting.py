@@ -1,5 +1,4 @@
 from datetime import datetime
-from mailbox import Message
 import os
 from uuid import UUID
 import httpx
@@ -10,10 +9,11 @@ from ..dependencies import require_superuser
 from ..models import Event, Organization, PitScoutingAnswer, PitScoutingField, Season, TeamPit, User
 from ..schemas.generic import MessageResponse
 from ..schemas.pit_scouting import PitFieldResponse, PitFieldRequest, GetPitsForSeasonRequest, ReorderPitFieldsRequest, SubmitPitFieldAnswerRequest
-from ..utils import get_season
+from ..utils import get_season, IS_DEV
 
 router: APIRouter = APIRouter(
     tags=["Pit Scouting"],
+    include_in_schema=IS_DEV
 )
 
 TBA_API_KEY = os.getenv("TBA_API_KEY")

@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 
+from ..utils import IS_DEV
 from ..dependencies import require_superuser
 from ..models import Season, User
 from ..schemas.generic import MessageResponse
@@ -8,6 +9,7 @@ from ..schemas.seasons import SeasonCreate, SeasonResponse
 
 router: APIRouter = APIRouter(
     tags=["Seasons"],
+    include_in_schema=IS_DEV
 )
 
 @router.get("/seasons", response_model=list[SeasonResponse])

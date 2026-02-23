@@ -4,17 +4,17 @@ from pathlib import Path
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
-from tortoise.fields import SET_NULL
 
 from ..dependencies import require_superuser
 from ..models import GamePiece, MatchScoutingField, Organization, Season, User
 from ..schemas.generic import MessageResponse
 from ..schemas.fields import MatchScoutingFieldRequest, MatchScoutingFieldResponse, ReorderMatchScoutingFieldsRequest
-from ..utils import get_season
+from ..utils import get_season, IS_DEV
 
 
 router: APIRouter = APIRouter(
     tags=["Match Scouting Fields"],
+    include_in_schema=IS_DEV
 )
 
 # TODO: This needs a proper response_model

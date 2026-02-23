@@ -2,6 +2,8 @@ from sqlite3 import IntegrityError
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
+from ..utils import IS_DEV
+
 from ..auth import create_access_token, get_password_hash, verify_password
 from ..dependencies import get_current_user, require_user, require_superuser
 from ..models import User, Profile, Settings
@@ -11,6 +13,7 @@ from ..schemas.auth import BaseSettings, SignupRequest, TokenResponse, UserRespo
 
 router: APIRouter = APIRouter(
     tags=["Auth"],
+    include_in_schema=IS_DEV
 )
 
 @router.post("/auth/signup", response_model=TokenResponse)

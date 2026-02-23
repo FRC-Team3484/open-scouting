@@ -4,10 +4,11 @@ from tortoise.exceptions import IntegrityError
 
 from ..models import Event, MatchScoutingAnswer, MatchScoutingField, MatchScoutingSubmission, Season, User
 from ..schemas.match_scouting import MatchScoutingRequest, MatchScoutingResponse
-from ..utils import get_season
+from ..utils import get_season, IS_DEV
 
 router: APIRouter = APIRouter(
     tags=["Match Scouting"],
+    include_in_schema=IS_DEV
 )
 
 @router.post("/scouting/submit", response_model=MatchScoutingResponse)

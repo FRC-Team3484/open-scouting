@@ -5,11 +5,12 @@ from ..dependencies import require_superuser
 from ..models import GamePiece, Season, User
 from ..schemas.generic import MessageResponse
 from ..schemas.gamepieces import GamepieceResponse, GamepieceRequest
-from ..utils import get_season
+from ..utils import get_season, IS_DEV
 
 
 router: APIRouter = APIRouter(
     tags=["Gamepieces"],
+    include_in_schema=IS_DEV
 )
 
 @router.get("/gamepieces", response_model=list[GamepieceResponse])

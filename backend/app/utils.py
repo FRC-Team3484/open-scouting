@@ -1,7 +1,15 @@
+import os
 from uuid import UUID
+
+from dotenv import load_dotenv
 from fastapi import HTTPException
 
 from .models import Season
+
+load_dotenv()
+
+MODE: str = os.getenv("PUBLIC_MODE", "prod")
+IS_DEV: bool = MODE == "dev"
 
 
 async def get_season(season_uuid: UUID | None = None, year: int | None = None) -> Season:
