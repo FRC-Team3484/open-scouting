@@ -180,42 +180,42 @@ export const getUsersUsersGet = async ( options?: RequestInit): Promise<getUsers
 Requires superuser access
 
 Parameters:
-    username (str): The username of the user to delete
+    uuid (uuid): The uuid of the user to delete
 
 Returns:
     MessageResponse: A message indicating that the user was deleted
  * @summary Delete User
  */
-export type deleteUserUsersDeleteUsernameDeleteResponse200 = {
+export type deleteUserUsersDeleteUuidDeleteResponse200 = {
   data: MessageResponse
   status: 200
 }
 
-export type deleteUserUsersDeleteUsernameDeleteResponse422 = {
+export type deleteUserUsersDeleteUuidDeleteResponse422 = {
   data: HTTPValidationError
   status: 422
 }
     
-export type deleteUserUsersDeleteUsernameDeleteResponseSuccess = (deleteUserUsersDeleteUsernameDeleteResponse200) & {
+export type deleteUserUsersDeleteUuidDeleteResponseSuccess = (deleteUserUsersDeleteUuidDeleteResponse200) & {
   headers: Headers;
 };
-export type deleteUserUsersDeleteUsernameDeleteResponseError = (deleteUserUsersDeleteUsernameDeleteResponse422) & {
+export type deleteUserUsersDeleteUuidDeleteResponseError = (deleteUserUsersDeleteUuidDeleteResponse422) & {
   headers: Headers;
 };
 
-export type deleteUserUsersDeleteUsernameDeleteResponse = (deleteUserUsersDeleteUsernameDeleteResponseSuccess | deleteUserUsersDeleteUsernameDeleteResponseError)
+export type deleteUserUsersDeleteUuidDeleteResponse = (deleteUserUsersDeleteUuidDeleteResponseSuccess | deleteUserUsersDeleteUuidDeleteResponseError)
 
-export const getDeleteUserUsersDeleteUsernameDeleteUrl = (username: string,) => {
+export const getDeleteUserUsersDeleteUuidDeleteUrl = (uuid: string,) => {
 
 
   
 
-  return `/users/delete/${username}`
+  return `/users/delete/${uuid}`
 }
 
-export const deleteUserUsersDeleteUsernameDelete = async (username: string, options?: RequestInit): Promise<deleteUserUsersDeleteUsernameDeleteResponse> => {
+export const deleteUserUsersDeleteUuidDelete = async (uuid: string, options?: RequestInit): Promise<deleteUserUsersDeleteUuidDeleteResponse> => {
   
-  return customInstance<deleteUserUsersDeleteUsernameDeleteResponse>(getDeleteUserUsersDeleteUsernameDeleteUrl(username),
+  return customInstance<deleteUserUsersDeleteUuidDeleteResponse>(getDeleteUserUsersDeleteUuidDeleteUrl(uuid),
   {      
     ...options,
     method: 'DELETE'
@@ -320,42 +320,93 @@ export const updateUserSettingsUsersMeUpdateSettingsPost = async (baseSettings: 
 Requires superuser access
 
 Parameters:
-    username (str): The username of the user to set as a superuser
+    uuid (uuid): The uuid of the user to set as a superuser
 
 Returns:
     User: The user that was set as a superuser
  * @summary Set Superuser
  */
-export type setSuperuserUsersSetSuperuserUsernamePostResponse200 = {
+export type setSuperuserUsersSetSuperuserUuidPostResponse200 = {
   data: UserResponse
   status: 200
 }
 
-export type setSuperuserUsersSetSuperuserUsernamePostResponse422 = {
+export type setSuperuserUsersSetSuperuserUuidPostResponse422 = {
   data: HTTPValidationError
   status: 422
 }
     
-export type setSuperuserUsersSetSuperuserUsernamePostResponseSuccess = (setSuperuserUsersSetSuperuserUsernamePostResponse200) & {
+export type setSuperuserUsersSetSuperuserUuidPostResponseSuccess = (setSuperuserUsersSetSuperuserUuidPostResponse200) & {
   headers: Headers;
 };
-export type setSuperuserUsersSetSuperuserUsernamePostResponseError = (setSuperuserUsersSetSuperuserUsernamePostResponse422) & {
+export type setSuperuserUsersSetSuperuserUuidPostResponseError = (setSuperuserUsersSetSuperuserUuidPostResponse422) & {
   headers: Headers;
 };
 
-export type setSuperuserUsersSetSuperuserUsernamePostResponse = (setSuperuserUsersSetSuperuserUsernamePostResponseSuccess | setSuperuserUsersSetSuperuserUsernamePostResponseError)
+export type setSuperuserUsersSetSuperuserUuidPostResponse = (setSuperuserUsersSetSuperuserUuidPostResponseSuccess | setSuperuserUsersSetSuperuserUuidPostResponseError)
 
-export const getSetSuperuserUsersSetSuperuserUsernamePostUrl = (username: string,) => {
+export const getSetSuperuserUsersSetSuperuserUuidPostUrl = (uuid: string,) => {
 
 
   
 
-  return `/users/set_superuser/${username}`
+  return `/users/set_superuser/${uuid}`
 }
 
-export const setSuperuserUsersSetSuperuserUsernamePost = async (username: string, options?: RequestInit): Promise<setSuperuserUsersSetSuperuserUsernamePostResponse> => {
+export const setSuperuserUsersSetSuperuserUuidPost = async (uuid: string, options?: RequestInit): Promise<setSuperuserUsersSetSuperuserUuidPostResponse> => {
   
-  return customInstance<setSuperuserUsersSetSuperuserUsernamePostResponse>(getSetSuperuserUsersSetSuperuserUsernamePostUrl(username),
+  return customInstance<setSuperuserUsersSetSuperuserUuidPostResponse>(getSetSuperuserUsersSetSuperuserUuidPostUrl(uuid),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
+  }
+);}
+
+
+/**
+ * Remove a user as a superuser
+
+Requires superuser access
+
+Parameters:
+    uuid (uuid): The uuid of the user to remove as a superuser
+
+Returns:
+    User: The user that was removed as a superuser
+ * @summary Remove Superuser
+ */
+export type removeSuperuserUsersRemoveSuperuserUuidPostResponse200 = {
+  data: UserResponse
+  status: 200
+}
+
+export type removeSuperuserUsersRemoveSuperuserUuidPostResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+    
+export type removeSuperuserUsersRemoveSuperuserUuidPostResponseSuccess = (removeSuperuserUsersRemoveSuperuserUuidPostResponse200) & {
+  headers: Headers;
+};
+export type removeSuperuserUsersRemoveSuperuserUuidPostResponseError = (removeSuperuserUsersRemoveSuperuserUuidPostResponse422) & {
+  headers: Headers;
+};
+
+export type removeSuperuserUsersRemoveSuperuserUuidPostResponse = (removeSuperuserUsersRemoveSuperuserUuidPostResponseSuccess | removeSuperuserUsersRemoveSuperuserUuidPostResponseError)
+
+export const getRemoveSuperuserUsersRemoveSuperuserUuidPostUrl = (uuid: string,) => {
+
+
+  
+
+  return `/users/remove_superuser/${uuid}`
+}
+
+export const removeSuperuserUsersRemoveSuperuserUuidPost = async (uuid: string, options?: RequestInit): Promise<removeSuperuserUsersRemoveSuperuserUuidPostResponse> => {
+  
+  return customInstance<removeSuperuserUsersRemoveSuperuserUuidPostResponse>(getRemoveSuperuserUsersRemoveSuperuserUuidPostUrl(uuid),
   {      
     ...options,
     method: 'POST'
