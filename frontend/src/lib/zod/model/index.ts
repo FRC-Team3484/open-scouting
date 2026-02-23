@@ -5,6 +5,7 @@
  * OpenAPI spec version: v2.0.0-alpha.6
  */
 
+export * from './adminEventResponse';
 export * from './baseSettings';
 export * from './bodyLoginForAccessTokenTokenPost';
 export * from './createPitFieldRequest';
