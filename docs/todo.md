@@ -12,7 +12,7 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [x] Manage pit scouting questions
     - [x] Create and edit questions
     - [x] Make reorderable
-  - [ ] Manage users
+  - [x] Manage users
   - [ ] Manage events
   - [ ] Manage match scouting data
   - [ ] Manage pit scouting data
