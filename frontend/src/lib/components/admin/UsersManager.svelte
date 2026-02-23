@@ -28,23 +28,25 @@
         })
     }
 
-    async function deleteUser(uuid: string) {
+    async function deleteUser(uuid: string, once: boolean = true) {
         await deleteUserUsersDeleteUuidDelete(uuid).then((res) => {
             if (res.status !== 200) {
                 console.error(res)
                 toast.error("Failed to delete user", { duration: 5000 });
                 return
             } else {
-                toast.success("User deleted", { duration: 5000 });
-                getUsers();
+                if (once) {toast.success("User deleted", { duration: 5000 }); getUsers();}
             }
         })
     }
 
     async function deleteSelected() {
         for (const uuid of selected) {
-            await deleteUser(uuid);
+            await deleteUser(uuid, false);
         }
+
+        toast.success("Users deleted", { duration: 5000 });
+        getUsers();
     }
 
     async function makeSuperuser(uuid: string) {

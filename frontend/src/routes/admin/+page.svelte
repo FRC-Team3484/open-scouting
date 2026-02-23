@@ -13,6 +13,7 @@
 	import MatchScoutingFieldsManager from "$lib/components/admin/MatchScoutingFieldsManager.svelte";
 	import PitScoutingQuestionsManager from "$lib/components/admin/PitScoutingQuestionsManager.svelte";
 	import UsersManager from "$lib/components/admin/UsersManager.svelte";
+	import EventManager from "$lib/components/admin/EventsManager.svelte";
 
     let user = null;
     let page = $state("start");
@@ -76,7 +77,7 @@
 
     {:else if page === "events"}
         <AdminHeader handleNavigate={handleNavigate}/>
-        <h1>Events</h1>
+        <EventManager />
 
     {:else if page === "match_scouting"}
         <AdminHeader handleNavigate={handleNavigate}/>
