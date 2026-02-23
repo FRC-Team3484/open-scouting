@@ -3,6 +3,7 @@
 	import { onMount } from 'svelte';
 	import { pwaInfo } from 'virtual:pwa-info'; // gives you the manifest link tag
 
+	import { main } from "$lib/utils/main"
 	import favicon from '$lib/assets/favicon.svg';
 	import { ModeWatcher } from "mode-watcher";
 	import { Toaster } from "$lib/components/ui/sonner";
@@ -18,6 +19,8 @@
 	let webManifest = pwaInfo ? pwaInfo.webManifest.linkTag : '';
 
 	onMount(async () => {
+		main();
+
 		if (!pwaInfo) return; // plugin not active, skip
 			try {
 			// dynamic import so this only runs in the browser (no SSR trouble)

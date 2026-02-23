@@ -137,3 +137,4 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [x] The event list covers the menu button on mobile
 - [ ] Fix strange dnd zone error sometimes
 - [x] Dev mode `.env` flag
+- [ ] Better organize internal routes
