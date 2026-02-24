@@ -68,3 +68,10 @@ class ReorderPitFieldsRequest(RootModel[list[ReorderPitField]]):
     def __iter__(self) -> Iterator[ReorderPitField]:
         return iter(self.root)
 
+class AdminPitResponse(BaseModel):
+    uuid: UUID
+    event_name: str
+    event_code: str
+    team_number: int
+    answers: int
+    created_at: datetime

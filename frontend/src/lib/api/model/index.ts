@@ -6,6 +6,7 @@
  */
 
 export * from './adminEventResponse';
+export * from './adminPitResponse';
 export * from './baseSettings';
 export * from './bodyLoginForAccessTokenTokenPost';
 export * from './createPitFieldRequest';

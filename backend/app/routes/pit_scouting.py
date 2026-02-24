@@ -1,3 +1,4 @@
+from collections import defaultdict
 from datetime import datetime
 import os
 from uuid import UUID
@@ -8,7 +9,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from ..dependencies import require_superuser
 from ..models import Event, Organization, PitScoutingAnswer, PitScoutingField, Season, TeamPit, User
 from ..schemas.generic import MessageResponse
-from ..schemas.pit_scouting import PitFieldResponse, PitFieldRequest, GetPitsForSeasonRequest, ReorderPitFieldsRequest, SubmitPitFieldAnswerRequest
+from ..schemas.pit_scouting import AdminPitResponse, PitFieldResponse, PitFieldRequest, GetPitsForSeasonRequest, ReorderPitFieldsRequest, SubmitPitFieldAnswerRequest
 from ..utils import get_season, IS_DEV
 
 router: APIRouter = APIRouter(
@@ -352,3 +353,47 @@ async def submit_pit(
             print("Created answer", answer["uuid"], "for pit", pit.uuid, "and field", field.uuid)
 
     return {"message": "Pit submitted successfully"}
+
+@router.get("/pits/get", response_model=list[AdminPitResponse])
+async def get_all_pits(superuser = Depends(require_superuser)) -> list[AdminPitResponse]:
+    """
+    Get all pits
+
+    Requires superuser access
+
+    Returns:
+        list[AdminPitResponse]: A list of all pits
+    """
+    answers = defaultdict(int)
+
+    for pit_id in await PitScoutingAnswer.all().values_list(
+        "team_id", flat=True
+    ):
+        answers[pit_id] += 1
+
+    return [
+        AdminPitResponse(
+            uuid=pit.uuid, 
+            event_name=pit.event.name,
+            event_code=pit.event.event_code,
+            team_number=pit.team_number, 
+            answers=answers[pit.uuid],
+            created_at=pit.created_at
+        ) for pit in await TeamPit.all().select_related("event")
+    ]
+
+@router.delete("/pits/delete/{pit_uuid}", response_model=MessageResponse)
+async def delete_pit(pit_uuid: UUID, superuser = Depends(require_superuser)) -> MessageResponse:
+    """
+    Delete a pit
+
+    Requires superuser access
+
+    Parameters:
+        pit_uuid (`UUID`): The UUID of the pit to delete
+
+    Returns:
+        MessageResponse: A message indicating that the pit was deleted
+    """
+    await TeamPit.filter(uuid=pit_uuid).delete()
+    return MessageResponse(message="Pit deleted")

@@ -255,3 +255,42 @@ export const SubmitPitPitsSubmitSeasonUuidTeamNumberPostResponse = zod.object({
   "message": zod.string()
 })
 
+/**
+ * Get all pits
+
+Requires superuser access
+
+Returns:
+    list[AdminPitResponse]: A list of all pits
+ * @summary Get All Pits
+ */
+export const GetAllPitsPitsGetGetResponseItem = zod.object({
+  "uuid": zod.string().uuid(),
+  "event_name": zod.string(),
+  "event_code": zod.string(),
+  "team_number": zod.number(),
+  "answers": zod.number(),
+  "created_at": zod.string().datetime({})
+})
+export const GetAllPitsPitsGetGetResponse = zod.array(GetAllPitsPitsGetGetResponseItem)
+
+/**
+ * Delete a pit
+
+Requires superuser access
+
+Parameters:
+    pit_uuid (`UUID`): The UUID of the pit to delete
+
+Returns:
+    MessageResponse: A message indicating that the pit was deleted
+ * @summary Delete Pit
+ */
+export const DeletePitPitsDeletePitUuidDeleteParams = zod.object({
+  "pit_uuid": zod.string().uuid()
+})
+
+export const DeletePitPitsDeletePitUuidDeleteResponse = zod.object({
+  "message": zod.string()
+})
+
