@@ -41,6 +41,7 @@ export * from './seasonCreate';
 export * from './seasonResponse';
 export * from './serverStatusResponse';
 export * from './signupRequest';
+export * from './submissionResponse';
 export * from './submitPitFieldAnswerRequest';
 export * from './submitPitFieldAnswerRequestAnswers';
 export * from './tokenResponse';

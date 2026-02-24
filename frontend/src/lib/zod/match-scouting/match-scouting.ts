@@ -46,3 +46,44 @@ export const SubmitMatchScoutingScoutingSubmitPostResponse = zod.object({
   "created_at": zod.string().datetime({})
 })
 
+/**
+ * Get all match scouting submissions
+
+Requires superuser access
+
+Returns:
+    list[SubmissionResponse]: A list of all match scouting submissions
+ * @summary Get Match Scouting Submissions
+ */
+export const GetMatchScoutingSubmissionsScoutingSubmissionsGetResponseItem = zod.object({
+  "uuid": zod.string().uuid(),
+  "event_name": zod.string(),
+  "event_code": zod.string(),
+  "team_number": zod.number(),
+  "match_number": zod.number(),
+  "match_type": zod.string(),
+  "answers": zod.number(),
+  "created_at": zod.string().datetime({})
+})
+export const GetMatchScoutingSubmissionsScoutingSubmissionsGetResponse = zod.array(GetMatchScoutingSubmissionsScoutingSubmissionsGetResponseItem)
+
+/**
+ * Delete a match scouting submission
+
+Requires superuser access
+
+Parameters:
+    submission_uuid (`UUID`): The UUID of the submission to delete
+
+Returns:
+    MessageResponse: A message indicating that the submission was deleted
+ * @summary Delete Match Scouting Submission
+ */
+export const DeleteMatchScoutingSubmissionScoutingSubmissionsDeleteSubmissionUuidDeleteParams = zod.object({
+  "submission_uuid": zod.string().uuid()
+})
+
+export const DeleteMatchScoutingSubmissionScoutingSubmissionsDeleteSubmissionUuidDeleteResponse = zod.object({
+  "message": zod.string()
+})
+

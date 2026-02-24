@@ -7,7 +7,9 @@
 import type {
   HTTPValidationError,
   MatchScoutingRequest,
-  MatchScoutingResponse
+  MatchScoutingResponse,
+  MessageResponse,
+  SubmissionResponse
 } from '.././model';
 
 import { customInstance } from '.././client';
@@ -60,6 +62,98 @@ export const submitMatchScoutingScoutingSubmitPost = async (matchScoutingRequest
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(
       matchScoutingRequest,)
+  }
+);}
+
+
+/**
+ * Get all match scouting submissions
+
+Requires superuser access
+
+Returns:
+    list[SubmissionResponse]: A list of all match scouting submissions
+ * @summary Get Match Scouting Submissions
+ */
+export type getMatchScoutingSubmissionsScoutingSubmissionsGetResponse200 = {
+  data: SubmissionResponse[]
+  status: 200
+}
+    
+export type getMatchScoutingSubmissionsScoutingSubmissionsGetResponseSuccess = (getMatchScoutingSubmissionsScoutingSubmissionsGetResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getMatchScoutingSubmissionsScoutingSubmissionsGetResponse = (getMatchScoutingSubmissionsScoutingSubmissionsGetResponseSuccess)
+
+export const getGetMatchScoutingSubmissionsScoutingSubmissionsGetUrl = () => {
+
+
+  
+
+  return `/scouting/submissions`
+}
+
+export const getMatchScoutingSubmissionsScoutingSubmissionsGet = async ( options?: RequestInit): Promise<getMatchScoutingSubmissionsScoutingSubmissionsGetResponse> => {
+  
+  return customInstance<getMatchScoutingSubmissionsScoutingSubmissionsGetResponse>(getGetMatchScoutingSubmissionsScoutingSubmissionsGetUrl(),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+/**
+ * Delete a match scouting submission
+
+Requires superuser access
+
+Parameters:
+    submission_uuid (`UUID`): The UUID of the submission to delete
+
+Returns:
+    MessageResponse: A message indicating that the submission was deleted
+ * @summary Delete Match Scouting Submission
+ */
+export type deleteMatchScoutingSubmissionScoutingSubmissionsDeleteSubmissionUuidDeleteResponse200 = {
+  data: MessageResponse
+  status: 200
+}
+
+export type deleteMatchScoutingSubmissionScoutingSubmissionsDeleteSubmissionUuidDeleteResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+    
+export type deleteMatchScoutingSubmissionScoutingSubmissionsDeleteSubmissionUuidDeleteResponseSuccess = (deleteMatchScoutingSubmissionScoutingSubmissionsDeleteSubmissionUuidDeleteResponse200) & {
+  headers: Headers;
+};
+export type deleteMatchScoutingSubmissionScoutingSubmissionsDeleteSubmissionUuidDeleteResponseError = (deleteMatchScoutingSubmissionScoutingSubmissionsDeleteSubmissionUuidDeleteResponse422) & {
+  headers: Headers;
+};
+
+export type deleteMatchScoutingSubmissionScoutingSubmissionsDeleteSubmissionUuidDeleteResponse = (deleteMatchScoutingSubmissionScoutingSubmissionsDeleteSubmissionUuidDeleteResponseSuccess | deleteMatchScoutingSubmissionScoutingSubmissionsDeleteSubmissionUuidDeleteResponseError)
+
+export const getDeleteMatchScoutingSubmissionScoutingSubmissionsDeleteSubmissionUuidDeleteUrl = (submissionUuid: string,) => {
+
+
+  
+
+  return `/scouting/submissions/delete/${submissionUuid}`
+}
+
+export const deleteMatchScoutingSubmissionScoutingSubmissionsDeleteSubmissionUuidDelete = async (submissionUuid: string, options?: RequestInit): Promise<deleteMatchScoutingSubmissionScoutingSubmissionsDeleteSubmissionUuidDeleteResponse> => {
+  
+  return customInstance<deleteMatchScoutingSubmissionScoutingSubmissionsDeleteSubmissionUuidDeleteResponse>(getDeleteMatchScoutingSubmissionScoutingSubmissionsDeleteSubmissionUuidDeleteUrl(submissionUuid),
+  {      
+    ...options,
+    method: 'DELETE'
+    
+    
   }
 );}
 
