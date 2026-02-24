@@ -15,7 +15,7 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [x] Manage users
   - [x] Manage events
   - [x] Manage match scouting data
-  - [ ] Manage pit scouting data
+  - [x] Manage pit scouting data
   - [ ] Archive match scouting fields or pit scouting questions when deleted
   - [ ] Be able to make a season active in the admin page
 - [x] Match scouting
