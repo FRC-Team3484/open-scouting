@@ -1,17 +1,19 @@
 import os
+from pathlib import Path
 from dotenv import load_dotenv
 from colorama import Fore, Style
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from tortoise.contrib.fastapi import register_tortoise
 
 from .constants import VERSION
 
-from .routes import main, auth, organizations, seasons, gamepieces, fields, match_scouting, pit_scouting, data, event
+from .routes import main, auth, organizations, seasons, gamepieces, fields, match_scouting, pit_scouting, data, event, uploads
 
 # Setup
-app: FastAPI = FastAPI(root_path="/api", version=VERSION)
+app: FastAPI = FastAPI(root_path="", version=VERSION)
 
 load_dotenv()
 
@@ -41,6 +43,7 @@ app.include_router(match_scouting.router)
 app.include_router(pit_scouting.router)
 app.include_router(data.router)
 app.include_router(event.router)
+app.include_router(uploads.router)
 
 # Setup database
 register_tortoise(
@@ -65,3 +68,14 @@ print("\n")
 print(f"{Fore.RED}{Style.BRIGHT}Open Scouting {Fore.BLACK}{Style.DIM}{VERSION}")
 print(f"{Style.RESET_ALL}{Fore.CYAN}github.com/FRC-Team3484/open-scouting")
 print("\n")
+
+# Dev static file serving
+if os.getenv("PUBLIC_MODE", "prod") == "dev":
+    print(f"{Fore.GREEN}Dev mode: Hosting static files under /uploads \n")
+    UPLOADS_DIR = Path(__file__).parent.parent / "uploads"
+
+    app.mount(
+        "/uploads",
+        StaticFiles(directory="./uploads"),
+        name="uploads",
+    )
