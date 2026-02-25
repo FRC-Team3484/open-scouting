@@ -33,7 +33,7 @@ async def get_season_fields(season_uuid: UUID) -> list[Any]:
     season: Season = await get_season(season_uuid)
 
     # Fetch all fields for the season including their children
-    fields: list[MatchScoutingField] = await MatchScoutingField.filter(season=season).prefetch_related("children")
+    fields: list[MatchScoutingField] = await MatchScoutingField.filter(season=season, archived=False).prefetch_related("children")
 
     # Convert queryset to list of dicts
     field_list: list[MatchScoutingField] = [f for f in fields]
@@ -103,8 +103,8 @@ async def clear_season_fields(season_uuid: UUID, superuser: User = Depends(requi
     """
     season: Season = await get_season(season_uuid)
 
-    await MatchScoutingField.filter(season=season).delete()
-    return {"message": "Fields cleared"}
+    await MatchScoutingField.filter(season=season).update(archived=True)
+    return {"message": "Fields archived"}
 
 @router.post("/fields/season/{season_uuid}/create", response_model=MatchScoutingFieldResponse)
 async def create_season_field(
@@ -313,5 +313,8 @@ async def delete_field(field_uuid: UUID, superuser: User = Depends(require_super
     field: MatchScoutingField | None = await MatchScoutingField.get_or_none(uuid=field_uuid)
     if not field:
         raise HTTPException(status_code=404, detail="Field not found")
-    await field.delete()
-    return {"message": "Field deleted"}
+    
+    field.archived = True
+    await field.save()
+
+    return {"message": "Field archived"}

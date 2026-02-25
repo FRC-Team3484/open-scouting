@@ -4,7 +4,7 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 
 ## `v2.0.0`
 - [x] Base frontend and backend
-- [ ] Admin page
+- [x] Admin page
   - [x] Manage Seasons
   - [x] Manage match scouting fields and game pieces
     - [x] Create and edit fields
@@ -16,7 +16,7 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [x] Manage events
   - [x] Manage match scouting data
   - [x] Manage pit scouting data
-  - [ ] Archive match scouting fields or pit scouting questions when deleted
+  - [x] Archive match scouting fields or pit scouting questions when deleted
   - [x] Be able to make a season active in the admin page
 - [x] Match scouting
   - [x] Render fields and be submittable

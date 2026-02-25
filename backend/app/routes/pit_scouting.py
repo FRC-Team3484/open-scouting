@@ -40,7 +40,7 @@ async def get_pit_fields(season_uuid: UUID) -> list[PitFieldResponse]:
     """
     season: Season = await get_season(season_uuid)
 
-    fields: list[PitScoutingField] = await PitScoutingField.filter(season=season)
+    fields: list[PitScoutingField] = await PitScoutingField.filter(season=season, archived=False)
 
     return [
         PitFieldResponse(
@@ -71,7 +71,7 @@ async def clear_pit_fields(season_uuid: UUID, superuser: User = Depends(require_
     """
     season: Season = await get_season(season_uuid)
 
-    await PitScoutingField.filter(season=season).delete()
+    await PitScoutingField.filter(season=season).update(archived=True)
     return {"message": "Fields cleared"}
 
 @router.post("/pits/fields/{season_uuid}/create", response_model=PitFieldResponse)
@@ -219,7 +219,8 @@ async def delete_pit_field(
     if not field:
         raise HTTPException(status_code=404, detail="Field not found")
 
-    await field.delete()
+    field.archived = True
+    await field.save()
 
     return MessageResponse(message="Field deleted")
 
