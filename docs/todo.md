@@ -17,7 +17,7 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [x] Manage match scouting data
   - [x] Manage pit scouting data
   - [ ] Archive match scouting fields or pit scouting questions when deleted
-  - [ ] Be able to make a season active in the admin page
+  - [x] Be able to make a season active in the admin page
 - [x] Match scouting
   - [x] Render fields and be submittable
   - [x] Save match scouting data locally
@@ -67,6 +67,9 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [ ] Release `v2.0.0`
 
 ## `v2.1.0`
+- [ ] Compare match scouting data
+  - Compare any 6 teams
+  - Or compare data from teams in upcoming matches
 - [ ] Profile
   - [ ] Edit profile
   - [ ] Change password
