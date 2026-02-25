@@ -1,3 +1,4 @@
+import os
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from pathlib import Path
 import uuid
@@ -9,7 +10,7 @@ router = APIRouter(
     include_in_schema=IS_DEV
 )
 
-UPLOAD_ROOT = Path("./uploads")
+UPLOAD_ROOT = Path(os.getenv("UPLOAD_ROOT", "/data/uploads"))
 MAX_SIZE = 10 * 1024 * 1024  # 10 MB
 
 ALLOWED_TYPES = {

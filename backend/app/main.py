@@ -72,10 +72,10 @@ print("\n")
 # Dev static file serving
 if os.getenv("PUBLIC_MODE", "prod") == "dev":
     print(f"{Fore.GREEN}Dev mode: Hosting static files under /uploads \n")
-    UPLOADS_DIR = Path(__file__).parent.parent / "uploads"
+    UPLOAD_ROOT = Path(__file__).parent.parent / "uploads"
 
     app.mount(
         "/uploads",
-        StaticFiles(directory="./uploads"),
+        StaticFiles(directory=UPLOAD_ROOT),
         name="uploads",
     )

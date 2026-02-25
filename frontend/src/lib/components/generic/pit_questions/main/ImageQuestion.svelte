@@ -9,6 +9,7 @@
 	import { uploadImageUploadImagePost } from "$lib/api/uploads/uploads";
 	import type { BodyUploadImageUploadImagePost } from "$lib/api/model";
 	import { toast } from "svelte-sonner";
+	import { env } from "$env/dynamic/public";
 
     let { pit, question, answers, user } = $props();
 
@@ -91,7 +92,7 @@
                     <div class="flex flex-col gap-2">
                         {#each answers as answer}
                             <div class="flex flex-col flex-wrap text-left">
-                                <img src={"http://localhost:8000" + answer.value} class="w-128 aspect-square rounded-md bg-accent p-1" onerror={() => console.log("failed to load image")}>
+                                <img src={answer.value} class="w-128 aspect-square rounded-md bg-accent p-1" onerror={() => console.log("failed to load image")}>
                                 <div class="flex flex-row flex-wrap items-center">
                                     <ArrowBendDownRight weight="bold" class="text-muted-foreground ml-4 mr-1"/>
                                     <User weight="bold" class="text-muted-foreground ml-2 mr-1"/>
