@@ -39,7 +39,7 @@ async def upload_image(file: UploadFile = File(...)):
             f.write(chunk)
 
     return {
-        "url": f"/uploads/images/{filename}",
+        "url": f"/uploads/{filename}",
         "filename": filename,
         "content_type": file.content_type,
         "size": size,
