@@ -21,9 +21,11 @@
 	import type { ReorderPitFieldsRequest } from "$lib/api/model";
 	import ImageQuestion from "./pit_questions/admin/ImageQuestion.svelte";
 
-    overrideItemIdKeyNameBeforeInitialisingDndZones("uuid");
-
     let { season_uuid, year, event_data = {}, editable } = $props();
+
+    if (editable) {
+        overrideItemIdKeyNameBeforeInitialisingDndZones("uuid");
+    }
 
     let questions = $state([]);
 
@@ -181,7 +183,7 @@
     </div>
 {/if}
 
-<div class="flex flex-col gap-4 mt-4 max-w-screen w-full md:w-lg" use:dragHandleZone={ {items: questions, flipDurationMs: 100, dropTargetStyle: {outline: 'var(--primary) dashed 2px', borderRadius: 'var(--radius)'} }} on:consider={handleDndConsider} on:finalize={handleDndFinalize}>
+{#snippet questionBlock()}
     {#each questions as question (question.uuid)}
         {#if question.field_type !== "undefined"}
             {#if question.field_type === "text"}
@@ -201,6 +203,16 @@
     {#if questions.length === 0}
         <p class="text-muted-foreground">No questions found</p>
     {/if}
-</div>
+{/snippet}
+
+{#if editable}
+    <div class="flex flex-col gap-4 mt-4 max-w-screen w-full md:w-lg" use:dragHandleZone={ {items: questions, flipDurationMs: 100, dropTargetStyle: {outline: 'var(--primary) dashed 2px', borderRadius: 'var(--radius)'} }} on:consider={handleDndConsider} on:finalize={handleDndFinalize}>
+        {@render questionBlock()}
+    </div>
+{:else}
+    <div class="flex flex-col gap-4 mt-4 max-w-screen w-full md:w-lg">
+        {@render questionBlock()}
+    </div>
+{/if}
 
 <AddPitScoutingQuestionDialog getQuestions={getQuestions} seasonUuid={season_uuid}/>

@@ -138,6 +138,6 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [x] When selecting a year that is not the current year, automatically mark "show past events" to true
 - [ ] Improve menu and drawer scrolling on mobile
 - [x] The event list covers the menu button on mobile
-- [ ] Fix strange dnd zone error sometimes
+- [x] Fix strange dnd zone error sometimes
 - [x] Dev mode `.env` flag
 - [x] Better organize internal routes

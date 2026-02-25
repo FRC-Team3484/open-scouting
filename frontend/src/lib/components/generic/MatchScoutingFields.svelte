@@ -37,9 +37,7 @@
 	import MathScoutingSubmit from "./MathScoutingSubmit.svelte";
 	import MatchScoutingTeamInfo from "./MatchScoutingMatchInfo.svelte";
 	import CoarseSmallNumberField from "./fields/CoarseSmallNumberField.svelte";
-    
-    overrideItemIdKeyNameBeforeInitialisingDndZones("uuid");
-    
+        
     let matchScoutingTeamInfoChild;
 
     type Node = {
@@ -71,6 +69,10 @@
     );
 
     let { season_uuid, year, event_data = {}, editable } = $props();
+
+    if (editable) {
+        overrideItemIdKeyNameBeforeInitialisingDndZones("uuid");
+    }
 
     async function getStructure() {
         if (editable) {
@@ -454,8 +456,8 @@
                 {:else}
                     <MatchScoutingTeamInfo event_data={event_data} bind:this={matchScoutingTeamInfoChild} />
                 {/if}
-                
-                <div class="flex flex-col gap-2 max-w-screen w-full md:w-lg" use:dragHandleZone={{items: fields, flipDurationMs: 100, dropTargetStyle: {outline: 'var(--primary) dashed 2px', borderRadius: 'var(--radius)'}}} onconsider={handleDndConsider} onfinalize={handleDndFinalize}>
+
+                {#snippet questionsBlock()}
                     {#each fields as field (field.uuid)}
                         <div animate:flip={{duration: 100}}>
                             {#if field.field_type === "string"}
@@ -482,7 +484,17 @@
                             {/if}
                         </div>
                     {/each}
-                </div>
+                {/snippet}
+
+                {#if editable}
+                    <div class="flex flex-col gap-2 max-w-screen w-full md:w-lg" use:dragHandleZone={{items: fields, flipDurationMs: 100, dropTargetStyle: {outline: 'var(--primary) dashed 2px', borderRadius: 'var(--radius)'}}} onconsider={handleDndConsider} onfinalize={handleDndFinalize}>
+                        {@render questionsBlock()}
+                    </div>
+                {:else}
+                    <div class="flex flex-col gap-2 max-w-screen w-full md:w-lg">
+                        {@render questionsBlock()}
+                    </div>
+                {/if}
 
                 {#if !editable}
                     <MathScoutingSubmit />
