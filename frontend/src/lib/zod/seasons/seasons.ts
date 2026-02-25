@@ -84,3 +84,23 @@ export const DeleteSeasonSeasonsDeleteSeasonUuidDeleteResponse = zod.object({
   "message": zod.string()
 })
 
+/**
+ * Deactivate the current season and make the given season active
+
+Requires superuser access
+
+Paramaters:
+    season_uuid (`UUID`): The UUID of the season to activate
+
+Returns:
+    `MessageResponse`: A message indicating that the season was made active
+ * @summary Activate Season
+ */
+export const ActivateSeasonSeasonsActivateSeasonUuidPostParams = zod.object({
+  "season_uuid": zod.string().uuid()
+})
+
+export const ActivateSeasonSeasonsActivateSeasonUuidPostResponse = zod.object({
+  "message": zod.string()
+})
+

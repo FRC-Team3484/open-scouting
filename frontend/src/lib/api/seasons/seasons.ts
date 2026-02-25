@@ -194,3 +194,54 @@ export const deleteSeasonSeasonsDeleteSeasonUuidDelete = async (seasonUuid: stri
 );}
 
 
+/**
+ * Deactivate the current season and make the given season active
+
+Requires superuser access
+
+Paramaters:
+    season_uuid (`UUID`): The UUID of the season to activate
+
+Returns:
+    `MessageResponse`: A message indicating that the season was made active
+ * @summary Activate Season
+ */
+export type activateSeasonSeasonsActivateSeasonUuidPostResponse200 = {
+  data: MessageResponse
+  status: 200
+}
+
+export type activateSeasonSeasonsActivateSeasonUuidPostResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+    
+export type activateSeasonSeasonsActivateSeasonUuidPostResponseSuccess = (activateSeasonSeasonsActivateSeasonUuidPostResponse200) & {
+  headers: Headers;
+};
+export type activateSeasonSeasonsActivateSeasonUuidPostResponseError = (activateSeasonSeasonsActivateSeasonUuidPostResponse422) & {
+  headers: Headers;
+};
+
+export type activateSeasonSeasonsActivateSeasonUuidPostResponse = (activateSeasonSeasonsActivateSeasonUuidPostResponseSuccess | activateSeasonSeasonsActivateSeasonUuidPostResponseError)
+
+export const getActivateSeasonSeasonsActivateSeasonUuidPostUrl = (seasonUuid: string,) => {
+
+
+  
+
+  return `/seasons/activate/${seasonUuid}`
+}
+
+export const activateSeasonSeasonsActivateSeasonUuidPost = async (seasonUuid: string, options?: RequestInit): Promise<activateSeasonSeasonsActivateSeasonUuidPostResponse> => {
+  
+  return customInstance<activateSeasonSeasonsActivateSeasonUuidPostResponse>(getActivateSeasonSeasonsActivateSeasonUuidPostUrl(seasonUuid),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
+  }
+);}
+
+
