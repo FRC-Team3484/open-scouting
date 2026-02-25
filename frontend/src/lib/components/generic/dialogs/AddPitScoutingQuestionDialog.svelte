@@ -23,6 +23,7 @@
 		{ value: "number", label: "Number" },
 		{ value: "boolean", label: "Boolean" },
 		{ value: "choice", label: "Choice" },
+		{ value: "image", label: "Image" },
 	];
 	const selectedQuestionTypeLabel = $derived(
 		questionTypes.find((qt) => qt.value === $formData.field_type)?.label ?? "Select Question Type"

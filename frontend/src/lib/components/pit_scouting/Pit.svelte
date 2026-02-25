@@ -7,6 +7,7 @@
 	import NumberQuestion from "../generic/pit_questions/main/NumberQuestion.svelte";
 	import BooleanQuestion from "../generic/pit_questions/main/BooleanQuestion.svelte";
 	import ChoiceQuestion from "../generic/pit_questions/main/ChoiceQuestion.svelte";
+	import ImageQuestion from "../generic/pit_questions/main/ImageQuestion.svelte";
 
     let { pit, pit_questions, user, show_avatar = false } = $props();
 
@@ -92,6 +93,8 @@
                             <BooleanQuestion pit={pit} question={question} answers={pit.answers.filter((answer) => answer.field_uuid === question.uuid)} user={user} />
                         {:else if question.field_type === "choice"}
                             <ChoiceQuestion pit={pit} question={question} answers={pit.answers.filter((answer) => answer.field_uuid === question.uuid)} user={user} />
+                        {:else if question.field_type === "image"}
+                            <ImageQuestion pit={pit} question={question} answers={pit.answers.filter((answer) => answer.field_uuid === question.uuid)} user={user} />
                         {/if}
                     {/each}
                 </div>

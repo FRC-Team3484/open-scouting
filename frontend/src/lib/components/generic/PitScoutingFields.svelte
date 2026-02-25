@@ -19,6 +19,7 @@
 	import Input from "../ui/input/input.svelte";
 	import { clearPitFieldsPitsFieldsSeasonUuidClearDelete, createPitFieldPitsFieldsSeasonUuidCreatePost, getPitFieldsPitsFieldsSeasonUuidGet, movePitFieldsPitsFieldsSeasonUuidReorderPatch } from "$lib/api/pit-scouting/pit-scouting";
 	import type { ReorderPitFieldsRequest } from "$lib/api/model";
+	import ImageQuestion from "./pit_questions/admin/ImageQuestion.svelte";
 
     overrideItemIdKeyNameBeforeInitialisingDndZones("uuid");
 
@@ -191,6 +192,8 @@
                 <BooleanQuestion question={question} editable={editable} getQuestions={getQuestions} />
             {:else if question.field_type === "choice"}
                 <ChoiceQuestion question={question} editable={editable} getQuestions={getQuestions} />
+            {:else if question.field_type === "image"}
+                <ImageQuestion question={question} editable={editable} getQuestions={getQuestions} />
             {/if}
         {/if}
     {/each}
