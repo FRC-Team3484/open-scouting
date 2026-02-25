@@ -164,6 +164,7 @@ class MatchScoutingField(Model):
     options = fields.JSONField(null=True, default=list) # For integer maximum and minimums, choices, etc.
     order = fields.IntField(default=0) # The order the field should appear in the frontend or section
     organization = fields.ForeignKeyField("models.Organization", related_name="scouting_fields", null=True) # Optional, used if the field is specific to an organization
+    archived= fields.BooleanField(default=False)
     created_at = fields.DatetimeField(auto_now_add=True)
 
 class Event(Model):
@@ -259,6 +260,7 @@ class PitScoutingField(Model):
     options = fields.JSONField(null=True, default=list) # For field_type=choice
     order = fields.IntField(default=0) # The order the field should appear in the frontend or section
     organization = fields.ForeignKeyField("models.Organization", related_name="pit_fields", null=True) # Optional, used if the field is specific to an organization
+    archived= fields.BooleanField(default=False)
     created_at = fields.DatetimeField(auto_now_add=True)
 
 class TeamPit(Model):
