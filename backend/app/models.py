@@ -144,6 +144,7 @@ class MatchScoutingField(Model):
         parent (MatchScoutingField): The parent of the match scouting field
         season (Season): The season the match scouting field is associated with
         name (str): The name of the match scouting field
+        description (str): The description of the match scouting field
         field_type (str): The type of the match scouting field
         stat_type (str): The stat type of the match scouting field
         game_piece (GamePiece): The game piece used in the match scouting field
@@ -151,12 +152,14 @@ class MatchScoutingField(Model):
         options (list): The options for the match scouting field
         order (int): The order of the match scouting field
         organization (Organization): The organization the match scouting field is associated with
+        archived (bool): Whether the match scouting field is archived or not
         created_at (datetime): The date and time the match scouting field was created
     """
     uuid = fields.UUIDField(pk=True)
     parent = fields.ForeignKeyField("models.MatchScoutingField", related_name="children", null=True)
     season = fields.ForeignKeyField("models.Season", related_name="fields")
     name = fields.CharField(max_length=255)
+    description = fields.TextField(null=True)
     field_type = fields.CharField(max_length=255) # section, string, large_number, small_number, boolean, choice, multiple_choice
     stat_type = fields.CharField(max_length=255) # section, auton_score, auton_miss, teleop_score, teleop_miss, capability, other, ignore
     game_piece = fields.ForeignKeyField("models.GamePiece", related_name="fields", null=True) # needed if stat_type is score or miss
@@ -247,15 +250,18 @@ class PitScoutingField(Model):
         uuid (UUID): The unique identifier for the pit scouting field
         season (Season): The season the pit scouting field is associated with
         name (str): The name of the pit scouting field
+        description (str): The description of the pit scouting field
         field_type (str): The type of the pit scouting field
         options (list): The options for the pit scouting field
         order (int): The order of the pit scouting field
         organization (Organization): The organization the pit scouting field is associated with
+        archived (bool): Whether the pit scouting field is archived or not
         created_at (datetime): The date and time the pit scouting field was created
     """
     uuid = fields.UUIDField(pk=True)
     season = fields.ForeignKeyField("models.Season", related_name="pit_fields")
     name = fields.CharField(max_length=255)
+    description = fields.TextField(null=True)
     field_type = fields.CharField(max_length=255) # text, number, boolean, choice
     options = fields.JSONField(null=True, default=list) # For field_type=choice
     order = fields.IntField(default=0) # The order the field should appear in the frontend or section
