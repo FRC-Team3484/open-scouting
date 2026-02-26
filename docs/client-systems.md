@@ -3,15 +3,17 @@
 This document lists the various client side systems that are available to aid in development.
 
 - [Client Systems](#client-systems)
-  - [Dialog](#dialog)
+  - [Dialogs](#dialogs)
   - [Toasts](#toasts)
   - [Database](#database)
   - [UI](#ui)
   - [User Managment](#user-managment)
   - [API Requests](#api-requests)
+  - [Form Validation](#form-validation)
   - [Menu Status](#menu-status)
 
-## Dialog
+## Dialogs
+### AlertDialog
 A simple alert dialog that is presented to the user
 
 ```html
@@ -34,6 +36,21 @@ A simple alert dialog that is presented to the user
     onSubmit={closeWarningDialog}
 />
 ```
+
+### BaseDialog
+A larger dialog that automatically switches to a drawer on smaller screens
+```html
+<script lang="ts">
+    import BaseDialog from "../dialogs/BaseDialog.svelte";
+
+    let dialogOpen = $state(true)
+</script>
+
+<BaseDialog title="Dialog title" description="Dialog description" bind:open={dialogOpen}>
+    <!-- Dialog contents -->
+</BaseDialog>
+```
+
 
 ## Toasts
 Toasts can be shown to the user
@@ -60,7 +77,7 @@ See the full Dexie.js docs [here](https://dexie.org/)
 ## UI
 You can add new components using the `shadcn-svelte` cli
 
-```
+```bash
 cd frontend
 npx shadcn-svelte@latest add
 ```
@@ -81,7 +98,10 @@ The client can manage the currently authenticated user using `$lib/utils/user.ts
 
 
 ## API Requests
-Requests can be made to the backend using `api.ts`
+Requests can be made to the backend using the typed request functions in `$lib/api`
+
+## Form Validation
+Forms can be validated using `sveltekit-superforms` and the typed zod schemas in `$lib/zod`
 
 ## Menu Status
 You can show the progress of a task in the menu by setting the `menuState` store

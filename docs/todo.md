@@ -56,14 +56,12 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [x] Fix frontend calls accordingly
 - [x] Create proper error pages (404 and 500)
 - [x] Create a changelog pop up and proper client/server versioning
-- [ ] Clean up frontend
-  - [ ] Make type-safe
-  - [ ] Organize imports
-  - [ ] Add comments
+- [ ] Remove experimental warning
 - [ ] Deprecate `open-scouting-utils` repo
 - [ ] Update doc in `FRC-Team3484/docs` for how to maintain Open Scouting
-- [ ] Update docs
+- [x] Update docs
 - [ ] Update `build-and-push.yml` to use the correct branch
+- [ ] Update new domain
 - [ ] Release `v2.0.0`
 
 ## `v2.1.0`
@@ -80,6 +78,10 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [ ] Event page
   - [ ] Create a section on the home page to show ongoing events
   - [ ] Create a page to show all events
+- [ ] Clean up frontend
+  - [ ] Make type-safe
+  - [ ] Organize imports
+  - [ ] Add comments
 
 ## `v2.2.0`
 - [ ] API key support
