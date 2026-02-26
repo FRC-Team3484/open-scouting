@@ -133,6 +133,8 @@
             }
         }
 
+        console.log(filteredFields);
+
         await db.match_scouting.add({
             uuid: crypto.randomUUID(),
             data: filteredFields,

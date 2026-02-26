@@ -108,8 +108,8 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [x] Fix logo squashing on smaller screens
 - [x] When a new pit is created from multiple clients when pit scouting, make sure duplicate pits aren't created
 - [x] Multiple choice fields don't show options when match scouting
-- [ ] Boolean fields don't reset properly when match scouting
-- [ ] Multiple choice, choice, and boolean fields don't reset properly when match scouting
+- [x] Boolean fields don't reset properly when match scouting
+- [x] Multiple choice, choice, and boolean fields don't reset properly when match scouting
 - [x] Fields can't be edited in production
 - [x] Increase mobile readability
 - [x] Hide favorite events when not signed in
