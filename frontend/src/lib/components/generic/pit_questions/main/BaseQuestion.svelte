@@ -23,6 +23,10 @@
             <Badge variant="outline">{answers.length} {answers.length == 1 ? "answer" : "answers"}</Badge>
         </div>
 
+        {#if question.description}
+            <p class="text-sm text-muted-foreground text-left mb-2">{question.description}</p>
+        {/if}
+
         {#if mode == "none"}
             <div class="flex flex-row gap-2 flex-wrap">
                 <Button size="sm" onclick={() => mode = "add"}><PlusCircle weight="bold" /> Add Answer</Button>
