@@ -23,10 +23,6 @@
 
     let { season_uuid, year, event_data = {}, editable } = $props();
 
-    if (editable) {
-        overrideItemIdKeyNameBeforeInitialisingDndZones("uuid");
-    }
-
     let questions = $state([]);
 
     let fieldFile = $state(null);
@@ -133,6 +129,10 @@
     }
 
     onMount(async () => {
+        if (editable) {
+            overrideItemIdKeyNameBeforeInitialisingDndZones("uuid");
+        }
+
         getQuestions();
     });
 

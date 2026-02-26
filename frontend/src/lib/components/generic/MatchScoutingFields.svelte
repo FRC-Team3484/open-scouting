@@ -70,10 +70,6 @@
 
     let { season_uuid, year, event_data = {}, editable } = $props();
 
-    if (editable) {
-        overrideItemIdKeyNameBeforeInitialisingDndZones("uuid");
-    }
-
     async function getStructure() {
         if (editable) {
             // TODO: this needs a proper response schema
@@ -322,6 +318,9 @@
     }
 
     onMount(async () => {
+        if (editable) {
+            overrideItemIdKeyNameBeforeInitialisingDndZones("uuid");
+        }
         
         while (!season_uuid) {
             await new Promise(resolve => setTimeout(resolve, 100));
