@@ -35,6 +35,7 @@
 	const defaultValues = {
 		season_uuid: seasonUuid,
 		name: "",
+		description: "",
 		field_type: "",
 		options: {
 			choices: [],
@@ -107,6 +108,17 @@
 				{/snippet}
 			</Form.Control>
 			<Form.Description>The name of the question</Form.Description>
+			<Form.FieldErrors />
+		</Form.Field>
+
+		<Form.Field {form} name="description">
+			<Form.Control>
+				{#snippet children({ props })}
+					<Label>Description</Label>
+					<Input {...props} bind:value={$formData.description} />
+				{/snippet}
+			</Form.Control>
+			<Form.Description>The description for the question</Form.Description>
 			<Form.FieldErrors />
 		</Form.Field>
 

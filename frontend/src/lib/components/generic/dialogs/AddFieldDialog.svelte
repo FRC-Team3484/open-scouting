@@ -46,6 +46,7 @@
     
     const defaultValues = {
         name: "",
+        description: "",
         season_uuid: season_uuid,
         field_type: "",
         stat_type: "",
@@ -146,6 +147,17 @@
                 {/snippet}
             </Form.Control>
             <Form.Description>The name of the field</Form.Description>
+            <Form.FieldErrors />
+        </Form.Field>
+
+        <Form.Field {form} name="description">
+            <Form.Control>
+                {#snippet children({ props })}
+                    <Label>Description</Label>
+                    <Input {...props} bind:value={$formData.description} />
+                {/snippet}
+            </Form.Control>
+            <Form.Description>The description for the field</Form.Description>
             <Form.FieldErrors />
         </Form.Field>
 
