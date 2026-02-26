@@ -13,6 +13,7 @@ class MatchScoutingFieldOptions(BaseModel):
 class MatchScoutingFieldResponse(BaseModel):
     uuid: UUID | None = None
     name: str
+    description: str | None
     field_type: str
     stat_type: str
     game_piece_uuid: UUID | None = None
@@ -25,6 +26,7 @@ class MatchScoutingFieldResponse(BaseModel):
 class MatchScoutingFieldRequest(BaseModel):
     uuid: UUID | None = None
     name: str
+    description: str | None
     season_uuid: UUID
     field_type: str
     stat_type: str

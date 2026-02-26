@@ -9,6 +9,7 @@ import type { MatchScoutingFieldOptions } from './matchScoutingFieldOptions';
 export interface MatchScoutingFieldResponse {
   uuid?: string | null;
   name: string;
+  description: string;
   field_type: string;
   stat_type: string;
   game_piece_uuid?: string | null;
