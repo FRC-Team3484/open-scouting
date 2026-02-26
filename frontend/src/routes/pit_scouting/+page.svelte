@@ -62,7 +62,7 @@
     });
 </script>
 
-<PageContainer>
+<PageContainer disableSleep>
     <Header bind:event_data={event_data}/>
     {#if year && season_uuid && event_data.year !== 0}
         <div class="flex flex-col gap-4 items-center">

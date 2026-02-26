@@ -37,7 +37,7 @@
     });
 </script>
 
-<PageContainer>
+<PageContainer disableSleep>
     <Header bind:event_data={event_data}/>
     {#if year && season_uuid && event_data.year !== 0}
         <MatchScoutingFields season_uuid={season_uuid} year={year} event_data={event_data} editable={false} />
