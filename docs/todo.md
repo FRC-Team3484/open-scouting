@@ -82,6 +82,7 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [ ] Make type-safe
   - [ ] Organize imports
   - [ ] Add comments
+- [ ] Add a menu toggle for disabling any attempts to sync data
 
 ## `v2.2.0`
 - [ ] API key support
@@ -97,6 +98,8 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [ ] Import legacy match scouting data from v1.0.0
 
 ## `v2.3.0`
+- [ ] Support downloading and regularly syncing match scouting data for offline analysis
+- [ ] Use QR codes for syncing match scouting data to the head scout
 - [ ] Organizations
 
 ## `v2.4.0`
