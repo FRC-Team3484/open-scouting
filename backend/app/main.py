@@ -1,20 +1,24 @@
 import os
+from pathlib import Path
 from dotenv import load_dotenv
+from colorama import Fore, Style
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from tortoise.contrib.fastapi import register_tortoise
 
-from .routes import main, auth, organizations, seasons, gamepieces, fields, match_scouting, pit_scouting, data, event
+from .constants import VERSION
+
+from .routes import main, auth, organizations, seasons, gamepieces, fields, match_scouting, pit_scouting, data, event, uploads
 
 # Setup
-app: FastAPI = FastAPI(root_path="/api")
+app: FastAPI = FastAPI(root_path="", version=VERSION)
 
 load_dotenv()
 
 origins = os.getenv("CORS_ORIGINS", "*").split(",")
 TBA_API_KEY = os.getenv("TBA_API_KEY")
-VERSION = os.getenv("PUBLIC_VERSION")
 
 if TBA_API_KEY is None or TBA_API_KEY == "":
     print("TBA_API_KEY is not set. Pit scouting will not work as expected.")
@@ -39,6 +43,7 @@ app.include_router(match_scouting.router)
 app.include_router(pit_scouting.router)
 app.include_router(data.router)
 app.include_router(event.router)
+app.include_router(uploads.router)
 
 # Setup database
 register_tortoise(
@@ -59,7 +64,18 @@ TORTOISE_ORM = {
     },
 }
 
-print("----------\n")
-print("Open Scouting (Backend)")
-print(f"{VERSION}")
-print("\n----------")
+print("\n")
+print(f"{Fore.RED}{Style.BRIGHT}Open Scouting {Fore.BLACK}{Style.DIM}{VERSION}")
+print(f"{Style.RESET_ALL}{Fore.CYAN}github.com/FRC-Team3484/open-scouting")
+print("\n")
+
+# Dev static file serving
+if os.getenv("PUBLIC_MODE", "prod") == "dev":
+    print(f"{Fore.GREEN}Dev mode: Hosting static files under /uploads \n")
+    UPLOAD_ROOT = Path(__file__).parent.parent / "uploads"
+
+    app.mount(
+        "/uploads",
+        StaticFiles(directory=UPLOAD_ROOT),
+        name="uploads",
+    )

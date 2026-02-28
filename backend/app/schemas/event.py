@@ -27,3 +27,7 @@ class CustomEventRequest(BaseModel):
     event_country: str
     event_start_date: str
     event_end_date: str
+
+class AdminEventResponse(EventResponse):
+    match_scouting_submissions: int
+    pits: int

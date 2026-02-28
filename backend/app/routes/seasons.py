@@ -1,5 +1,7 @@
+from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException
 
+from ..utils import IS_DEV
 from ..dependencies import require_superuser
 from ..models import Season, User
 from ..schemas.generic import MessageResponse
@@ -8,6 +10,7 @@ from ..schemas.seasons import SeasonCreate, SeasonResponse
 
 router: APIRouter = APIRouter(
     tags=["Seasons"],
+    include_in_schema=IS_DEV
 )
 
 @router.get("/seasons", response_model=list[SeasonResponse])
@@ -72,3 +75,33 @@ async def delete_season(
 
     await season.delete()
     return {"message": "Season deleted"}
+
+@router.post("/seasons/activate/{season_uuid}", response_model=MessageResponse)
+async def activate_season(season_uuid: UUID, superuser = Depends(require_superuser)):
+    """
+    Deactivate the current season and make the given season active
+
+    Requires superuser access
+
+    Paramaters:
+        season_uuid (`UUID`): The UUID of the season to activate
+
+    Returns:
+        `MessageResponse`: A message indicating that the season was made active
+    """
+
+    active_season = await Season.get_or_none(active=True)
+
+    if active_season:
+        active_season.active = False
+        await active_season.save()
+
+    new_season = await Season.get_or_none(uuid=season_uuid)
+
+    if not new_season:
+        raise HTTPException(status_code=404, detail="Season not found")
+
+    new_season.active = True
+    await new_season.save()
+
+    return {"message": "Season activated"}

@@ -7,6 +7,7 @@
 	import NumberQuestion from "../generic/pit_questions/main/NumberQuestion.svelte";
 	import BooleanQuestion from "../generic/pit_questions/main/BooleanQuestion.svelte";
 	import ChoiceQuestion from "../generic/pit_questions/main/ChoiceQuestion.svelte";
+	import ImageQuestion from "../generic/pit_questions/main/ImageQuestion.svelte";
 
     let { pit, pit_questions, user, show_avatar = false } = $props();
 
@@ -42,11 +43,11 @@
     let avatar_loaded = $state(true);
 </script>
 
-<Card.Root class="w-auto md:min-w-128" data-teamNumber={pit.team_number}>
+<Card.Root class="w-full md:w-auto min-w-64 md:min-w-128" data-teamNumber={pit.team_number}>
     <Card.Content>
-        <div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-2 md:gap-4">
             <div class="flex flex-row gap-2 items-center justify-between">
-                <div class="flex flex-row gap-2 items-center flex-wrap">
+                <div class="flex flex-row gap-2 items-center flex-wrap cursor-pointer" onclick={() => expanded = !expanded} tabindex="0" onkeydown={(e) => { if (e.key === "Enter") { expanded = !expanded; }}} role="button">
                     {#if show_avatar && avatar_loaded}
                         <img src={`https://www.thebluealliance.com/avatar/2026/frc${pit.team_number}.png`} class="w-10 h-10 aspect-square rounded-md bg-accent p-1" onerror={() => avatar_loaded = false}>
                     {/if}
@@ -82,7 +83,7 @@
             </div>
 
             {#if expanded}
-                <div class="flex flex-col gap-2 items-start" transition:slide>
+                <div class="flex flex-col gap-1 md:gap-2 items-start" transition:slide>
                     {#each pit_questions as question}
                         {#if question.field_type === "text"}
                             <TextQuestion pit={pit} question={question} answers={pit.answers.filter((answer) => answer.field_uuid === question.uuid)} user={user} />
@@ -92,6 +93,8 @@
                             <BooleanQuestion pit={pit} question={question} answers={pit.answers.filter((answer) => answer.field_uuid === question.uuid)} user={user} />
                         {:else if question.field_type === "choice"}
                             <ChoiceQuestion pit={pit} question={question} answers={pit.answers.filter((answer) => answer.field_uuid === question.uuid)} user={user} />
+                        {:else if question.field_type === "image"}
+                            <ImageQuestion pit={pit} question={question} answers={pit.answers.filter((answer) => answer.field_uuid === question.uuid)} user={user} />
                         {/if}
                     {/each}
                 </div>

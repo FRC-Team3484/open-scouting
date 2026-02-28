@@ -29,3 +29,13 @@ class MatchScoutingResponse(BaseModel):
     match_number: int
     match_type: str
     created_at: datetime
+
+class SubmissionResponse(BaseModel):
+    uuid: UUID
+    event_name: str
+    event_code: str
+    team_number: int
+    match_number: int
+    match_type: str
+    answers: int
+    created_at: datetime

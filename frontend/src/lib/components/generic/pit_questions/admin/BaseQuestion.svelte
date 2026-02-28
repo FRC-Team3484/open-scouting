@@ -4,7 +4,7 @@
     import * as Card from "$lib/components/ui/card/index.js";
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
 	import { addPitScoutingQuestionData, addPitScoutingQuestionDialogOpen } from "$lib/stores/dialog";
-	import { DotsSix, DotsSixVertical, DotsThree, Pencil, Trash } from "phosphor-svelte";
+	import { DotsSixVertical, DotsThree, Pencil, Trash } from "phosphor-svelte";
 	import { dragHandle } from "svelte-dnd-action";
 	import { toast } from "svelte-sonner";
 
@@ -27,33 +27,37 @@
 
 <Card.Root class="w-auto min-w-64">
     <Card.Header>
-        <div class="flex flex-row gap-2 items-center justify-between flex-wrap">
-            <div class="flex flex-row gap-2 items-center">
-                <div class="text-muted-foreground" use:dragHandle>
-                    <DotsSixVertical weight="bold" />
+        <div class="flex flex-col gap-2 text-left">
+            <div class="flex flex-row gap-2 items-center justify-between flex-wrap">
+                <div class="flex flex-row gap-2 items-center">
+                    <div class="text-muted-foreground" use:dragHandle>
+                        <DotsSixVertical weight="bold" />
+                    </div>
+                    <p>
+                        {question.name}
+                    </p>
+                    {#if editable}
+                        <p class="text-sm opacity-80">{question.field_type}</p>
+                    {/if}
                 </div>
-                <p>
-                    {question.name}
-                </p>
                 {#if editable}
-                    <p class="text-sm opacity-80">{question.field_type}</p>
+                    <DropdownMenu.Root>
+                        <DropdownMenu.Trigger>
+                            <Button size="icon" variant="outline"><DotsThree weight="bold" /></Button>
+                        </DropdownMenu.Trigger>
+                        <DropdownMenu.Content class="w-56" align="start">
+                            <DropdownMenu.Label>Question Options</DropdownMenu.Label>
+                            <DropdownMenu.Group>
+                                <DropdownMenu.Item onclick={editQuestion}><Pencil weight="bold" /> Edit</DropdownMenu.Item>
+                                <DropdownMenu.Item onclick={deleteQuestion}><Trash weight="bold" /> Delete</DropdownMenu.Item>
+                            </DropdownMenu.Group>
+                        </DropdownMenu.Content>
+                    </DropdownMenu.Root>
                 {/if}
             </div>
 
-            {#if editable}
-                <DropdownMenu.Root>
-                    <DropdownMenu.Trigger>
-                        <Button size="icon" variant="outline"><DotsThree weight="bold" /></Button>
-                    </DropdownMenu.Trigger>
-
-                    <DropdownMenu.Content class="w-56" align="start">
-                        <DropdownMenu.Label>Question Options</DropdownMenu.Label>
-                        <DropdownMenu.Group>
-                            <DropdownMenu.Item onclick={editQuestion}><Pencil weight="bold" /> Edit</DropdownMenu.Item>
-                            <DropdownMenu.Item onclick={deleteQuestion}><Trash weight="bold" /> Delete</DropdownMenu.Item>
-                        </DropdownMenu.Group>
-                    </DropdownMenu.Content>
-                </DropdownMenu.Root>
+            {#if question.description}
+                <p class="text-sm text-muted-foreground">{question.description}</p>
             {/if}
         </div>
     </Card.Header>

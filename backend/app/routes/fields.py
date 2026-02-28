@@ -4,17 +4,17 @@ from pathlib import Path
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
-from tortoise.fields import SET_NULL
 
 from ..dependencies import require_superuser
 from ..models import GamePiece, MatchScoutingField, Organization, Season, User
 from ..schemas.generic import MessageResponse
 from ..schemas.fields import MatchScoutingFieldRequest, MatchScoutingFieldResponse, ReorderMatchScoutingFieldsRequest
-from ..utils import get_season
+from ..utils import get_season, IS_DEV
 
 
 router: APIRouter = APIRouter(
     tags=["Match Scouting Fields"],
+    include_in_schema=IS_DEV
 )
 
 # TODO: This needs a proper response_model
@@ -33,7 +33,7 @@ async def get_season_fields(season_uuid: UUID) -> list[Any]:
     season: Season = await get_season(season_uuid)
 
     # Fetch all fields for the season including their children
-    fields: list[MatchScoutingField] = await MatchScoutingField.filter(season=season).prefetch_related("children")
+    fields: list[MatchScoutingField] = await MatchScoutingField.filter(season=season, archived=False).prefetch_related("children")
 
     # Convert queryset to list of dicts
     field_list: list[MatchScoutingField] = [f for f in fields]
@@ -50,6 +50,7 @@ async def get_season_fields(season_uuid: UUID) -> list[Any]:
         field_data = {
             "uuid": str(field.uuid),
             "name": field.name,
+            "description": field.description,
             "field_type": field.field_type,
             "stat_type": field.stat_type,
             "game_piece_uuid": str(field.game_piece_id) if field.game_piece_id else None,
@@ -103,8 +104,8 @@ async def clear_season_fields(season_uuid: UUID, superuser: User = Depends(requi
     """
     season: Season = await get_season(season_uuid)
 
-    await MatchScoutingField.filter(season=season).delete()
-    return {"message": "Fields cleared"}
+    await MatchScoutingField.filter(season=season).update(archived=True)
+    return {"message": "Fields archived"}
 
 @router.post("/fields/season/{season_uuid}/create", response_model=MatchScoutingFieldResponse)
 async def create_season_field(
@@ -165,6 +166,7 @@ async def create_season_field(
             parent=parent,
             season=season, 
             name=data.name, 
+            description=data.description,
             field_type=data.field_type, 
             stat_type=data.stat_type, 
             game_piece=game_piece, 
@@ -178,6 +180,7 @@ async def create_season_field(
             parent=parent,
             season=season, 
             name=data.name, 
+            description=data.description,
             field_type=data.field_type, 
             stat_type=data.stat_type, 
             game_piece=game_piece, 
@@ -191,6 +194,7 @@ async def create_season_field(
         uuid=field.uuid,
         season=field.season.uuid,
         name=field.name,
+        description=field.description,
         field_type=field.field_type,
         stat_type=field.stat_type,
         game_piece_uuid=field.game_piece.uuid if field.game_piece else None,
@@ -242,6 +246,7 @@ async def edit_season_field(
         organization = None
 
     field.name = data.name
+    field.description = data.description
     field.field_type = data.field_type
     field.stat_type = data.stat_type
     field.game_piece = game_piece
@@ -313,5 +318,8 @@ async def delete_field(field_uuid: UUID, superuser: User = Depends(require_super
     field: MatchScoutingField | None = await MatchScoutingField.get_or_none(uuid=field_uuid)
     if not field:
         raise HTTPException(status_code=404, detail="Field not found")
-    await field.delete()
-    return {"message": "Field deleted"}
+    
+    field.archived = True
+    await field.save()
+
+    return {"message": "Field archived"}

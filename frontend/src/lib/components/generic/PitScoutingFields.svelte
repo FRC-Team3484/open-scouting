@@ -19,8 +19,7 @@
 	import Input from "../ui/input/input.svelte";
 	import { clearPitFieldsPitsFieldsSeasonUuidClearDelete, createPitFieldPitsFieldsSeasonUuidCreatePost, getPitFieldsPitsFieldsSeasonUuidGet, movePitFieldsPitsFieldsSeasonUuidReorderPatch } from "$lib/api/pit-scouting/pit-scouting";
 	import type { ReorderPitFieldsRequest } from "$lib/api/model";
-
-    overrideItemIdKeyNameBeforeInitialisingDndZones("uuid");
+	import ImageQuestion from "./pit_questions/admin/ImageQuestion.svelte";
 
     let { season_uuid, year, event_data = {}, editable } = $props();
 
@@ -130,6 +129,10 @@
     }
 
     onMount(async () => {
+        if (editable) {
+            overrideItemIdKeyNameBeforeInitialisingDndZones("uuid");
+        }
+
         getQuestions();
     });
 
@@ -180,7 +183,7 @@
     </div>
 {/if}
 
-<div class="flex flex-col gap-4 mt-4 max-w-screen w-full md:w-lg" use:dragHandleZone={ {items: questions, flipDurationMs: 100, dropTargetStyle: {outline: 'var(--primary) dashed 2px', borderRadius: 'var(--radius)'} }} on:consider={handleDndConsider} on:finalize={handleDndFinalize}>
+{#snippet questionBlock()}
     {#each questions as question (question.uuid)}
         {#if question.field_type !== "undefined"}
             {#if question.field_type === "text"}
@@ -191,6 +194,8 @@
                 <BooleanQuestion question={question} editable={editable} getQuestions={getQuestions} />
             {:else if question.field_type === "choice"}
                 <ChoiceQuestion question={question} editable={editable} getQuestions={getQuestions} />
+            {:else if question.field_type === "image"}
+                <ImageQuestion question={question} editable={editable} getQuestions={getQuestions} />
             {/if}
         {/if}
     {/each}
@@ -198,6 +203,16 @@
     {#if questions.length === 0}
         <p class="text-muted-foreground">No questions found</p>
     {/if}
-</div>
+{/snippet}
+
+{#if editable}
+    <div class="flex flex-col gap-4 mt-4 max-w-screen w-full md:w-lg" use:dragHandleZone={ {items: questions, flipDurationMs: 100, dropTargetStyle: {outline: 'var(--primary) dashed 2px', borderRadius: 'var(--radius)'} }} on:consider={handleDndConsider} on:finalize={handleDndFinalize}>
+        {@render questionBlock()}
+    </div>
+{:else}
+    <div class="flex flex-col gap-4 mt-4 max-w-screen w-full md:w-lg">
+        {@render questionBlock()}
+    </div>
+{/if}
 
 <AddPitScoutingQuestionDialog getQuestions={getQuestions} seasonUuid={season_uuid}/>

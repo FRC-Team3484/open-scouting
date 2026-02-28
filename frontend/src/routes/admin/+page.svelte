@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { env } from "$env/dynamic/public";
 	import PageContainer from "$lib/components/layout/PageContainer.svelte";
 	import { validateTokenOnline } from "$lib/utils/user";
 	import { onMount } from "svelte";
@@ -11,10 +12,14 @@
 	import Dialog from "$lib/components/generic/Dialog.svelte";
 	import MatchScoutingFieldsManager from "$lib/components/admin/MatchScoutingFieldsManager.svelte";
 	import PitScoutingQuestionsManager from "$lib/components/admin/PitScoutingQuestionsManager.svelte";
+	import UsersManager from "$lib/components/admin/UsersManager.svelte";
+	import EventManager from "$lib/components/admin/EventsManager.svelte";
+	import MatchScoutingSubmissionsManager from "$lib/components/admin/MatchScoutingSubmissionsManager.svelte";
+	import PitScoutingDataManager from "$lib/components/admin/PitScoutingDataManager.svelte";
 
     let user = null;
     let page = $state("start");
-    let show_warning_dialog = true;
+    let show_warning_dialog = $state(!(env.PUBLIC_MODE == "dev"));
 
     onMount(async () => {
         user = await validateTokenOnline();
@@ -48,10 +53,10 @@
                     <Button onclick={() => page = "match_fields"}>Manage Match Scouting Fields</Button>
                     <Button onclick={() => page = "pit_scouting_questions"}>Manage Pit Scouting Questions</Button>
                     <Separator orientation="horizontal" />
-                    <Button disabled>Manage Users</Button>
-                    <Button disabled>Manage Events</Button>
-                    <Button disabled>Manage Match Data</Button>
-                    <Button disabled>Manage Pit Scouting Data</Button>
+                    <Button onclick={() => page = "users"}>Manage Users</Button>
+                    <Button onclick={() => page = "events"}>Manage Events</Button>
+                    <Button onclick={() => page = "match_scouting"}>Manage Match Scouting Data</Button>
+                    <Button onclick={() => page = "pit_scouting"}>Manage Pit Scouting Data</Button>
                 </div>
             </Card.Content>
         </Card.Root>
@@ -67,6 +72,22 @@
     {:else if page === "pit_scouting_questions"}
         <AdminHeader handleNavigate={handleNavigate}/>
         <PitScoutingQuestionsManager/>
+
+    {:else if page === "users"}
+        <AdminHeader handleNavigate={handleNavigate}/>
+        <UsersManager />
+
+    {:else if page === "events"}
+        <AdminHeader handleNavigate={handleNavigate}/>
+        <EventManager />
+
+    {:else if page === "match_scouting"}
+        <AdminHeader handleNavigate={handleNavigate}/>
+        <MatchScoutingSubmissionsManager />
+
+    {:else if page === "pit_scouting"}
+        <AdminHeader handleNavigate={handleNavigate}/>
+        <PitScoutingDataManager />
 
     {/if}
 </PageContainer>

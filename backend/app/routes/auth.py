@@ -1,6 +1,9 @@
 from sqlite3 import IntegrityError
+from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
+
+from ..utils import IS_DEV
 
 from ..auth import create_access_token, get_password_hash, verify_password
 from ..dependencies import get_current_user, require_user, require_superuser
@@ -11,6 +14,7 @@ from ..schemas.auth import BaseSettings, SignupRequest, TokenResponse, UserRespo
 
 router: APIRouter = APIRouter(
     tags=["Auth"],
+    include_in_schema=IS_DEV
 )
 
 @router.post("/auth/signup", response_model=TokenResponse)
@@ -89,20 +93,20 @@ async def get_users(user = Depends(require_superuser)) -> list[User]:
     users: list[User] = await User.all()
     return users
 
-@router.delete("/users/delete/{username}", response_model=MessageResponse)
-async def delete_user(username: str, user: User = Depends(require_user)) -> dict[str, str]:
+@router.delete("/users/delete/{uuid}", response_model=MessageResponse)
+async def delete_user(uuid: UUID, user: User = Depends(require_user)) -> dict[str, str]:
     """
     Delete a user on the server
 
     Requires superuser access
 
     Parameters:
-        username (str): The username of the user to delete
+        uuid (uuid): The uuid of the user to delete
 
     Returns:
         MessageResponse: A message indicating that the user was deleted
     """
-    user_to_delete: User | None = await User.get_or_none(username=username)
+    user_to_delete: User | None = await User.get_or_none(uuid=uuid)
 
     if not user_to_delete:
         raise HTTPException(status_code=404, detail="User not found")
@@ -159,20 +163,20 @@ async def update_user_settings(data: BaseSettings, current_user: User = Depends(
     await settings.save()
     return settings
 
-@router.post("/users/set_superuser/{username}", response_model=UserResponse)
-async def set_superuser(username: str, superuser: User = Depends(require_superuser)) -> User:
+@router.post("/users/set_superuser/{uuid}", response_model=UserResponse)
+async def set_superuser(uuid: UUID, superuser: User = Depends(require_superuser)) -> User:
     """
     Set a user as a superuser
 
     Requires superuser access
 
     Parameters:
-        username (str): The username of the user to set as a superuser
+        uuid (uuid): The uuid of the user to set as a superuser
 
     Returns:
         User: The user that was set as a superuser
     """
-    user_to_set_superuser: User | None = await User.get_or_none(username=username)
+    user_to_set_superuser: User | None = await User.get_or_none(uuid=uuid)
 
     if not user_to_set_superuser:
         raise HTTPException(status_code=404, detail="User not found")
@@ -180,6 +184,28 @@ async def set_superuser(username: str, superuser: User = Depends(require_superus
         user_to_set_superuser.is_superuser = True
         await user_to_set_superuser.save()
         return user_to_set_superuser
+
+@router.post("/users/remove_superuser/{uuid}", response_model=UserResponse)
+async def remove_superuser(uuid: UUID, superuser: User = Depends(require_superuser)) -> User:
+    """
+    Remove a user as a superuser
+
+    Requires superuser access
+
+    Parameters:
+        uuid (uuid): The uuid of the user to remove as a superuser
+
+    Returns:
+        User: The user that was removed as a superuser
+    """
+    user_to_remove_superuser: User | None = await User.get_or_none(uuid=uuid)
+
+    if not user_to_remove_superuser:
+        raise HTTPException(status_code=404, detail="User not found")
+    else:
+        user_to_remove_superuser.is_superuser = False
+        await user_to_remove_superuser.save()
+        return user_to_remove_superuser
 
 @router.get("/auth/validate", response_model=UserResponse)
 async def validate_user(current_user: User = Depends(get_current_user)) -> User:

@@ -11,7 +11,7 @@
 	import { signOut, validateTokenOnline } from "$lib/utils/user";
 	import { onMount } from "svelte";
 	import Skeleton from "../ui/skeleton/skeleton.svelte";
-	import { getUserOrganizationsOrganizationMeListGet } from "$lib/api/organizations/organizations";
+	import { getUserOrganizationsOrganizationsMeListGet } from "$lib/api/organizations/organizations";
 
     let { handleNavigate, setUser } = $props();
 
@@ -37,7 +37,7 @@
         try {
             user = await validateTokenOnline();
             if (user) {
-                organizations = await getUserOrganizationsOrganizationMeListGet();
+                organizations = await getUserOrganizationsOrganizationsMeListGet();
             }
         } catch (error) {
             console.error(error);

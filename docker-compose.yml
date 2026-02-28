@@ -30,6 +30,8 @@ services:
       - .env
     depends_on:
       - postgres
+    volumes:
+      - /mnt/openscouting_db/uploads:/data/uploads
 
   caddy:
     image: caddy:2
@@ -39,6 +41,7 @@ services:
       - "443:443"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
+      - /mnt/openscouting_db/uploads:/data/uploads:ro
       - caddy_data:/data
       - caddy_config:/config
     depends_on:

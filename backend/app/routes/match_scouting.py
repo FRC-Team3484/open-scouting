@@ -1,13 +1,20 @@
+from collections import defaultdict
 import json
-from fastapi import APIRouter, HTTPException
+from uuid import UUID
+
+from fastapi import APIRouter, Depends, HTTPException
 from tortoise.exceptions import IntegrityError
 
+from ..dependencies import require_superuser
+from ..schemas.generic import MessageResponse
 from ..models import Event, MatchScoutingAnswer, MatchScoutingField, MatchScoutingSubmission, Season, User
-from ..schemas.match_scouting import MatchScoutingRequest, MatchScoutingResponse
-from ..utils import get_season
+from ..schemas.match_scouting import MatchScoutingRequest, MatchScoutingResponse, SubmissionResponse
+from ..utils import get_season, IS_DEV
+
 
 router: APIRouter = APIRouter(
     tags=["Match Scouting"],
+    include_in_schema=IS_DEV
 )
 
 @router.post("/scouting/submit", response_model=MatchScoutingResponse)
@@ -81,3 +88,49 @@ async def submit_match_scouting(
         match_type=submission.match_type,
         created_at=submission.created_at
     )
+
+@router.get("/scouting/submissions", response_model=list[SubmissionResponse])
+async def get_match_scouting_submissions(superuser = Depends(require_superuser)) -> list[SubmissionResponse]:
+    """
+    Get all match scouting submissions
+
+    Requires superuser access
+
+    Returns:
+        list[SubmissionResponse]: A list of all match scouting submissions
+    """
+    answers = defaultdict(int)
+
+    for submission_id in await MatchScoutingAnswer.all().values_list(
+        "submission_id", flat=True
+    ):
+        answers[submission_id] += 1
+
+    return [
+        SubmissionResponse(
+            uuid=submission.uuid,
+            event_name=submission.event.name,
+            event_code=submission.event.event_code,
+            team_number=submission.team_number,
+            match_number=submission.match_number,
+            match_type=submission.match_type,
+            answers=answers[submission.uuid],
+            created_at=submission.created_at
+        ) for submission in await MatchScoutingSubmission.all().select_related("event")
+    ]
+
+@router.delete("/scouting/submissions/delete/{submission_uuid}", response_model=MessageResponse)
+async def delete_match_scouting_submission(submission_uuid: UUID, superuser = Depends(require_superuser)) -> MessageResponse:
+    """
+    Delete a match scouting submission
+
+    Requires superuser access
+
+    Parameters:
+        submission_uuid (`UUID`): The UUID of the submission to delete
+
+    Returns:
+        MessageResponse: A message indicating that the submission was deleted
+    """
+    await MatchScoutingSubmission.filter(uuid=submission_uuid).delete()
+    return MessageResponse(message="Submission deleted")

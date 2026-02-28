@@ -6,3 +6,4 @@ __pycache__
 dev.db
 dev.db-*
 .xdp-dev.db-*
+/uploads

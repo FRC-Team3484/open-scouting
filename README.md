@@ -1,26 +1,31 @@
 <img src="repo/images/icon.png" align="right" width="128" />
 
-# Open Scouting
+<h1>Open Scouting</h1>
+
 **An open source application for easier scouting at FIRST Robotics competitions**
 
-**[Live Server](https://open-scouting-dev.nfoert.dev/) ● [Releases](https://github.com/FRC-Team3484/open-scouting/releases) ● [Issues](https://github.com/FRC-Team3484/open-scouting/issues) ● [Development branch](https://github.com/FRC-Team3484/open-scouting/tree/development) ● [Discord](https://discord.gg/M3wESZUP35)**
+**[Live Server](https://open-scouting-dev.nfoert.dev/) • [Releases](https://github.com/FRC-Team3484/open-scouting/releases) • [Issues](https://github.com/FRC-Team3484/open-scouting/issues) • [Discord](https://discord.gg/M3wESZUP35)**
 
-<a href="https://skillicons.dev">
-  <img src="https://skillicons.dev/icons?i=fastapi,svelte,tailwindcss,vite" />
+<a href="https://skills.syvixor.com">
+  <img src="https://skills.syvixor.com/api/icons?perline=15&i=svelte,vite,vitepwa,fastapi,tailwindcss,shadcnui&radius=60" />
 </a>
 
+---
+
+<img src="./repo/images/mockup.png">
 
 ## Features
-- Works on any device with a relatively modern web browser. No scouting specific tablets or computers are required, scouts can simply use their own phones
-- Remains functional completely offline, in case of poor or non-existent connection in the stands
-- Uses The Blue Alliance's API to grab match data allowing to quickly autofill team and match numbers when scouts specify what robot they're watching
-- One JSON file needs edited in order to set up the app for a new season, so no season-specific data is hardcoded. This allows Open Scouting to be functional for a new season almost immediately
-- Allow other teams to view and contribute data to the same server
-- Create custom events if events aren't listed on TBA
-- Keep backups of scouting reports locally, and keep track of used local storage
-- Supports collaborative pit scouting from multiple scouts or other teams
-- View match data in the data view that supports team summaries, charts, and sorting and filtering the data by team and by score values
-- Scouts can create an account to be able to favorite events and verify their scouting reports, but accounts are optional
+- Works on any relatively modern device, without needing scouting specific devices
+- Full offline support
+- Uses The Blue Alliance to automate parts of the scouting process
+- Quick, UI based scouting field editing, allowing instant season setup
+- Anyone can view and contribute data
+- Support for custom events if they're missing on The Blue Alliance
+- Collaborative pit scouting
+- Match data view with summaries and charts
+- Create an account for settings syncing
+- Admin panel for server management
+- Quick links to scouting at events
 
 ## Installation
 - Follow the steps in [Development Installation](/docs/development-installation.md) for how to get Open Scouting up and running locally for development or contributing
@@ -31,13 +36,11 @@ Contributions are welcome to this project! Please see the [issues](https://githu
 
 Additionally, there's a document explaining how to use several systems provided in the client that may be needed while adding new features [here](/docs/client-systems.md)
 
-When contributing, please fork this repository (ensure you uncheck the "Copy the `main` branch only" check box, this gives you access to the `development` branch with the latest changes)
+When contributing, please fork this repository (ensure you uncheck the "Copy the `main` branch only" check box, this gives you access to any of the upcoming version branches with the latest changes.)
 
-Next, create a new branch and implement your changes. You can install this project locally for testing by following the steps in [Development Installation](#development-installation). Once you've made your changes, please open a pull request into the `development` branch, and your changes will be reviewed and merged
+Next, create a new branch and implement your changes. You can install this project locally for testing by following the steps in [Development Installation](#development-installation). Once you've made your changes, please open a pull request into the next version branch, and your changes will be reviewed and merged
 
-Eventually, `development` will be merged into `main` and your changes will be released into production with a new release. Thanks for your contribution!
+Eventually, that version branch will be merged into `main` and your changes will be released into production with a new release. Thanks for your contribution!
 
 ## To-Do
 Please see the [roadmap](/docs/ROADMAP.md) for the currently planned out things that need to be completed. Additionally, see the [issues page](https://github.com/FRC-Team3484/open-scouting/issues) for any current bugs or features that need implemented, but aren't officially scheduled.
-
-See [To-Do](/docs/todo.md) for what still needs to be implemented for the `v2.0.0` redesign.

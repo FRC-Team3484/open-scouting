@@ -1,6 +1,6 @@
 <script lang="ts">
     import icon_rounded from "$lib/assets/icon_rounded.png"
-    import { env } from "$env/dynamic/public";
+	import { VERSION } from "$lib/utils/constants";
 
     import * as Drawer from "$lib/components/ui/drawer";
 	import { DotsThreeOutline, XCircle } from "phosphor-svelte";
@@ -19,7 +19,7 @@
                     <img src={icon_rounded} alt="Logo" class="w-24 h-24 aspect-square" />
                     <p class="text-2xl font-mono font-bold">Open Scouting</p>
                     <p>An open source application for easier scouting at FIRST robotics competitions</p>
-                    <p>Version <span class="font-mono">{env.PUBLIC_VERSION}</span></p>
+                    <p>Version <span class="font-mono">{VERSION}</span></p>
                 </div>
 
                 <Separator orientation="horizontal" />

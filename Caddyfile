@@ -1,6 +1,11 @@
 open-scouting-dev.nfoert.dev {
     encode zstd gzip
 
+    handle_path /uploads/* {
+        root * /data/uploads
+        file_server
+    }
+
     handle_path /api* {
         reverse_proxy backend:8000
     }

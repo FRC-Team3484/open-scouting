@@ -41,4 +41,9 @@ export default defineConfig({
 	build: {
 		sourcemap: false
 	},
+	server: {
+        proxy: {
+            "/uploads": "http://localhost:8000",
+        },
+    },
 });

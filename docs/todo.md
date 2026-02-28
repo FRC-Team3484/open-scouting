@@ -4,7 +4,7 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 
 ## `v2.0.0`
 - [x] Base frontend and backend
-- [ ] Admin page
+- [x] Admin page
   - [x] Manage Seasons
   - [x] Manage match scouting fields and game pieces
     - [x] Create and edit fields
@@ -12,12 +12,12 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [x] Manage pit scouting questions
     - [x] Create and edit questions
     - [x] Make reorderable
-  - [ ] Manage users
-  - [ ] Manage events
-  - [ ] Manage match scouting data
-  - [ ] Manage pit scouting data
-  - [ ] Archive match scouting fields or pit scouting questions when deleted
-  - [ ] Be able to make a season active in the admin page
+  - [x] Manage users
+  - [x] Manage events
+  - [x] Manage match scouting data
+  - [x] Manage pit scouting data
+  - [x] Archive match scouting fields or pit scouting questions when deleted
+  - [x] Be able to make a season active in the admin page
 - [x] Match scouting
   - [x] Render fields and be submittable
   - [x] Save match scouting data locally
@@ -56,17 +56,18 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [x] Fix frontend calls accordingly
 - [x] Create proper error pages (404 and 500)
 - [x] Create a changelog pop up and proper client/server versioning
-- [ ] Clean up frontend
-  - [ ] Make type-safe
-  - [ ] Organize imports
-  - [ ] Add comments
+- [ ] Remove experimental warning
 - [ ] Deprecate `open-scouting-utils` repo
 - [ ] Update doc in `FRC-Team3484/docs` for how to maintain Open Scouting
-- [ ] Update docs
+- [x] Update docs
 - [ ] Update `build-and-push.yml` to use the correct branch
+- [ ] Update new domain
 - [ ] Release `v2.0.0`
 
 ## `v2.1.0`
+- [ ] Compare match scouting data
+  - Compare any 6 teams
+  - Or compare data from teams in upcoming matches
 - [ ] Profile
   - [ ] Edit profile
   - [ ] Change password
@@ -77,6 +78,11 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [ ] Event page
   - [ ] Create a section on the home page to show ongoing events
   - [ ] Create a page to show all events
+- [ ] Clean up frontend
+  - [ ] Make type-safe
+  - [ ] Organize imports
+  - [ ] Add comments
+- [ ] Add a menu toggle for disabling any attempts to sync data
 
 ## `v2.2.0`
 - [ ] API key support
@@ -92,6 +98,8 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [ ] Import legacy match scouting data from v1.0.0
 
 ## `v2.3.0`
+- [ ] Support downloading and regularly syncing match scouting data for offline analysis
+- [ ] Use QR codes for syncing match scouting data to the head scout
 - [ ] Organizations
 
 ## `v2.4.0`
@@ -105,8 +113,8 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [x] Fix logo squashing on smaller screens
 - [x] When a new pit is created from multiple clients when pit scouting, make sure duplicate pits aren't created
 - [x] Multiple choice fields don't show options when match scouting
-- [ ] Boolean fields don't reset properly when match scouting
-- [ ] Multiple choice, choice, and boolean fields don't reset properly when match scouting
+- [x] Boolean fields don't reset properly when match scouting
+- [x] Multiple choice, choice, and boolean fields don't reset properly when match scouting
 - [x] Fields can't be edited in production
 - [x] Increase mobile readability
 - [x] Hide favorite events when not signed in
@@ -117,18 +125,24 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [x] Use empty profile pictures instead of ones from GitHub
 - [x] Make `BaseDialog` a Drawer on smaller screens
   - [x] Also properly handle scrolling in both the dialog and drawer
-- [ ] Have the application version hardcoded somewhere, instead of relying on the `.env`
+- [x] Have the application version hardcoded somewhere, instead of relying on the `.env`
 - [ ] Proper frontend data sync erroring
 - [ ] Document field presets
 - [ ] Update `phosphor-icons` and migrate to `Icon` suffixes
-- [ ] Bake the version string into the frontend and backend somewhere
+- [x] Bake the version string into the frontend and backend somewhere
 - [ ] Do the `ghcr.io` images needed to be marked as public?
 - [ ] Fallback for missing `localStorage` and `IndexedDB` (like incognito mode)
 - [x] Fix position to watch box when there's no data in TBA
 - [x] Fix iOS double click on `small_number` buttons
 - [x] Make boolean check boxes a switch instead
 - [x] Pit scouting boolean's never return true
-- [ ] Click the entirety of the collapsable list to expand and collapse it
-- [ ] Better mobile pit scouting experience
+- [x] Click the entirety of the collapsable list to expand and collapse it
+- [x] Better mobile pit scouting experience
 - [x] Fix view data button in the nav bar
-- [ ] Prevent devices from sleeping on pit scouting and match scouting pages
+- [x] Prevent devices from sleeping on pit scouting and match scouting pages
+- [x] When selecting a year that is not the current year, automatically mark "show past events" to true
+- [ ] Improve menu and drawer scrolling on mobile
+- [x] The event list covers the menu button on mobile
+- [x] Fix strange dnd zone error sometimes
+- [x] Dev mode `.env` flag
+- [x] Better organize internal routes

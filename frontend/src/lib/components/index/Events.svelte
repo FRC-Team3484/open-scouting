@@ -24,7 +24,7 @@
     let favorite_events: [] = $state([]);
 
     let search = $state("");
-    let showPastEvents = $state(false);
+    let showPastEvents = $derived(year != new Date().getFullYear());
 
     let user = $state(null);
 
@@ -52,7 +52,7 @@
     }
 
     async function getEvents() {
-        events = await db.event.toArray();
+        events = await db.event.where("year").equals(year).toArray();
     }
 
     onMount(async () => {

@@ -34,47 +34,52 @@
 
 <Card.Root class="w-auto min-w-64">
     <Card.Header>
-        <div class="flex flex-row gap-2 items-center justify-between flex-wrap">
-            <div class="flex flex-row gap-2 items-center">
-                {#if editable}
-                    <div class="text-muted-foreground" use:dragHandle>
-                        <DotsSixVertical weight="bold" />
-                    </div>
-                {/if}
-                <p>{section.name}</p>
-                {#if editable}
-                    <p class="text-sm opacity-80">{section.field_type}</p>
-                {/if}
+        <div class="flex flex-col gap-2 text-left">
+            <div class="flex flex-row gap-2 items-center justify-between flex-wrap">
+                <div class="flex flex-row gap-2 items-center">
+                    {#if editable}
+                        <div class="text-muted-foreground" use:dragHandle>
+                            <DotsSixVertical weight="bold" />
+                        </div>
+                    {/if}
+                    <p>{section.name}</p>
+                    {#if editable}
+                        <p class="text-sm opacity-80">{section.field_type}</p>
+                    {/if}
+                </div>
+                <div class="flex flex-row gap-2 items-center">
+                    {#if editable}
+                        <DropdownMenu.Root>
+                            <DropdownMenu.Trigger>
+                                <Button size="icon" variant="outline"><DotsThree weight="bold" /></Button>
+                            </DropdownMenu.Trigger>
+                            <DropdownMenu.Content class="w-56" align="start">
+                                <DropdownMenu.Label>Section Options</DropdownMenu.Label>
+                                <DropdownMenu.Group>
+                                    <DropdownMenu.Item onclick={editSection}><Pencil weight="bold" /> Edit</DropdownMenu.Item>
+                                    <DropdownMenu.Item onclick={deleteSection}><Trash weight="bold" /> Delete</DropdownMenu.Item>
+                                </DropdownMenu.Group>
+                                <DropdownMenu.Separator />
+                                <DropdownMenu.Group>
+                                    <DropdownMenu.Item onclick={() => {addFieldDialogOpen.set(true); addFieldParentUuid.set(section.uuid)}}><PlusCircle weight="bold" /> Add Field</DropdownMenu.Item>
+                                    <DropdownMenu.Item onclick={() => {addSectionDialogOpen.set(true); addSectionParentUuid.set(section.uuid)}}><FolderPlus weight="bold" /> Add Section</DropdownMenu.Item>
+                                </DropdownMenu.Group>
+                            </DropdownMenu.Content>
+                        </DropdownMenu.Root>
+                    {/if}
+                    <Button size="icon" variant="ghost" onclick={() => expanded = !expanded}>
+                        {#if expanded}
+                            <CaretDown weight="bold" />
+                        {:else}
+                            <CaretUp weight="bold" />
+                        {/if}
+                    </Button>
+                </div>
             </div>
 
-            <div class="flex flex-row gap-2 items-center">
-                {#if editable}
-                    <DropdownMenu.Root>
-                        <DropdownMenu.Trigger>
-                            <Button size="icon" variant="outline"><DotsThree weight="bold" /></Button>
-                        </DropdownMenu.Trigger>
-                        <DropdownMenu.Content class="w-56" align="start">
-                            <DropdownMenu.Label>Section Options</DropdownMenu.Label>
-                            <DropdownMenu.Group>
-                                <DropdownMenu.Item onclick={editSection}><Pencil weight="bold" /> Edit</DropdownMenu.Item>
-                                <DropdownMenu.Item onclick={deleteSection}><Trash weight="bold" /> Delete</DropdownMenu.Item>
-                            </DropdownMenu.Group>
-                            <DropdownMenu.Separator />
-                            <DropdownMenu.Group>
-                                <DropdownMenu.Item onclick={() => {addFieldDialogOpen.set(true); addFieldParentUuid.set(section.uuid)}}><PlusCircle weight="bold" /> Add Field</DropdownMenu.Item>
-                                <DropdownMenu.Item onclick={() => {addSectionDialogOpen.set(true); addSectionParentUuid.set(section.uuid)}}><FolderPlus weight="bold" /> Add Section</DropdownMenu.Item>
-                            </DropdownMenu.Group>
-                        </DropdownMenu.Content>
-                    </DropdownMenu.Root>
-                {/if}
-                <Button size="icon" variant="ghost" onclick={() => expanded = !expanded}>
-                    {#if expanded}
-                        <CaretDown weight="bold" />
-                    {:else}
-                        <CaretUp weight="bold" />
-                    {/if}
-                </Button>
-            </div>
+            {#if section.description}
+                <p class="text-sm text-muted-foreground">{section.description}</p>
+            {/if}
         </div>
     </Card.Header>
 

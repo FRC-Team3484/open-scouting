@@ -23,6 +23,7 @@
 		{ value: "number", label: "Number" },
 		{ value: "boolean", label: "Boolean" },
 		{ value: "choice", label: "Choice" },
+		{ value: "image", label: "Image" },
 	];
 	const selectedQuestionTypeLabel = $derived(
 		questionTypes.find((qt) => qt.value === $formData.field_type)?.label ?? "Select Question Type"
@@ -34,6 +35,7 @@
 	const defaultValues = {
 		season_uuid: seasonUuid,
 		name: "",
+		description: "",
 		field_type: "",
 		options: {
 			choices: [],
@@ -106,6 +108,17 @@
 				{/snippet}
 			</Form.Control>
 			<Form.Description>The name of the question</Form.Description>
+			<Form.FieldErrors />
+		</Form.Field>
+
+		<Form.Field {form} name="description">
+			<Form.Control>
+				{#snippet children({ props })}
+					<Label>Description</Label>
+					<Input {...props} bind:value={$formData.description} />
+				{/snippet}
+			</Form.Control>
+			<Form.Description>The description for the question</Form.Description>
 			<Form.FieldErrors />
 		</Form.Field>
 

@@ -1,6 +1,7 @@
 from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException
 
+from ..utils import IS_DEV
 from ..dependencies import get_current_user, require_user
 from ..models import Organization, OrganizationMember, User
 from ..schemas.generic import MessageResponse
@@ -10,9 +11,10 @@ from ..schemas.organizations import OrganizationMemberResponse, OrganizationRequ
 router: APIRouter = APIRouter(
     tags=["Organizations"],
     dependencies=[Depends(require_user)],
+    include_in_schema=IS_DEV
 )
 
-@router.post("/organization/create", response_model=OrganizationResponse)
+@router.post("/organizations/create", response_model=OrganizationResponse)
 async def create_organization(data: OrganizationRequest, current_user: User = Depends(get_current_user)) -> Organization:
     """
     Create a new organization
@@ -27,7 +29,7 @@ async def create_organization(data: OrganizationRequest, current_user: User = De
     await OrganizationMember.create(organization=organization, user=current_user, role="admin")
     return organization
 
-@router.get("/organization/all/list", response_model=list[OrganizationResponse])
+@router.get("/organizations/all/list", response_model=list[OrganizationResponse])
 async def get_organizations() -> list[OrganizationResponse]:
     """
     Get all organizations on the server
@@ -46,7 +48,7 @@ async def get_organizations() -> list[OrganizationResponse]:
         for organization in organizations
     ]
 
-@router.get("/organization/me/list", response_model=list[OrganizationResponse])
+@router.get("/organizations/me/list", response_model=list[OrganizationResponse])
 async def get_user_organizations(current_user: User = Depends(get_current_user)) -> list[OrganizationResponse]:
     """
     Get all organizations that the current user is a member of
@@ -70,7 +72,7 @@ async def get_user_organizations(current_user: User = Depends(get_current_user))
         for organization in organizations
     ]
 
-@router.get("/organization/{organization_uuid}", response_model=OrganizationResponse)
+@router.get("/organizations/{organization_uuid}", response_model=OrganizationResponse)
 async def get_organization(organization_uuid: UUID) -> Organization:
     """
     Get a specific organization
@@ -86,7 +88,7 @@ async def get_organization(organization_uuid: UUID) -> Organization:
         raise HTTPException(status_code=404, detail="Organization not found")
     return organization
 
-@router.delete("/organization/delete/{organization_uuid}", response_model=MessageResponse)
+@router.delete("/organizations/delete/{organization_uuid}", response_model=MessageResponse)
 async def delete_organization(organization_uuid: UUID, current_user: User = Depends(get_current_user)) -> dict[str, str]:
     """
     Delete a specific organization
@@ -104,7 +106,7 @@ async def delete_organization(organization_uuid: UUID, current_user: User = Depe
     await organization.delete()
     return {"message": "Organization deleted"}
 
-@router.get("/organization/{organization_uuid}/members", response_model=list[OrganizationMemberResponse])
+@router.get("/organizations/{organization_uuid}/members", response_model=list[OrganizationMemberResponse])
 async def get_organization_members(organization_uuid: UUID) -> list[OrganizationMemberResponse]:
     """
     Get all members of a specific organization

@@ -1,5 +1,5 @@
+from collections import defaultdict
 from datetime import datetime
-from mailbox import Message
 import os
 from uuid import UUID
 import httpx
@@ -9,11 +9,12 @@ from fastapi import APIRouter, Depends, HTTPException
 from ..dependencies import require_superuser
 from ..models import Event, Organization, PitScoutingAnswer, PitScoutingField, Season, TeamPit, User
 from ..schemas.generic import MessageResponse
-from ..schemas.pit_scouting import PitFieldResponse, PitFieldRequest, GetPitsForSeasonRequest, ReorderPitFieldsRequest, SubmitPitFieldAnswerRequest
-from ..utils import get_season
+from ..schemas.pit_scouting import AdminPitResponse, PitFieldResponse, PitFieldRequest, GetPitsForSeasonRequest, ReorderPitFieldsRequest, SubmitPitFieldAnswerRequest
+from ..utils import get_season, IS_DEV
 
 router: APIRouter = APIRouter(
     tags=["Pit Scouting"],
+    include_in_schema=IS_DEV
 )
 
 TBA_API_KEY = os.getenv("TBA_API_KEY")
@@ -39,13 +40,14 @@ async def get_pit_fields(season_uuid: UUID) -> list[PitFieldResponse]:
     """
     season: Season = await get_season(season_uuid)
 
-    fields: list[PitScoutingField] = await PitScoutingField.filter(season=season)
+    fields: list[PitScoutingField] = await PitScoutingField.filter(season=season, archived=False)
 
     return [
         PitFieldResponse(
             uuid=field.uuid,
             season=season.uuid,
             name=field.name,
+            description=field.description,
             field_type=field.field_type,
             options=field.options,
             order=field.order,
@@ -70,7 +72,7 @@ async def clear_pit_fields(season_uuid: UUID, superuser: User = Depends(require_
     """
     season: Season = await get_season(season_uuid)
 
-    await PitScoutingField.filter(season=season).delete()
+    await PitScoutingField.filter(season=season).update(archived=True)
     return {"message": "Fields cleared"}
 
 @router.post("/pits/fields/{season_uuid}/create", response_model=PitFieldResponse)
@@ -103,6 +105,7 @@ async def create_pit_field(
     field: PitScoutingField = await PitScoutingField.create(
         season=season,
         name=data.name,
+        description=data.description,
         field_type=data.field_type,
         options=data.options,
         order=data.order,
@@ -113,6 +116,7 @@ async def create_pit_field(
         uuid=field.uuid,
         season=season.uuid,
         name=field.name,
+        description=field.description,
         field_type=field.field_type,
         options=field.options,
         order=field.order,
@@ -155,6 +159,7 @@ async def edit_pit_field(
         organization = None
 
     field.name = data.name
+    field.description = data.description
     field.field_type = data.field_type
     field.options = data.options
     field.order = data.order
@@ -166,6 +171,7 @@ async def edit_pit_field(
         uuid=field.uuid,
         season=season.uuid,
         name=field.name,
+        description=field.description,
         field_type=field.field_type,
         options=field.options,
         order=field.order,
@@ -218,7 +224,8 @@ async def delete_pit_field(
     if not field:
         raise HTTPException(status_code=404, detail="Field not found")
 
-    await field.delete()
+    field.archived = True
+    await field.save()
 
     return MessageResponse(message="Field deleted")
 
@@ -352,3 +359,47 @@ async def submit_pit(
             print("Created answer", answer["uuid"], "for pit", pit.uuid, "and field", field.uuid)
 
     return {"message": "Pit submitted successfully"}
+
+@router.get("/pits/get", response_model=list[AdminPitResponse])
+async def get_all_pits(superuser = Depends(require_superuser)) -> list[AdminPitResponse]:
+    """
+    Get all pits
+
+    Requires superuser access
+
+    Returns:
+        list[AdminPitResponse]: A list of all pits
+    """
+    answers = defaultdict(int)
+
+    for pit_id in await PitScoutingAnswer.all().values_list(
+        "team_id", flat=True
+    ):
+        answers[pit_id] += 1
+
+    return [
+        AdminPitResponse(
+            uuid=pit.uuid, 
+            event_name=pit.event.name,
+            event_code=pit.event.event_code,
+            team_number=pit.team_number, 
+            answers=answers[pit.uuid],
+            created_at=pit.created_at
+        ) for pit in await TeamPit.all().select_related("event")
+    ]
+
+@router.delete("/pits/delete/{pit_uuid}", response_model=MessageResponse)
+async def delete_pit(pit_uuid: UUID, superuser = Depends(require_superuser)) -> MessageResponse:
+    """
+    Delete a pit
+
+    Requires superuser access
+
+    Parameters:
+        pit_uuid (`UUID`): The UUID of the pit to delete
+
+    Returns:
+        MessageResponse: A message indicating that the pit was deleted
+    """
+    await TeamPit.filter(uuid=pit_uuid).delete()
+    return MessageResponse(message="Pit deleted")

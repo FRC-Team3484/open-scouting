@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 	import { toast } from "svelte-sonner";
-	import { CheckCircle, PlusCircle, X } from "phosphor-svelte";
+	import { CheckCircle, PlusCircle, Trash } from "phosphor-svelte";
 	import { zod4Client } from "sveltekit-superforms/adapters";
 	import { superForm } from "sveltekit-superforms";
 
@@ -18,7 +18,7 @@
     import CustomDialog from "../generic/Dialog.svelte";
 
 	import { CreateSeasonSeasonsCreatePostBody } from "$lib/zod/seasons/seasons";
-	import { createSeasonSeasonsCreatePost, deleteSeasonSeasonsDeleteSeasonUuidDelete, getSeasonsSeasonsGet } from "$lib/api/seasons/seasons";
+	import { activateSeasonSeasonsActivateSeasonUuidPost, createSeasonSeasonsCreatePost, deleteSeasonSeasonsDeleteSeasonUuidDelete, getSeasonsSeasonsGet } from "$lib/api/seasons/seasons";
 	import type { SeasonResponse } from "$lib/api/model";
 
     let seasons: SeasonResponse[] = [];
@@ -68,6 +68,17 @@
         
     }
 
+    async function activateSeason(seasonUuid: string) {
+        await activateSeasonSeasonsActivateSeasonUuidPost(seasonUuid).then((response) => {
+            if (response.status !== 200) {
+                toast.error("Failed to activate season", { duration: 5000 });
+            } else {
+                toast.success("Season activated", { duration: 5000 });
+                fetchSeasons();
+            }
+        });
+    }
+
     async function fetchSeasons() {
         seasons = (await getSeasonsSeasonsGet()).data;
     }
@@ -98,7 +109,10 @@
                                 <p class="font-bold">{season.name}</p>
                                 <Separator orientation="vertical" />
                             </div>
-                            <Button size="icon" variant="destructive" onclick={() => {showDeleteDialog = true; selectedSeason = season}}><X weight="bold"/></Button>
+                            {#if !season.active}
+                                <Button size="sm" variant="outline" onclick={() => {activateSeason(season.uuid)}}><CheckCircle weight="bold"/> Activate</Button>
+                            {/if}
+                            <Button size="sm" variant="destructive" onclick={() => {showDeleteDialog = true; selectedSeason = season}}><Trash weight="bold"/> Delete</Button>
                         </div>
                     </Card.Content>
                 </Card.Root>

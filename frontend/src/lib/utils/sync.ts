@@ -1,5 +1,4 @@
 import { compare } from "semver-ts";
-import { env } from "$env/dynamic/public";
 import { menuState } from "$lib/stores/menu";
 import { changelogDialogOpen, changelogDialogVersion } from "$lib/stores/dialog"
 import { theBlueAllianceApiFetch } from "./api";
@@ -14,6 +13,7 @@ import { submitMatchScoutingScoutingSubmitPost } from "$lib/api/match-scouting/m
 import type { SeasonResponse, GamepieceResponse, PitFieldResponse, EventResponse, MatchScoutingRequest, SubmitPitFieldAnswerRequest, GetPitsForSeasonRequest } from "$lib/api/model";
 import { getServerStatusStatusGet } from "$lib/api/generic/generic";
 import { browser } from "$app/environment";
+import { VERSION } from "./constants";
 
 
 /**
@@ -288,27 +288,26 @@ async function getServerStatus() {
     await getServerStatusStatusGet().then((response) => {
         if (response.data) {
             const server_version: string | null = response.data.version;
-            const local_version: string = env.PUBLIC_VERSION;
 
             if (server_version !== null) {
-                if (compare(server_version, local_version) === 0) {
-                    console.info(`Open Scouting ${local_version} is up to date`);
+                if (compare(server_version, VERSION) === 0) {
+                    console.info(`Open Scouting ${VERSION} is up to date`);
 
-                } else if (compare(server_version, local_version) === 1) {
-                    console.warn(`Open Scouting Client ${local_version} is out of date. Server version is ${server_version}`);
+                } else if (compare(server_version, VERSION) === 1) {
+                    console.warn(`Open Scouting Client ${VERSION} is out of date. Server version is ${server_version}`);
 
-                } else if (compare(server_version, local_version) === -1) {
-                    console.warn(`Open Scouting Client ${local_version} is incompatible with the server. Server version is ${server_version}`);
+                } else if (compare(server_version, VERSION) === -1) {
+                    console.warn(`Open Scouting Client ${VERSION} is incompatible with the server. Server version is ${server_version}`);
                 }
 
                 const lastOpenedVersion = localStorage.getItem("version");
                 const showChangelogs = localStorage.getItem("showChangelogs");
 
-                if (lastOpenedVersion === null || lastOpenedVersion != local_version) {
-                    localStorage.setItem("version", local_version);
-                    if (showChangelogs === "true") {
+                if (lastOpenedVersion === null || lastOpenedVersion != VERSION) {
+                    localStorage.setItem("version", VERSION);
+                    if (showChangelogs === "true" || showChangelogs === null) {
                         changelogDialogOpen.set(true);
-                        changelogDialogVersion.set(local_version);
+                        changelogDialogVersion.set(VERSION);
                     }
                 }
 
