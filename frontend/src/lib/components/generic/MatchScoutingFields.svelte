@@ -186,6 +186,7 @@
         const body = {
             uuid: field.uuid,
             name: field.name,
+            description: field.description,
             season_uuid: season_uuid,
             field_type: field.field_type,
             stat_type: field.stat_type,

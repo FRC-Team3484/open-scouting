@@ -161,20 +161,46 @@ async def create_season_field(
 
     # When importing from a preset, uuid is provided
     if data.uuid != "" and data.uuid is not None:
-        field = await MatchScoutingField.create(
+        # Check if an existing archived field exists
+        existing_field = await MatchScoutingField.filter(
             uuid=data.uuid,
-            parent=parent,
-            season=season, 
-            name=data.name, 
-            description=data.description,
-            field_type=data.field_type, 
-            stat_type=data.stat_type, 
-            game_piece=game_piece, 
-            required=data.required, 
-            options=data.options, 
-            order=data.order, 
-            organization=organization
-        )
+            archived=True
+        ).first()
+
+        # If an existing archived field exists, edit it with the given data and unarchive it
+        if existing_field:
+            existing_field.parent = parent
+            existing_field.season = season
+            existing_field.name = data.name
+            existing_field.description = data.description if data.description is not None else ""
+            existing_field.field_type = data.field_type
+            existing_field.stat_type = data.stat_type
+            existing_field.game_piece = game_piece
+            existing_field.required = data.required
+            existing_field.options = data.options
+            existing_field.order = data.order
+            existing_field.organization = organization
+            existing_field.archived = False
+            await existing_field.save()
+
+            field = existing_field
+        
+        # Otherwise, create a new one
+        else:
+            field = await MatchScoutingField.create(
+                uuid=data.uuid,
+                parent=parent,
+                season=season, 
+                name=data.name, 
+                description=data.description,
+                field_type=data.field_type, 
+                stat_type=data.stat_type, 
+                game_piece=game_piece, 
+                required=data.required, 
+                options=data.options, 
+                order=data.order, 
+                organization=organization
+            )
     else:
         field = await MatchScoutingField.create(
             parent=parent,
