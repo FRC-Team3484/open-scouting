@@ -54,6 +54,7 @@
                     const body = {
                         season_uuid: season_uuid,
                         name: question.name,
+                        description: question.description,
                         field_type: question.field_type,
                         options: question.options ?? {
                             choices: [],

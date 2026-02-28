@@ -146,3 +146,4 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [x] Fix strange dnd zone error sometimes
 - [x] Dev mode `.env` flag
 - [x] Better organize internal routes
+- [ ] Restore archived pit scouting questions when importing presets
