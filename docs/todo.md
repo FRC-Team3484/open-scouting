@@ -56,9 +56,9 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [x] Fix frontend calls accordingly
 - [x] Create proper error pages (404 and 500)
 - [x] Create a changelog pop up and proper client/server versioning
-- [ ] Remove experimental warning
+- [x] Remove experimental warning
 - [x] Hide the organization box
-- [ ] Support `.heic` image uploads
+- [x] Support `.heic` image uploads
 - [ ] Deprecate `open-scouting-utils` repo
 - [ ] Update doc in `FRC-Team3484/docs` for how to maintain Open Scouting
 - [x] Update docs
@@ -85,6 +85,7 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [ ] Organize imports
   - [ ] Add comments
 - [ ] Add a menu toggle for disabling any attempts to sync data
+- [ ] Support storing pit scouting images in IndexedDB and upload them from there when not offline
 
 ## `v2.2.0`
 - [ ] API key support
