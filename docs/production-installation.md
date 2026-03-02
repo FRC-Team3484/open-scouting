@@ -19,4 +19,18 @@ docker compose pull
 docker compose up -d
 ```
 
-Finally, navigate to `<ip>/api/docs`, and run `/auth/signup`. The first user created on the server will be a superuser. Navigate to the admin page `(<ip>/admin)` and start by creating some seasons.
+Now, set up the initial superuser, replacing `<ip>` with the server's ip, and filling in your information. The first user created on the server will be a superuser.
+```bash
+curl -X POST https://<ip>/api/auth/signup \
+     -H "Content-Type: application/json" \
+     -d '{
+            "username": "username",
+            "email": "user@example.com",
+            "password": "string",
+            "confirm_password": "string",
+            "team_number": 0,
+            "display_name": "string"
+        }'
+```
+
+The server is now ready! Navigate to the admin page `(<ip>/admin)` and start by creating some seasons.
