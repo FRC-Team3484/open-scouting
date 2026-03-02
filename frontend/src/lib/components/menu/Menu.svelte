@@ -4,7 +4,7 @@
 
 	import Button from "../ui/button/button.svelte";
 	import Separator from "../ui/separator/separator.svelte";
-    import { ArrowRight, Article, Bug, CheckCircle, CircleNotch, Clock, DiscordLogo, FloppyDisk, GithubLogo, House, List, Moon, Notepad, Sun, Warning, X } from "phosphor-svelte";
+    import { Archive, ArrowRight, Article, Bug, CheckCircle, CircleNotch, Clock, DiscordLogo, FloppyDisk, GithubLogo, House, List, Moon, Notepad, Sun, Warning, X } from "phosphor-svelte";
 
 	import AboutDrawer from "./AboutDrawer.svelte";
 	import ManageDataDrawer from "./ManageDataDrawer.svelte";
@@ -108,10 +108,14 @@
             <div class="flex flex-row gap-2 flex-wrap">
                 <Drawer.Close><Button href="/start"><ArrowRight weight="bold" /> Start</Button></Drawer.Close>
                 <Drawer.Close><Button variant="outline" href="/"><House weight="bold" /> Home</Button></Drawer.Close>
+            </div>
+
+            <div class="flex flex-row gap-2 flex-wrap">
                 <Button variant="outline" href="https://discord.gg/M3wESZUP35"><DiscordLogo weight="bold" /> Discord</Button>
                 <Button variant="outline" href="https://github.com/FRC-Team3484/open-scouting"><GithubLogo weight="bold" /> Source Code</Button>
                 <Button variant="outline" href="https://github.com/FRC-Team3484/open-scouting/issues"><Bug weight="bold" /> Issues</Button>
                 <Button variant="outline" href="https://github.com/FRC-Team3484/open-scouting/releases"><Article weight="bold" /> Releases</Button>
+                <Button variant="outline" href="https://open-scouting.nfoert.dev"><Archive weight="bold" /> Legacy v1</Button>
             </div>
 
             <Separator orientation="horizontal" />
