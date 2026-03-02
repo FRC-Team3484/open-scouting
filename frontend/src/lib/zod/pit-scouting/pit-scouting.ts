@@ -25,7 +25,7 @@ export const GetPitFieldsPitsFieldsSeasonUuidGetResponseItem = zod.object({
   "uuid": zod.string().uuid(),
   "season": zod.string().uuid(),
   "name": zod.string(),
-  "description": zod.string(),
+  "description": zod.union([zod.string(),zod.null()]),
   "field_type": zod.string(),
   "options": zod.object({
   "choices": zod.array(zod.unknown())
@@ -77,7 +77,7 @@ export const CreatePitFieldPitsFieldsSeasonUuidCreatePostParams = zod.object({
 export const CreatePitFieldPitsFieldsSeasonUuidCreatePostBody = zod.object({
   "season_uuid": zod.string().uuid(),
   "name": zod.string(),
-  "description": zod.string(),
+  "description": zod.union([zod.string(),zod.null()]),
   "field_type": zod.string(),
   "options": zod.object({
   "choices": zod.array(zod.unknown())
@@ -90,7 +90,7 @@ export const CreatePitFieldPitsFieldsSeasonUuidCreatePostResponse = zod.object({
   "uuid": zod.string().uuid(),
   "season": zod.string().uuid(),
   "name": zod.string(),
-  "description": zod.string(),
+  "description": zod.union([zod.string(),zod.null()]),
   "field_type": zod.string(),
   "options": zod.object({
   "choices": zod.array(zod.unknown())
@@ -122,7 +122,7 @@ export const EditPitFieldPitsFieldsSeasonUuidEditFieldUuidPatchParams = zod.obje
 export const EditPitFieldPitsFieldsSeasonUuidEditFieldUuidPatchBody = zod.object({
   "season_uuid": zod.string().uuid(),
   "name": zod.string(),
-  "description": zod.string(),
+  "description": zod.union([zod.string(),zod.null()]),
   "field_type": zod.string(),
   "options": zod.object({
   "choices": zod.array(zod.unknown())
@@ -135,7 +135,7 @@ export const EditPitFieldPitsFieldsSeasonUuidEditFieldUuidPatchResponse = zod.ob
   "uuid": zod.string().uuid(),
   "season": zod.string().uuid(),
   "name": zod.string(),
-  "description": zod.string(),
+  "description": zod.union([zod.string(),zod.null()]),
   "field_type": zod.string(),
   "options": zod.object({
   "choices": zod.array(zod.unknown())

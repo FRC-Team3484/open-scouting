@@ -9,7 +9,7 @@ import type { PitFieldOptions } from './pitFieldOptions';
 export interface PitFieldRequest {
   season_uuid: string;
   name: string;
-  description: string;
+  description: string | null;
   field_type: string;
   options: PitFieldOptions;
   order: number;

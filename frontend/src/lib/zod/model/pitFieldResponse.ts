@@ -10,7 +10,7 @@ export interface PitFieldResponse {
   uuid: string;
   season: string;
   name: string;
-  description: string;
+  description: string | null;
   field_type: string;
   options: PitFieldOptions;
   order: number;

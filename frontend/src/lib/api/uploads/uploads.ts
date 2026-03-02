@@ -5,47 +5,47 @@
  * OpenAPI spec version: v2.0.0-alpha.6
  */
 import type {
-  BodyUploadImageUploadImagePost,
+  BodyUploadImagesUploadImagesPost,
   HTTPValidationError
 } from '.././model';
 
 import { customInstance } from '.././client';
 
 /**
- * @summary Upload Image
+ * @summary Upload Images
  */
-export type uploadImageUploadImagePostResponse200 = {
+export type uploadImagesUploadImagesPostResponse200 = {
   data: unknown
   status: 200
 }
 
-export type uploadImageUploadImagePostResponse422 = {
+export type uploadImagesUploadImagesPostResponse422 = {
   data: HTTPValidationError
   status: 422
 }
     
-export type uploadImageUploadImagePostResponseSuccess = (uploadImageUploadImagePostResponse200) & {
+export type uploadImagesUploadImagesPostResponseSuccess = (uploadImagesUploadImagesPostResponse200) & {
   headers: Headers;
 };
-export type uploadImageUploadImagePostResponseError = (uploadImageUploadImagePostResponse422) & {
+export type uploadImagesUploadImagesPostResponseError = (uploadImagesUploadImagesPostResponse422) & {
   headers: Headers;
 };
 
-export type uploadImageUploadImagePostResponse = (uploadImageUploadImagePostResponseSuccess | uploadImageUploadImagePostResponseError)
+export type uploadImagesUploadImagesPostResponse = (uploadImagesUploadImagesPostResponseSuccess | uploadImagesUploadImagesPostResponseError)
 
-export const getUploadImageUploadImagePostUrl = () => {
+export const getUploadImagesUploadImagesPostUrl = () => {
 
 
   
 
-  return `/upload/image`
+  return `/upload/images`
 }
 
-export const uploadImageUploadImagePost = async (bodyUploadImageUploadImagePost: BodyUploadImageUploadImagePost, options?: RequestInit): Promise<uploadImageUploadImagePostResponse> => {
+export const uploadImagesUploadImagesPost = async (bodyUploadImagesUploadImagesPost: BodyUploadImagesUploadImagesPost, options?: RequestInit): Promise<uploadImagesUploadImagesPostResponse> => {
     const formData = new FormData();
-formData.append(`file`, bodyUploadImageUploadImagePost.file);
+bodyUploadImagesUploadImagesPost.files.forEach(value => formData.append(`files`, value));
 
-  return customInstance<uploadImageUploadImagePostResponse>(getUploadImageUploadImagePostUrl(),
+  return customInstance<uploadImagesUploadImagesPostResponse>(getUploadImagesUploadImagesPostUrl(),
   {      
     ...options,
     method: 'POST'
