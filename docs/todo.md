@@ -67,6 +67,8 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [ ] Release `v2.0.0`
 
 ## `v2.1.0`
+- [ ] Data view event filtering is not working
+- [ ] Restore archived pit scouting questions when importing presets
 - [ ] Compare match scouting data
   - Compare any 6 teams
   - Or compare data from teams in upcoming matches
@@ -130,7 +132,7 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
   - [x] Also properly handle scrolling in both the dialog and drawer
 - [x] Have the application version hardcoded somewhere, instead of relying on the `.env`
 - [ ] Proper frontend data sync erroring
-- [ ] Document field presets
+- [x] Document field presets
 - [ ] Update `phosphor-icons` and migrate to `Icon` suffixes
 - [x] Bake the version string into the frontend and backend somewhere
 - [ ] Do the `ghcr.io` images needed to be marked as public?
@@ -149,4 +151,3 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [x] Fix strange dnd zone error sometimes
 - [x] Dev mode `.env` flag
 - [x] Better organize internal routes
-- [ ] Restore archived pit scouting questions when importing presets
