@@ -57,6 +57,8 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [x] Create proper error pages (404 and 500)
 - [x] Create a changelog pop up and proper client/server versioning
 - [ ] Remove experimental warning
+- [x] Hide the organization box
+- [ ] Support `.heic` image uploads
 - [ ] Deprecate `open-scouting-utils` repo
 - [ ] Update doc in `FRC-Team3484/docs` for how to maintain Open Scouting
 - [x] Update docs

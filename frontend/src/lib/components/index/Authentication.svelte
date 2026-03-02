@@ -82,7 +82,7 @@
                 {:else if user}
                     <p class="text-lg">Signed in as <strong>{user.username}</strong></p>
 
-                    {#if organizations === null}
+                    <!-- {#if organizations === null}
                         <Skeleton class="w-1/2" />
                     {:else if organizations.length === 0}
 
@@ -106,7 +106,7 @@
                                 </Select.Content>
                             </Select.Root>
                         </div>
-                    {/if}
+                    {/if} -->
                 {:else}
                     <p>Not signed in</p>
                 {/if}
