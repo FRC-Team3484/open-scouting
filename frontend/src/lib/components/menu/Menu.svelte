@@ -8,7 +8,7 @@
 
 	import AboutDrawer from "./AboutDrawer.svelte";
 	import ManageDataDrawer from "./ManageDataDrawer.svelte";
-    import * as Drawer from "$lib/components/ui/drawer";
+    import * as Sheet from "$lib/components/ui/sheet";
 
 	import { menuState } from "$lib/stores/menu";
 	import User from "../generic/User.svelte";
@@ -46,34 +46,34 @@
     });
 </script>
 
-<Button
-    variant="outline"
-    class={`fixed bottom-2 right-2 z-999 !aspect-square !rounded-full md:!w-16 md:!h-16 !w-10 !h-10 backdrop-blur-lg ${$menuState.state === "warning" ? "!bg-amber-500/30 !border-amber-700" : ""}`}
-    onclick={() => menu_open = true}
->
-    {#key $menuState.state}
-        <div transition:fade|local={{ duration: 150 }}>
-            {#if $menuState.state === "ready"}
-                <List weight="bold" class="md:!w-8 md:!h-8 !w-6 !h-6" />
-            {:else if $menuState.state === "loading"}
-                <CircleNotch weight="bold" class="animate-spin md:!w-6 md:!h-6 !w-4 !h-4" />
-            {:else if $menuState.state === "warning"}
-                <Warning weight="bold" class="animate-pulse md:!w-6 md:!h-6 !w-4 !h-4" />
-            {/if}
-        </div>
-    {/key}
-</Button>
+{#if !menu_open}
+    <Button
+        variant="outline"
+        class={`fixed bottom-2 right-2 z-999 !aspect-square !rounded-full md:!w-16 md:!h-16 !w-10 !h-10 backdrop-blur-lg ${$menuState.state === "warning" ? "!bg-amber-500/30 !border-amber-700" : ""}`}
+        onclick={() => menu_open = true}
+    >
+        {#key $menuState.state}
+            <div transition:fade|local={{ duration: 150 }}>
+                {#if $menuState.state === "ready"}
+                    <List weight="bold" class="md:!w-8 md:!h-8 !w-6 !h-6" />
+                {:else if $menuState.state === "loading"}
+                    <CircleNotch weight="bold" class="animate-spin md:!w-6 md:!h-6 !w-4 !h-4" />
+                {:else if $menuState.state === "warning"}
+                    <Warning weight="bold" class="animate-pulse md:!w-6 md:!h-6 !w-4 !h-4" />
+                {/if}
+            </div>
+        {/key}
+    </Button>
+{/if}
 
 
-<Drawer.Root shouldScaleBackground={false} bind:open={menu_open}>
-    <Drawer.Content class="h-auto lg:mx-64 border-1 p-4 md:pb-16">
+<Sheet.Root bind:open={menu_open}>
+    <Sheet.Content class="max-h-[80vh] overflow-y-scroll lg:mx-64 border-1 p-4 rounded-t-lg" side="bottom">
         <div class="flex flex-col gap-4 mt-4 overflow-y-scroll pr-2">
             <div class="flex flex-row gap-4 justify-between items-center">
                 <div class="flex flex-row gap-2 items-center">
                     <User show_text={true} />
                 </div>
-
-                <Drawer.Close><Button variant="outline" size="icon" class="!p-6 rounded-full"><X weight="bold" class="!w-6 !h-6"/></Button></Drawer.Close>
             </div>
 
             {#if $menuState.status}
@@ -106,8 +106,8 @@
             <Separator orientation="horizontal" />
 
             <div class="flex flex-row gap-2 flex-wrap">
-                <Drawer.Close><Button href="/start"><ArrowRight weight="bold" /> Start</Button></Drawer.Close>
-                <Drawer.Close><Button variant="outline" href="/"><House weight="bold" /> Home</Button></Drawer.Close>
+                <Sheet.Close><Button href="/start"><ArrowRight weight="bold" /> Start</Button></Sheet.Close>
+                <Sheet.Close><Button variant="outline" href="/"><House weight="bold" /> Home</Button></Sheet.Close>
             </div>
 
             <div class="flex flex-row gap-2 flex-wrap">
@@ -120,11 +120,11 @@
 
             <Separator orientation="horizontal" />
 
-            <div class="flex flex-col gap-4">
+            <div class="flex flex-col gap-4 mb-12">
                 <Button variant="outline" onclick={() => {$changelogDialogOpen = true; menu_open = false}}><Notepad weight="bold" /> Changelog</Button>
                 <ManageDataDrawer/>
                 <AboutDrawer />
             </div>
         </div>
-    </Drawer.Content>
-</Drawer.Root>
+    </Sheet.Content>
+</Sheet.Root>

@@ -1,11 +1,11 @@
 <script lang="ts">
 	import Button from "../ui/button/button.svelte";
 	import Logo from "./Logo.svelte";
-    import * as Drawer from "$lib/components/ui/drawer/index.js";
-	import { ArrowRight, List, X } from "phosphor-svelte";
+	import { ArrowRight, List } from "phosphor-svelte";
 	import Separator from "../ui/separator/separator.svelte";
 	import User from "./User.svelte";
 	import ExperimentalWarning from "./ExperimentalWarning.svelte";
+    import * as Sheet from "$lib/components/ui/sheet/index.js";
 </script>
 
 <div class="hidden md:flex fixed top-0 left-0 right-0 w-full h-24 flex-row justify-between items-center border-1 bg-card/50 border-accent rounded-b-lg backdrop-blur-lg p-2 z-10">
@@ -30,28 +30,27 @@
 
 <div class="flex md:hidden fixed top-0 left-0 right-0 w-full h-16 flex-row justify-between items-center border-1 bg-background/50 border-accent rounded-b-lg backdrop-blur-lg p-2 z-10">
     <div class="flex flex-row gap-2 items-center">
-        <Drawer.Root shouldScaleBackground={false} direction="left">
-            <Drawer.Trigger class="p-2 text-md border-1 border-border rounded-md bg-input/30">
+        <Sheet.Root>
+            <Sheet.Trigger class="p-2 text-md border-1 border-border rounded-md bg-input/30">
                 <List weight="bold"/>
-            </Drawer.Trigger>
-            <Drawer.Content class="flex flex-col gap-4 p-4 justify-between">
+            </Sheet.Trigger>
+            <Sheet.Content class="flex flex-col gap-4 p-4 justify-between" side="left">
                 <div class="flex flex-col gap-4">
                     <div class="flex flex-row gap-4 items-center justify-between">
                         <Logo text={false} style="tiny" href="/" />
-                        <Drawer.Close><Button variant="outline" size="icon"><X weight="bold"/></Button></Drawer.Close>
                     </div>
                     <div class="flex flex-row gap-4 items-center">
                         <User show_text={true} />
                     </div>
                     <Separator orientation="horizontal" />
-                    <Drawer.Close><Button variant="outline" href="/" class="w-full">Home</Button></Drawer.Close>
-                    <Drawer.Close><Button variant="outline" href="/data" class="w-full">View Data</Button></Drawer.Close>
-                    <!-- <Drawer.Close><Button variant="outline" href="/" class="w-full" disabled>Events</Button></Drawer.Close> -->
+                    <Sheet.Close><Button variant="outline" href="/" class="w-full">Home</Button></Sheet.Close>
+                    <Sheet.Close><Button variant="outline" href="/data" class="w-full">View Data</Button></Sheet.Close>
+                    <!-- <Sheet.Close><Button variant="outline" href="/" class="w-full" disabled>Events</Button></Sheet.Close> -->
                 </div>
 
                 <ExperimentalWarning/>
-            </Drawer.Content>
-        </Drawer.Root>
+            </Sheet.Content>
+        </Sheet.Root>
         <ExperimentalWarning size="sm" />
     </div>
 

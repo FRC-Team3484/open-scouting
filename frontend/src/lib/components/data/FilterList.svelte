@@ -1,12 +1,11 @@
 <script lang="ts">
-    import * as Popover from "$lib/components/ui/popover/index.js";
-    import * as Drawer from "$lib/components/ui/drawer/index.js";
 	import { onMount } from "svelte";
 	import Button from "../ui/button/button.svelte";
-	import { PlusCircle, Trash, X, XCircle } from "phosphor-svelte";
+	import { PlusCircle, Trash, X } from "phosphor-svelte";
 	import Input from "../ui/input/input.svelte";
 	import Separator from "../ui/separator/separator.svelte";
 	import { browser } from "$app/environment";
+	import BaseDialog from "../generic/dialogs/BaseDialog.svelte";
 
     let { filterTitle, values, labels, selected = $bindable([]) } = $props();
 
@@ -47,11 +46,6 @@
 
 {#snippet filters()}
     <div class="flex flex-col gap-2 overflow-y-scroll">
-        <div class="flex flex-row gap-2 items-center justify-between">
-            <p class="font-bold">{filterTitle}</p>
-            <Button size="icon-sm" variant="outline" onclick={() => open = false}><XCircle weight="bold" /></Button>
-        </div>
-
         <div class="flex flex-row gap-2">
             <Input type="text" placeholder="Search..." bind:value={search} />
             <Button size="icon-sm" variant="outline" onclick={() => search = ""} ><Trash weight="bold" /></Button>
@@ -72,27 +66,11 @@
 {/snippet}
 
 <div class="flex flex-row gap-2 max-h-screen max-w-screen flex-wrap items-center">
-    {#if isDesktop}
-        <Popover.Root bind:open>
-            <Popover.Trigger>
-                <Button variant="outline"><PlusCircle weight="bold" /> Add</Button>
-            </Popover.Trigger>
+    <Button variant="outline" onclick={() => open = true}><PlusCircle weight="bold" /> Add</Button>
 
-            <Popover.Content>
-                {@render filters()}
-            </Popover.Content>
-        </Popover.Root>
-    {:else}
-        <Drawer.Root bind:open>
-            <Drawer.Trigger>
-                <Button variant="outline"><PlusCircle weight="bold" /> Add</Button>
-            </Drawer.Trigger>
-
-            <Drawer.Content class="p-4">
-                {@render filters()}
-            </Drawer.Content>
-        </Drawer.Root>
-    {/if}
+    <BaseDialog bind:open={open} title="Add {filterTitle}" description="Select an item to add">
+        {@render filters()}
+    </BaseDialog>
     
     {#each selected as value}
         <Button variant="outline" size="sm" onclick={() => deleteItem(value)} ><X weight="bold" /> {labels[values.indexOf(value)]}</Button>

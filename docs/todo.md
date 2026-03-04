@@ -59,7 +59,7 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [x] Remove experimental warning
 - [x] Hide the organization box
 - [x] Support `.heic` image uploads
-- [ ] Deprecate `open-scouting-utils` repo
+- [x] Deprecate `open-scouting-utils` repo
 - [ ] Update doc in `FRC-Team3484/docs` for how to maintain Open Scouting
 - [x] Update docs
 - [x] Update `build-and-push.yml` to use the correct branch
@@ -146,7 +146,7 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [x] Fix view data button in the nav bar
 - [x] Prevent devices from sleeping on pit scouting and match scouting pages
 - [x] When selecting a year that is not the current year, automatically mark "show past events" to true
-- [ ] Improve menu and drawer scrolling on mobile
+- [x] Improve menu and drawer scrolling on mobile
 - [x] The event list covers the menu button on mobile
 - [x] Fix strange dnd zone error sometimes
 - [x] Dev mode `.env` flag
