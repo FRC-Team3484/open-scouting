@@ -7,7 +7,8 @@
 	import { onMount, tick } from "svelte";
 
     // Page should be loaded like /?year=2025&event_codes=paca,ohcl&team_numbers=1234,3484
-    let filters = $state({year: 0, event_codes: [], team_numbers: []})
+    let filters = $state({year: 0, event_codes: [], team_numbers: []});
+    let mode: "all" | "compare" = $state("all");
 
     function setUrlParams() {
         const url = new URL(window.location.href);
@@ -62,13 +63,18 @@
 </script>
 
 <PageContainer>
-    <div class="lg:flex lg:flex-col lg:overflow-y-scroll">
-        <Header />
+    <Header bind:mode />
+    {#if mode === "all"}
+        <div class="lg:flex lg:flex-col lg:overflow-y-scroll">
+            <div class="flex flex-col lg:flex-row lg:gap-4 lg:items-start">
+                <Filters bind:filters={filters} />
 
-        <div class="flex flex-col lg:flex-row lg:gap-4 lg:items-start">
-            <Filters bind:filters={filters} />
-
-            <DataManager filters={filters} />
+                <DataManager filters={filters} />
+            </div>
         </div>
-    </div>
+    {:else if mode === "compare"}
+        <div class="lg:flex lg:flex-col lg:overflow-y-scroll">
+            <p>Coming soon</p>
+        </div>
+    {/if}
 </PageContainer>
