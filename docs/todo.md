@@ -151,3 +151,4 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [x] Fix strange dnd zone error sometimes
 - [x] Dev mode `.env` flag
 - [x] Better organize internal routes
+- [ ] When a user creates data on the server, make sure that user is quoted as the creator for abuse or spam tracking
