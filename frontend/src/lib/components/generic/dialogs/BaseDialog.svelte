@@ -2,7 +2,7 @@
 	import { browser } from "$app/environment";
 	import { onMount } from "svelte";
 	import * as Dialog from "$lib/components/ui/dialog/index.js";
-    import * as Drawer from "$lib/components/ui/drawer/index.js";
+    import * as Sheet from "$lib/components/ui/sheet/index.js";
 
     let { title = "", description = "", open = $bindable(false), onOpenChange = $bindable(() => {}), children } = $props();
 
@@ -41,14 +41,14 @@
         </Dialog.Content>
     </Dialog.Root>
 {:else}
-    <Drawer.Root bind:open onOpenChangeComplete={onOpenChange}>
-        <Drawer.Content class="p-4">
-            <Drawer.Header>
-                <Drawer.Title>{title}</Drawer.Title>
-                <Drawer.Description>{description}</Drawer.Description>
-            </Drawer.Header>
+    <Sheet.Root bind:open onOpenChangeComplete={onOpenChange}>
+        <Sheet.Content class="max-h-[80vh] overflow-y-scroll lg:mx-64 border-1 p-4 rounded-t-lg" side="bottom">
+            <Sheet.Header>
+                <Sheet.Title>{title}</Sheet.Title>
+                <Sheet.Description>{description}</Sheet.Description>
+            </Sheet.Header>
             
             {@render content()}
-        </Drawer.Content>
-    </Drawer.Root>
+        </Sheet.Content>
+    </Sheet.Root>
 {/if}

@@ -175,4 +175,6 @@ async def delete_team_pits(event_uuid: UUID, superuser = Depends(require_superus
         MessageResponse: A message indicating that the team pits were deleted
     """
     await TeamPit.filter(event_id=event_uuid).delete()
+    await Event.filter(uuid=event_uuid).update(pits_generated=False)
+    
     return MessageResponse(message="Team pits deleted")

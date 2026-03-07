@@ -1,6 +1,12 @@
 <img src="repo/images/icon.png" align="right" width="128" />
 
-<h1>Open Scouting</h1>
+<div id="toc">
+  <ul style="list-style: none; padding-left: 0px;">
+    <summary>
+      <h1>Open Scouting</h1>
+    </summary>
+  </ul>
+</div>
 
 **An open source application for easier scouting at FIRST Robotics competitions**
 

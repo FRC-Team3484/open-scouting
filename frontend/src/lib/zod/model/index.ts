@@ -9,6 +9,7 @@ export * from './adminEventResponse';
 export * from './adminPitResponse';
 export * from './baseSettings';
 export * from './bodyLoginForAccessTokenTokenPost';
+export * from './bodyUploadImagesUploadImagesPost';
 export * from './bodyUploadImageUploadImagePost';
 export * from './createPitFieldRequest';
 export * from './customEventRequest';

@@ -4,10 +4,10 @@
 	import { db } from "$lib/utils/db";
     import Badge from "$lib/components/ui/badge/badge.svelte";
     import * as Card from "$lib/components/ui/card/index.js";
-    import { ArrowBendDownRight, ArrowBendLeftUp, Calendar, Eye, PlusCircle, User, X } from "phosphor-svelte";
+    import { ArrowBendDownRight, ArrowBendLeftUp, Calendar, CircleNotch, Eye, PlusCircle, UploadSimple, User, X } from "phosphor-svelte";
     import { slide } from "svelte/transition";
-	import { uploadImageUploadImagePost } from "$lib/api/uploads/uploads";
-	import type { BodyUploadImageUploadImagePost } from "$lib/api/model";
+	import { uploadImagesUploadImagesPost } from "$lib/api/uploads/uploads";
+	import type { BodyUploadImagesUploadImagesPost, BodyUploadImageUploadImagePost } from "$lib/api/model";
 	import { toast } from "svelte-sonner";
 	import { env } from "$env/dynamic/public";
 
@@ -17,36 +17,48 @@
     let mode: Mode = $state("none");
 
     let value = $state("");
-    let file: FileList | null = $state(null);
+    let files: FileList | null = $state(null);
+    let uploading: boolean = $state(false);
 
     function reset() {
         mode = "none";
         value = "";
-        file = null;
+        files = null;
     }
 
     async function uploadImage() {
-        if (!file || file.length === 0) return;
+        if (!files || files.length === 0) return;
 
-        const uploadFile = file[0];
+        const uploadFile = Array.from(files);
 
-        const body: BodyUploadImageUploadImagePost = {
-            file: uploadFile
+        const body: BodyUploadImagesUploadImagesPost = {
+            files: uploadFile
         }
 
-        await uploadImageUploadImagePost(body).then((response) => {
+        uploading = true;
+        await uploadImagesUploadImagesPost(body).then(async (response) => {
             if (response.status !== 200) {
-                toast.error("Failed to upload image", { duration: 5000 });
+                toast.error("Failed to upload image", { duration: 5000, description: response.data.detail });
             } else {
-                addAnswer(response.data.url);
+                toast.success(`Uploaded ${response.data.count} images`, { duration: 5000 });
+
+                await addAnswers(response.data.files.map((f) => f.url));
             }
         });
+        uploading = false;
     }
 
-    async function addAnswer(imageUrl: string) {
-        const newAnswer = { uuid: crypto.randomUUID(), value: imageUrl, username: user?.username ?? "guest", field_uuid: question.uuid, created_at: new Date().toISOString() }
+    async function addAnswers(imageUrls: string[]) {
+        const newAnswers = imageUrls.map(imageUrl => ({
+            uuid: crypto.randomUUID(),
+            value: imageUrl,
+            username: user?.username ?? "guest",
+            field_uuid: question.uuid,
+            created_at: new Date().toISOString()
+        }));
+
         await db.pit_scouting.update(pit.uuid, {
-            answers: [...pit.answers, newAnswer],
+            answers: [...pit.answers, ...newAnswers],
             synced: false
         });
         console.log("updated", pit.uuid)
@@ -78,8 +90,14 @@
     {#if mode == "add"}
         <Card.Content>
             <div class="flex flex-col gap-2 items-start w-full" transition:slide>
-                <Input id="picture" type="file" bind:files={file} />
-                <Button size="sm" onclick={uploadImage} disabled={file == null}>Upload</Button>
+                <Input id="picture" type="file" bind:files={files} accept="image/*" multiple />
+                <Button size="sm" onclick={uploadImage} disabled={files == null || uploading}>
+                    {#if uploading}
+                        <CircleNotch class="animate-spin" size={22} />
+                    {:else}
+                        <UploadSimple weight="bold" /> Upload
+                    {/if}
+                </Button>
             </div>
         </Card.Content>
 

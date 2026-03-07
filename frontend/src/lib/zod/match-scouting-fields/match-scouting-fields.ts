@@ -64,7 +64,7 @@ export const CreateSeasonFieldFieldsSeasonSeasonUuidCreatePostParams = zod.objec
 export const CreateSeasonFieldFieldsSeasonSeasonUuidCreatePostBody = zod.object({
   "uuid": zod.union([zod.string().uuid(),zod.null()]).optional(),
   "name": zod.string(),
-  "description": zod.string(),
+  "description": zod.union([zod.string(),zod.null()]),
   "season_uuid": zod.string().uuid(),
   "field_type": zod.string(),
   "stat_type": zod.string(),
@@ -85,7 +85,7 @@ export const CreateSeasonFieldFieldsSeasonSeasonUuidCreatePostBody = zod.object(
 export const CreateSeasonFieldFieldsSeasonSeasonUuidCreatePostResponse = zod.object({
   "uuid": zod.union([zod.string().uuid(),zod.null()]).optional(),
   "name": zod.string(),
-  "description": zod.string(),
+  "description": zod.union([zod.string(),zod.null()]),
   "field_type": zod.string(),
   "stat_type": zod.string(),
   "game_piece_uuid": zod.union([zod.string().uuid(),zod.null()]).optional(),
@@ -123,7 +123,7 @@ export const EditSeasonFieldFieldsSeasonSeasonUuidEditFieldUuidPostParams = zod.
 export const EditSeasonFieldFieldsSeasonSeasonUuidEditFieldUuidPostBody = zod.object({
   "uuid": zod.union([zod.string().uuid(),zod.null()]).optional(),
   "name": zod.string(),
-  "description": zod.string(),
+  "description": zod.union([zod.string(),zod.null()]),
   "season_uuid": zod.string().uuid(),
   "field_type": zod.string(),
   "stat_type": zod.string(),
@@ -144,7 +144,7 @@ export const EditSeasonFieldFieldsSeasonSeasonUuidEditFieldUuidPostBody = zod.ob
 export const EditSeasonFieldFieldsSeasonSeasonUuidEditFieldUuidPostResponse = zod.object({
   "uuid": zod.union([zod.string().uuid(),zod.null()]).optional(),
   "name": zod.string(),
-  "description": zod.string(),
+  "description": zod.union([zod.string(),zod.null()]),
   "field_type": zod.string(),
   "stat_type": zod.string(),
   "game_piece_uuid": zod.union([zod.string().uuid(),zod.null()]).optional(),

@@ -254,8 +254,6 @@ async function fetchPitScoutingData(event_data, season_uuid) {
 
     const pitDataRequest = (await getPitsPitsGetSeasonUuidPost(season_uuid, body)).data;
 
-    console.log(body)
-
     for (const pit of pitDataRequest) {
         const pit_in_db = await db.pit_scouting.get(pit.uuid);
         const synced = pit_in_db ? pit_in_db.synced : true;
