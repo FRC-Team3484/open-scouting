@@ -1,15 +1,16 @@
-open-scouting.nfoert.dev {
+open-scouting.shortcircuitfirst.org {
+    encode zstd gzip
 
-    encode gzip zstd
-
-    # Serve Django static files
-    handle_path /static/* {
-        root * /usr/src/app/staticfiles
+    handle_path /uploads/* {
+        root * /data/uploads
         file_server
     }
 
-    # Everything else → Django (Gunicorn)
+    handle_path /api* {
+        reverse_proxy backend:8000
+    }
+
     handle {
-        reverse_proxy web:8000
+        reverse_proxy frontend:3000
     }
 }

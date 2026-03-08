@@ -1,113 +1,66 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-      {
-        "label": "Start server",
-        "type": "shell",
-        "command": "source .venv/bin/activate && cd scouting && python manage.py runserver",
-        "presentation": {
-          "reveal": "always",
-          "panel": "new"
-        },
-        "runOptions": {
-          "runOn": "folderOpen"
-        },
-        "problemMatcher": [],
-        "windows": {
-          "command": ".venv\\Scripts\\activate && cd scouting && python manage.py runserver"
-        },
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Start FastAPI Backend",
+      "type": "shell",
+      "command": "source ./.venv/bin/activate && uvicorn app.main:app --reload",
+      "options": {
+        "cwd": "${workspaceFolder}/backend"
       },
-      {
-        "label": "Start server (external)",
-        "type": "shell",
-        "command": "source .venv/bin/activate && cd scouting && python manage.py runserver 192.168.1.103:1111",
-        "presentation": {
-          "reveal": "always",
-          "panel": "new"
-        },
-        "problemMatcher": [],
-        "windows": {
-          "command": ".venv\\Scripts\\activate && cd scouting && python manage.py runserver 192.168.1.103:1111"
-        },
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always"
       },
-      {
-        "label": "Migrate models",
-        "type": "shell",
-        "command": "source .venv/bin/activate && cd scouting && python manage.py makemigrations && python manage.py migrate",
-        "presentation": {
-          "reveal": "always",
-          "panel": "new"
-        },
-        "problemMatcher": [],
-        "windows": {
-          "command": ".venv\\Scripts\\activate && cd scouting && python manage.py makemigrations && python manage.py migrate"
-        },
-      },
-      {
-        "label": "Collect static files",
-        "type": "shell",
-        "command": "source .venv/bin/activate && cd scouting && python manage.py collectstatic --noinput",
-        "presentation": {
-          "reveal": "always",
-          "panel": "new"
-        },
-        "problemMatcher": [],
-        "windows": {
-          "command": ".venv\\Scripts\\activate && cd scouting && python manage.py collectstatic --noinput"
-        },
-      },
-      // Thanks to https://github.com/pypa/pip/issues/4318#issuecomment-284272355
-      {
-        "label": "Pip freeze",
-        "type": "shell",
-        "command": "source .venv/bin/activate && pip freeze | sed s/=.*// > requirements.txt",
-        "windows": {
-          "command": ".venv\\Scripts\\activate && pip freeze | sed s/=.*// > requirements.txt"
-        },
-        "presentation": {
-          "reveal": "always",
-          "panel": "new"
-        },
-        "problemMatcher": []
-      },
-      {
-        "label": "Build CSS",
-        "type": "shell",
-        "command": "npm run build:css",
-        "presentation": {
-          "reveal": "always",
-          "panel": "new"
-        },
-        "runOptions": {
-          "runOn": "folderOpen"
-        },
-        "problemMatcher": []
-      },
-      {
-        "label": "Run Tests",
-        "type": "shell",
-        "command": "source .venv/bin/activate && cd scouting && python manage.py test",
-        "windows": {
-          "command": ".venv\\Scripts\\activate && cd scouting && python manage.py test"
-        },
-        "presentation": {
-          "reveal": "always",
-          "panel": "new"
-        },
-        "problemMatcher": []
-      },
-      {
-        "label": "Make and update translation files",
-        "type": "shell",
-        "command": "source .venv/bin/activate && cd scouting && python manage.py makemessages --all && python manage.py makemessages -all -d djangojs && python manage.py compilemessages",
-        "windows": {
-          "command": ".venv\\Scripts\\activate && cd scouting && python manage.py test"
-        },
-        "presentation": {
-          "reveal": "always",
-          "panel": "new"
-        },
-        "problemMatcher": []
+      "runOptions": {
+        "runOn": "folderOpen"
       }
-    ]
-  }
+    },
+    {
+      "label": "Start SvelteKit Frontend",
+      "type": "shell",
+      "command": "npm run dev --",
+      "options": {
+        "cwd": "${workspaceFolder}/frontend"
+      },
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always"
+      },
+      "runOptions": {
+        "runOn": "folderOpen"
+      }
+    },
+    {
+      "label": "Start Postgres DB Server",
+      "type": "shell",
+      "command": "docker compose -f docker-compose.dev.yml up",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always"
+      },
+      "runOptions": {
+        "runOn": "folderOpen"
+      }
+    },
+    {
+      "label": "Generate orval types",
+      "type": "shell",
+      "command": "npx orval",
+      "options": {
+        "cwd": "${workspaceFolder}/frontend"
+      },
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always"
+      },
+    }
+  ]
+}

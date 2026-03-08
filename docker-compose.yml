@@ -1,44 +1,53 @@
+version: "3.8"
 services:
-  web:
-    build: ./scouting
-    container_name: open-scouting
-    command: gunicorn --workers 3 --chdir scouting scouting.wsgi:application --bind 0.0.0.0:8000
+  postgres:
+    image: postgres:16
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: app
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
     volumes:
-      - staticfiles:/usr/src/app/staticfiles
-    expose:
-      - 8000
-    env_file:
-      - ./scouting/.env.production
-    depends_on:
-      - db
+      - /mnt/openscouting_db/postgres:/var/lib/postgresql/data
+
+  frontend:
+    image: ghcr.io/frc-team3484/open-scouting-frontend:latest
     restart: unless-stopped
+    expose:
+      - "3000"
+    environment:
+      NODE_ENV: production
+    env_file:
+      - .env
+
+  backend:
+    image: ghcr.io/frc-team3484/open-scouting-backend:latest
+    restart: unless-stopped
+    expose:
+      - "8000"
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    volumes:
+      - /mnt/openscouting_db/uploads:/data/uploads
 
   caddy:
     image: caddy:2
-    container_name: caddy
+    restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
-      - staticfiles:/usr/src/app/staticfiles:ro
+      - /mnt/openscouting_db/uploads:/data/uploads:ro
       - caddy_data:/data
       - caddy_config:/config
     depends_on:
-      - web
-    restart: unless-stopped
-
-  db:
-    image: postgres
-    container_name: postgres
-    volumes:
-      - /mnt/db/postgres:/var/lib/postgresql/data
-      - /mnt/db/backups:/backups
-    env_file:
-      - ./scouting/.env.production
-    restart: unless-stopped
+      - frontend
+      - backend
 
 volumes:
-  staticfiles:
   caddy_data:
   caddy_config:

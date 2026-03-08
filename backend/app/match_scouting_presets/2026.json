@@ -1,0 +1,319 @@
+[
+  {
+    "uuid": "b458396a-c3b9-4a43-a59c-c697030fc125",
+    "name": "Auton",
+    "description": "What the robot did, specifically when running autons",
+    "field_type": "section",
+    "stat_type": "section",
+    "game_piece_uuid": null,
+    "required": false,
+    "options": {
+      "choices": [],
+      "default": 0,
+      "maximum": 0,
+      "minimum": 0
+    },
+    "order": 0,
+    "organization_id": null,
+    "fields": [
+      {
+        "uuid": "bc241e9c-d0d0-4d83-91e4-7d9f5a2a76dd",
+        "name": "Moved",
+        "description": "If the robot moved in auto at all",
+        "field_type": "boolean",
+        "stat_type": "capability",
+        "game_piece_uuid": null,
+        "required": false,
+        "options": {
+          "choices": [],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
+        "order": 0,
+        "organization_id": null,
+        "fields": []
+      },
+      {
+        "uuid": "e82c3049-14f2-406d-992d-7a20011ecc21",
+        "name": "Climbed Level 1",
+        "description": null,
+        "field_type": "boolean",
+        "stat_type": "capability",
+        "game_piece_uuid": null,
+        "required": false,
+        "options": {
+          "choices": [],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
+        "order": 1,
+        "organization_id": null,
+        "fields": []
+      },
+      {
+        "uuid": "757a8568-7570-4671-bfc9-f83d08b1adf6",
+        "name": "Picked up Fuel",
+        "description": "If the robot picked up any Fuel during auto",
+        "field_type": "multiple_choice",
+        "stat_type": "capability",
+        "game_piece_uuid": null,
+        "required": false,
+        "options": {
+          "choices": [
+            {
+              "id": "9f7eb562-cf63-4fb0-9d2a-e44ba7af123e",
+              "name": "Depot"
+            },
+            {
+              "id": "a65c687c-3322-42c2-99ac-d6dcf64cf36c",
+              "name": "Outpost"
+            },
+            {
+              "id": "84f995dd-d849-48da-a2e3-76eae0c176a1",
+              "name": "Neutral Zone"
+            }
+          ],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
+        "order": 2,
+        "organization_id": null,
+        "fields": []
+      },
+      {
+        "uuid": "9bb5a85e-7806-4e5e-ac90-8b5f39e1dbc1",
+        "name": "Fuel Scored",
+        "description": "Fuel scored in the Hub during auto",
+        "field_type": "coarse_small_number",
+        "stat_type": "auton_score",
+        "game_piece_uuid": "4f8ff96f-e722-4982-b904-3340389e35a6",
+        "required": false,
+        "options": {
+          "choices": [],
+          "default": 0,
+          "maximum": 500,
+          "minimum": 0
+        },
+        "order": 3,
+        "organization_id": null,
+        "fields": []
+      }
+    ]
+  },
+  {
+    "uuid": "a7a5b28f-3298-4126-bb0d-71a3b61f6554",
+    "name": "Teleop",
+    "description": null,
+    "field_type": "section",
+    "stat_type": "section",
+    "game_piece_uuid": null,
+    "required": false,
+    "options": {
+      "choices": [],
+      "default": 0,
+      "maximum": 0,
+      "minimum": 0
+    },
+    "order": 1,
+    "organization_id": null,
+    "fields": [
+      {
+        "uuid": "416facbe-11ff-4ffa-91fe-78029bfbf4a5",
+        "name": "Climbed",
+        "description": null,
+        "field_type": "choice",
+        "stat_type": "capability",
+        "game_piece_uuid": null,
+        "required": false,
+        "options": {
+          "choices": [
+            {
+              "id": "dc9871b8-8b58-48db-b434-07e89a02223f",
+              "name": "Level 1"
+            },
+            {
+              "id": "b2268cea-2dc2-48dc-926c-f3f398c6351c",
+              "name": "Level 2"
+            },
+            {
+              "id": "947b6026-4d1b-4e59-b14e-e6873b0d11b4",
+              "name": "Level 3"
+            }
+          ],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
+        "order": 0,
+        "organization_id": null,
+        "fields": []
+      },
+      {
+        "uuid": "28e537ed-4cba-489b-ad85-9bf93791629d",
+        "name": "Fuel Scored in Hub",
+        "description": "Fuel scored in the Hub during teleop",
+        "field_type": "coarse_small_number",
+        "stat_type": "teleop_score",
+        "game_piece_uuid": "4f8ff96f-e722-4982-b904-3340389e35a6",
+        "required": false,
+        "options": {
+          "choices": [],
+          "default": 0,
+          "maximum": 500,
+          "minimum": 0
+        },
+        "order": 1,
+        "organization_id": null,
+        "fields": []
+      }
+    ]
+  },
+  {
+    "uuid": "484b565a-edb6-4a84-a984-fc68752798f1",
+    "name": "Extra Information",
+    "description": null,
+    "field_type": "section",
+    "stat_type": "section",
+    "game_piece_uuid": null,
+    "required": false,
+    "options": {
+      "choices": [],
+      "default": 0,
+      "maximum": 0,
+      "minimum": 0
+    },
+    "order": 2,
+    "organization_id": null,
+    "fields": [
+      {
+        "uuid": "3d86059a-8eb8-4e31-98ac-6f893cb83c50",
+        "name": "Playstyle",
+        "description": "Did the robot tend to make cycles themselves, feed pieces to other alliance members, or play defense?",
+        "field_type": "multiple_choice",
+        "stat_type": "capability",
+        "game_piece_uuid": null,
+        "required": false,
+        "options": {
+          "choices": [
+            {
+              "id": "588ace67-3934-47e1-b569-f4a5028c3cc1",
+              "name": "Solo scoring"
+            },
+            {
+              "id": "b3e01e49-1b7d-4ec9-8215-96fbb3cc2583",
+              "name": "Feeding pieces"
+            },
+            {
+              "id": "bfe7438f-22bb-44bd-b2fb-2f4ba409d42a",
+              "name": "Defense"
+            },
+            {
+              "id": "69829047-7ad3-44f8-a6e6-61bd2b1c5f82",
+              "name": "Other"
+            }
+          ],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
+        "order": 0,
+        "organization_id": null,
+        "fields": []
+      },
+      {
+        "uuid": "f7fb27ff-bb91-486b-b9a2-48032abaf059",
+        "name": "Ground Pickup",
+        "description": null,
+        "field_type": "boolean",
+        "stat_type": "capability",
+        "game_piece_uuid": null,
+        "required": false,
+        "options": {
+          "choices": [],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
+        "order": 1,
+        "organization_id": null,
+        "fields": []
+      },
+      {
+        "uuid": "f0dcc4e2-039e-41ae-9dd2-c5a100a95d69",
+        "name": "Outpost Pickup",
+        "description": null,
+        "field_type": "boolean",
+        "stat_type": "capability",
+        "game_piece_uuid": null,
+        "required": false,
+        "options": {
+          "choices": [],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
+        "order": 2,
+        "organization_id": null,
+        "fields": []
+      }
+    ]
+  },
+  {
+    "uuid": "cda11e07-bcfc-420b-b95b-00780774f29c",
+    "name": "Additional Notes",
+    "description": null,
+    "field_type": "section",
+    "stat_type": "section",
+    "game_piece_uuid": null,
+    "required": false,
+    "options": {
+      "choices": [],
+      "default": 0,
+      "maximum": 0,
+      "minimum": 0
+    },
+    "order": 3,
+    "organization_id": null,
+    "fields": [
+      {
+        "uuid": "edb25a31-c7d6-4628-be13-1db90f65aa67",
+        "name": "Robot was disabled during the match",
+        "description": "If the robot was damaged, disabled or stalled out during the match",
+        "field_type": "boolean",
+        "stat_type": "capability",
+        "game_piece_uuid": null,
+        "required": false,
+        "options": {
+          "choices": [],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
+        "order": 0,
+        "organization_id": null,
+        "fields": []
+      },
+      {
+        "uuid": "22d22fc7-cfc2-4b11-87a4-e3691b267c61",
+        "name": "Additional notes or comments",
+        "description": null,
+        "field_type": "string",
+        "stat_type": "other",
+        "game_piece_uuid": null,
+        "required": false,
+        "options": {
+          "choices": [],
+          "default": 0,
+          "maximum": 0,
+          "minimum": 0
+        },
+        "order": 1,
+        "organization_id": null,
+        "fields": []
+      }
+    ]
+  }
+]
