@@ -1,4 +1,4 @@
-open-scouting.nfoert.dev {
+open-scouting-legacy.nfoert.dev {
 
     encode gzip zstd
 
