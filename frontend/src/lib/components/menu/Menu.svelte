@@ -115,7 +115,7 @@
                 <Button variant="outline" href="https://github.com/FRC-Team3484/open-scouting"><GithubLogo weight="bold" /> Source Code</Button>
                 <Button variant="outline" href="https://github.com/FRC-Team3484/open-scouting/issues"><Bug weight="bold" /> Issues</Button>
                 <Button variant="outline" href="https://github.com/FRC-Team3484/open-scouting/releases"><Article weight="bold" /> Releases</Button>
-                <Button variant="outline" href="https://open-scouting.nfoert.dev"><Archive weight="bold" /> Legacy v1</Button>
+                <Button variant="outline" href="https://open-scouting-legacy.nfoert.dev"><Archive weight="bold" /> Legacy v1</Button>
             </div>
 
             <Separator orientation="horizontal" />

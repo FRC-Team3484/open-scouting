@@ -1,4 +1,4 @@
-open-scouting-dev.nfoert.dev {
+open-scouting.shortcircuitfirst.org {
     encode zstd gzip
 
     handle_path /uploads/* {

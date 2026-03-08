@@ -55,7 +55,7 @@
         <li>Frontend is offline-first, improving the offline experience</li>
     </ul>
 
-    <p class="text-sm">Match scouting data from <code>v1</code> in 2025 will soon be migrated to this version. Until then, view that data <a class="underline" href="https://open-scouting.nfoert.dev">here</a>.</p>
+    <p class="text-sm">Match scouting data from <code>v1</code> in 2025 will soon be migrated to this version. Until then, view that data <a class="underline" href="https://open-scouting-legacy.nfoert.dev">here</a>.</p>
 {/snippet}
 
 <Generic summary={summary} features={features} details={details} />
