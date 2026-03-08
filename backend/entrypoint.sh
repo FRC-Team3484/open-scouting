@@ -2,6 +2,7 @@
 set -e
 
 echo "Running Aerich migrations..."
+aerich init-db
 aerich upgrade
 
 echo "Starting FastAPI..."
