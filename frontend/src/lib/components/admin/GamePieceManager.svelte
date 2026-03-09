@@ -16,6 +16,7 @@
 	import { superForm } from "sveltekit-superforms";
 	import { zod4Client } from "sveltekit-superforms/adapters";
 	import Label from "../ui/label/label.svelte";
+	import { Footer } from "../ui/sheet";
 
     let { season_uuid } = $props();
 
@@ -138,9 +139,11 @@
                             <Form.FieldErrors />
                         </Form.Field>
 
-                        <Dialog.Close>
-                            <Button type="submit">Create</Button>
-                        </Dialog.Close>
+                        <Dialog.Footer>
+                            <Dialog.Close>
+                                <Button type="submit">Create</Button>
+                            </Dialog.Close>
+                        </Dialog.Footer>
                     </form>
                 </Dialog.Content>
             </Dialog.Root>
