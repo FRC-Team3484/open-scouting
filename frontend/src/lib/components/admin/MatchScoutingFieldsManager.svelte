@@ -66,9 +66,11 @@
 </Card.Root>
 
 <div class="flex flex-col gap-4">
-    <GamePieceManager season_uuid={season_uuid} />
+    {#if season_uuid != ""}
+        <GamePieceManager season_uuid={season_uuid} />
 
-    <Separator />
+        <Separator />
 
-    <MatchScoutingFields season_uuid={season_uuid} year={season_year} editable={true} />
+        <MatchScoutingFields season_uuid={season_uuid} year={season_year} editable={true} />
+    {/if}
 </div>
