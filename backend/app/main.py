@@ -55,11 +55,14 @@ register_tortoise(
 )
 
 TORTOISE_ORM = {
-    "connections": {"default": os.getenv("DATABASE_URL", "postgres://app:app@localhost:5432/app")},
+    "connections": {
+        "default": os.getenv("DATABASE_URL", "postgres://app:app@localhost:5432/app"),
+    },
     "apps": {
         "models": {
-            "models": ["app.models", "aerich.models"],
+            "models": ["app.models"],
             "default_connection": "default",
+            "migrations": "app.migrations",
         },
     },
 }
