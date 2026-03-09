@@ -16,7 +16,6 @@
 	import { superForm } from "sveltekit-superforms";
 	import { zod4Client } from "sveltekit-superforms/adapters";
 	import Label from "../ui/label/label.svelte";
-	import { Footer } from "../ui/sheet";
 
     let { season_uuid } = $props();
 
@@ -34,7 +33,6 @@
                 if (form.valid) {
                     await createGamepieceGamepiecesCreatePost($formData).then((request) => {
                         if (request.status === 200) {
-                            console.log("ah")
                             getGamePieces();
                         } else {
                             toast.error("Failed to create game piece", { duration: 5000 });
@@ -75,6 +73,7 @@
     $effect(() => {
         season_uuid;
         getGamePieces();
+        $formData.season_uuid = season_uuid;
     });
 </script>
 
@@ -140,9 +139,7 @@
                         </Form.Field>
 
                         <Dialog.Footer>
-                            <Dialog.Close>
-                                <Button type="submit">Create</Button>
-                            </Dialog.Close>
+                            <Form.Button type="submit">Create</Form.Button>
                         </Dialog.Footer>
                     </form>
                 </Dialog.Content>
