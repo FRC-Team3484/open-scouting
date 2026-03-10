@@ -68,7 +68,7 @@
 <div class="flex flex-row gap-2 max-h-screen max-w-screen flex-wrap items-center">
     <Button variant="outline" onclick={() => open = true}><PlusCircle weight="bold" /> Add</Button>
 
-    <BaseDialog bind:open={open} title="Add {filterTitle}" description="Select an item to add">
+    <BaseDialog bind:open={open} title={filterTitle} description="Select an item to add">
         {@render filters()}
     </BaseDialog>
     
