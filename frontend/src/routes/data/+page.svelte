@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { replaceState } from "$app/navigation";
 	import CompareFilters from "$lib/components/data/CompareFilters.svelte";
+	import CompareManager from "$lib/components/data/CompareManager.svelte";
 	import DataManager from "$lib/components/data/DataManager.svelte";
 	import Filters from "$lib/components/data/Filters.svelte";
 	import Header from "$lib/components/data/Header.svelte";
@@ -14,6 +15,10 @@
     let filters = $state({year: 0, event_codes: [], team_numbers: []});
     let compareFilters = $state({year: 0, event_codes: [], team_numbers: [], fields: []});
     let mode: "all" | "compare" = $state("all");
+
+    let fields: Array<{ name: string; value: string }> = $state([]); // [{ name: "", value: "" }, ...]
+
+    $inspect(fields);
 
     function setUrlParams() {
         const url = new URL(window.location.href);
@@ -132,8 +137,9 @@
     {:else if mode === "compare"}
         <div class="lg:flex lg:flex-col lg:overflow-y-scroll">
             <div class="flex flex-col lg:flex-row lg:gap-4 lg:items-start">
-                <CompareFilters bind:filters={compareFilters} />
+                <CompareFilters bind:filters={compareFilters} fields={fields} />
 
+                <CompareManager filters={compareFilters} bind:fields={fields} />
             </div>
         </div>
     {/if}

@@ -12,7 +12,13 @@
 	import { toast } from "svelte-sonner";
 	import Separator from "../ui/separator/separator.svelte";
     
-    let { filters = $bindable() } = $props();
+    let { filters = $bindable(), fields } = $props();
+
+    $effect(() => {
+        console.log(fields)
+        console.log(fields.map((t) => t.name));
+        console.log(fields.map((t) => t.value));
+    });
 
     let seasons: SeasonResponse[] = $state([]);
     let seasons_label = $derived(seasons.find((s) => s.year === filters.year)?.name ?? "Select Year");
@@ -149,7 +155,7 @@
                         <p>Fields</p>
                     </div> 
 
-                    <!-- <FilterList filterTitle="Add Field Filter" values={teams.map((t) => t.team_number.toString())} labels={teams.map((t) => t.team_number.toString())} bind:selected={filters.team_numbers} /> -->
+                    <FilterList filterTitle="Add Field Filter" values={fields.map((t) => t.value)} labels={fields.map((t) => t.name)} bind:selected={filters.fields} />
                 </div>
             </div>
         </div>
