@@ -2,6 +2,7 @@
   {
     "uuid": "c89fa521-8dd0-4716-aa3f-0486ef1832ca",
     "name": "Auton",
+    "description": "",
     "field_type": "section",
     "stat_type": "section",
     "game_piece_uuid": null,
@@ -18,6 +19,7 @@
       {
         "uuid": "1ed1691f-4574-440a-a076-a8cec8551de4",
         "name": "Note Scored in Speaker",
+        "description": "",
         "field_type": "small_number",
         "stat_type": "auton_score",
         "game_piece_uuid": "b2b3f862-f311-4900-8c30-f02a52054eec",
@@ -35,6 +37,7 @@
       {
         "uuid": "3c809625-9add-43aa-b34c-53cbd915aedb",
         "name": "Note Scored in Amp",
+        "description": "",
         "field_type": "small_number",
         "stat_type": "auton_score",
         "game_piece_uuid": "b2b3f862-f311-4900-8c30-f02a52054eec",
@@ -54,6 +57,7 @@
   {
     "uuid": "bd6984e0-6a85-4611-a103-399d590ba459",
     "name": "Teleop",
+    "description": "",
     "field_type": "section",
     "stat_type": "section",
     "game_piece_uuid": null,
@@ -70,6 +74,7 @@
       {
         "uuid": "9e3deac8-ba2d-4d2c-ad66-e1d1b7747d9f",
         "name": "Speaker",
+        "description": "",
         "field_type": "section",
         "stat_type": "section",
         "game_piece_uuid": null,
@@ -86,6 +91,7 @@
           {
             "uuid": "b775723b-fa71-4cbf-9135-0fb598ea23cf",
             "name": "Note Scored in Speaker",
+            "description": "",
             "field_type": "small_number",
             "stat_type": "teleop_score",
             "game_piece_uuid": "b2b3f862-f311-4900-8c30-f02a52054eec",
@@ -103,6 +109,7 @@
           {
             "uuid": "bc4584ca-c9af-4619-974e-74c03c751829",
             "name": "Note Missed Speaker",
+            "description": "",
             "field_type": "small_number",
             "stat_type": "teleop_miss",
             "game_piece_uuid": "b2b3f862-f311-4900-8c30-f02a52054eec",
@@ -122,6 +129,7 @@
       {
         "uuid": "3042f951-4d1f-484e-9d54-7baa9115dead",
         "name": "Amp",
+        "description": "",
         "field_type": "section",
         "stat_type": "section",
         "game_piece_uuid": null,
@@ -138,6 +146,7 @@
           {
             "uuid": "3c7b4759-daba-41f4-b8bb-699143a7bff7",
             "name": "Note Scored in Amp",
+            "description": "",
             "field_type": "small_number",
             "stat_type": "teleop_score",
             "game_piece_uuid": "b2b3f862-f311-4900-8c30-f02a52054eec",
@@ -155,6 +164,7 @@
           {
             "uuid": "82b2036f-2c46-4acc-b4aa-684b5fce4bd3",
             "name": "Note Missed Amp",
+            "description": "",
             "field_type": "small_number",
             "stat_type": "teleop_miss",
             "game_piece_uuid": "b2b3f862-f311-4900-8c30-f02a52054eec",
@@ -176,6 +186,7 @@
   {
     "uuid": "6f780b33-b9fc-46d6-b468-4277fef00335",
     "name": "Extra Information",
+    "description": "",
     "field_type": "section",
     "stat_type": "section",
     "game_piece_uuid": null,
@@ -192,6 +203,7 @@
       {
         "uuid": "1bd64783-1968-4dd9-8a2d-b7b2fc32c944",
         "name": "Left Starting Zone",
+        "description": "",
         "field_type": "boolean",
         "stat_type": "capability",
         "game_piece_uuid": null,
@@ -209,6 +221,7 @@
       {
         "uuid": "5162f87e-de75-4610-8325-893abd071372",
         "name": "Launch Distance",
+        "description": "",
         "field_type": "multiple_choice",
         "stat_type": "capability",
         "game_piece_uuid": null,
@@ -239,6 +252,7 @@
       {
         "uuid": "15f66521-c01c-47c6-9b9f-b4b9f5a5df8a",
         "name": "Floor Pickup",
+        "description": "",
         "field_type": "boolean",
         "stat_type": "capability",
         "game_piece_uuid": null,
@@ -256,6 +270,7 @@
       {
         "uuid": "e51f9b14-0a9d-4cc6-a50b-1f88075fa839",
         "name": "Climb",
+        "description": "",
         "field_type": "boolean",
         "stat_type": "capability",
         "game_piece_uuid": null,
@@ -273,6 +288,7 @@
       {
         "uuid": "b525f8a3-7211-4788-98a5-dc081eb7de95",
         "name": "Scored Trap",
+        "description": "",
         "field_type": "boolean",
         "stat_type": "capability",
         "game_piece_uuid": null,
@@ -290,6 +306,7 @@
       {
         "uuid": "7a2b8728-e065-4d97-9c75-94ebef182e29",
         "name": "Feeder Station Pickup",
+        "description": "",
         "field_type": "boolean",
         "stat_type": "capability",
         "game_piece_uuid": null,
@@ -307,6 +324,7 @@
       {
         "uuid": "28262849-8cac-444f-acb5-3769da20d2f6",
         "name": "Moved During Auto",
+        "description": "",
         "field_type": "boolean",
         "stat_type": "capability",
         "game_piece_uuid": null,
@@ -326,6 +344,7 @@
   {
     "uuid": "b44957a5-92c2-4c70-847a-3dc4040cd3e4",
     "name": "Additional Notes",
+    "description": "",
     "field_type": "section",
     "stat_type": "section",
     "game_piece_uuid": null,
@@ -342,6 +361,7 @@
       {
         "uuid": "cc09af26-485c-41c2-9d6b-5b8d50b15021",
         "name": "Additional Notes or Comments",
+        "description": "",
         "field_type": "string",
         "stat_type": "other",
         "game_piece_uuid": null,

@@ -33,7 +33,6 @@
                 if (form.valid) {
                     await createGamepieceGamepiecesCreatePost($formData).then((request) => {
                         if (request.status === 200) {
-                            console.log("ah")
                             getGamePieces();
                         } else {
                             toast.error("Failed to create game piece", { duration: 5000 });
@@ -74,6 +73,7 @@
     $effect(() => {
         season_uuid;
         getGamePieces();
+        $formData.season_uuid = season_uuid;
     });
 </script>
 
@@ -138,9 +138,9 @@
                             <Form.FieldErrors />
                         </Form.Field>
 
-                        <Dialog.Close>
-                            <Button type="submit">Create</Button>
-                        </Dialog.Close>
+                        <Dialog.Footer>
+                            <Form.Button type="submit">Create</Form.Button>
+                        </Dialog.Footer>
                     </form>
                 </Dialog.Content>
             </Dialog.Root>

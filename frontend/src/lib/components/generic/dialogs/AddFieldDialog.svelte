@@ -312,9 +312,9 @@
 
         <Dialog.Footer>
             {#if Object.keys($addFieldEditData).length > 0}
-            <Form.Button type="submit">Edit</Form.Button>
+                <Form.Button type="submit">Edit</Form.Button>
             {:else}
-            <Form.Button type="submit">Create</Form.Button>
+                <Form.Button type="submit">Create</Form.Button>
             {/if}
             <Dialog.Close>
                 <Form.Button type="button" variant="outline">Cancel</Form.Button>
