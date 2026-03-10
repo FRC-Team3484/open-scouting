@@ -63,8 +63,8 @@ This document lists the things that need to be implemented in the `v2.0.0` redes
 - [ ] Update doc in `FRC-Team3484/docs` for how to maintain Open Scouting
 - [x] Update docs
 - [x] Update `build-and-push.yml` to use the correct branch
-- [ ] Update new domain
-- [ ] Release `v2.0.0`
+- [x] Update new domain
+- [x] Release `v2.0.0`
 
 ## `v2.1.0`
 - [ ] Data view event filtering is not working

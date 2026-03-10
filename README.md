@@ -10,7 +10,7 @@
 
 **An open source application for easier scouting at FIRST Robotics competitions**
 
-**[Live Server](https://open-scouting-dev.nfoert.dev/) • [Releases](https://github.com/FRC-Team3484/open-scouting/releases) • [Issues](https://github.com/FRC-Team3484/open-scouting/issues) • [Discord](https://discord.gg/M3wESZUP35)**
+**[Live Server](https://open-scouting.shortcircuitfirst.org) • [Releases](https://github.com/FRC-Team3484/open-scouting/releases) • [Issues](https://github.com/FRC-Team3484/open-scouting/issues) • [Discord](https://discord.gg/M3wESZUP35)**
 
 <a href="https://skills.syvixor.com">
   <img src="https://skills.syvixor.com/api/icons?perline=15&i=svelte,vite,vitepwa,fastapi,tailwindcss,shadcnui&radius=60" />

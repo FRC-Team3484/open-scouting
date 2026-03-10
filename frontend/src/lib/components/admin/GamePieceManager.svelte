@@ -33,6 +33,7 @@
                 if (form.valid) {
                     await createGamepieceGamepiecesCreatePost($formData).then((request) => {
                         if (request.status === 200) {
+                            console.log("ah")
                             getGamePieces();
                         } else {
                             toast.error("Failed to create game piece", { duration: 5000 });
@@ -138,7 +139,7 @@
                         </Form.Field>
 
                         <Dialog.Close>
-                            <Form.Button>Create Game Piece</Form.Button>
+                            <Button type="submit">Create</Button>
                         </Dialog.Close>
                     </form>
                 </Dialog.Content>
