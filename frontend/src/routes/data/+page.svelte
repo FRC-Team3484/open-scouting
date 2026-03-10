@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { replaceState } from "$app/navigation";
+	import CompareFilters from "$lib/components/data/CompareFilters.svelte";
 	import DataManager from "$lib/components/data/DataManager.svelte";
 	import Filters from "$lib/components/data/Filters.svelte";
 	import Header from "$lib/components/data/Header.svelte";
@@ -20,22 +21,22 @@
         url.searchParams.set("mode", mode);
 
         if (mode == "all") {
-        if (filters.year > 0) {
-            url.searchParams.set("year", String(filters.year));
-        } else {
-            url.searchParams.delete("year");
-        }
-
-        if (filters.event_codes.length > 0) {
-            url.searchParams.set("event_codes", filters.event_codes.join(","));
-        } else {
-            url.searchParams.delete("event_codes");
-        }
-
-        if (filters.team_numbers.length > 0) {
-            url.searchParams.set("team_numbers", filters.team_numbers.join(","));
-        } else {
-            url.searchParams.delete("team_numbers");
+            if (filters.year > 0) {
+                url.searchParams.set("year", String(filters.year));
+            } else {
+                url.searchParams.delete("year");
+            }
+    
+            if (filters.event_codes.length > 0) {
+                url.searchParams.set("event_codes", filters.event_codes.join(","));
+            } else {
+                url.searchParams.delete("event_codes");
+            }
+    
+            if (filters.team_numbers.length > 0) {
+                url.searchParams.set("team_numbers", filters.team_numbers.join(","));
+            } else {
+                url.searchParams.delete("team_numbers");
             }
         } else {
             if (compareFilters.year > 0) {
@@ -81,14 +82,14 @@
         }
 
         if (mode == "all") {
-        const year = url.searchParams.get("year");
-        if (year) filters.year = Number(year);
-
-        const events = url.searchParams.get("event_codes");
-        if (events) filters.event_codes = events.split(",");
-
-        const teams = url.searchParams.get("team_numbers");
-        if (teams) filters.team_numbers = teams.split(",");
+            const year = url.searchParams.get("year");
+            if (year) filters.year = Number(year);
+    
+            const events = url.searchParams.get("event_codes");
+            if (events) filters.event_codes = events.split(",");
+    
+            const teams = url.searchParams.get("team_numbers");
+            if (teams) filters.team_numbers = teams.split(",");
         } else {
             const year = url.searchParams.get("year");
             if (year) compareFilters.year = Number(year);
@@ -130,7 +131,10 @@
         </div>
     {:else if mode === "compare"}
         <div class="lg:flex lg:flex-col lg:overflow-y-scroll">
-            <p>Coming soon</p>
+            <div class="flex flex-col lg:flex-row lg:gap-4 lg:items-start">
+                <CompareFilters bind:filters={compareFilters} />
+
+            </div>
         </div>
     {/if}
 </PageContainer>
