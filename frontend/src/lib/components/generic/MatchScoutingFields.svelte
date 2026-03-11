@@ -129,8 +129,6 @@
             }
         }
 
-        console.log(filteredFields);
-
         await db.match_scouting.add({
             uuid: crypto.randomUUID(),
             data: filteredFields,
@@ -308,8 +306,6 @@
 
     async function updateOrders() {
         const flatFields = flattenFields(fields);
-
-        console.log(flatFields);
 
         await moveMatchScoutingFieldsFieldsSeasonUuidReorderPatch(season_uuid, flatFields).then((response) => {
             if (response.status !== 200) {

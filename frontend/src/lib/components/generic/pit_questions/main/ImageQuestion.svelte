@@ -61,7 +61,6 @@
             answers: [...pit.answers, ...newAnswers],
             synced: false
         });
-        console.log("updated", pit.uuid)
 
         value = "";
         reset();

@@ -9,8 +9,6 @@
 	// Store selected values as an array of IDs
 	let value = $state<string[]>(["na"]);
 
-	$inspect(value);
-
 	// Compute selected option objects from the IDs
 	// TODO: Use when basing options on a UUID
 	// let selectedOptions = $derived(
