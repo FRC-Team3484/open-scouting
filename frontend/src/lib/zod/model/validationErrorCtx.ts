@@ -5,7 +5,4 @@
  * OpenAPI spec version: v2.0.1
  */
 
-export interface TokenResponse {
-  access_token: string;
-  token_type?: string;
-}
+export type ValidationErrorCtx = { [key: string]: unknown };
