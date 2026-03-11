@@ -52,7 +52,7 @@
 		required={field.required}
 		bind:value
 	>
-		<Select.Trigger>
+		<Select.Trigger class="whitespace-normal wrap-text">
 			{displayLabel}
 		</Select.Trigger>
 

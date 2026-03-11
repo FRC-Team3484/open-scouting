@@ -16,6 +16,7 @@
         <li>Made the menu smaller on larger screens</li>
         <li>Fixed an issue where multiple choice fields wouldn't reset</li>
         <li>Adjust the "unsynced pits" badge to use a liveQuery instead of checking when the data is synced</li>
+        <li>Fixed an issue where pit scouting images were squished</li>
     </ul>
 {/snippet}
 
