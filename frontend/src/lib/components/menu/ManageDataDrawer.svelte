@@ -51,7 +51,7 @@
         <Button variant="outline" class="w-full"><FloppyDisk weight="bold" /> Manage Local Data</Button>
     </Sheet.Trigger>
 
-    <Sheet.Content class="max-h-[80vh] overflow-y-scroll lg:mx-64 border-1 p-4 rounded-t-lg" side="bottom">
+    <Sheet.Content class="max-h-[80vh] overflow-y-scroll lg:mx-64 2xl:mx-128 border-1 p-4 rounded-t-lg" side="bottom">
         <div class="overflow-y-scroll pr-2">
             <DrawerHeader title="Manage Local Data" description="View and manage data stored locally on your device" />
             <Separator orientation="horizontal" />
