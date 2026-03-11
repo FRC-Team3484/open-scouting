@@ -153,9 +153,10 @@
         // Delay 100ms while form is resetting
         setTimeout(() => {
             matchScoutingTeamInfoChild.increment_match_number(parseInt(formData.get("match_number")), formData.get("match_type"), formData.get("position"));
+            
+            scrollTo({ top: 0, behavior: "smooth" });
         }, 100);
     
-        scrollTo({ top: 0, behavior: "smooth" });
 
         await pushMatchScoutingData();
     }
