@@ -26,6 +26,17 @@
 		}
 	});
 
+	$effect(() => {
+		const form = document.querySelector("#match-scouting-form");
+
+		const reset = () => {
+			value = ["na"];
+		};
+
+		form?.addEventListener("reset", reset);
+		return () => form?.removeEventListener("reset", reset);
+	});
+
 	// Derived display label
 	let displayLabel = $derived(
 		selectedOptions.length
