@@ -13,7 +13,6 @@
     let { eventData, seasonUuid } = $props();
 
     type Status = "ready" | "fetching" | "pushing" | "warning" | "offline";
-
     let status: Status = $state("ready");
 
     let unsyncedQuery = liveQuery(() => db.pit_scouting.filter(p => p.synced === false && p.event_code === eventData.event_code && p.year === eventData.year).count());
@@ -26,7 +25,7 @@
         status = "ready";
     }
 
-    onMount(async () => {
+    onMount(() => {
         // Delay by 100ms to ensure season_uuid has been fetched
         // TODO: Make this more reliable later
         setTimeout(() => {        
@@ -35,12 +34,16 @@
             }
         }, 100);
 
-        setInterval(async () => {
+        const interval = setInterval(async () => {
             if (online.current) {
                 sync();
             }
         }, 10000);
-    })
+
+        return () => {
+            clearInterval(interval);
+        }
+    });
 </script>
 
 <div class="fixed bottom-0 left-0 ml-2 mb-2">
