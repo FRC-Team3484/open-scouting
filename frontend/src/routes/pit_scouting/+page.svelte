@@ -24,7 +24,8 @@
         event_city: "",
         event_country: "",
         event_start_date: "",
-        event_end_date: ""
+        event_end_date: "",
+        event_custom: false
     });
 
     let pit_questions = $state([]);

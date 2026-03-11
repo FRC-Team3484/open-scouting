@@ -45,6 +45,7 @@
                 event_data.event_country = event.country;
                 event_data.event_start_date = event.start_date;
                 event_data.event_end_date = event.end_date;
+                event_data.event_custom = event.custom;
             }
         });
 
