@@ -31,7 +31,6 @@
     );
 
     function close() {
-        console.log(neverShow);
         if (neverShow) {
             localStorage.setItem("showChangelogs", "false");
         } else {

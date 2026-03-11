@@ -43,6 +43,7 @@ class GetPitsForSeasonRequest(BaseModel):
     event_country: str
     event_start_date: str
     event_end_date: str
+    event_custom: bool
 
 class SubmitPitFieldAnswerRequest(BaseModel):
     uuid: UUID

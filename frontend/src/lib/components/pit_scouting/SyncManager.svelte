@@ -7,19 +7,15 @@
 	import { onMount } from "svelte";
 	import { online } from "svelte/reactivity/window";
 	import { fetchPitScoutingData, pushPitScoutingData } from "$lib/utils/sync";
+	import { slide } from "svelte/transition";
+	import { liveQuery } from "dexie";
 
     let { eventData, seasonUuid } = $props();
 
     type Status = "ready" | "fetching" | "pushing" | "warning" | "offline";
-
     let status: Status = $state("ready");
-    let unsynced: number = $state(0);
 
-    async function getUnsynced() {
-        const unsyncedCount = await db.pit_scouting.filter(p => p.synced === false && p.event_code === eventData.event_code && p.year === eventData.year).count();
-
-        unsynced = unsyncedCount;
-    }
+    let unsyncedQuery = liveQuery(() => db.pit_scouting.filter(p => p.synced === false && p.event_code === eventData.event_code && p.year === eventData.year).count());
 
     async function sync() {
         status = "pushing";
@@ -29,24 +25,25 @@
         status = "ready";
     }
 
-    onMount(async () => {
+    onMount(() => {
         // Delay by 100ms to ensure season_uuid has been fetched
         // TODO: Make this more reliable later
-        setTimeout(() => {
-            getUnsynced();
-        
+        setTimeout(() => {        
             if (online.current) {
                 sync();
             }
         }, 100);
 
-        setInterval(async () => {
+        const interval = setInterval(async () => {
             if (online.current) {
-                getUnsynced();
                 sync();
             }
         }, 10000);
-    })
+
+        return () => {
+            clearInterval(interval);
+        }
+    });
 </script>
 
 <div class="fixed bottom-0 left-0 ml-2 mb-2">
@@ -76,8 +73,10 @@
                     {/if}
                 </div>
 
-                {#if unsynced > 0}
-                    <Badge variant="destructive">{unsynced} Unsynced</Badge>
+                {#if $unsyncedQuery > 0}
+                    <div transition:slide>
+                        <Badge variant="destructive">{$unsyncedQuery} Unsynced Pit</Badge>
+                    </div>
                 {/if}
             </div>
         </div>

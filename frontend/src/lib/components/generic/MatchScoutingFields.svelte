@@ -129,8 +129,6 @@
             }
         }
 
-        console.log(filteredFields);
-
         await db.match_scouting.add({
             uuid: crypto.randomUUID(),
             data: filteredFields,
@@ -155,9 +153,10 @@
         // Delay 100ms while form is resetting
         setTimeout(() => {
             matchScoutingTeamInfoChild.increment_match_number(parseInt(formData.get("match_number")), formData.get("match_type"), formData.get("position"));
+            
+            scrollTo({ top: 0, behavior: "smooth" });
         }, 100);
     
-        scrollTo({ top: 0, behavior: "smooth" });
 
         await pushMatchScoutingData();
     }
@@ -309,8 +308,6 @@
     async function updateOrders() {
         const flatFields = flattenFields(fields);
 
-        console.log(flatFields);
-
         await moveMatchScoutingFieldsFieldsSeasonUuidReorderPatch(season_uuid, flatFields).then((response) => {
             if (response.status !== 200) {
                 toast.error("Failed to reorder fields", { duration: 5000 });
@@ -445,7 +442,7 @@
             
         {#if fields.length > 0}
             <Separator orientation="horizontal" />
-            <form method="post" onsubmit={submit} class="flex flex-col gap-2 items-center">
+            <form method="post" onsubmit={submit} class="flex flex-col gap-2 items-center" id="match-scouting-form">
                 {#if editable}
                     <Card.Root class="w-auto min-w-64">
                         <Card.Content>
