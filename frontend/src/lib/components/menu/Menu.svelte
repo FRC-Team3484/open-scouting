@@ -68,7 +68,7 @@
 
 
 <Sheet.Root bind:open={menu_open}>
-    <Sheet.Content class="max-h-[80vh] overflow-y-scroll lg:mx-64 border-1 p-4 rounded-t-lg" side="bottom">
+    <Sheet.Content class="max-h-[80vh] overflow-y-scroll lg:mx-64 2xl:mx-128 border-1 p-4 rounded-t-lg" side="bottom">
         <div class="flex flex-col gap-4 mt-4 overflow-y-scroll pr-2">
             <div class="flex flex-row gap-4 justify-between items-center">
                 <div class="flex flex-row gap-2 items-center">

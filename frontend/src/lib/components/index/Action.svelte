@@ -3,6 +3,7 @@
 	import { Binoculars, Database, Link, ListNumbers } from "phosphor-svelte";
 	import Button from "../ui/button/button.svelte";
 	import { Label } from "../ui/label";
+	import { toast } from "svelte-sonner";
 
     let { year, event, user } = $props();
 
@@ -16,6 +17,7 @@
 
     function copyLink() {
         navigator.clipboard.writeText(window.location.href);
+        toast.success("Copied link to clipboard", { duration: 5000 });
     }
 </script>
 

@@ -249,7 +249,8 @@ async function fetchPitScoutingData(event_data, season_uuid) {
         event_city: event_data.event_city,
         event_country: event_data.event_country,
         event_start_date: event_data.event_start_date,
-        event_end_date: event_data.event_end_date
+        event_end_date: event_data.event_end_date,
+        event_custom: event_data.event_custom
     }
 
     const pitDataRequest = (await getPitsPitsGetSeasonUuidPost(season_uuid, body)).data;

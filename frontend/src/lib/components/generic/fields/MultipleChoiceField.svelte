@@ -9,8 +9,6 @@
 	// Store selected values as an array of IDs
 	let value = $state<string[]>(["na"]);
 
-	$inspect(value);
-
 	// Compute selected option objects from the IDs
 	// TODO: Use when basing options on a UUID
 	// let selectedOptions = $derived(
@@ -28,6 +26,17 @@
 		}
 	});
 
+	$effect(() => {
+		const form = document.querySelector("#match-scouting-form");
+
+		const reset = () => {
+			value = ["na"];
+		};
+
+		form?.addEventListener("reset", reset);
+		return () => form?.removeEventListener("reset", reset);
+	});
+
 	// Derived display label
 	let displayLabel = $derived(
 		selectedOptions.length
@@ -43,7 +52,7 @@
 		required={field.required}
 		bind:value
 	>
-		<Select.Trigger>
+		<Select.Trigger class="whitespace-normal wrap-text">
 			{displayLabel}
 		</Select.Trigger>
 

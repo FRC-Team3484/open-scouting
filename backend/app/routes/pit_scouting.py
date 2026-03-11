@@ -256,10 +256,11 @@ async def get_pits(
         country=data.event_country,
         start_date=to_date_string(data.event_start_date),
         end_date=to_date_string(data.event_end_date),
+        custom=data.event_custom
     )
 
     # If pits have not been generated yet, get teams from TBA and create TeamPits
-    if not event.pits_generated and TBA_API_KEY != "" and TBA_API_KEY is not None and event.custom is False:
+    if not event.pits_generated and TBA_API_KEY != "" and TBA_API_KEY is not None and event.custom == False:
         event_key = str(season.year) + data.event_code
         async with httpx.AsyncClient(timeout=10.0) as client:
             response = await client.get(

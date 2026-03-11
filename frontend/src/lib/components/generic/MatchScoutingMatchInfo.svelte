@@ -87,7 +87,6 @@
                 )[0].alliances[alliance].team_keys[team_position].substring(3);
 
                 team_number = team_number_result;
-                console.log(team_number_result);
             } catch (e) {
                 get_info_error = true;
             }
