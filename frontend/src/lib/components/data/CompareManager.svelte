@@ -8,6 +8,7 @@
 	import Separator from "../ui/separator/separator.svelte";
 	import { getDataDataGetGet } from "$lib/api/data/data";
 	import type { GetDataDataGetGetParams } from "$lib/api/model";
+	import CompareTable from "./CompareTable.svelte";
 
     let { filters, fields = $bindable() } = $props();
 
@@ -57,13 +58,20 @@
      * @returns Array<{ name: string; value: string }>
      */
     function getFields(data) {
-        const uniqueFields = new Set();
+        const fields = new Map();
+
         for (const team of data) {
             for (const item of team.summary) {
-                uniqueFields.add({ value: item.field_uuid, name: item.field_name });
+                if (!fields.has(item.field_uuid)) {
+                    fields.set(item.field_uuid, {
+                        value: item.field_uuid,
+                        name: item.field_name
+                    });
+                }
             }
         }
-        return Array.from(uniqueFields);
+
+        return Array.from(fields.values());
     }
 
     function exportAsJson() {
@@ -231,7 +239,7 @@
                     <div class="flex flex-row gap-2 items-center">
                         <p class="text-sm text-muted-foreground">Loaded {data.length} {data.length == 1 ? "team" : "teams"} with data</p>
                         <Button size="sm" variant="outline" onclick={() => loadData()}><ArrowClockwise weight="bold" /> Refresh</Button>
-                        <DropdownMenu.Root>
+                        <!-- <DropdownMenu.Root>
                             <DropdownMenu.Trigger>
                                 <Button size="sm" variant="outline"><Export weight="bold" /> Export</Button>
                             </DropdownMenu.Trigger>
@@ -247,16 +255,14 @@
                                     </DropdownMenu.Item>
                                 </DropdownMenu.Group>
                             </DropdownMenu.Content>
-                        </DropdownMenu.Root>
+                        </DropdownMenu.Root> -->
                     </div>
                 </Card.Content>
             </Card.Root>
 
             <Separator orientation="horizontal" />
 
-            {#each data as team}
-                <TeamData team={team} />
-            {/each}
+            <CompareTable data={data} filters={filters} fields={fields} />
         </div>
     {/if}
 {/if}

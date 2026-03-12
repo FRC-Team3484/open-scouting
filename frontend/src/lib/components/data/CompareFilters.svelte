@@ -14,12 +14,6 @@
     
     let { filters = $bindable(), fields } = $props();
 
-    $effect(() => {
-        console.log(fields)
-        console.log(fields.map((t) => t.name));
-        console.log(fields.map((t) => t.value));
-    });
-
     let seasons: SeasonResponse[] = $state([]);
     let seasons_label = $derived(seasons.find((s) => s.year === filters.year)?.name ?? "Select Year");
     let events = $state([]);

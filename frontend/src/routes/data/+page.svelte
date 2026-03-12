@@ -18,8 +18,6 @@
 
     let fields: Array<{ name: string; value: string }> = $state([]); // [{ name: "", value: "" }, ...]
 
-    $inspect(fields);
-
     function setUrlParams() {
         const url = new URL(window.location.href);
 
