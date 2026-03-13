@@ -15,6 +15,7 @@
 	import { online } from "svelte/reactivity/window";
 	import { toast } from "svelte-sonner";
 	import { changelogDialogOpen } from "$lib/stores/dialog";
+	import { db } from "$lib/utils/db";
 
     let user = null;
 

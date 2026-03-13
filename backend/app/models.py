@@ -219,7 +219,7 @@ class MatchScoutingSubmission(Model):
         created_at (datetime): The date and time the match scouting submission was created
     """
     uuid = fields.UUIDField(pk=True)
-    user = fields.ForeignKeyField("models.User", related_name="answers")
+    user = fields.ForeignKeyField("models.User", related_name="answers", null=True)
     event = fields.ForeignKeyField("models.Event", related_name="answers")
     team_number = fields.IntField(default=0)
     match_number = fields.IntField(default=0)

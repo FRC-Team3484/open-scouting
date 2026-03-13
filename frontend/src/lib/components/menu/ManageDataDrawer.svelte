@@ -40,6 +40,12 @@
         pitScoutingDataUnsynced = await db.pit_scouting.filter(m => m.synced === false).count();
     }
 
+    async function markMatchScoutingDataAsUnsynced() {
+        await db.match_scouting.toCollection().modify({
+            synced: false
+        });
+    }
+
     onMount(() => {
         getSpaceUsed();
         getAmount();
@@ -189,6 +195,7 @@
                                 </Dialog.Footer>
                             </Dialog.Content>
                         </Dialog.Root>
+                        <Button onclick={async () => {await markMatchScoutingDataAsUnsynced(); await getAmount();}}>Make All Unsynced</Button>
                     </div>
                     <p class="text-sm text-muted-foreground">Match scouting data stored locally, in case of poor connection requiring reports to be submitted later</p>
                 </div>
