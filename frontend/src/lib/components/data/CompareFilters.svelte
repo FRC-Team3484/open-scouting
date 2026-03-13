@@ -11,6 +11,7 @@
 	import { getDataFiltersDataFiltersGet } from "$lib/api/data/data";
 	import { toast } from "svelte-sonner";
 	import Separator from "../ui/separator/separator.svelte";
+	import SelectMatchDialog from "./SelectMatchDialog.svelte";
     
     let { filters = $bindable(), fields } = $props();
 
@@ -18,6 +19,8 @@
     let seasons_label = $derived(seasons.find((s) => s.year === filters.year)?.name ?? "Select Year");
     let events = $state([]);
     let teams = $state([]);
+
+    let selectMatchOpen = $state(false);
 
     async function loadSeasons() {
         seasons = (await getSeasonsSeasonsGet()).data;
@@ -56,6 +59,13 @@
         }).catch(() => {
             toast.error("Error loading filters", { duration: 5000 });
         });
+    }
+
+    function selectMatch(teams: string[]) {
+        filters.team_numbers = teams;
+        selectMatchOpen = false;
+
+        console.log(teams)
     }
 
     onMount(async () => {
@@ -137,7 +147,7 @@
 
                     <div class="flex flex-row gap-2 items-center flex-wrap">
                         <FilterList filterTitle="Add Team Filter" values={teams.map((t) => t.team_number.toString())} labels={teams.map((t) => t.team_number.toString())} bind:selected={filters.team_numbers} />
-                        <Button variant="outline"><Selection weight="bold" /> Select Match</Button>
+                        <Button variant="outline" onclick={() => selectMatchOpen = true}><Selection weight="bold" /> Select Match</Button>
                     </div>
                 </div>
 
@@ -155,3 +165,5 @@
         </div>
     </Card.Content>
 </Card.Root>
+
+<SelectMatchDialog bind:open={selectMatchOpen} year={filters.year} selectMatch={selectMatch} />

@@ -6,6 +6,7 @@
 	import Filters from "$lib/components/data/Filters.svelte";
 	import Header from "$lib/components/data/Header.svelte";
 	import PageContainer from "$lib/components/layout/PageContainer.svelte";
+	import { compare } from "semver-ts";
 	import { onMount, tick } from "svelte";
 
     // Page should be loaded like 
@@ -15,6 +16,8 @@
     let filters = $state({year: 0, event_codes: [], team_numbers: []});
     let compareFilters = $state({year: 0, event_codes: [], team_numbers: [], fields: []});
     let mode: "all" | "compare" = $state("all");
+
+    $inspect(compareFilters);
 
     let fields: Array<{ name: string; value: string }> = $state([]); // [{ name: "", value: "" }, ...]
 
