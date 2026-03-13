@@ -32,15 +32,16 @@
     })
 </script>
 
-<Card.Root class="p-2">
-    <Card.Content class="max-w-screen overflow-x-auto p-2">
+<Card.Root class="p-2 lg:max-w-[70vw] lg:min-w-[50vw]">
+    <Card.Content class="overflow-x-auto p-2">
         {#if data.length == 0}
             <p class="text-muted-foreground">No data found</p>
         {:else if filters.fields.length == 0}
             <p class="text-muted-foreground">No fields selected</p>
+            <p class="text-sm text-muted-foreground">Please select at least one field to view the table</p>
         {:else}
             <Table.Root>
-                <Table.Caption>
+                <Table.Caption class="text-left">
                     Click a cell to see all values
                 </Table.Caption>
             

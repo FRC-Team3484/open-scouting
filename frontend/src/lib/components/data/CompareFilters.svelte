@@ -71,7 +71,7 @@
     });
 </script>
 
-<Card.Root class="mt-4 min-w-64">
+<Card.Root class="mt-4 min-w-64 lg:max-w-[25vw]">
     <Card.Content>
         <div class="flex flex-col gap-2">
             <div class="flex flex-row gap-2 items-center">
