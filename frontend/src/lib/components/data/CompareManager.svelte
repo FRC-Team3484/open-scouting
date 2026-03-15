@@ -9,6 +9,7 @@
 	import { getDataDataGetGet } from "$lib/api/data/data";
 	import type { GetDataDataGetGetParams } from "$lib/api/model";
 	import CompareTable from "./CompareTable.svelte";
+    import * as Tabs from "$lib/components/ui/tabs";
 
     let { filters, fields = $bindable() } = $props();
 
@@ -260,9 +261,25 @@
                 </Card.Content>
             </Card.Root>
 
-            <Separator orientation="horizontal" />
+            <Tabs.Root value="table">
+                <Tabs.List class="w-full">
+                    <Tabs.Trigger value="table">Table</Tabs.Trigger>
+                    <Tabs.Trigger value="chart">Chart</Tabs.Trigger>
+                </Tabs.List>
 
-            <CompareTable data={data} filters={filters} fields={fields} />
+                <Tabs.Content value="table">
+                    <Separator orientation="horizontal" />
+
+                    <CompareTable data={data} filters={filters} fields={fields} />
+                </Tabs.Content>
+
+                <Tabs.Content value="chart">
+                    <Separator orientation="horizontal" />
+
+                </Tabs.Content>
+            </Tabs.Root>
+
+
         </div>
     {/if}
 {/if}
