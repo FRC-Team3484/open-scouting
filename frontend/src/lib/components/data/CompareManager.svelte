@@ -10,6 +10,7 @@
 	import type { GetDataDataGetGetParams } from "$lib/api/model";
 	import CompareTable from "./CompareTable.svelte";
     import * as Tabs from "$lib/components/ui/tabs";
+	import CompareCharts from "./CompareCharts.svelte";
 
     let { filters, fields = $bindable() } = $props();
 
@@ -66,7 +67,8 @@
                 if (!fields.has(item.field_uuid)) {
                     fields.set(item.field_uuid, {
                         value: item.field_uuid,
-                        name: item.field_name
+                        name: item.field_name,
+                        stat_type: item.stat_type
                     });
                 }
             }
@@ -276,10 +278,9 @@
                 <Tabs.Content value="chart">
                     <Separator orientation="horizontal" />
 
+                    <CompareCharts data={data} filters={filters} fields={fields} />
                 </Tabs.Content>
             </Tabs.Root>
-
-
         </div>
     {/if}
 {/if}
