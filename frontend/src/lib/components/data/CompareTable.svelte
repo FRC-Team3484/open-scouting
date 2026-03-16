@@ -32,7 +32,7 @@
     })
 </script>
 
-<Card.Root class="p-2 lg:max-w-[70vw] lg:min-w-[50vw]">
+<Card.Root class="p-2 lg:max-w-[70vw] lg:min-w-[50vw] mt-2">
     <Card.Content class="overflow-x-auto p-2">
         {#if data.length == 0}
             <p class="text-muted-foreground">No data found</p>
