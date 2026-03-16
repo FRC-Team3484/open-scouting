@@ -7,7 +7,7 @@
 	import Header from "$lib/components/data/Header.svelte";
 	import PageContainer from "$lib/components/layout/PageContainer.svelte";
 	import { compare } from "semver-ts";
-	import { onMount, tick } from "svelte";
+	import { onMount, tick, untrack } from "svelte";
 
     // Page should be loaded like 
     // /?mode=all&year=2025&event_codes=paca,ohcl&team_numbers=1234,3484
@@ -16,8 +16,6 @@
     let filters = $state({year: 0, event_codes: [], team_numbers: []});
     let compareFilters = $state({year: 0, event_codes: [], team_numbers: [], fields: []});
     let mode: "all" | "compare" = $state("all");
-
-    $inspect(compareFilters);
 
     let fields: Array<{ name: string; value: string }> = $state([]); // [{ name: "", value: "" }, ...]
 
@@ -119,9 +117,34 @@
         filters.year;
         filters.event_codes;
         filters.team_numbers;
+
+        compareFilters.year;
+        compareFilters.event_codes;
+        compareFilters.team_numbers;
+        compareFilters.fields;
+        
         mode;
         
         setUrlParams();
+    });
+
+    $effect(() => {
+        filters.year;
+
+        untrack(() => {
+            filters.event_codes = [];
+            filters.team_numbers = [];
+        })
+    });
+
+    $effect(() => {
+        compareFilters.year;
+
+        untrack(() => {
+            compareFilters.event_codes = [];
+            compareFilters.team_numbers = [];
+            compareFilters.fields = [];
+        })
     });
 </script>
 
