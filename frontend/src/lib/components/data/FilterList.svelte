@@ -7,7 +7,7 @@
 	import { browser } from "$app/environment";
 	import BaseDialog from "../generic/dialogs/BaseDialog.svelte";
 
-    let { filterTitle, values, labels, selected = $bindable([]) } = $props();
+    let { filterTitle, values, labels, selected = $bindable([]), onlyOne = false } = $props();
 
     let open = $state(false);
     let search = $state("");
@@ -66,14 +66,18 @@
 {/snippet}
 
 <div class="flex flex-row gap-2 max-h-screen max-w-screen flex-wrap items-center">
-    <Button variant="outline" onclick={() => open = true}><PlusCircle weight="bold" /> Add</Button>
+    {#if !onlyOne}
+        <Button variant="outline" onclick={() => open = true}><PlusCircle weight="bold" /> Add</Button>
+    {:else}
+        <Button variant="outline" onclick={() => open = true} disabled={selected.length > 0}><PlusCircle weight="bold" />Set</Button>
+    {/if}
 
-    <BaseDialog bind:open={open} title="Add {filterTitle}" description="Select an item to add">
+    <BaseDialog bind:open={open} title={filterTitle} description="Select an item to add">
         {@render filters()}
     </BaseDialog>
     
     {#each selected as value}
-        <Button variant="outline" size="sm" onclick={() => deleteItem(value)} ><X weight="bold" /> {labels[values.indexOf(value)]}</Button>
+        <Button variant="outline" size="sm" onclick={() => deleteItem(value)} ><X weight="bold" /> {labels[values.indexOf(value)] || value}</Button>
     {/each}
 </div>
 
