@@ -53,7 +53,7 @@
 	<Changelog />
 
 	<!-- Pad the top for navigation bar -->
-	<main class="flex-1 pt-24 md:pt-28">
+	<main class="flex-1 pt-24 md:pt-28 print:pt-0">
 		{@render children?.()}
 	</main>
 </div>
