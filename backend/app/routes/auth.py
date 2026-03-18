@@ -154,7 +154,7 @@ async def update_user_settings(data: BaseSettings, current_user: User = Depends(
     if not settings:
         settings = await Settings.create(user=user)
 
-    for key, value in data.items():
+    for key, value in data.model_dump().items():
         if hasattr(settings, key):
             setattr(settings, key, value)
         else:

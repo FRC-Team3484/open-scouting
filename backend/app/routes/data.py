@@ -355,6 +355,7 @@ async def get_data(
                 if not numeric_values:
                     continue
                 summary_items.append({
+                    "field_uuid": str(field.uuid),
                     "field_name": field.name,
                     "stat_type": stat_type,
                     "avg": mean(numeric_values),
@@ -384,6 +385,7 @@ async def get_data(
                 percentages = {val: round((count / total) * 100, 2) for val, count in counts.items()}
 
                 summary_items.append({
+                    "field_uuid": str(field.uuid),
                     "field_name": field.name,
                     "stat_type": "capability",
                     "avg": "",
