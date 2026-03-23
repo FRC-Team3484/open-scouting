@@ -129,11 +129,7 @@
         });
     }
 
-    onMount(async () => {
-        if (editable) {
-            overrideItemIdKeyNameBeforeInitialisingDndZones("uuid");
-        }
-
+    onMount(async () => {   
         getQuestions();
     });
 

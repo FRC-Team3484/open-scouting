@@ -16,10 +16,13 @@
 	import EventManager from "$lib/components/admin/EventsManager.svelte";
 	import MatchScoutingSubmissionsManager from "$lib/components/admin/MatchScoutingSubmissionsManager.svelte";
 	import PitScoutingDataManager from "$lib/components/admin/PitScoutingDataManager.svelte";
+	import { overrideItemIdKeyNameBeforeInitialisingDndZones } from "svelte-dnd-action";
 
     let user = null;
     let page = $state("start");
     let show_warning_dialog = $state(!(env.PUBLIC_MODE == "dev"));
+
+    overrideItemIdKeyNameBeforeInitialisingDndZones("uuid");
 
     onMount(async () => {
         user = await validateTokenOnline();
