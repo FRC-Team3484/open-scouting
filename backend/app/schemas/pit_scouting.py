@@ -16,6 +16,7 @@ class PitFieldResponse(BaseModel):
     season: UUID
     name: str
     description: str | None
+    required: bool
     field_type: str
     options: PitFieldOptions
     order: int
@@ -26,6 +27,7 @@ class PitFieldRequest(BaseModel):
     season_uuid: UUID
     name: str
     description: str | None
+    required: bool
     field_type: str
     options: PitFieldOptions
     order: int

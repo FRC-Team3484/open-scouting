@@ -48,6 +48,7 @@ async def get_pit_fields(season_uuid: UUID) -> list[PitFieldResponse]:
             season=season.uuid,
             name=field.name,
             description=field.description,
+            required=field.required,
             field_type=field.field_type,
             options=field.options,
             order=field.order,
@@ -106,6 +107,7 @@ async def create_pit_field(
         season=season,
         name=data.name,
         description=data.description,
+        required=data.required,
         field_type=data.field_type,
         options=data.options,
         order=data.order,
@@ -117,6 +119,7 @@ async def create_pit_field(
         season=season.uuid,
         name=field.name,
         description=field.description,
+        required=field.required,
         field_type=field.field_type,
         options=field.options,
         order=field.order,
@@ -160,6 +163,7 @@ async def edit_pit_field(
 
     field.name = data.name
     field.description = data.description
+    field.required = data.required
     field.field_type = data.field_type
     field.options = data.options
     field.order = data.order
@@ -172,6 +176,7 @@ async def edit_pit_field(
         season=season.uuid,
         name=field.name,
         description=field.description,
+        required=field.required,
         field_type=field.field_type,
         options=field.options,
         order=field.order,
