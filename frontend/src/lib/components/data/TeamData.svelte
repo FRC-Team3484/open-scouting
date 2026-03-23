@@ -13,9 +13,9 @@
     let expanded = $state(false);
 </script>
 
-<Card.Root>
+<Card.Root class="py-2 md:py-6">
     <Card.Content>
-        <div class="flex flex-col gap-2 lg:min-w-128">
+        <div class="flex flex-col gap-2 lg:min-w-128 max-w-[80vw]">
             <div class="flex flex-row gap-2 justify-between">
                 <div class="flex flex-row gap-2 items-center">
                     <p class="font-bold">{team.team_number}</p>
@@ -32,7 +32,7 @@
             </div>
 
             {#if expanded}
-                <div class="flex flex-col gap-4" transition:slide>
+                <div class="flex flex-col gap-1 md:gap-4" transition:slide>
                     <!-- Summary -->
                     <TeamSummary fields={team.summary} />
 
