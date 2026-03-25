@@ -7,6 +7,7 @@
 import type { PitFieldOptions } from './pitFieldOptions';
 
 export interface PitFieldRequest {
+  uuid?: string | null;
   season_uuid: string;
   name: string;
   description: string | null;

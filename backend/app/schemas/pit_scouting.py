@@ -24,6 +24,7 @@ class PitFieldResponse(BaseModel):
     created_at: datetime
 
 class PitFieldRequest(BaseModel):
+    uuid: UUID | None = None
     season_uuid: UUID
     name: str
     description: str | None

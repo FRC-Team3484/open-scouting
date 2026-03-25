@@ -103,16 +103,56 @@ async def create_pit_field(
     else:
         organization = None
 
-    field: PitScoutingField = await PitScoutingField.create(
-        season=season,
-        name=data.name,
-        description=data.description,
-        required=data.required,
-        field_type=data.field_type,
-        options=data.options,
-        order=data.order,
-        organization=organization
-    )
+    # When importing from a preset, uuid is provided
+    if data.uuid != "" and data.uuid is not None:
+        # Check if an existing archived field exists
+        existing_field = await PitScoutingField.filter(
+            uuid=data.uuid, 
+            archived=True
+        ).first()
+
+        # If an existing archived field exists, edit it with the given data and unarchive it
+        if existing_field:
+            existing_field.season = season
+            existing_field.name = data.name
+            existing_field.description = data.description
+            existing_field.required = data.required
+            existing_field.field_type = data.field_type
+            existing_field.options = data.options
+            existing_field.order = data.order
+            existing_field.organization = organization
+            existing_field.archived = False
+            await existing_field.save()
+
+            field = existing_field
+
+        # Otherwise, create a new one
+        else:
+            field: PitScoutingField = await PitScoutingField.create(
+                uuid=data.uuid,
+                season=season,
+                name=data.name,
+                description=data.description,
+                required=data.required,
+                field_type=data.field_type,
+                options=data.options,
+                order=data.order,
+                organization=organization
+            )
+
+    else:
+        # Otherwise, create a new field
+        field: PitScoutingField = await PitScoutingField.create(
+            season=season,
+            name=data.name,
+            description=data.description,
+            required=data.required,
+            field_type=data.field_type,
+            options=data.options,
+            order=data.order,
+            organization=organization
+        )
+        
 
     return PitFieldResponse(
         uuid=field.uuid,
