@@ -52,6 +52,7 @@
             if (response.status === 200) {
                 for (const question of newQuestions) {
                     const body = {
+                        uuid: question.uuid,
                         season_uuid: season_uuid,
                         name: question.name,
                         description: question.description,
