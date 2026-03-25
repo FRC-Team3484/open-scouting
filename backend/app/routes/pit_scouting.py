@@ -1,6 +1,9 @@
 from collections import defaultdict
 from datetime import datetime
+import json
 import os
+from pathlib import Path
+from typing import Any
 from uuid import UUID
 import httpx
 
@@ -449,3 +452,22 @@ async def delete_pit(pit_uuid: UUID, superuser = Depends(require_superuser)) -> 
     """
     await TeamPit.filter(uuid=pit_uuid).delete()
     return MessageResponse(message="Pit deleted")
+
+@router.get("/pits/get_presets")
+async def get_pit_scouting_field_presets(superuser: User = Depends(require_superuser)) -> list[Any]:    
+    """
+    Get all JSON pit scouting field presets
+
+    Requires superuser access
+
+    Returns:
+        `list[Any]`: A list of all pit scouting field presets
+    """
+    path = Path("./app/pit_scouting_presets")
+    presets = []
+
+    for file in path.iterdir():
+        with open(file, "r") as f:
+            presets.append({ "name": file.stem, "preset": json.load(f) })
+
+    return presets

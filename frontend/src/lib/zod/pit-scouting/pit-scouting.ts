@@ -307,3 +307,15 @@ export const DeletePitPitsDeletePitUuidDeleteResponse = zod.object({
   "message": zod.string()
 })
 
+/**
+ * Get all JSON pit scouting field presets
+
+Requires superuser access
+
+Returns:
+    `list[Any]`: A list of all pit scouting field presets
+ * @summary Get Pit Scouting Field Presets
+ */
+export const GetPitScoutingFieldPresetsPitsGetPresetsGetResponseItem = zod.unknown()
+export const GetPitScoutingFieldPresetsPitsGetPresetsGetResponse = zod.array(GetPitScoutingFieldPresetsPitsGetPresetsGetResponseItem)
+

@@ -537,3 +537,44 @@ export const deletePitPitsDeletePitUuidDelete = async (pitUuid: string, options?
 );}
   
 
+/**
+ * Get all JSON pit scouting field presets
+
+Requires superuser access
+
+Returns:
+    `list[Any]`: A list of all pit scouting field presets
+ * @summary Get Pit Scouting Field Presets
+ */
+export type getPitScoutingFieldPresetsPitsGetPresetsGetResponse200 = {
+  data: unknown[]
+  status: 200
+}
+
+export type getPitScoutingFieldPresetsPitsGetPresetsGetResponseSuccess = (getPitScoutingFieldPresetsPitsGetPresetsGetResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getPitScoutingFieldPresetsPitsGetPresetsGetResponse = (getPitScoutingFieldPresetsPitsGetPresetsGetResponseSuccess)
+
+export const getGetPitScoutingFieldPresetsPitsGetPresetsGetUrl = () => {
+
+
+  
+
+  return `/pits/get_presets`
+}
+
+export const getPitScoutingFieldPresetsPitsGetPresetsGet = async ( options?: RequestInit): Promise<getPitScoutingFieldPresetsPitsGetPresetsGetResponse> => {
+  
+  return customInstance<getPitScoutingFieldPresetsPitsGetPresetsGetResponse>(getGetPitScoutingFieldPresetsPitsGetPresetsGetUrl(),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+  
+
