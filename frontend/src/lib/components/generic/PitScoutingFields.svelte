@@ -60,7 +60,8 @@
                         options: question.options ?? {
                             choices: [],
                         },
-                        order: 0,
+                        required: question.required,
+                        order: question.order,
                         organization_uuid: null as string | null,
                     }
 
