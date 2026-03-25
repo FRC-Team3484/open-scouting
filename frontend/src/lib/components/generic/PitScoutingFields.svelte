@@ -5,8 +5,9 @@
     import Separator from "../ui/separator/separator.svelte";
     import * as Card from "$lib/components/ui/card/index.js";
 	import { Button } from "$lib/components/ui/button/index.js";
-	import { Export, PlusCircle, Trash } from "phosphor-svelte";
+	import { CircleNotch, Export, PlusCircle, Trash, XCircle } from "phosphor-svelte";
     import * as Dialog from "$lib/components/ui/dialog/index.js";
+    import * as Select from "$lib/components/ui/select/index.js";
 
 	import AddPitScoutingQuestionDialog from "./dialogs/AddPitScoutingQuestionDialog.svelte";
 	import { addPitScoutingQuestionDialogOpen } from "$lib/stores/dialog";
@@ -17,7 +18,7 @@
 	import ChoiceQuestion from "./pit_questions/admin/ChoiceQuestion.svelte";
 	import { toast } from "svelte-sonner";
 	import Input from "../ui/input/input.svelte";
-	import { clearPitFieldsPitsFieldsSeasonUuidClearDelete, createPitFieldPitsFieldsSeasonUuidCreatePost, getPitFieldsPitsFieldsSeasonUuidGet, movePitFieldsPitsFieldsSeasonUuidReorderPatch } from "$lib/api/pit-scouting/pit-scouting";
+	import { clearPitFieldsPitsFieldsSeasonUuidClearDelete, createPitFieldPitsFieldsSeasonUuidCreatePost, getPitFieldsPitsFieldsSeasonUuidGet, getPitScoutingFieldPresetsPitsGetPresetsGet, movePitFieldsPitsFieldsSeasonUuidReorderPatch } from "$lib/api/pit-scouting/pit-scouting";
 	import type { ReorderPitFieldsRequest } from "$lib/api/model";
 	import ImageQuestion from "./pit_questions/admin/ImageQuestion.svelte";
 
@@ -26,6 +27,11 @@
     let questions = $state([]);
 
     let fieldFile = $state(null);
+    let presets = $state([]);
+    let selectedPresetName = $state(null);
+    let selectedPreset = $derived(
+        presets.find(p => p.name === selectedPresetName) ?? null
+    );
 
     async function getQuestions() {
         if (editable) {
@@ -45,6 +51,15 @@
         a.download = "pit_scouting_questions.json";
         a.click();
         URL.revokeObjectURL(url);
+    }
+
+    async function getPresets() {
+        // TODO: this needs a proper response schema
+        await getPitScoutingFieldPresetsPitsGetPresetsGet().then((response) => {
+            if (response.status === 200) {
+                presets = response.data
+            }
+        });
     }
 
     async function importQuestionsToServer(newQuestions) {
@@ -105,6 +120,12 @@
         }
     }
 
+    function importAsPreset() {
+        if (selectedPreset) {
+            importQuestionsToServer(selectedPreset.preset);
+        }
+    }
+
     function handleDndConsider(e) {
         questions = e.detail.items;
     }
@@ -151,7 +172,7 @@
             <Card.Content>
                 <div class="flex flex-col gap-2">
                     <Button onclick={() => {addPitScoutingQuestionDialogOpen.set(true);}}><PlusCircle weight="bold" /> Add Question</Button>
-                    <Dialog.Root>
+                    <Dialog.Root onOpenChange={getPresets}>
                         <Dialog.Trigger>
                             <Button variant="outline" class="w-full"><Export weight="bold" /> Import Questions</Button>
                         </Dialog.Trigger>
@@ -168,6 +189,42 @@
                                 <Dialog.Close>
                                     <Button onclick={() => importAsFile()} disabled={fieldFile == null}>Import JSON File</Button>
                                 </Dialog.Close>
+                            </div>
+
+                            <p class="font-bold">Choose a preset:</p>
+                            <div class="flex flex-row gap-2 flex-wrap">
+                                {#if presets == null}
+                                    <CircleNotch class="animate-spin" size={22} />
+                                    <p>Loading presets...</p>
+                                {:else if presets.length == 0}
+                                    <p class="text-muted-foreground">No presets found on the server</p>
+                                {:else}
+                                    <Select.Root
+                                        type="single"
+                                        name="preset"
+                                        id="preset"
+                                        bind:value={selectedPresetName}
+                                        >
+                                        <Select.Trigger>
+                                            {selectedPresetName ?? "Select a preset"}
+                                        </Select.Trigger>
+
+                                        <Select.Content>
+                                            {#each presets as preset}
+                                            <Select.Item
+                                                value={preset.name}
+                                                label={preset.name}
+                                            />
+                                            {/each}
+                                        </Select.Content>
+                                    </Select.Root>
+
+                                    <Button variant="outline" size="icon-sm" onclick={() => selectedPresetName = null}><XCircle weight="bold" /></Button>
+
+                                    <Dialog.Close>
+                                        <Button onclick={() => importAsPreset()} disabled={selectedPresetName == null}>Import Preset</Button>
+                                    </Dialog.Close>
+                                {/if}
                             </div>
 
                             <Dialog.Footer>
