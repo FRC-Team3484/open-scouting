@@ -11,7 +11,7 @@
 	import Badge from "../ui/badge/badge.svelte";
     import * as Dialog from "../ui/dialog";
 	import { toast } from "svelte-sonner";
-	import { fetchEventData, fetchSeasonData, pushMatchScoutingData } from "$lib/utils/sync";
+	import { fetchEventData, fetchSeasonData, pushFiles, pushMatchScoutingData } from "$lib/utils/sync";
 
     let totalSpace = $state(0);
     let usedSpace = $state(0);
@@ -22,6 +22,8 @@
     let matchScoutingDataUnsynced = $state(0);
     let pitScoutingData = $state(0);
     let pitScoutingDataUnsynced = $state(0);
+    let files = $state(0);
+    let filesUnsynced = $state(0);
 
     function getSpaceUsed() {
         const quota = navigator.storage.estimate();
@@ -38,6 +40,8 @@
         matchScoutingDataUnsynced = await db.match_scouting.filter(m => m.synced === false).count();
         pitScoutingData = await db.pit_scouting.count();
         pitScoutingDataUnsynced = await db.pit_scouting.filter(m => m.synced === false).count();
+        files = await db.files.count();
+        filesUnsynced = await db.files.filter(m => m.synced === false).count();
     }
 
     async function markMatchScoutingDataAsUnsynced() {
@@ -241,6 +245,50 @@
                         </Dialog.Root>
                     </div>
                     <p class="text-sm text-muted-foreground">Pit scouting data for each team at each event in each season that you've loaded. Used to manage the live pit scouting page, and keep you and the other scouts up to date.</p>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                    <div class="flex flex-row gap-2 items-center flex-wrap">
+                        <p class="font-bold">{files} Files</p>
+                        {#if filesUnsynced > 0}
+                            <Badge variant="destructive">{filesUnsynced} Unsynced</Badge>
+                            <Dialog.Root>
+                                <Dialog.Trigger>
+                                    <Button>Sync</Button>
+                                </Dialog.Trigger>
+                                <Dialog.Content>
+                                    <Dialog.Title>Are you sure?</Dialog.Title>
+                                    <Dialog.Description>Are you sure you want to sync files?</Dialog.Description>
+                                    <Dialog.Footer>
+                                        <Dialog.Close>
+                                            <Button variant="outline">Cancel</Button>
+                                        </Dialog.Close>
+                                        <Dialog.Close>
+                                            <Button type="submit" onclick={async () => { await pushFiles(); await getAmount(); getSpaceUsed(); await toast.success("Files synced"); }}>Sync</Button>
+                                        </Dialog.Close>
+                                    </Dialog.Footer>
+                                </Dialog.Content>
+                            </Dialog.Root>
+                        {/if}
+                        <Dialog.Root>
+                            <Dialog.Trigger>
+                                <Button variant="outline">Delete</Button>
+                            </Dialog.Trigger>
+                            <Dialog.Content>
+                                <Dialog.Title>Are you sure?</Dialog.Title>
+                                <Dialog.Description>Are you sure you want to delete all files? This cannot be undone, and any unsynced data will be completely lost.</Dialog.Description>
+                                <Dialog.Footer>
+                                    <Dialog.Close>
+                                        <Button variant="outline">Cancel</Button>
+                                    </Dialog.Close>
+                                    <Dialog.Close>
+                                        <Button type="submit" onclick={async () => { await db.files.clear(); await getAmount(); getSpaceUsed(); await toast.success("File data cleared"); }}>Delete</Button>
+                                    </Dialog.Close>
+                                </Dialog.Footer>
+                            </Dialog.Content>
+                        </Dialog.Root>
+                    </div>
+                    <p class="text-sm text-muted-foreground">Files stored on your device. Primarily used for pit scouting image uploads, and to ensure images will be uploaded later. Files are automatically deleted once they are uploaded.</p>
                 </div>
             </div>
         </div>
