@@ -33,9 +33,12 @@
         const eventName = event.name.toLowerCase();
         const eventCode = event.event_code.toLowerCase();
 
+        const today = new Date().toISOString().split("T")[0]; // "YYYY-MM-DD"
+        const endDate = event.end_date.split("T")[0];
+
         return (
             (eventName.includes(searchValue) || eventCode.includes(searchValue)) &&
-            (showPastEvents || event.end_date >= new Date().toISOString())
+            (showPastEvents || endDate >= today)
         );
     }));
 
