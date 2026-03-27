@@ -10,10 +10,11 @@ import { getSeasonGamepiecesGamepiecesSeasonSeasonUuidGet } from "$lib/api/gamep
 import { getPitFieldsPitsFieldsSeasonUuidGet, submitPitPitsSubmitSeasonUuidTeamNumberPost, getPitsPitsGetSeasonUuidPost } from "$lib/api/pit-scouting/pit-scouting"
 import { getCustomEventsEventCustomSeasonUuidGet } from "$lib/api/events/events"
 import { submitMatchScoutingScoutingSubmitPost } from "$lib/api/match-scouting/match-scouting";
-import type { SeasonResponse, GamepieceResponse, PitFieldResponse, EventResponse, MatchScoutingRequest, SubmitPitFieldAnswerRequest, GetPitsForSeasonRequest } from "$lib/api/model";
+import type { SeasonResponse, GamepieceResponse, PitFieldResponse, EventResponse, MatchScoutingRequest, SubmitPitFieldAnswerRequest, GetPitsForSeasonRequest, BodyUploadImageUploadImagePost, UploadImageUploadImagePostParams } from "$lib/api/model";
 import { getServerStatusStatusGet } from "$lib/api/generic/generic";
 import { browser } from "$app/environment";
 import { VERSION } from "./constants";
+import { uploadImageUploadImagePost } from "$lib/api/uploads/uploads";
 
 
 /**
@@ -127,6 +128,15 @@ async function isOldData() {
     } else {
         return true;
     }
+}
+
+/**
+ * Checks if there are any unsynced files
+ * 
+ * @returns boolean
+ */
+async function isUnsyncedFiles() {
+    return (await db.files.filter(m => m.synced === false).toArray()).length > 0;
 }
 
 /**
@@ -281,6 +291,29 @@ async function fetchPitScoutingData(event_data, season_uuid) {
     }
 }
 
+/**
+ * Pushes files to the backend
+ */
+async function pushFiles() {
+    let files = await db.files.filter(f => f.synced === false).toArray();
+
+    for (const file of files) {
+        const params: UploadImageUploadImagePostParams = {
+            file_uuid: file.uuid
+        }
+        const body: BodyUploadImageUploadImagePost = {
+            file: file.data
+        }
+
+        await uploadImageUploadImagePost(body, params).then(async (data) => {
+            if (data.status === 200) {
+                await db.files.delete(file.uuid);
+            }
+        });
+
+    }
+}
+
 async function getServerStatus() {
     if (!browser) return;
 
@@ -354,6 +387,18 @@ async function main() {
 
         await fetchEventData();
         console.log("Fetched event data");
+
+        if (await isUnsyncedFiles()) {
+            menuState.set({
+                state: "loading",
+                status: "Syncing files...",
+                close: false
+            });
+
+            await pushFiles();
+            console.log("Synced files");
+        }
+
         menuState.set({
             state: "ready",
             status: "Data is up to date!",
@@ -366,4 +411,4 @@ async function main() {
 
 main().catch((error) => console.error(error));
 
-export { fetchSeasonData, fetchEventData, isOldData, pushMatchScoutingData, pushPitScoutingData, fetchPitScoutingData }
+export { fetchSeasonData, fetchEventData, isOldData, pushMatchScoutingData, pushPitScoutingData, fetchPitScoutingData, pushFiles }
