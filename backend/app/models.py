@@ -251,6 +251,7 @@ class PitScoutingField(Model):
         season (Season): The season the pit scouting field is associated with
         name (str): The name of the pit scouting field
         description (str): The description of the pit scouting field
+        required (bool): Whether the pit scouting field is required or not
         field_type (str): The type of the pit scouting field
         options (list): The options for the pit scouting field
         order (int): The order of the pit scouting field
@@ -262,6 +263,7 @@ class PitScoutingField(Model):
     season = fields.ForeignKeyField("models.Season", related_name="pit_fields")
     name = fields.CharField(max_length=255)
     description = fields.TextField(null=True)
+    required = fields.BooleanField(default=False)
     field_type = fields.CharField(max_length=255) # text, number, boolean, choice
     options = fields.JSONField(null=True, default=list) # For field_type=choice
     order = fields.IntField(default=0) # The order the field should appear in the frontend or section

@@ -5,6 +5,6 @@
  * OpenAPI spec version: v2.1.0-beta.1
  */
 
-export interface BaseSettings {
-  favorite_events: string[];
-}
+export type UploadImageUploadImagePostParams = {
+file_uuid: string;
+};

@@ -21,20 +21,25 @@
         }
 
         const answered = pit_questions.filter(q =>
-            pit.answers?.some(a => a.field_uuid === q.uuid)
+            pit.answers?.some(a => a.field_uuid === q.uuid && q.required === true)
+        ).length;
+        const answeredOptional = pit_questions.filter(q =>
+            pit.answers?.some(a => a.field_uuid === q.uuid && q.required === false)
         ).length;
 
         let status: "done" | "incomplete" | "none" = "none";
 
-        if (answered === pit_questions.length) {
+        if (answered === pit_questions.filter(q => q.required).length) {
             status = "done";
         } else if (answered > 0) {
+            status = "incomplete";
+        } else if (answeredOptional > 0) {
             status = "incomplete";
         }
 
         return {
-            answered,
-            total: pit_questions.length,
+            answered: answered + answeredOptional,
+            total: pit_questions.filter(q => q.required).length,
             status
         };
     });

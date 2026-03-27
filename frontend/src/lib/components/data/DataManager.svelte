@@ -204,7 +204,7 @@
             <p class="text-muted-foreground text-sm">Recieved an invalid response from the backend. Please check your filters and try again</p>
         </div>
     {:else}
-        <div class="flex flex-col gap-4 my-4">
+        <div class="flex flex-col gap-2 md:gap-4 my-4">
             <Card.Root>
                 <Card.Content>
                     <div class="flex flex-row gap-2 items-center">

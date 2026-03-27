@@ -13,7 +13,9 @@
                     <p class="font-bold">{other.field_name}</p>
                     <ul class="list-disc list-inside">
                         {#each other.values as value}
-                            <li class="text-sm">Match {value.match_number} - {value.value}</li>
+                            {#if value.value != ""}
+                                <li class="text-sm">Match {value.match_number} - {value.value}</li>
+                            {/if}
                         {/each}
                     </ul>
                 </Card.Content>

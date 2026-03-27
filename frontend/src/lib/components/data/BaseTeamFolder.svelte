@@ -23,7 +23,11 @@
 
         {#if expanded}
             <div class="flex flex-col gap-2 mt-4" transition:slide>
-                {@render children()}
+                {#if children}
+                    {@render children()}
+                {:else}
+                    <p class="text-muted-foreground">No data found</p>
+                {/if}
             </div>
         {/if}
     </Card.Content>

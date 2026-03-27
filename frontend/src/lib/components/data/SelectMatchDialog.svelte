@@ -10,6 +10,7 @@
 	import MatchItem from "./MatchItem.svelte";
     import * as Collapsible from "$lib/components/ui/collapsible/index.js";
 	import { buttonVariants } from "../ui/button";
+	import { get } from "svelte/store";
 
     let { open = $bindable(false), year, selectMatch } = $props();
 
@@ -56,16 +57,18 @@
         if (selectedEvents.length === 0) {
             matchesState = "selectEvent";
         }
-    })
+    });
 
     $effect(() => {
         matchType;
         matchNumber = 1;
-    })
+    });
 
-    onMount(async () => {
+    $effect(() => {
+        year;
+
         getEvents();
-    })
+    });
 </script>
 
 <BaseDialog title="Select a Match" description="Select a match at an event to automatically select the teams that played in that match." bind:open> 

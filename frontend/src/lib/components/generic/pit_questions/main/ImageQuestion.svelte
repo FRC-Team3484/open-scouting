@@ -4,12 +4,10 @@
 	import { db } from "$lib/utils/db";
     import Badge from "$lib/components/ui/badge/badge.svelte";
     import * as Card from "$lib/components/ui/card/index.js";
-    import { ArrowBendDownRight, ArrowBendLeftUp, Calendar, CircleNotch, Eye, PlusCircle, UploadSimple, User, X } from "phosphor-svelte";
+    import * as Alert from "$lib/components/ui/alert/index.js";
+    import { ArrowBendDownRight, Calendar, Eye, Info, PlusCircle, UploadSimple, User, X } from "phosphor-svelte";
     import { slide } from "svelte/transition";
-	import { uploadImagesUploadImagesPost } from "$lib/api/uploads/uploads";
-	import type { BodyUploadImagesUploadImagesPost, BodyUploadImageUploadImagePost } from "$lib/api/model";
-	import { toast } from "svelte-sonner";
-	import { env } from "$env/dynamic/public";
+    import { pushFiles } from "$lib/utils/sync";
 
     let { pit, question, answers, user } = $props();
 
@@ -18,7 +16,6 @@
 
     let value = $state("");
     let files: FileList | null = $state(null);
-    let uploading: boolean = $state(false);
 
     function reset() {
         mode = "none";
@@ -30,22 +27,23 @@
         if (!files || files.length === 0) return;
 
         const uploadFile = Array.from(files);
+        let imageUrls: string[] = [];
 
-        const body: BodyUploadImagesUploadImagesPost = {
-            files: uploadFile
+        for (const file of uploadFile) {
+            const uuid = crypto.randomUUID();
+            imageUrls.push("/uploads/" + uuid + ".png");
+
+            db.files.add({
+                uuid: uuid,
+                data: file,
+                url: "/uploads/" + uuid + ".png",
+                synced: false
+            });
         }
 
-        uploading = true;
-        await uploadImagesUploadImagesPost(body).then(async (response) => {
-            if (response.status !== 200) {
-                toast.error("Failed to upload image", { duration: 5000, description: response.data.detail });
-            } else {
-                toast.success(`Uploaded ${response.data.count} images`, { duration: 5000 });
-
-                await addAnswers(response.data.files.map((f) => f.url));
-            }
-        });
-        uploading = false;
+        mode = "none";
+        await addAnswers(imageUrls);
+        await pushFiles();
     }
 
     async function addAnswers(imageUrls: string[]) {
@@ -90,12 +88,8 @@
         <Card.Content>
             <div class="flex flex-col gap-2 items-start w-full" transition:slide>
                 <Input id="picture" type="file" bind:files={files} accept="image/*" multiple />
-                <Button size="sm" onclick={uploadImage} disabled={files == null || uploading}>
-                    {#if uploading}
-                        <CircleNotch class="animate-spin" size={22} />
-                    {:else}
-                        <UploadSimple weight="bold" /> Upload
-                    {/if}
+                <Button size="sm" onclick={uploadImage} disabled={files == null}>
+                    <UploadSimple weight="bold" /> Upload
                 </Button>
             </div>
         </Card.Content>
@@ -107,9 +101,15 @@
                     <p class="text-muted-foreground">No answers yet</p>
                 {:else}
                     <div class="flex flex-col gap-2">
+                        <Alert.Root class="items-left text-left max-w-128">
+                            <Info weight="bold" />
+                            <Alert.Title class="line-clamp-none">Images may not be immediately visible</Alert.Title>
+                            <Alert.Description>Images are stored locally until they can be uploaded to the server. If an image is not visible yet, wait until you have connection before trying again.</Alert.Description>
+                        </Alert.Root>
+
                         {#each answers as answer}
                             <div class="flex flex-col flex-wrap text-left">
-                                <img src={answer.value} class="w-128 rounded-md bg-accent p-1" onerror={() => console.log("failed to load image")}>
+                                <img src={answer.value} class="w-128 rounded-md bg-accent p-1" onerror={() => console.log("failed to load image ", answer.value)}>
                                 <div class="flex flex-row flex-wrap items-center">
                                     <ArrowBendDownRight weight="bold" class="text-muted-foreground ml-4 mr-1"/>
                                     <User weight="bold" class="text-muted-foreground ml-2 mr-1"/>

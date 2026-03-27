@@ -20,6 +20,9 @@
     <div class="flex flex-col gap-2 justify-between flex-wrap">
         <div class="flex flex-col md:flex-row gap-2 flex-wrap items-start">
             <p class="font-bold text-left">{question.name}</p>
+            {#if question.required}
+                <span class="text-red-500">*</span>
+            {/if}
             <Badge variant="outline">{answers.length} {answers.length == 1 ? "answer" : "answers"}</Badge>
         </div>
 

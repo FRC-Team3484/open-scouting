@@ -1,6 +1,9 @@
 from collections import defaultdict
 from datetime import datetime
+import json
 import os
+from pathlib import Path
+from typing import Any
 from uuid import UUID
 import httpx
 
@@ -48,6 +51,7 @@ async def get_pit_fields(season_uuid: UUID) -> list[PitFieldResponse]:
             season=season.uuid,
             name=field.name,
             description=field.description,
+            required=field.required,
             field_type=field.field_type,
             options=field.options,
             order=field.order,
@@ -102,21 +106,63 @@ async def create_pit_field(
     else:
         organization = None
 
-    field: PitScoutingField = await PitScoutingField.create(
-        season=season,
-        name=data.name,
-        description=data.description,
-        field_type=data.field_type,
-        options=data.options,
-        order=data.order,
-        organization=organization
-    )
+    # When importing from a preset, uuid is provided
+    if data.uuid != "" and data.uuid is not None:
+        # Check if an existing archived field exists
+        existing_field = await PitScoutingField.filter(
+            uuid=data.uuid, 
+            archived=True
+        ).first()
+
+        # If an existing archived field exists, edit it with the given data and unarchive it
+        if existing_field:
+            existing_field.season = season
+            existing_field.name = data.name
+            existing_field.description = data.description
+            existing_field.required = data.required
+            existing_field.field_type = data.field_type
+            existing_field.options = data.options
+            existing_field.order = data.order
+            existing_field.organization = organization
+            existing_field.archived = False
+            await existing_field.save()
+
+            field = existing_field
+
+        # Otherwise, create a new one
+        else:
+            field: PitScoutingField = await PitScoutingField.create(
+                uuid=data.uuid,
+                season=season,
+                name=data.name,
+                description=data.description,
+                required=data.required,
+                field_type=data.field_type,
+                options=data.options,
+                order=data.order,
+                organization=organization
+            )
+
+    else:
+        # Otherwise, create a new field
+        field: PitScoutingField = await PitScoutingField.create(
+            season=season,
+            name=data.name,
+            description=data.description,
+            required=data.required,
+            field_type=data.field_type,
+            options=data.options,
+            order=data.order,
+            organization=organization
+        )
+        
 
     return PitFieldResponse(
         uuid=field.uuid,
         season=season.uuid,
         name=field.name,
         description=field.description,
+        required=field.required,
         field_type=field.field_type,
         options=field.options,
         order=field.order,
@@ -160,6 +206,7 @@ async def edit_pit_field(
 
     field.name = data.name
     field.description = data.description
+    field.required = data.required
     field.field_type = data.field_type
     field.options = data.options
     field.order = data.order
@@ -172,6 +219,7 @@ async def edit_pit_field(
         season=season.uuid,
         name=field.name,
         description=field.description,
+        required=field.required,
         field_type=field.field_type,
         options=field.options,
         order=field.order,
@@ -404,3 +452,22 @@ async def delete_pit(pit_uuid: UUID, superuser = Depends(require_superuser)) -> 
     """
     await TeamPit.filter(uuid=pit_uuid).delete()
     return MessageResponse(message="Pit deleted")
+
+@router.get("/pits/get_presets")
+async def get_pit_scouting_field_presets(superuser: User = Depends(require_superuser)) -> list[Any]:    
+    """
+    Get all JSON pit scouting field presets
+
+    Requires superuser access
+
+    Returns:
+        `list[Any]`: A list of all pit scouting field presets
+    """
+    path = Path("./app/pit_scouting_presets")
+    presets = []
+
+    for file in path.iterdir():
+        with open(file, "r") as f:
+            presets.append({ "name": file.stem, "preset": json.load(f) })
+
+    return presets

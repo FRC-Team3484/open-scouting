@@ -10,15 +10,21 @@
         if (!pits || !pit_questions?.length) return [];
 
         return pits.map(pit => {
-            const answeredCount = pit_questions.filter(q =>
+            const answeredCount = pit_questions.filter(q => q.required).filter(q =>
+                pit.answers?.some(a => a.field_uuid === q.uuid)
+            ).length;
+
+            const answeredOptionalCount = pit_questions.filter(q => !q.required).filter(q =>
                 pit.answers?.some(a => a.field_uuid === q.uuid)
             ).length;
 
             let status: "done" | "incomplete" | "none" = "none";
 
-            if (answeredCount === pit_questions.length) {
+            if (answeredCount === pit_questions.filter(q => q.required).length) {
                 status = "done";
             } else if (answeredCount > 0) {
+                status = "incomplete";
+            } else if (answeredOptionalCount > 0) {
                 status = "incomplete";
             }
 

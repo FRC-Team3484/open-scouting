@@ -19,6 +19,7 @@
             min={field.options?.minimum ?? 0}
             max={field.options?.maximum ?? undefined}
             value={field.options?.default ?? 0}
+            defaultValue={field.options?.default ?? 0}
         />
 
         <div class="flex flex-row gap-2 items-center">

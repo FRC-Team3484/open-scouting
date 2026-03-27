@@ -15,6 +15,8 @@
 	import { createPitFieldPitsFieldsSeasonUuidCreatePost, editPitFieldPitsFieldsSeasonUuidEditFieldUuidPatch } from "$lib/api/pit-scouting/pit-scouting";
 	import { toast } from "svelte-sonner";
 	import { untrack } from "svelte";
+	import Checkbox from "$lib/components/ui/checkbox/checkbox.svelte";
+	import Switch from "$lib/components/ui/switch/switch.svelte";
 
 	let { getQuestions, seasonUuid } = $props();
 
@@ -36,6 +38,7 @@
 		season_uuid: seasonUuid,
 		name: "",
 		description: "",
+		required: false,
 		field_type: "",
 		options: {
 			choices: [],
@@ -119,6 +122,17 @@
 				{/snippet}
 			</Form.Control>
 			<Form.Description>The description for the question</Form.Description>
+			<Form.FieldErrors />
+		</Form.Field>
+
+		<Form.Field {form} name="required">
+			<Form.Control>
+				{#snippet children({ props })}
+					<Label>Required</Label>
+					<Switch {...props} bind:checked={$formData.required} />
+				{/snippet}
+			</Form.Control>
+			<Form.Description>Is this question required? If this is false, this question is not counted for completing a team's pit.</Form.Description>
 			<Form.FieldErrors />
 		</Form.Field>
 

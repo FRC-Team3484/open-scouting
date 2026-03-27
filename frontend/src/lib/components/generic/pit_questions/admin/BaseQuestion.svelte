@@ -35,6 +35,9 @@
                     </div>
                     <p>
                         {question.name}
+                        {#if question.required}
+                            <span class="text-red-500">*</span>
+                        {/if}
                     </p>
                     {#if editable}
                         <p class="text-sm opacity-80">{question.field_type}</p>

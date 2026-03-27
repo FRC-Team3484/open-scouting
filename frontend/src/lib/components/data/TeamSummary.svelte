@@ -12,7 +12,7 @@
     <div class="flex flex-col gap-1 text-left">
         <p>Score and Miss Averages</p>
         {#each scoreFields as field}
-            <div class="flex flex-row gap-2 text-sm ml-4">
+            <div class="flex flex-row gap-2 text-sm ml-4 flex-wrap mb-1">
                 <p class="font-bold">{field.field_name}</p>
                 <Separator orientation="vertical" class="mx-1" />
                 <p>{field.avg}</p>
@@ -20,7 +20,7 @@
         {/each}
         <p class="mt-2">Capabilities</p>
         {#each capabilityFields as field}
-            <div class="flex flex-row gap-1 text-sm ml-4">
+            <div class="flex flex-row gap-1 text-sm ml-4 flex-wrap mb-1">
                 <p class="font-bold">{field.field_name}</p>
                 <Separator orientation="vertical" class="mx-1" />
                 {#each Object.entries(field.values) as [key, value]}

@@ -123,11 +123,17 @@
 
                 arr.push(value);
                 filteredFields[key] = JSON.stringify(arr);
+            } else if (value === "") {
+                filteredFields[key] = "";
             } else {
                 seen.add(key);
                 filteredFields[key] = value as string;
             }
         }
+
+        // Exclude answers with an empty string as a value
+
+        console.log(filteredFields);
 
         await db.match_scouting.add({
             uuid: crypto.randomUUID(),
@@ -315,11 +321,7 @@
         });
     }
 
-    onMount(async () => {
-        if (editable) {
-            overrideItemIdKeyNameBeforeInitialisingDndZones("uuid");
-        }
-        
+    onMount(async () => {   
         while (!season_uuid) {
             await new Promise(resolve => setTimeout(resolve, 100));
         }
