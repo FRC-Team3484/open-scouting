@@ -5,6 +5,6 @@
  * OpenAPI spec version: v2.1.0-beta.1
  */
 
-export interface BodyUploadImageUploadImagePost {
-  file: Blob;
-}
+export type UploadImageUploadImagePostParams = {
+file_uuid: string;
+};

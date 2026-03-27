@@ -8,11 +8,15 @@ import * as zod from 'zod';
 
 
 /**
- * @summary Upload Images
+ * @summary Upload Image
  */
-export const UploadImagesUploadImagesPostBody = zod.object({
-  "files": zod.array(zod.instanceof(File))
+export const UploadImageUploadImagePostQueryParams = zod.object({
+  "file_uuid": zod.string()
 })
 
-export const UploadImagesUploadImagesPostResponse = zod.unknown()
+export const UploadImageUploadImagePostBody = zod.object({
+  "file": zod.instanceof(File)
+})
+
+export const UploadImageUploadImagePostResponse = zod.unknown()
 

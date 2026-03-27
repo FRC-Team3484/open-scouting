@@ -28,62 +28,57 @@ ALLOWED_TYPES = {
     "image/heif",
 }
 
-@router.post("/upload/images")
-async def upload_images(
-    files: list[UploadFile] = File(...)
+@router.post("/upload/image")
+async def upload_image(
+    file_uuid: str,
+    file: UploadFile = File(...),
 ):
     UPLOAD_ROOT.mkdir(parents=True, exist_ok=True)
 
-    results = []
+    if file.content_type not in ALLOWED_TYPES:
+        raise HTTPException(400, f"Unsupported file type: {file.filename}")
 
-    for file in files:
-        if file.content_type not in ALLOWED_TYPES:
-            raise HTTPException(400, f"Unsupported file type: {file.filename}")
+    # Read file with size limit
+    size = 0
+    data = bytearray()
 
-        # Read file with size limit
-        size = 0
-        data = bytearray()
+    while chunk := await file.read(1024 * 1024):
+        size += len(chunk)
+        if size > MAX_SIZE:
+            raise HTTPException(400, f"File too large: {file.filename}")
+        data.extend(chunk)
 
-        while chunk := await file.read(1024 * 1024):
-            size += len(chunk)
-            if size > MAX_SIZE:
-                raise HTTPException(400, f"File too large: {file.filename}")
-            data.extend(chunk)
+    # Open image safely
+    try:
+        img = Image.open(BytesIO(data))
+        img.load()
+    except Exception:
+        raise HTTPException(400, f"Invalid image: {file.filename}")
 
-        # Open image safely
-        try:
-            img = Image.open(BytesIO(data))
-            img.load()
-        except Exception:
-            raise HTTPException(400, f"Invalid image: {file.filename}")
+    # Normalize mode
+    if img.mode not in ("RGB", "RGBA"):
+        img = img.convert("RGB")
 
-        # Normalize mode
-        if img.mode not in ("RGB", "RGBA"):
-            img = img.convert("RGB")
+    # Resize if needed
+    if img.width > MAX_WIDTH:
+        ratio = MAX_WIDTH / img.width
+        img = img.resize(
+            (MAX_WIDTH, int(img.height * ratio)),
+            Image.Resampling.LANCZOS
+        )
 
-        # Resize if needed
-        if img.width > MAX_WIDTH:
-            ratio = MAX_WIDTH / img.width
-            img = img.resize(
-                (MAX_WIDTH, int(img.height * ratio)),
-                Image.Resampling.LANCZOS
-            )
+    # Save as PNG
+    filename = f"{file_uuid}.png"
+    path = UPLOAD_ROOT / filename
+    img.save(path, format="PNG", optimize=True)
 
-        # Save as PNG
-        filename = f"{uuid.uuid4()}.png"
-        path = UPLOAD_ROOT / filename
-        img.save(path, format="PNG", optimize=True)
-
-        results.append({
-            "original_filename": file.filename,
-            "filename": filename,
-            "url": f"/uploads/{filename}",
-            "width": img.width,
-            "height": img.height,
-            "size": path.stat().st_size,
-        })
+    print("Created image:", path)
 
     return {
-        "count": len(results),
-        "files": results,
+        "original_filename": file.filename,
+        "filename": filename,
+        "url": f"/uploads/{filename}",
+        "width": img.width,
+        "height": img.height,
+        "size": path.stat().st_size,
     }

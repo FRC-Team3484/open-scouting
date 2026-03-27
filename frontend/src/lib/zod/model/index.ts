@@ -48,6 +48,7 @@ export * from './submissionResponse';
 export * from './submitPitFieldAnswerRequest';
 export * from './submitPitFieldAnswerRequestAnswers';
 export * from './tokenResponse';
+export * from './uploadImageUploadImagePostParams';
 export * from './userResponse';
 export * from './validationError';
 export * from './validationErrorCtx';

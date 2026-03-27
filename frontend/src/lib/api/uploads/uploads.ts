@@ -5,47 +5,56 @@
  * OpenAPI spec version: v2.1.0-beta.1
  */
 import type {
-  BodyUploadImagesUploadImagesPost,
-  HTTPValidationError
+  BodyUploadImageUploadImagePost,
+  HTTPValidationError,
+  UploadImageUploadImagePostParams
 } from '../model';
 
 import { customInstance } from '.././client';
 
 /**
- * @summary Upload Images
+ * @summary Upload Image
  */
-export type uploadImagesUploadImagesPostResponse200 = {
+export type uploadImageUploadImagePostResponse200 = {
   data: unknown
   status: 200
 }
 
-export type uploadImagesUploadImagesPostResponse422 = {
+export type uploadImageUploadImagePostResponse422 = {
   data: HTTPValidationError
   status: 422
 }
 
-export type uploadImagesUploadImagesPostResponseSuccess = (uploadImagesUploadImagesPostResponse200) & {
+export type uploadImageUploadImagePostResponseSuccess = (uploadImageUploadImagePostResponse200) & {
   headers: Headers;
 };
-export type uploadImagesUploadImagesPostResponseError = (uploadImagesUploadImagesPostResponse422) & {
+export type uploadImageUploadImagePostResponseError = (uploadImageUploadImagePostResponse422) & {
   headers: Headers;
 };
 
-export type uploadImagesUploadImagesPostResponse = (uploadImagesUploadImagesPostResponseSuccess | uploadImagesUploadImagesPostResponseError)
+export type uploadImageUploadImagePostResponse = (uploadImageUploadImagePostResponseSuccess | uploadImageUploadImagePostResponseError)
 
-export const getUploadImagesUploadImagesPostUrl = () => {
+export const getUploadImageUploadImagePostUrl = (params: UploadImageUploadImagePostParams,) => {
+  const normalizedParams = new URLSearchParams();
 
+  Object.entries(params || {}).forEach(([key, value]) => {
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
 
-  
+  const stringifiedParams = normalizedParams.toString();
 
-  return `/upload/images`
+  return stringifiedParams.length > 0 ? `/upload/image?${stringifiedParams}` : `/upload/image`
 }
 
-export const uploadImagesUploadImagesPost = async (bodyUploadImagesUploadImagesPost: BodyUploadImagesUploadImagesPost, options?: RequestInit): Promise<uploadImagesUploadImagesPostResponse> => {
+export const uploadImageUploadImagePost = async (bodyUploadImageUploadImagePost: BodyUploadImageUploadImagePost,
+    params: UploadImageUploadImagePostParams, options?: RequestInit): Promise<uploadImageUploadImagePostResponse> => {
     const formData = new FormData();
-bodyUploadImagesUploadImagesPost.files.forEach(value => formData.append(`files`, value));
+formData.append(`file`, bodyUploadImageUploadImagePost.file);
 
-  return customInstance<uploadImagesUploadImagesPostResponse>(getUploadImagesUploadImagesPostUrl(),
+  return customInstance<uploadImageUploadImagePostResponse>(getUploadImageUploadImagePostUrl(params),
   {      
     ...options,
     method: 'POST'
