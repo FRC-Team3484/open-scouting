@@ -20,9 +20,10 @@
     // Props
     interface Props {
         year?: number | null // If year is null, show all events across all years
+        value?: any
     }
 
-    let { year = null }: Props = $props();
+    let { year = null, value = $bindable(null) }: Props = $props();
 
     // Variables
     let events = liveQuery(() => db.event.toArray());
@@ -53,6 +54,10 @@
         }
 
         await setUserSetting("favorite_events", favoriteEvents);
+    }
+
+    function selectEvent(event) {
+        value = event;
     }
 
     // Init
@@ -108,6 +113,12 @@
                             <DropdownMenu.RadioItem value="week">By Week</DropdownMenu.RadioItem>
                             <DropdownMenu.RadioItem value="alphabetical">Alphabetically</DropdownMenu.RadioItem>
                         </DropdownMenu.RadioGroup>
+
+                        <DropdownMenu.Label>Options</DropdownMenu.Label>
+                        <DropdownMenu.CheckboxGroup>
+                            <DropdownMenu.CheckboxItem>Nearby Events</DropdownMenu.CheckboxItem>
+                            <DropdownMenu.CheckboxItem>Favorite Events First</DropdownMenu.CheckboxItem>
+                        </DropdownMenu.CheckboxGroup>
                     </DropdownMenu.Content>
                 </DropdownMenu.Root>
 
@@ -148,7 +159,7 @@
             {:else}
                 {#each filteredEvents as event (event.year + event.event_code)}
                     <div animate:flip={{duration: 300}}>
-                        <Event event={event} favoriteEvents={favoriteEvents} user={user} favoriteEvent={favoriteEvent} />
+                        <Event event={event} favoriteEvents={favoriteEvents} user={user} favoriteEvent={favoriteEvent} selectEvent={selectEvent} />
                     </div>
                 {/each}
             {/if}

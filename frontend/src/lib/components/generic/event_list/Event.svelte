@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { scale, slide } from "svelte/transition";
-    
+
 	import Badge from "$lib/components/ui/badge/badge.svelte";
 	import Button from "$lib/components/ui/button/button.svelte";
     import * as Card from "$lib/components/ui/card/index.js";
@@ -8,7 +8,7 @@
 	import { ArrowRightIcon, ArrowSquareOutIcon, CalendarIcon, InfoIcon, MapPinIcon, StarIcon, WrenchIcon } from "phosphor-svelte";
 
     // Props
-    let { event, favoriteEvents, user, favoriteEvent } = $props();
+    let { event, favoriteEvents, user, favoriteEvent, selectEvent } = $props();
 
     // Functions
     
@@ -61,7 +61,7 @@
                 {:else}
                     <Skeleton class="h-8 w-8 rounded-full" />
                 {/if}  
-                <Button><ArrowRightIcon weight="bold" /> Select</Button>
+                <Button onclick={() => selectEvent(event)}><ArrowRightIcon weight="bold" /> Select</Button>
             </div>
         </div>
     </Card.Content>
