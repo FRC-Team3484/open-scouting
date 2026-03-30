@@ -4,6 +4,13 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@media print {
+  .dark * {
+    color: black !important;
+    background-color: white !important;
+  }
+}
+
 /* Some default border style made all borders white, so this fixes that */
 * {
   @apply border-border;
