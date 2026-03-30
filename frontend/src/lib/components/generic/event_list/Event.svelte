@@ -5,7 +5,7 @@
 	import { ArrowRightIcon, ArrowSquareOutIcon, CalendarIcon, InfoIcon, MapPinIcon, StarIcon, WrenchIcon } from "phosphor-svelte";
 
     // Props
-    let { event, favoriteEvents, favoriteEvent } = $props();
+    let { event, favoriteEvents, user, favoriteEvent } = $props();
 
     // Functions
     
@@ -25,7 +25,7 @@
                     {#if favoriteEvents.includes(`${event.year}_${event.event_code}`)}
                         <Badge class="bg-yellow-500 h-5"><StarIcon weight="fill" /></Badge>
                     {/if}
-                    
+
                     <p class="font-bold line-clamp-2 lg:line-clamp-1 text-left text-sm lg:text-md">{event.name}</p>
                 </div>
                 <div class="flex flex-row gap-1 items-center flex-wrap">
@@ -44,10 +44,12 @@
             </div>
 
             <div class="flex flex-row gap-2">
-                {#if favoriteEvents.includes(`${event.year}_${event.event_code}`)}
-                    <Button variant="outline" onclick={(e) => favoriteEvent(e, event)}><StarIcon weight="bold" /></Button>
-                {:else}
-                    <Button variant="outline" onclick={(e) => favoriteEvent(e, event)}><StarIcon weight="fill" /></Button>
+                {#if user}
+                    {#if favoriteEvents.includes(`${event.year}_${event.event_code}`)}
+                        <Button variant="outline" onclick={(e) => favoriteEvent(e, event)}><StarIcon weight="bold" /></Button>
+                    {:else}
+                        <Button variant="outline" onclick={(e) => favoriteEvent(e, event)}><StarIcon weight="fill" /></Button>
+                    {/if}
                 {/if}  
                 <Button><ArrowRightIcon weight="bold" /> Select</Button>
             </div>

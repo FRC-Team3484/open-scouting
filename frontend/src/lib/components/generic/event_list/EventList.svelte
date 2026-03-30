@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { liveQuery } from "dexie";
 	import { onMount } from "svelte";
+	import { toast } from "svelte-sonner";
 
 	import Button from "$lib/components/ui/button/button.svelte";
     import * as Card from "$lib/components/ui/card/index.js";
@@ -12,6 +13,7 @@
 
 	import { db } from "$lib/utils/db";
 	import { getUserSetting, setUserSetting, validateTokenOnline } from "$lib/utils/user";
+	import { fetchEventData } from "$lib/utils/sync";
 	import Event from "./Event.svelte";
 
     // Props
@@ -79,7 +81,7 @@
                         <Dialog.Footer>
                             <Dialog.Close>
                                 <Button variant="outline">Cancel</Button>
-                                <Button onclick={async () => {await fetchEventData(); await getEvents(); await toast.success("Event cache rebuilt");}}>Rebuild Event Cache</Button>
+                                <Button onclick={async () => {await fetchEventData(); await toast.success("Event cache rebuilt");}}>Rebuild Event Cache</Button>
                             </Dialog.Close>
                         </Dialog.Footer>
                     </Dialog.Content>
@@ -130,7 +132,7 @@
                 <p>No events found</p>
             {:else}
                 {#each filteredEvents as event}
-                    <Event event={event} favoriteEvents={favoriteEvents} {favoriteEvent} />
+                    <Event event={event} favoriteEvents={favoriteEvents} user={user} favoriteEvent={favoriteEvent} />
                 {/each}
             {/if}
         </div>
