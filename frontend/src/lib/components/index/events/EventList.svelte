@@ -64,7 +64,7 @@
                                         <Badge variant="secondary" class="max-h-5 !bg-blue-500"><ArrowSquareOut weight="bold" />TBA</Badge>
                                     {/if}
 
-                                    <p class="font-bold">{event.name}</p>
+                                    <p class="font-bold text-left">{event.name}</p>
                                     {#if event.custom == false}
                                         <p class="font-mono text-muted-foreground overflow-hidden">{event.event_code}</p>
                                     {/if}

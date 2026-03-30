@@ -65,7 +65,7 @@
         <Card.Description>Choose an event to scout or view data for</Card.Description>
     </Card.Header>
 
-    <Card.Content>
+    <Card.Content class="px-4 lg:px-6">
         <EventList year={year} />
     </Card.Content>
 </Card.Root>
