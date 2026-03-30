@@ -1,6 +1,7 @@
 <script lang="ts">
-	import { liveQuery } from "dexie";
 	import { onMount } from "svelte";
+	import { flip } from "svelte/animate";
+	import { liveQuery } from "dexie";
 	import { toast } from "svelte-sonner";
 
 	import Button from "$lib/components/ui/button/button.svelte";
@@ -28,7 +29,7 @@
     let filteredEvents = $derived.by(() => {
         if ($events) {
             if (year) {
-                return $events.filter(e => e.year === year);
+                return $events.filter(e => e.year === year && e.name.includes(search));
             } else {
                 return $events;
             }
@@ -38,6 +39,8 @@
     });
     let user = $state(null);
     let favoriteEvents: [] = $state([]);
+
+    let search = $state("");
 
     // Functions
     async function favoriteEvent(e: MouseEvent, eventData) {
@@ -50,8 +53,6 @@
         }
 
         await setUserSetting("favorite_events", favoriteEvents);
-
-        console.log(favoriteEvents);
     }
 
     // Init
@@ -90,7 +91,7 @@
             <div class="flex flex-row gap-2">
                 <Button><PlusIcon weight="bold" /></Button>
 
-                <Input type="text" placeholder="Search for an event..." />
+                <Input type="text" placeholder="Search for an event..." bind:value={search} />
 
                 <DropdownMenu.Root>
                     <DropdownMenu.Trigger>
@@ -102,7 +103,11 @@
                     </DropdownMenu.Trigger>
 
                     <DropdownMenu.Content>
-                        <DropdownMenu.Label>View As</DropdownMenu.Label>
+                        <DropdownMenu.Label>View</DropdownMenu.Label>
+                        <DropdownMenu.RadioGroup value="week">
+                            <DropdownMenu.RadioItem value="week">By Week</DropdownMenu.RadioItem>
+                            <DropdownMenu.RadioItem value="alphabetical">Alphabetically</DropdownMenu.RadioItem>
+                        </DropdownMenu.RadioGroup>
                     </DropdownMenu.Content>
                 </DropdownMenu.Root>
 
@@ -116,7 +121,17 @@
                     </DropdownMenu.Trigger>
 
                     <DropdownMenu.Content>
-                        <DropdownMenu.Label>Filter By</DropdownMenu.Label>
+                        <DropdownMenu.Label>Filter</DropdownMenu.Label>
+                        <DropdownMenu.CheckboxItem>Favorite Events</DropdownMenu.CheckboxItem>
+                        <DropdownMenu.CheckboxItem>Past Events</DropdownMenu.CheckboxItem>
+
+                        <DropdownMenu.Label>Event Type</DropdownMenu.Label>
+                        <DropdownMenu.CheckboxGroup>
+                            <!-- TODO: Dynamically fill based on loaded events -->
+                            <DropdownMenu.CheckboxItem>Qualification</DropdownMenu.CheckboxItem>
+                            <DropdownMenu.CheckboxItem>Playoff</DropdownMenu.CheckboxItem>
+                        </DropdownMenu.CheckboxGroup>
+
                     </DropdownMenu.Content>
                 </DropdownMenu.Root>
             </div>
@@ -131,8 +146,10 @@
             {#if filteredEvents.length === 0}
                 <p>No events found</p>
             {:else}
-                {#each filteredEvents as event}
-                    <Event event={event} favoriteEvents={favoriteEvents} user={user} favoriteEvent={favoriteEvent} />
+                {#each filteredEvents as event (event.year + event.event_code)}
+                    <div animate:flip={{duration: 300}}>
+                        <Event event={event} favoriteEvents={favoriteEvents} user={user} favoriteEvent={favoriteEvent} />
+                    </div>
                 {/each}
             {/if}
         </div>

@@ -1,7 +1,10 @@
 <script lang="ts">
+	import { scale, slide } from "svelte/transition";
+    
 	import Badge from "$lib/components/ui/badge/badge.svelte";
 	import Button from "$lib/components/ui/button/button.svelte";
     import * as Card from "$lib/components/ui/card/index.js";
+	import Skeleton from "$lib/components/ui/skeleton/skeleton.svelte";
 	import { ArrowRightIcon, ArrowSquareOutIcon, CalendarIcon, InfoIcon, MapPinIcon, StarIcon, WrenchIcon } from "phosphor-svelte";
 
     // Props
@@ -23,7 +26,12 @@
                     {/if}
 
                     {#if favoriteEvents.includes(`${event.year}_${event.event_code}`)}
-                        <Badge class="bg-yellow-500 h-5"><StarIcon weight="fill" /></Badge>
+
+                        <div transition:slide={{axis: 'x'}}>
+                            <div transition:scale>
+                                <Badge class="bg-yellow-500 h-5"><StarIcon weight="fill" /></Badge>
+                            </div>
+                        </div>
                     {/if}
 
                     <p class="font-bold line-clamp-2 lg:line-clamp-1 text-left text-sm lg:text-md">{event.name}</p>
@@ -50,6 +58,8 @@
                     {:else}
                         <Button variant="outline" onclick={(e) => favoriteEvent(e, event)}><StarIcon weight="fill" /></Button>
                     {/if}
+                {:else}
+                    <Skeleton class="h-8 w-8 rounded-full" />
                 {/if}  
                 <Button><ArrowRightIcon weight="bold" /> Select</Button>
             </div>
