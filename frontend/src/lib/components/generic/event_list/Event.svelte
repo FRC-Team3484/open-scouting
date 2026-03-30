@@ -22,14 +22,14 @@
                     {#if event.custom}
                         <Badge class="bg-rose-500"><WrenchIcon weight="bold"/> Custom</Badge>
                     {:else}
-                        <Badge class="bg-blue-500" href="https://thebluealliance.com/event/{event.year}{event.event_code}"><ArrowSquareOutIcon weight="bold"/> TBA</Badge>
+                        <Badge class="bg-blue-500 transition-colors" href="https://thebluealliance.com/event/{event.year}{event.event_code}"><ArrowSquareOutIcon weight="bold"/> TBA</Badge>
                     {/if}
 
                     {#if favoriteEvents.includes(`${event.year}_${event.event_code}`)}
 
                         <div transition:slide={{axis: 'x'}}>
                             <div transition:scale>
-                                <Badge class="bg-yellow-500 h-5"><StarIcon weight="fill" /></Badge>
+                                <Badge class="bg-yellow-500 h-5 hover:bg-destructive transition-colors" onclick={(e) => favoriteEvent(e, event)}><StarIcon weight="fill" /></Badge>
                             </div>
                         </div>
                     {/if}
@@ -53,11 +53,13 @@
 
             <div class="flex flex-row gap-2">
                 {#if user}
-                    {#if favoriteEvents.includes(`${event.year}_${event.event_code}`)}
-                        <Button variant="outline" onclick={(e) => favoriteEvent(e, event)}><StarIcon weight="bold" /></Button>
-                    {:else}
-                        <Button variant="outline" onclick={(e) => favoriteEvent(e, event)}><StarIcon weight="fill" /></Button>
-                    {/if}
+                    <Button variant="outline" onclick={(e) => favoriteEvent(e, event)}>
+                        {#if favoriteEvents.includes(`${event.year}_${event.event_code}`)}
+                            <StarIcon weight="fill" />
+                        {:else}
+                            <StarIcon weight="bold" />
+                        {/if}
+                    </Button>
                 {:else}
                     <Skeleton class="h-8 w-8 rounded-full" />
                 {/if}  
