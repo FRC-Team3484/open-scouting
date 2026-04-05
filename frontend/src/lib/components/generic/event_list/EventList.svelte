@@ -16,11 +16,24 @@
 	import { getUserSetting, setUserSetting, validateTokenOnline } from "$lib/utils/user";
 	import { fetchEventData } from "$lib/utils/sync";
 	import Event from "./Event.svelte";
+	import { slide } from "svelte/transition";
 
     // Props
     interface Props {
         year?: number | null // If year is null, show all events across all years
         value?: any
+    }
+
+    interface ViewOptions {
+        view: "alphabetical" | "week",
+        showNearby: boolean,
+        favoritesOnTop: boolean
+    }
+    interface Filters {
+        showPast: boolean
+        showFavorites: boolean
+        showCustom: boolean
+        eventType: string[]
     }
 
     let { year = null, value = $bindable(null) }: Props = $props();
@@ -29,11 +42,43 @@
     let events = liveQuery(() => db.event.toArray());
     let filteredEvents = $derived.by(() => {
         if ($events) {
+            let eventsToFilter = $events;
             if (year) {
-                return $events.filter(e => e.year === year && e.name.includes(search));
-            } else {
-                return $events;
+                eventsToFilter = eventsToFilter.filter(
+                    e => e.year === year 
+                );
             }
+
+            if (search) {
+                eventsToFilter = eventsToFilter.filter(e =>
+                    e.name.toLowerCase().includes(search.toLowerCase()) || 
+                    e.event_code.toLowerCase().includes(search.toLowerCase()) || 
+                    e.city.toLowerCase().includes(search.toLowerCase()) ||
+                    e.country.toLowerCase().includes(search.toLowerCase())
+                )
+            }
+
+            if (!filters.showPast) {
+                const today = new Date();
+
+                eventsToFilter = eventsToFilter.filter(e => {
+                    const endDate = new Date(e.end_date);
+                    
+                    endDate.setDate(endDate.getDate() + 1);
+
+                    return endDate > today;
+                });
+            }
+
+            if (filters.showFavorites) {
+                eventsToFilter = eventsToFilter.filter(e => favoriteEvents.includes(`${e.year}_${e.event_code}`));
+            }
+
+            if (filters.showCustom) {
+                eventsToFilter = eventsToFilter.filter(e => e.custom === true);
+            }
+
+            return eventsToFilter;
         } else {
             return [];
         }
@@ -42,6 +87,17 @@
     let favoriteEvents: [] = $state([]);
 
     let search = $state("");
+    let viewOptions: ViewOptions = $state({
+        view: "alphabetical",
+        showNearby: false,
+        favoritesOnTop: false
+    });
+    let filters: Filters = $state({
+        showPast: false,
+        showFavorites: false,
+        showCustom: false,
+        eventType: []
+    });
 
     // Functions
     async function favoriteEvent(e: MouseEvent, eventData) {
@@ -67,7 +123,6 @@
             favoriteEvents = await getUserSetting("favorite_events") ?? [];
         }
     });
-
 </script>
 
 <Card.Root class="max-w-[90vw] lg:max-w-[50vw]">
@@ -109,15 +164,15 @@
 
                     <DropdownMenu.Content>
                         <DropdownMenu.Label>View</DropdownMenu.Label>
-                        <DropdownMenu.RadioGroup value="week">
+                        <DropdownMenu.RadioGroup bind:value={viewOptions.view}>
                             <DropdownMenu.RadioItem value="week">By Week</DropdownMenu.RadioItem>
                             <DropdownMenu.RadioItem value="alphabetical">Alphabetically</DropdownMenu.RadioItem>
                         </DropdownMenu.RadioGroup>
 
                         <DropdownMenu.Label>Options</DropdownMenu.Label>
                         <DropdownMenu.CheckboxGroup>
-                            <DropdownMenu.CheckboxItem>Nearby Events</DropdownMenu.CheckboxItem>
-                            <DropdownMenu.CheckboxItem>Favorite Events First</DropdownMenu.CheckboxItem>
+                            <DropdownMenu.CheckboxItem bind:checked={viewOptions.showNearby}>Nearby Events</DropdownMenu.CheckboxItem>
+                            <DropdownMenu.CheckboxItem bind:checked={viewOptions.favoritesOnTop}>Favorite Events First</DropdownMenu.CheckboxItem>
                         </DropdownMenu.CheckboxGroup>
                     </DropdownMenu.Content>
                 </DropdownMenu.Root>
@@ -125,29 +180,40 @@
                 <DropdownMenu.Root>
                     <DropdownMenu.Trigger>
                         {#snippet child({ props })}
-                            <Button {...props} variant="outline">
+                            <Button {...props} class="transition-colors" variant={filters.showPast === true || filters.showFavorites === true || filters.showCustom === true || filters.eventType.length > 0 ? "default" : "outline"}>
                                 <FadersIcon weight="bold" />
+                                {#if filters.showPast === true || filters.showFavorites === true || filters.showCustom  === true || filters.eventType.length > 0}
+                                    <p transition:slide={{ axis: "x" }}>
+                                        {
+                                        (filters.showPast === true ? 1 : 0) + 
+                                        (filters.showFavorites === true ? 1 : 0) + 
+                                        (filters.showCustom === true ? 1 : 0) + 
+                                        filters.eventType.length
+                                        }
+                                    </p>
+                                {/if}
                             </Button>
                         {/snippet}
                     </DropdownMenu.Trigger>
 
                     <DropdownMenu.Content>
                         <DropdownMenu.Label>Filter</DropdownMenu.Label>
-                        <DropdownMenu.CheckboxItem>Favorite Events</DropdownMenu.CheckboxItem>
-                        <DropdownMenu.CheckboxItem>Past Events</DropdownMenu.CheckboxItem>
+                        <DropdownMenu.CheckboxItem bind:checked={filters.showPast}>Include Past Events</DropdownMenu.CheckboxItem>
+                        <DropdownMenu.CheckboxItem bind:checked={filters.showFavorites}>Only Favorite Events</DropdownMenu.CheckboxItem>
+                        <DropdownMenu.CheckboxItem bind:checked={filters.showCustom}>Only Custom Events</DropdownMenu.CheckboxItem>
 
                         <DropdownMenu.Label>Event Type</DropdownMenu.Label>
-                        <DropdownMenu.CheckboxGroup>
+                        <DropdownMenu.CheckboxGroup bind:value={filters.eventType}>
                             <!-- TODO: Dynamically fill based on loaded events -->
-                            <DropdownMenu.CheckboxItem>Qualification</DropdownMenu.CheckboxItem>
-                            <DropdownMenu.CheckboxItem>Playoff</DropdownMenu.CheckboxItem>
+                            <DropdownMenu.CheckboxItem value="qualification">Qualification</DropdownMenu.CheckboxItem>
+                            <DropdownMenu.CheckboxItem value="playoff">Playoff</DropdownMenu.CheckboxItem>
                         </DropdownMenu.CheckboxGroup>
 
                     </DropdownMenu.Content>
                 </DropdownMenu.Root>
             </div>
 
-            <p class="text-sm text-muted-foreground text-left">Showing x events with x filters</p>
+            <p class="text-sm text-muted-foreground text-left">Showing {filteredEvents.length} events</p>
 
             <Separator class="mb-4" />
         </div>
