@@ -35,6 +35,7 @@
         showPast: boolean
         showFavorites: boolean
         showCustom: boolean
+        showSelected: boolean
         eventType: string[]
     }
 
@@ -78,6 +79,10 @@
 
             if (filters.showCustom) {
                 eventsToFilter = eventsToFilter.filter(e => e.custom === true);
+            }
+
+            if (filters.showSelected) {
+                eventsToFilter = eventsToFilter.filter(e => value.some(selectedEvent => selectedEvent.year === e.year && selectedEvent.event_code === e.event_code));
             }
 
             if (filters.eventType.length > 0) {
@@ -186,6 +191,7 @@
         showPast: false,
         showFavorites: false,
         showCustom: false,
+        showSelected: false,
         eventType: []
     });
 
@@ -306,6 +312,9 @@
                         <DropdownMenu.CheckboxItem bind:checked={filters.showPast}>Include Past Events</DropdownMenu.CheckboxItem>
                         <DropdownMenu.CheckboxItem bind:checked={filters.showFavorites}>Only Favorite Events</DropdownMenu.CheckboxItem>
                         <DropdownMenu.CheckboxItem bind:checked={filters.showCustom}>Only Custom Events</DropdownMenu.CheckboxItem>
+                        {#if multiple}
+                            <DropdownMenu.CheckboxItem bind:checked={filters.showSelected}>Only Selected Events</DropdownMenu.CheckboxItem>
+                        {/if}
 
                         <DropdownMenu.Label>Event Type</DropdownMenu.Label>
                         <DropdownMenu.CheckboxGroup bind:value={filters.eventType}>
