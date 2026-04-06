@@ -78,7 +78,56 @@
                 eventsToFilter = eventsToFilter.filter(e => e.custom === true);
             }
 
-            return eventsToFilter;
+            if (viewOptions.view === "alphabetical") {
+                return eventsToFilter.sort((a, b) => a.name.localeCompare(b.name));
+            } else {
+                // return an list of objects with a label and values param
+                // the label should be the event.week if it exists, otherwise the event.type
+                // all events in the week should be in the same list for that label
+                // include a type param that's either "week" or "other"
+                // sort by label, with the weeks first, then the others in alphabetical order
+                // sort events in each section alphabetically by name
+
+                const groups = new Map();
+
+                for (const e of eventsToFilter) {
+                    const isWeek = e.week !== undefined && e.week !== null;
+
+                    const label = isWeek ? `Week ${e.week}` : e.type;
+                    const type = isWeek ? "week" : "other";
+
+                    if (!groups.has(label)) {
+                        groups.set(label, {
+                            label,
+                            type,
+                            events: []
+                        });
+                    }
+
+                    groups.get(label).events.push(e);
+                }
+
+                for (const group of groups.values()) {
+                    group.events = group.events.sort((a, b) => a.name.localeCompare(b.name));
+                }
+
+                return Array.from(groups.values()).sort((a, b) => {
+                    // Weeks first
+                    if (a.type !== b.type) {
+                        return a.type === "week" ? -1 : 1;
+                    }
+
+                    // If both are weeks → sort numerically
+                    if (a.type === "week") {
+                        const weekA = parseInt(a.label.replace("Week ", ""));
+                        const weekB = parseInt(b.label.replace("Week ", ""));
+                        return weekA - weekB;
+                    }
+
+                    // Otherwise alphabetical
+                    return a.label.localeCompare(b.label);
+                });
+            }
         } else {
             return [];
         }
@@ -88,7 +137,7 @@
 
     let search = $state("");
     let viewOptions: ViewOptions = $state({
-        view: "alphabetical",
+        view: "week",
         showNearby: false,
         favoritesOnTop: false
     });
@@ -98,6 +147,18 @@
         showCustom: false,
         eventType: []
     });
+
+    let eventCount = $derived.by(() => {
+        if (filteredEvents) {
+            if (viewOptions.view === "alphabetical") {
+                return filteredEvents.length;
+            } else {
+                return filteredEvents.reduce((total, section) => total + section.events.length, 0);
+            }
+        } else {
+            return 0;
+        }
+    })
 
     // Functions
     async function favoriteEvent(e: MouseEvent, eventData) {
@@ -213,21 +274,33 @@
                 </DropdownMenu.Root>
             </div>
 
-            <p class="text-sm text-muted-foreground text-left">Showing {filteredEvents.length} events</p>
+            <p class="text-sm text-muted-foreground text-left">Showing {eventCount} events</p>
 
             <Separator class="mb-4" />
         </div>
 
         <!-- Events -->
-        <div class="flex flex-col gap-2 max-h-[75vh] overflow-y-scroll">
+        <div class="flex flex-col gap-2 max-h-[75vh] overflow-y-scroll [content-visiblity:auto]">
             {#if filteredEvents.length === 0}
                 <p>No events found</p>
             {:else}
-                {#each filteredEvents as event (event.year + event.event_code)}
-                    <div animate:flip={{duration: 300}}>
-                        <Event event={event} favoriteEvents={favoriteEvents} user={user} favoriteEvent={favoriteEvent} selectEvent={selectEvent} />
-                    </div>
-                {/each}
+                {#if viewOptions.view === "alphabetical"}
+                    {#each filteredEvents as event (event.year + event.event_code)}
+                        <div animate:flip={{duration: 300}}>
+                            <Event event={event} favoriteEvents={favoriteEvents} user={user} favoriteEvent={favoriteEvent} selectEvent={selectEvent} />
+                        </div>
+                    {/each}
+                {:else if viewOptions.view === "week"}
+                    {#each filteredEvents as section}
+                        <p class="text-left text-sm text-muted-foreground sticky top-0 bg-card pb-2">{section.label}</p>
+
+                        {#each section.events as event (event.year + event.event_code)}
+                            <div animate:flip={{duration: 300}}>
+                                <Event event={event} favoriteEvents={favoriteEvents} user={user} favoriteEvent={favoriteEvent} selectEvent={selectEvent} />
+                            </div>
+                        {/each}
+                    {/each}
+                {/if}
             {/if}
         </div>
     </Card.Content>
