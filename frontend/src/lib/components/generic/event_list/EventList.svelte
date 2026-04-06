@@ -283,7 +283,7 @@
                         </DropdownMenu.RadioGroup>
 
                         <DropdownMenu.Label>Options</DropdownMenu.Label>
-                        <DropdownMenu.CheckboxItem bind:checked={viewOptions.showNearby}>Nearby Events</DropdownMenu.CheckboxItem>
+                        <!-- <DropdownMenu.CheckboxItem bind:checked={viewOptions.showNearby}>Nearby Events</DropdownMenu.CheckboxItem> -->
                         <DropdownMenu.CheckboxItem bind:checked={viewOptions.favoritesOnTop}>Favorite Events First</DropdownMenu.CheckboxItem>
                     </DropdownMenu.Content>
                 </DropdownMenu.Root>
