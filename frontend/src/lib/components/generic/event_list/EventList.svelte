@@ -78,6 +78,10 @@
                 eventsToFilter = eventsToFilter.filter(e => e.custom === true);
             }
 
+            if (filters.eventType.length > 0) {
+                eventsToFilter = eventsToFilter.filter(e => filters.eventType.includes(e.type));
+            }
+
             if (viewOptions.view === "alphabetical") {
                 return eventsToFilter.sort((a, b) => a.name.localeCompare(b.name));
             } else {
@@ -132,6 +136,13 @@
             return [];
         }
     });
+    let eventTypes = $derived.by(() => {
+        if ($events) {
+            return Array.from(new Set($events.map(e => e.type)));
+        } else {
+            return [];
+        }
+    })
     let user = $state(null);
     let favoriteEvents: [] = $state([]);
 
@@ -265,9 +276,9 @@
 
                         <DropdownMenu.Label>Event Type</DropdownMenu.Label>
                         <DropdownMenu.CheckboxGroup bind:value={filters.eventType}>
-                            <!-- TODO: Dynamically fill based on loaded events -->
-                            <DropdownMenu.CheckboxItem value="qualification">Qualification</DropdownMenu.CheckboxItem>
-                            <DropdownMenu.CheckboxItem value="playoff">Playoff</DropdownMenu.CheckboxItem>
+                            {#each eventTypes as type}
+                                <DropdownMenu.CheckboxItem value={type}>{type}</DropdownMenu.CheckboxItem>
+                            {/each}
                         </DropdownMenu.CheckboxGroup>
 
                     </DropdownMenu.Content>
@@ -282,7 +293,8 @@
         <!-- Events -->
         <div class="flex flex-col gap-2 max-h-[75vh] overflow-y-scroll [content-visiblity:auto]">
             {#if filteredEvents.length === 0}
-                <p>No events found</p>
+                <p class="text-muted-foreground text-sm">No events found</p>
+                <p class="text-muted-foreground text-sm">Try changing or removing filters</p>
             {:else}
                 {#if viewOptions.view === "alphabetical"}
                     {#each filteredEvents as event (event.year + event.event_code)}
