@@ -1,16 +1,15 @@
 <script lang="ts">
     import * as Card from "$lib/components/ui/card/index.js";
 
-	import CreateCustomEventDialog from "../generic/dialogs/CreateCustomEventDialog.svelte";
 	import EventList from "../generic/event_list/EventList.svelte";
 
     let { handleNavigate, year, setEvent } = $props();
 
-    let selectedEvent = $state(null);
+    let selectedEvent = $state([]);
 
     $effect(() => {
-        if (selectedEvent) {
-            setEvent(selectedEvent.event_code, selectedEvent.year, selectedEvent.name);
+        if (selectedEvent.length > 0) {
+            setEvent(selectedEvent[0].event_code, selectedEvent[0].year, selectedEvent[0].name);
             handleNavigate("action");
         }
     });
@@ -26,5 +25,3 @@
         <EventList year={year} bind:value={selectedEvent} />
     </Card.Content>
 </Card.Root>
-
-<!-- <CreateCustomEventDialog getEvents={getEvents} /> -->

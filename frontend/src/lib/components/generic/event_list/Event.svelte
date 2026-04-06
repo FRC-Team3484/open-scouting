@@ -5,10 +5,20 @@
 	import Button from "$lib/components/ui/button/button.svelte";
     import * as Card from "$lib/components/ui/card/index.js";
 	import Skeleton from "$lib/components/ui/skeleton/skeleton.svelte";
-	import { ArrowRightIcon, ArrowSquareOutIcon, CalendarIcon, InfoIcon, MapPinIcon, StarIcon, WrenchIcon } from "phosphor-svelte";
+	import { ArrowRightIcon, ArrowSquareOutIcon, CalendarIcon, CheckSquareIcon, InfoIcon, MapPinIcon, SquareIcon, StarIcon, WrenchIcon } from "phosphor-svelte";
 
     // Props
-    let { event, favoriteEvents, user, favoriteEvent, selectEvent } = $props();
+    let { event, favoriteEvents, user, favoriteEvent, selectEvent, deselectEvent, selectedEvents, multiple } = $props();
+
+    // Variables
+    let selected = $derived.by(() => {
+        if (!selectedEvents) return false;
+
+        return selectedEvents.some(e =>
+            e.year === event.year &&
+            e.event_code === event.event_code
+        );
+    });
 
     // Functions
     
@@ -62,8 +72,16 @@
                     </Button>
                 {:else}
                     <Skeleton class="h-8 w-8 rounded-full" />
-                {/if}  
-                <Button onclick={() => selectEvent(event)}><ArrowRightIcon weight="bold" /> Select</Button>
+                {/if}
+                {#if multiple}
+                    {#if selected}
+                        <Button variant="outline" onclick={() => deselectEvent(event)}><SquareIcon weight="bold" /> Deselect</Button>
+                    {:else}
+                        <Button onclick={() => selectEvent(event)}><CheckSquareIcon weight="bold" /> Select</Button>
+                    {/if}
+                {:else}
+                    <Button onclick={() => selectEvent(event)}><ArrowRightIcon weight="bold" /> Select</Button>
+                {/if}
             </div>
         </div>
     </Card.Content>

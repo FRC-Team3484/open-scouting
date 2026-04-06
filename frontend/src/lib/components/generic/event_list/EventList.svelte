@@ -22,7 +22,8 @@
     // Props
     interface Props {
         year?: number | null // If year is null, show all events across all years
-        value?: any
+        value?: [] // Allows for selecting multiple events
+        multiple?: boolean
     }
 
     interface ViewOptions {
@@ -37,7 +38,7 @@
         eventType: string[]
     }
 
-    let { year = null, value = $bindable(null) }: Props = $props();
+    let { year = null, value = $bindable([]), multiple = false }: Props = $props();
 
     // Variables
     let events = liveQuery(() => db.event.toArray());
@@ -215,7 +216,11 @@
     }
 
     function selectEvent(event) {
-        value = event;
+        value.push(event);
+    }
+
+    function deselectEvent(event) {
+        value = value.filter(e => e.year !== event.year || e.event_code !== event.event_code);
     }
 
     // Init
@@ -313,7 +318,11 @@
                 </DropdownMenu.Root>
             </div>
 
-            <p class="text-sm text-muted-foreground text-left">Showing {eventCount} events</p>
+            {#if multiple}
+                <p class="text-sm text-muted-foreground text-left">Showing {eventCount} events with {value.length} selected</p>
+            {:else}
+                <p class="text-sm text-muted-foreground text-left">Showing {eventCount} events</p>
+            {/if}
 
             <Separator class="mb-4" />
         </div>
@@ -332,7 +341,16 @@
                 {#if viewOptions.view === "alphabetical"}
                     {#each filteredEvents as event (event.year + event.event_code)}
                         <div animate:flip={{duration: 300}}>
-                            <Event event={event} favoriteEvents={favoriteEvents} user={user} favoriteEvent={favoriteEvent} selectEvent={selectEvent} />
+                            <Event 
+                                event={event} 
+                                favoriteEvents={favoriteEvents} 
+                                user={user} 
+                                favoriteEvent={favoriteEvent} 
+                                selectEvent={selectEvent} 
+                                deselectEvent={deselectEvent} 
+                                selectedEvents={value} 
+                                multiple={multiple} 
+                            />
                         </div>
                     {/each}
                 {:else if viewOptions.view === "week"}
@@ -341,7 +359,16 @@
 
                         {#each section.events as event (event.year + event.event_code)}
                             <div animate:flip={{duration: 300}}>
-                                <Event event={event} favoriteEvents={favoriteEvents} user={user} favoriteEvent={favoriteEvent} selectEvent={selectEvent} />
+                                <Event 
+                                    event={event} 
+                                    favoriteEvents={favoriteEvents} 
+                                    user={user} 
+                                    favoriteEvent={favoriteEvent} 
+                                    selectEvent={selectEvent} 
+                                    deselectEvent={deselectEvent} 
+                                    selectedEvents={value} 
+                                    multiple={multiple} 
+                                />
                             </div>
                         {/each}
                     {/each}
