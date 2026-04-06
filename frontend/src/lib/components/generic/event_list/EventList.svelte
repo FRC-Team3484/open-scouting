@@ -279,7 +279,7 @@
                         <DropdownMenu.Label>Event Type</DropdownMenu.Label>
                         <DropdownMenu.CheckboxGroup bind:value={filters.eventType}>
                             {#each eventTypes as type}
-                                <DropdownMenu.CheckboxItem value={type}>{type}</DropdownMenu.CheckboxItem>
+                                <DropdownMenu.CheckboxItem value={type}>{type.charAt(0).toUpperCase() + type.slice(1)}</DropdownMenu.CheckboxItem>
                             {/each}
                         </DropdownMenu.CheckboxGroup>
 
@@ -311,7 +311,7 @@
                     {/each}
                 {:else if viewOptions.view === "week"}
                     {#each filteredEvents as section}
-                        <p class="text-left text-sm text-muted-foreground sticky top-0 bg-card pb-2">{section.label}</p>
+                        <p class="text-left text-sm text-muted-foreground sticky top-0 bg-card pb-2">{section.label.charAt(0).toUpperCase() + section.label.slice(1)}</p>
 
                         {#each section.events as event (event.year + event.event_code)}
                             <div animate:flip={{duration: 300}}>
