@@ -9,7 +9,7 @@
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
 	import Input from "$lib/components/ui/input/input.svelte";
     import * as Dialog from "$lib/components/ui/dialog/index.js";
-	import { FadersIcon, InfoIcon, PlusIcon, TreeViewIcon } from "phosphor-svelte";
+	import { FadersIcon, InfoIcon, PlusCircleIcon, PlusIcon, TreeViewIcon } from "phosphor-svelte";
 	import Separator from "$lib/components/ui/separator/separator.svelte";
 
 	import { db } from "$lib/utils/db";
@@ -17,6 +17,7 @@
 	import { fetchEventData } from "$lib/utils/sync";
 	import Event from "./Event.svelte";
 	import { slide } from "svelte/transition";
+	import CreateCustomEventDialog from "../dialogs/CreateCustomEventDialog.svelte";
 
     // Props
     interface Props {
@@ -169,7 +170,8 @@
         } else {
             return 0;
         }
-    })
+    });
+    let createCustomEventOpen = $state(false);
 
     // Functions
     async function favoriteEvent(e: MouseEvent, eventData) {
@@ -221,7 +223,7 @@
                 </Dialog.Root>
             </div>
             <div class="flex flex-row gap-2">
-                <Button><PlusIcon weight="bold" /></Button>
+                <Button onclick={() => createCustomEventOpen = true}><PlusIcon weight="bold" /></Button>
 
                 <Input type="text" placeholder="Search for an event..." bind:value={search} />
 
@@ -293,8 +295,13 @@
         <!-- Events -->
         <div class="flex flex-col gap-2 max-h-[75vh] overflow-y-scroll [content-visiblity:auto]">
             {#if filteredEvents.length === 0}
-                <p class="text-muted-foreground text-sm">No events found</p>
-                <p class="text-muted-foreground text-sm">Try changing or removing filters</p>
+                <div class="flex flex-col gap-2">
+                    <p class="text-muted-foreground">No events found</p>
+                    <p class="text-muted-foreground text-sm">Try changing or removing filters</p>
+                    <Separator />
+                    <p class="text-muted-foreground text-sm">Or, create a custom event if it's missing on TBA</p>
+                    <Button onclick={() => createCustomEventOpen = true}><PlusCircleIcon weight="bold" />Create Custom Event</Button>
+                </div>
             {:else}
                 {#if viewOptions.view === "alphabetical"}
                     {#each filteredEvents as event (event.year + event.event_code)}
@@ -317,3 +324,5 @@
         </div>
     </Card.Content>
 </Card.Root>
+
+<CreateCustomEventDialog bind:open={createCustomEventOpen} />

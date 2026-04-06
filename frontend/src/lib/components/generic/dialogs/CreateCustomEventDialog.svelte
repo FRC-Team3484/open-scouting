@@ -16,11 +16,10 @@
 	import type { SeasonResponse } from "$lib/api/model";
 	import { createCustomEventEventCustomSeasonUuidCreatePost } from "$lib/api/events/events";
 
-	import { createCustomEventDialogOpen } from "$lib/stores/dialog";
 	import BaseDialog from "./BaseDialog.svelte";
 	import { db } from "$lib/utils/db";
 
-	let { getEvents } = $props();
+	let { open = $bindable(false) } = $props();
 
 	let seasons: SeasonResponse[] = $state([]);
 	let selectedSeasonLabel: string = $derived(
@@ -73,8 +72,7 @@
 							fetch_time: new Date()
 						});
 
-						createCustomEventDialogOpen.set(false);
-						getEvents();
+						open = false;
 						toast.success("Custom event created", { duration: 5000 });
 					}
 				})
@@ -99,7 +97,7 @@
 	})
 </script>
 
-<BaseDialog title={"Create Custom Event"} description={"Create a custom event when an event is missing on The Blue Alliance"} bind:open={$createCustomEventDialogOpen}>
+<BaseDialog title={"Create Custom Event"} description={"Create a custom event when an event is missing on The Blue Alliance"} bind:open={open}>
 	<form method="post" use:enhance class="flex flex-col gap-4">
 		<Form.Field {form} name="season_uuid">
 			<Form.Control>
