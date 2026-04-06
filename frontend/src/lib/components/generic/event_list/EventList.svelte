@@ -84,7 +84,20 @@
             }
 
             if (viewOptions.view === "alphabetical") {
-                return eventsToFilter.sort((a, b) => a.name.localeCompare(b.name));
+                eventsToFilter = eventsToFilter.sort((a, b) => a.name.localeCompare(b.name));
+                if (viewOptions.favoritesOnTop) {
+                    eventsToFilter = eventsToFilter.sort((a, b) => {
+                        if (favoriteEvents.includes(`${a.year}_${a.event_code}`) && !favoriteEvents.includes(`${b.year}_${b.event_code}`)) {
+                            return -1;
+                        } else if (!favoriteEvents.includes(`${a.year}_${a.event_code}`) && favoriteEvents.includes(`${b.year}_${b.event_code}`)) {
+                            return 1;
+                        } else {
+                            return 0;
+                        }
+                    });
+                }
+
+                return eventsToFilter;
             } else {
                 // return an list of objects with a label and values param
                 // the label should be the event.week if it exists, otherwise the event.type
@@ -112,11 +125,24 @@
                     groups.get(label).events.push(e);
                 }
 
+                const favoriteSet = new Set(favoriteEvents);
+
                 for (const group of groups.values()) {
-                    group.events = group.events.sort((a, b) => a.name.localeCompare(b.name));
+                    group.events = group.events.sort((a, b) => {
+                        if (viewOptions.favoritesOnTop) {
+                            const aFav = favoriteSet.has(`${a.year}_${a.event_code}`);
+                            const bFav = favoriteSet.has(`${b.year}_${b.event_code}`);
+
+                            if (aFav !== bFav) {
+                                return aFav ? -1 : 1;
+                            }
+                        }
+
+                        return a.name.localeCompare(b.name);
+                    });
                 }
 
-                return Array.from(groups.values()).sort((a, b) => {
+                eventsToFilter = Array.from(groups.values()).sort((a, b) => {
                     // Weeks first
                     if (a.type !== b.type) {
                         return a.type === "week" ? -1 : 1;
@@ -132,6 +158,8 @@
                     // Otherwise alphabetical
                     return a.label.localeCompare(b.label);
                 });
+
+                return eventsToFilter;
             }
         } else {
             return [];
@@ -151,7 +179,7 @@
     let viewOptions: ViewOptions = $state({
         view: "week",
         showNearby: false,
-        favoritesOnTop: false
+        favoritesOnTop: true
     });
     let filters: Filters = $state({
         showPast: false,
@@ -244,10 +272,8 @@
                         </DropdownMenu.RadioGroup>
 
                         <DropdownMenu.Label>Options</DropdownMenu.Label>
-                        <DropdownMenu.CheckboxGroup>
-                            <DropdownMenu.CheckboxItem bind:checked={viewOptions.showNearby}>Nearby Events</DropdownMenu.CheckboxItem>
-                            <DropdownMenu.CheckboxItem bind:checked={viewOptions.favoritesOnTop}>Favorite Events First</DropdownMenu.CheckboxItem>
-                        </DropdownMenu.CheckboxGroup>
+                        <DropdownMenu.CheckboxItem bind:checked={viewOptions.showNearby}>Nearby Events</DropdownMenu.CheckboxItem>
+                        <DropdownMenu.CheckboxItem bind:checked={viewOptions.favoritesOnTop}>Favorite Events First</DropdownMenu.CheckboxItem>
                     </DropdownMenu.Content>
                 </DropdownMenu.Root>
 
