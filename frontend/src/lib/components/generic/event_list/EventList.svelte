@@ -23,7 +23,8 @@
     interface Props {
         year?: number | null // If year is null, show all events across all years
         value?: [] // Allows for selecting multiple events
-        multiple?: boolean
+        multiple?: boolean,
+        limits?: [] // Given a list of event_codes, limit to only showing those events, used for the data page
     }
 
     interface ViewOptions {
@@ -39,7 +40,7 @@
         eventType: string[]
     }
 
-    let { year = null, value = $bindable([]), multiple = false }: Props = $props();
+    let { year = null, value = $bindable([]), multiple = false, limits = [] }: Props = $props();
 
     // Variables
     let events = liveQuery(() => db.event.toArray());
@@ -87,6 +88,10 @@
 
             if (filters.eventType.length > 0) {
                 eventsToFilter = eventsToFilter.filter(e => filters.eventType.includes(e.type));
+            }
+
+            if (limits.length > 0) {
+                eventsToFilter = eventsToFilter.filter(e => limits.includes(e.event_code));
             }
 
             if (viewOptions.view === "alphabetical") {
@@ -331,6 +336,10 @@
                 <p class="text-sm text-muted-foreground text-left">Showing {eventCount} events with {value.length} selected</p>
             {:else}
                 <p class="text-sm text-muted-foreground text-left">Showing {eventCount} events</p>
+            {/if}
+
+            {#if limits.length > 0}
+                <p class="text-sm text-muted-foreground text-left">Avaliable events have been limited to {limits.length} events</p>
             {/if}
 
             <Separator class="mb-4" />
