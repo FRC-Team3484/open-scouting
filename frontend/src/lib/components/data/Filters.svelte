@@ -74,8 +74,6 @@
     });
 
     $effect(() => {
-        selectedEvents;
-
         filters.event_codes = selectedEvents.map(e => e.event_code);
     })
 </script>
@@ -138,7 +136,6 @@
                         {/each}
                         <Button variant="outline" class="w-auto" onclick={() => eventListOpen = true}><PlusCircle weight="bold" /> Add</Button>
                     </div>
-
                 </div>
 
                 <div class="flex flex-col gap-2">
