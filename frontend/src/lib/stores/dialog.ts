@@ -12,7 +12,5 @@ export const addSectionEditData = writable({});
 export const addPitScoutingQuestionDialogOpen = writable(false);
 export const addPitScoutingQuestionData = writable({});
 
-export const createCustomEventDialogOpen = writable(false);
-
 export const changelogDialogOpen = writable(false);
 export const changelogDialogVersion = writable(VERSION)

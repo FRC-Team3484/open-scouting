@@ -2,7 +2,7 @@
     import * as Card from "$lib/components/ui/card/index.js";
     import * as Select from "$lib/components/ui/select/index.js";
     import * as AlertDialog from "$lib/components/ui/alert-dialog/index.js";
-	import { Buildings, Calendar, Faders, Info, Users } from "phosphor-svelte";
+	import { Buildings, Calendar, Faders, Info, PlusCircle, Users, X } from "phosphor-svelte";
 	import { onMount } from "svelte";
 	import FilterList from "./FilterList.svelte";
 	import Button from "../ui/button/button.svelte";
@@ -10,6 +10,9 @@
 	import type { GetDataFiltersDataFiltersGetParams, SeasonResponse } from "$lib/api/model";
 	import { getDataFiltersDataFiltersGet } from "$lib/api/data/data";
 	import { toast } from "svelte-sonner";
+	import EventList from "../generic/event_list/EventList.svelte";
+	import type { Filters as EventListFilters } from "../generic/event_list/EventList.svelte";
+	import BaseDialog from "../generic/dialogs/BaseDialog.svelte";
     
     let { filters = $bindable() } = $props();
 
@@ -17,6 +20,10 @@
     let seasons_label = $derived(seasons.find((s) => s.year === filters.year)?.name ?? "Select Year");
     let events = $state([]);
     let teams = $state([]);
+    let selectedEvents = $state([]);
+    let eventListOpen = $state(false);
+
+    const eventListDefaultFilters: EventListFilters = { showPast: true, showFavorites: false, showCustom: false, showSelected: false, eventType: [] };
 
     async function loadSeasons() {
         seasons = (await getSeasonsSeasonsGet()).data;
@@ -68,6 +75,10 @@
 
         loadFilters();
     });
+
+    $effect(() => {
+        filters.event_codes = selectedEvents.map(e => e.event_code);
+    })
 </script>
 
 <Card.Root class="mt-4 min-w-64">
@@ -120,7 +131,14 @@
                         <p>Events</p>
                     </div>
 
-                    <FilterList filterTitle="Add Event Filter" values={events.map((e) => e.event_code)} labels={events.map((e) => e.event_name)} bind:selected={filters.event_codes} />
+                    <div class="flex flex-row gap-2 max-h-screen max-w-screen flex-wrap items-center">
+                        {#each selectedEvents as event}
+                            <div class="flex flex-row gap-1 items-center">
+                                <Button variant="outline" onclick={() => selectedEvents = selectedEvents.filter((e) => e.event_code !== event.event_code)}><X weight="bold" /> {event.name}</Button>
+                            </div>
+                        {/each}
+                        <Button variant="outline" class="w-auto" onclick={() => eventListOpen = true}><PlusCircle weight="bold" /> Add</Button>
+                    </div>
                 </div>
 
                 <div class="flex flex-col gap-2">
@@ -135,3 +153,15 @@
         </div>
     </Card.Content>
 </Card.Root>
+
+<BaseDialog title="Event Filters" description="Filter the displayed data by event" bind:open={eventListOpen}>
+    <EventList 
+        year={filters.year} 
+        bind:value={selectedEvents} 
+        multiple={true} 
+        limits={events.map((e) => e.event_code)} 
+        defaultFilters={eventListDefaultFilters} 
+    />
+    
+    <Button variant="outline" onclick={() => eventListOpen = false}>Close</Button>
+</BaseDialog>

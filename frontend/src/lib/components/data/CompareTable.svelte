@@ -26,10 +26,6 @@
         allValuesType = type;
         allValuesFieldName = fieldName;
     }
-
-    onMount(async () => {
-        console.log(data);
-    })
 </script>
 
 <Card.Root class="p-2 lg:max-w-[70vw] lg:min-w-[50vw] mt-2 max-w-screen">

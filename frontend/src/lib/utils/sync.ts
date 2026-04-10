@@ -74,6 +74,7 @@ async function fetchEventData() {
                 country: event.country,
                 start_date: event.start_date,
                 end_date: event.end_date,
+                week: event.week,
                 custom: false,
                 fetch_time: new Date()
             });
@@ -96,6 +97,7 @@ async function fetchEventData() {
                 country: event.country,
                 start_date: event.start_date,
                 end_date: event.end_date,
+                week: null,
                 custom: true,
                 fetch_time: new Date()
             });
