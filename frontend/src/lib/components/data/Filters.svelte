@@ -11,6 +11,7 @@
 	import { getDataFiltersDataFiltersGet } from "$lib/api/data/data";
 	import { toast } from "svelte-sonner";
 	import EventList from "../generic/event_list/EventList.svelte";
+	import type { Filters as EventListFilters } from "../generic/event_list/EventList.svelte";
 	import BaseDialog from "../generic/dialogs/BaseDialog.svelte";
     
     let { filters = $bindable() } = $props();
@@ -21,6 +22,8 @@
     let teams = $state([]);
     let selectedEvents = $state([]);
     let eventListOpen = $state(false);
+
+    const eventListDefaultFilters: EventListFilters = { showPast: true, showFavorites: false, showCustom: false, showSelected: false, eventType: [] };
 
     async function loadSeasons() {
         seasons = (await getSeasonsSeasonsGet()).data;
@@ -152,6 +155,13 @@
 </Card.Root>
 
 <BaseDialog title="Event Filters" description="Filter the displayed data by event" bind:open={eventListOpen}>
-    <EventList year={filters.year} bind:value={selectedEvents} multiple={true} limits={events.map((e) => e.event_code)} />
+    <EventList 
+        year={filters.year} 
+        bind:value={selectedEvents} 
+        multiple={true} 
+        limits={events.map((e) => e.event_code)} 
+        defaultFilters={eventListDefaultFilters} 
+    />
+    
     <Button variant="outline" onclick={() => eventListOpen = false}>Close</Button>
 </BaseDialog>

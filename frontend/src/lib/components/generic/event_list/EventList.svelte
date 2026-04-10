@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from "svelte";
+	import { onMount, tick } from "svelte";
 	import { flip } from "svelte/animate";
 	import { liveQuery } from "dexie";
 	import { toast } from "svelte-sonner";
@@ -25,6 +25,8 @@
         value?: [] // Allows for selecting multiple events
         multiple?: boolean,
         limits?: [] // Given a list of event_codes, limit to only showing those events, used for the data page
+        defaultViewOptions?: ViewOptions | null,
+        defaultFilters?: Filters | null
     }
 
     interface ViewOptions {
@@ -40,7 +42,14 @@
         eventType: string[]
     }
 
-    let { year = null, value = $bindable([]), multiple = false, limits = [] }: Props = $props();
+    let { 
+        year = null, 
+        value = $bindable([]), 
+        multiple = false, 
+        limits = [],
+        defaultViewOptions = null,
+        defaultFilters = null
+    }: Props = $props();
 
     // Variables
     let events = liveQuery(() => db.event.toArray());
@@ -239,6 +248,14 @@
         user = await validateTokenOnline();
         if (user) {
             favoriteEvents = await getUserSetting("favorite_events") ?? [];
+        }
+
+        if (defaultViewOptions != null) {
+            viewOptions = defaultViewOptions;
+        }
+
+        if (defaultFilters != null) {
+            filters = defaultFilters;
         }
     });
 </script>

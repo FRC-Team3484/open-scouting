@@ -14,6 +14,7 @@
 	import SelectMatchDialog from "./SelectMatchDialog.svelte";
 	import BaseDialog from "../generic/dialogs/BaseDialog.svelte";
 	import EventList from "../generic/event_list/EventList.svelte";
+    import type { Filters as EventListFilters } from "../generic/event_list/EventList.svelte";
     
     let { filters = $bindable(), fields } = $props();
 
@@ -23,6 +24,8 @@
     let teams = $state([]);
     let selectedEvents = $state([]);
     let eventListOpen = $state(false);
+
+    const eventListDefaultFilters: EventListFilters = { showPast: true, showFavorites: false, showCustom: false, showSelected: false, eventType: [] };
 
     let selectMatchOpen = $state(false);
 
@@ -182,6 +185,13 @@
 <SelectMatchDialog bind:open={selectMatchOpen} year={filters.year} selectMatch={selectMatch} />
 
 <BaseDialog title="Event Filters" description="Filter the displayed data by event" bind:open={eventListOpen}>
-    <EventList year={filters.year} bind:value={selectedEvents} multiple={true} limits={events.map((e) => e.event_code)} />
+    <EventList 
+        year={filters.year} 
+        bind:value={selectedEvents} 
+        multiple={true} 
+        limits={events.map((e) => e.event_code)} 
+        defaultFilters={eventListDefaultFilters}
+    />
+    
     <Button variant="outline" onclick={() => eventListOpen = false}>Close</Button>
 </BaseDialog>
