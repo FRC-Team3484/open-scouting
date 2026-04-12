@@ -73,14 +73,11 @@
                 {:else}
                     <Skeleton class="h-8 w-8 rounded-full" />
                 {/if}
-                {#if multiple}
-                    {#if selected}
-                        <Button variant="outline" onclick={() => deselectEvent(event)}><SquareIcon weight="bold" /> Deselect</Button>
-                    {:else}
-                        <Button onclick={() => selectEvent(event)}><CheckSquareIcon weight="bold" /> Select</Button>
-                    {/if}
+                
+                {#if selected}
+                    <Button variant="outline" onclick={() => deselectEvent(event)}><SquareIcon weight="bold" /> Deselect</Button>
                 {:else}
-                    <Button onclick={() => selectEvent(event)}><ArrowRightIcon weight="bold" /> Select</Button>
+                    <Button onclick={() => selectEvent(event)}><CheckSquareIcon weight="bold" /> Select</Button>
                 {/if}
             </div>
         </div>

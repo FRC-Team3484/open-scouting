@@ -236,7 +236,11 @@
     }
 
     function selectEvent(event) {
-        value.push(event);
+        if (multiple) {
+            value.push(event);
+        } else {
+            value = [event];
+        }
     }
 
     function deselectEvent(event) {
