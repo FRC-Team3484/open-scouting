@@ -5,15 +5,37 @@
 	import Separator from "../ui/separator/separator.svelte";
 	import Button from "../ui/button/button.svelte";
 	import NumberStat from "./NumberStat.svelte";
+	import { slide } from "svelte/transition";
+	import { getEventInfoEventInfoYearEventCodeGet } from "$lib/api/events/events";
+	import { toast } from "svelte-sonner";
+	import type { EventInfoResponse } from "$lib/api/model";
 
     let { selectedEvent } = $props();
+
+    let scoutingInfo: EventInfoResponse | null = $state(null);
 
     let event = $derived.by(() => {
         if (selectedEvent.length == 0) return null
         return selectedEvent[0]
-    })
+    });
 
-    $inspect(event)
+    async function getScoutingInfo() {
+        scoutingInfo = null;
+
+        await getEventInfoEventInfoYearEventCodeGet(event.year, event.event_code).then((response) => {
+            if (response.status === 200) {
+                scoutingInfo = response.data;
+            } else {
+                toast.error("Failed to load scouting info", { duration: 5000 });
+            }
+        })
+    }
+
+    $effect(() => {
+        event;
+
+        getScoutingInfo();
+    })
 </script>
 
 <Card.Root>
@@ -41,14 +63,16 @@
 
             <Separator class="my-2"/>
 
-            <div class="grid grid-cols-2 gap-2">
-                <NumberStat value={0} label="Match Scouting Submissions" />
-                <NumberStat value={0} label="Match Scouting Answers" />
-                <NumberStat value={0} label="Pits" />
-                <NumberStat value={0} label="Pit Scouting Answers" />
+            <div class={"grid grid-cols-2 gap-2 transition-all" + (scoutingInfo == null ? " opacity-50" : "")} transition:slide>
+                <NumberStat value={scoutingInfo?.match_scouting_submissions || 0} label="Match Scouting Submissions" />
+                <NumberStat value={scoutingInfo?.match_scouting_answers || 0} label="Match Scouting Answers" />
+                <NumberStat value={scoutingInfo?.pits || 0} label="Pits" />
+                <NumberStat value={scoutingInfo?.pit_answers || 0} label="Pit Scouting Answers" />
+            </div>
 
-                <Button class="w-full" href="/data?year={event.year}&event_codes={event.event_code}"><DatabaseIcon weight="bold" /> View Data</Button>
-                <Button variant="outline" class="w-full" href=""><PlusCircleIcon weight="bold" /> Add Scouting Data</Button>
+            <div class="flex flex-row gap-2 items-center justify-center mt-2">
+                <Button href="/data?year={event.year}&event_codes={event.event_code}"><DatabaseIcon weight="bold" /> View Data</Button>
+                <Button variant="outline" href=""><PlusCircleIcon weight="bold" /> Add Scouting Data</Button>
             </div>
 
             <Separator class="my-2"/>
