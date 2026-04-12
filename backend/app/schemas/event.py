@@ -31,3 +31,9 @@ class CustomEventRequest(BaseModel):
 class AdminEventResponse(EventResponse):
     match_scouting_submissions: int
     pits: int
+
+class EventInfoResponse(BaseModel):
+    match_scouting_submissions: int
+    match_scouting_answers: int
+    pits: int
+    pit_answers: int

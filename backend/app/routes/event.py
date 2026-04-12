@@ -3,8 +3,8 @@ from uuid import UUID
 from fastapi import APIRouter, Depends
 
 from ..schemas.generic import MessageResponse
-from ..models import Event, MatchScoutingSubmission, Season, TeamPit
-from ..schemas.event import AdminEventResponse, EventResponse, CustomEventRequest
+from ..models import Event, MatchScoutingAnswer, MatchScoutingSubmission, PitScoutingAnswer, Season, TeamPit
+from ..schemas.event import AdminEventResponse, EventInfoResponse, EventResponse, CustomEventRequest
 from ..utils import get_season, IS_DEV
 from ..dependencies import require_superuser
 
@@ -178,3 +178,45 @@ async def delete_team_pits(event_uuid: UUID, superuser = Depends(require_superus
     await Event.filter(uuid=event_uuid).update(pits_generated=False)
     
     return MessageResponse(message="Team pits deleted")
+
+@router.get("/event/info/{year}/{event_code}", response_model=EventInfoResponse)
+async def get_event_info(year: int, event_code: str) -> EventInfoResponse:
+    """
+    Get match and pit scouting information about an event
+
+    Parameters:
+        year (`int`): The year of the event
+        event_code (`str`): The event code of the event
+
+    Returns:
+        EventInfoResponse: The information about the event
+    """
+
+    season: Season = await get_season(year=year)
+    
+    event: Event | None  = await Event.get_or_none(season=season, event_code=event_code)
+
+    if event:
+        match_scouting_submissions = MatchScoutingSubmission.filter(event=event)
+        match_scouting_answers = MatchScoutingAnswer.filter(
+            submission__event=event
+        )
+
+        pits = TeamPit.filter(event=event)
+        pit_answers = PitScoutingAnswer.filter(
+            team__event=event
+        )
+
+        return EventInfoResponse(
+            match_scouting_submissions=await match_scouting_submissions.count(),
+            match_scouting_answers=await match_scouting_answers.count(),
+            pits=await pits.count(),
+            pit_answers=await pit_answers.count()
+        )
+    else:
+        return EventInfoResponse(
+            match_scouting_submissions=0,
+            match_scouting_answers=0,
+            pits=0,
+            pit_answers=0
+        )
