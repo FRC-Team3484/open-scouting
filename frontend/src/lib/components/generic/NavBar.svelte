@@ -15,7 +15,7 @@
 
         <Button variant="outline" href="/" class="ml-4">Home</Button>
         <Button variant="outline" href="/data">View Data</Button>
-        <!-- <Button variant="outline" href="/" disabled>Events</Button> -->
+        <Button variant="outline" href="/events">Events</Button>
     </div>
 
     <div class="flex flex-row gap-4 items-center">
@@ -45,7 +45,7 @@
                     <Separator orientation="horizontal" />
                     <Sheet.Close><Button variant="outline" href="/" class="w-full">Home</Button></Sheet.Close>
                     <Sheet.Close><Button variant="outline" href="/data" class="w-full">View Data</Button></Sheet.Close>
-                    <!-- <Sheet.Close><Button variant="outline" href="/" class="w-full" disabled>Events</Button></Sheet.Close> -->
+                    <Sheet.Close><Button variant="outline" href="/events" class="w-full">Events</Button></Sheet.Close>
                 </div>
 
                 <ExperimentalWarning/>
