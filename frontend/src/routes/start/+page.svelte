@@ -9,10 +9,11 @@
 	import { onMount, tick } from "svelte";
 	import { replaceState } from "$app/navigation";
 	import { toast } from "svelte-sonner";
+	import Link from "$lib/components/index/Link.svelte";
 	
-	// /start?year=2026&event_code=alhu&event_name=Rocket City Regional
+	// /start?year=2026&event_code=alhu&event_name=Rocket City Regional&action=match_scouting
 
-	let page = $state("auth"); // auth, year, events, action
+	let page = $state("auth"); // auth, year, events, action, link
 
 	let user = $state({
 		username: "",
@@ -25,13 +26,18 @@
 		year: 0,
 		name: ""
 	});
+	let action = $state(""); // match_scouting, pit_scouting, data
 
 	function handleNavigate(nextPage: string): void {
 		if (nextPage === "year" && year !== 0) {
 			handleNavigate("events");
 		} else if (nextPage === "events" && selected_event.event_code !== "") {
-			handleNavigate("action");
-			toast.success("Event selected from URL", { duration: 5000 });
+			if (action === "match_scouting" || action === "pit_scouting" || action === "data") {
+				handleNavigate("link");
+			} else {
+				handleNavigate("action");
+				toast.success("Event selected from URL", { duration: 5000 });
+			}
 		} else {
 			page = nextPage;
 		}
@@ -70,6 +76,7 @@
 			year: 0,
 			name: ""
 		}
+		action = "";
 	}
 
 	function loadUrlParams() {
@@ -81,6 +88,10 @@
 
 		if (url.searchParams.has("event_code") && url.searchParams.has("year") && url.searchParams.has("event_name")) {
 			setEvent(url.searchParams.get("event_code"), parseInt(url.searchParams.get("year")), url.searchParams.get("event_name"));
+		}
+
+		if (url.searchParams.has("action")) {
+			action = url.searchParams.get("action");
 		}
 	}
 
@@ -140,6 +151,10 @@
 	{:else if page === "action"}
 		<!-- 4 - Action -->
 		<Action year={year} event={selected_event} user={user}/>
+
+	{:else if page === "link"}
+		<!-- Link -->
+		<Link year={year} event={selected_event} user={user} action={action} startOver={startOver} />
 
 	{/if}
 </PageContainer>

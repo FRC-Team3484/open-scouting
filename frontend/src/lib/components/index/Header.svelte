@@ -32,6 +32,10 @@
                 progress = 4;
                 details = true;
                 break;
+            case "link":
+                progress = 4;
+                details = true;
+                break;
             default:
                 progress = 1;
         }
