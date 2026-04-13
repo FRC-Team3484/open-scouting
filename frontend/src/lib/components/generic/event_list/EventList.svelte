@@ -264,7 +264,7 @@
     });
 </script>
 
-<Card.Root class="max-w-[90vw] lg:max-w-[50vw]">
+<Card.Root class="">
     <Card.Content class="px-4 lg:px-6">
         <!-- Header -->
         <div class="flex flex-col gap-2">
