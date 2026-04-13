@@ -1,5 +1,6 @@
 <script lang="ts">
     import * as Card from "$lib/components/ui/card/index.js";
+    import * as Select from "$lib/components/ui/select/index.js";
 	import { Binoculars, Database, Link, ListNumbers } from "phosphor-svelte";
 	import Button from "../ui/button/button.svelte";
 	import { Label } from "../ui/label";
@@ -9,6 +10,17 @@
 
     let user_string = "";
 
+    let copyLinkActionOptions = [
+        { value: "none", label: "No Action" },
+        { value: "match_scouting", label: "Match Scouting" },
+        { value: "pit_scouting", label: "Pit Scouting" },
+        { value: "data", label: "View Data" }
+    ]
+    let selectedCopyLinkAction = $state("none");
+    let selectedCopyLinkActionLabel = $derived(
+        copyLinkActionOptions.find((mt) => mt.value === selectedCopyLinkAction)?.label ?? "None"
+    )
+
     if (user.uuid) {
         user_string = "";
     } else {
@@ -16,7 +28,12 @@
     }
 
     function copyLink() {
-        navigator.clipboard.writeText(window.location.href);
+        let action = "";
+
+        if (selectedCopyLinkAction !== "none") {
+            action = `&action=${selectedCopyLinkAction}`
+        }
+        navigator.clipboard.writeText(window.location.href + action);
         toast.success("Copied link to clipboard", { duration: 5000 });
     }
 </script>
@@ -38,7 +55,19 @@
             <Button variant="default" id="data" href={`/data?year=${year}&event_codes=${event.event_code}`}><Database weight="bold" /> View Data</Button>
             <Label for="match">View data for this event</Label>
 
-            <Button variant="outline" id="link" class="mt-6" onclick={copyLink}><Link weight="bold" /> Copy Link</Button>
+            <div class="flex flex-row gap-2 items-center mt-6">
+                <Button variant="outline" id="link" class="flex-2" onclick={copyLink}><Link weight="bold" /> Copy Link</Button>
+                <Select.Root type="single" bind:value={selectedCopyLinkAction} onValueChange={copyLink}>
+                    <Select.Trigger>{selectedCopyLinkActionLabel}</Select.Trigger>
+
+                    <Select.Content>
+                        <Select.Label>Actions</Select.Label>
+                        {#each copyLinkActionOptions as action}
+                            <Select.Item value={action.value} label={action.label} />
+                        {/each}
+                    </Select.Content>
+                </Select.Root>
+            </div>
             <Label for="match">Copy the link to this event</Label>
         </div>
     </Card.Content>

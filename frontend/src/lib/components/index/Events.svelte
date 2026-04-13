@@ -21,7 +21,7 @@
         <Card.Description>Choose an event to scout or view data for</Card.Description>
     </Card.Header>
 
-    <Card.Content class="px-4 lg:px-6">
+    <Card.Content class="px-4 lg:px-6 max-w-unset lg:max-w-[50vw]">
         <EventList year={year} bind:value={selectedEvent} />
     </Card.Content>
 </Card.Root>
