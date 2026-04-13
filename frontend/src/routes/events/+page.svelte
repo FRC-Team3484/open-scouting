@@ -31,14 +31,14 @@
             <EventList bind:value={selectedEvent} />
         </div>
     
-        <div class="flex flex-col gap-4 w-[95vw] md:w-[50vw]">
+        <div class="flex flex-col gap-4 w-[95vw] md:w-[50vw] mb-18 md:mb-2">
             <Header />
             <EventDisplay selectedEvent={selectedEvent} />
         </div>
     </div>
 </div>
 
-<Button class="absolute md:hidden bottom-4 left-[50%] translate-x-[-50%]" variant="default" size="lg" onclick={() => dialogOpen = true}><ListIcon weight="bold" /> Select Event</Button>
+<Button class="fixed md:hidden bottom-4 left-[50%] translate-x-[-50%]" variant="default" size="lg" onclick={() => dialogOpen = true}><ListIcon weight="bold" /> Select Event</Button>
 
 <BaseDialog title="Event Filters" description="Filter the displayed data by event" bind:open={dialogOpen}>
     <EventList bind:value={selectedEvent} />
