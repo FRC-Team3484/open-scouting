@@ -10,4 +10,7 @@ export interface EventInfoResponse {
   match_scouting_answers: number;
   pits: number;
   pit_answers: number;
+  pits_complete: number;
+  pits_incomplete: number;
+  pits_not_started: number;
 }

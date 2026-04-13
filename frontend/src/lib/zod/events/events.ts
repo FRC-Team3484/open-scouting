@@ -185,6 +185,9 @@ export const GetEventInfoEventInfoYearEventCodeGetResponse = zod.object({
   "match_scouting_submissions": zod.number(),
   "match_scouting_answers": zod.number(),
   "pits": zod.number(),
-  "pit_answers": zod.number()
+  "pit_answers": zod.number(),
+  "pits_complete": zod.number(),
+  "pits_incomplete": zod.number(),
+  "pits_not_started": zod.number()
 })
 

@@ -37,3 +37,6 @@ class EventInfoResponse(BaseModel):
     match_scouting_answers: int
     pits: int
     pit_answers: int
+    pits_complete: int
+    pits_incomplete: int
+    pits_not_started: int
