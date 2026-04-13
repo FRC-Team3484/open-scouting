@@ -82,9 +82,9 @@
             </div>
 
             <div class={"grid grid-cols-3 gap-2 transition-all mt-2 mb-2" + (scoutingInfo == null ? " opacity-50" : "")}>
-                <NumberStat value={0} label="Complete Pits" color="green" />
-                <NumberStat value={0} label="Incomplete Pits" color="orange" />
-                <NumberStat value={0} label="Pits Not Started" color="red" />
+                <NumberStat value={scoutingInfo?.pits_complete} label="Complete Pits" color="green" />
+                <NumberStat value={scoutingInfo?.pits_incomplete} label="Incomplete Pits" color="orange" />
+                <NumberStat value={scoutingInfo?.pits_not_started} label="Pits Not Started" color="red" />
             </div>
 
             <Button class="w-full" href="/start?year=2026&event_code={event.event_code}&event_name={event.name}&action=pit_scouting"><ChartBarIcon weight="bold" /> View Pit Scouting Data</Button>
