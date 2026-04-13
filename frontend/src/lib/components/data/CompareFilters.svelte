@@ -15,7 +15,8 @@
 	import BaseDialog from "../generic/dialogs/BaseDialog.svelte";
 	import EventList from "../generic/event_list/EventList.svelte";
     import type { Filters as EventListFilters } from "../generic/event_list/EventList.svelte";
-    
+    import { db } from "$lib/utils/db";
+
     let { filters = $bindable(), fields } = $props();
 
     let seasons: SeasonResponse[] = $state([]);
@@ -24,6 +25,7 @@
     let teams = $state([]);
     let selectedEvents = $state([]);
     let eventListOpen = $state(false);
+    let hydratedFromUrl = $state(false);
 
     const eventListDefaultFilters: EventListFilters = { showPast: true, showFavorites: false, showCustom: false, showSelected: false, eventType: [] };
 
@@ -86,8 +88,29 @@
     });
 
     $effect(() => {
+        const year = filters.year;
+        const codes = filters.event_codes;
+
+        if (!codes.length) return;
+        if (hydratedFromUrl) return;
+
+        (async () => {
+            const results = await db.event
+                .where("year")
+                .equals(year)
+                .toArray();
+
+            selectedEvents = results.filter(e =>
+                codes.includes(e.event_code)
+            );
+
+            hydratedFromUrl = true;
+        })();
+    });
+
+    $effect(() => {
         filters.event_codes = selectedEvents.map(e => e.event_code);
-    })
+    });
 </script>
 
 <Card.Root class="mt-4 min-w-64 lg:max-w-[25vw]">
