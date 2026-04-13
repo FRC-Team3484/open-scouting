@@ -17,9 +17,11 @@
     });
 
     onMount(async () => {
-        setTimeout(() => {
-            dialogOpen = true
-        }, 1000);
+        if (window.innerWidth < 768) {
+            setTimeout(() => {
+                dialogOpen = true
+            }, 1000);
+        }
     })
 </script>
 
@@ -40,6 +42,4 @@
 
 <BaseDialog title="Event Filters" description="Filter the displayed data by event" bind:open={dialogOpen}>
     <EventList bind:value={selectedEvent} />
-    
-    <Button variant="outline" onclick={() => dialogOpen = false}>Close</Button>
 </BaseDialog>
