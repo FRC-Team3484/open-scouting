@@ -50,11 +50,11 @@
     });
 
     onMount(async () => {
-        if (window.innerWidth < 768) {
-            setTimeout(() => {
+        setTimeout(() => {
+            if (window.innerWidth < 768 && selectedEvent.length == 0) {
                 dialogOpen = true
-            }, 1000);
-        }
+            }
+        }, 1000);
 
         loadUrlParams();
     })
