@@ -5,8 +5,8 @@
     let { value, label, color = "none" } = $props();
 </script>
 
-<Card.Root>
-    <Card.Content>
+<Card.Root class="p-2">
+    <Card.Content class="p-2">
         <div class="flex flex-col gap-2">                
             {#if color == "green"}
                 <p class="text-lg text-green-300">{value}</p>
