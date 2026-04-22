@@ -7,9 +7,10 @@
 	import Action from "$lib/components/index/Action.svelte";
 	import PageContainer from "$lib/components/layout/PageContainer.svelte";
 	import { onMount, tick } from "svelte";
-	import { replaceState } from "$app/navigation";
+	import { pushState, replaceState } from "$app/navigation";
 	import { toast } from "svelte-sonner";
 	import Link from "$lib/components/index/Link.svelte";
+	import { navigating } from "$app/state";
 	
 	// /start?year=2026&event_code=alhu&event_name=Rocket City Regional&action=match_scouting
 
@@ -27,6 +28,7 @@
 		name: ""
 	});
 	let action = $state(""); // match_scouting, pit_scouting, data
+	let lastPage = $state(page);
 
 	function handleNavigate(nextPage: string): void {
 		if (nextPage === "year" && year !== 0) {
@@ -82,6 +84,10 @@
 	function loadUrlParams() {
 		const url = new URL(window.location.href);
 
+		if (url.searchParams.has("page")) {
+			page = url.searchParams.get("page");
+		}
+
 		if (url.searchParams.has("year")) {
 			setYear(parseInt(url.searchParams.get("year")));
 		}
@@ -95,8 +101,10 @@
 		}
 	}
 
-	function setUrlParams() {
+	function setUrlParams(push = false) {
 		const url = new URL(window.location.href);
+
+		url.searchParams.set("page", page);
 
 		if (year > 0) {
 			url.searchParams.set("year", String(year));
@@ -117,19 +125,57 @@
 		}
 
 		tick().then(() => {
-			replaceState(url, {});
+			if (push) {
+				pushState(url, {});
+			} else {
+				replaceState(url, {});
+			}
 		});
 	}
 
-	$effect(() => {
-		year;
-		selected_event;
+	function updatePageFromUrl() {
+		const url = new URL(window.location.href);
 
-		setUrlParams();
+		if (url.searchParams.has("page") && url.searchParams.get("page") != page) {
+			page = url.searchParams.get("page");
+
+			console.log("set page to", page);
+		}
+	}
+
+	$effect(() => {
+		const url = new URL(window.location.href);
+
+		url.searchParams.set("page", page);
+
+		if (year > 0) url.searchParams.set("year", String(year));
+		else url.searchParams.delete("year");
+
+		if (selected_event.event_code)
+			url.searchParams.set("event_code", selected_event.event_code);
+		else url.searchParams.delete("event_code");
+
+		if (selected_event.name)
+			url.searchParams.set("event_name", selected_event.name);
+		else url.searchParams.delete("event_name");
+
+		// 🔑 CRITICAL: do nothing if URL is already identical
+		if (url.toString() === window.location.href) return;
+
+		if (page !== lastPage) {
+			pushState(url, {});
+			lastPage = page;
+		} else {
+			replaceState(url, {});
+		}
 	});
 
 	onMount(async () => {
 		loadUrlParams();
+
+		addEventListener("popstate", () => {
+			loadUrlParams();
+		});
 	});
 </script>
 
