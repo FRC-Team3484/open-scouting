@@ -133,7 +133,7 @@
 
                         <div class="flex flex-row gap-2 items-center">
                             {#each $events as event}
-                                {#if event == visibleEvent}
+                                {#if visibleEvent && event.uuid == visibleEvent.uuid}
                                     <CircleIcon weight="fill" size={8} class="opacity-100" onclick={() => scrollToEvent(event)} />
                                 {:else}
                                     <CircleIcon weight="fill" size={8} class="opacity-50 hover:opacity-100 transition-opacity" onclick={() => scrollToEvent(event)} />
