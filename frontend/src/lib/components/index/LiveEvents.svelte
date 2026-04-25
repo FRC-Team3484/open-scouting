@@ -70,7 +70,7 @@
     }
 
     function scrollToNext() {
-        const index = $events.indexOf(visibleEvent);
+        const index = $events.findIndex(e => e.event_code === visibleEvent.event_code);
         let nextIndex = (index + 1) % $events.length;
 
         if (nextIndex > $events.length - 1) {
@@ -84,6 +84,7 @@
         const interval = setInterval(() => {
             if (!stopAutoScroll) {
                 scrollToNext();
+                console.log("scorlling")
             }
         }, 5000);
 
