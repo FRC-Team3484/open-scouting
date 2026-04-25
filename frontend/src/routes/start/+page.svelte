@@ -93,8 +93,6 @@
 	function handleNavigate(nextPage: string): void {
 		const resolved = resolvePage(nextPage);
 
-		console.log(resolved, nextPage);
-
 		if (resolved == "action" && nextPage === "year") {
 			toast.success("Event selected from URL", { duration: 5000 });
 		} else if (resolved == "link" && nextPage === "year") {

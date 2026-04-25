@@ -9,6 +9,7 @@
 	import { fetchPitScoutingData, pushPitScoutingData } from "$lib/utils/sync";
 	import { slide } from "svelte/transition";
 	import { liveQuery } from "dexie";
+	import { toast } from "svelte-sonner";
 
     let { eventData, seasonUuid } = $props();
 
@@ -19,10 +20,18 @@
 
     async function sync() {
         status = "pushing";
-        await pushPitScoutingData(eventData, seasonUuid);
-        status = "fetching";
-        await fetchPitScoutingData(eventData, seasonUuid);
-        status = "ready";
+        await pushPitScoutingData(eventData, seasonUuid).then(async () => {
+            status = "fetching";
+            await fetchPitScoutingData(eventData, seasonUuid).then(() => {
+                status = "ready";
+            }).catch(() => {
+                console.warn("Failed to fetch pit scouting data");
+                toast.error("Failed to fetch pit scouting data");
+            });
+        }).catch(() => {
+            console.warn("Failed to push pit scouting data");
+            toast.error("Failed to push pit scouting data");
+        });
     }
 
     onMount(() => {

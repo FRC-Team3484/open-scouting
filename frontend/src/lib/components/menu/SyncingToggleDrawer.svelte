@@ -13,14 +13,18 @@
 
     async function sync() {
         syncing = true;
-        await fetchSeasonData();
-        await fetchEventData();
-        await pushMatchScoutingData();
-        await pushUnsyncedPitScoutingData();
-
-        await toast.success("Data has been synced!", { duration: 5000 })
-        syncing = false;
-        open = false;
+        try {
+            await fetchSeasonData();
+            await fetchEventData();
+            await pushMatchScoutingData();
+            await pushUnsyncedPitScoutingData();
+    
+            toast.success("Data has been synced!", { duration: 5000 });
+            syncing = false;
+            open = false;
+        } catch {
+            toast.warning("Failed to sync data", { duration: 5000 });
+        }
     }
 </script>
 

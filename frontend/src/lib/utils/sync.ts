@@ -455,6 +455,7 @@ async function main() {
         getServerStatus();
     }, 500);
 
+    // Check if data is old
     if (await isOldData()) {
         console.log("Data is out of date. Fetching...");
         menuState.set({
@@ -463,32 +464,71 @@ async function main() {
             close: false
         });
 
-        await fetchSeasonData();
-        console.log("Fetched season data");
-        menuState.set({
-            state: "loading",
-            status: "Fetching event data...",
-            close: false
-        });
-
-        await fetchEventData();
-        console.log("Fetched event data");
-
-        if (await isUnsyncedFiles()) {
+        // Fetch season data
+        await fetchSeasonData().then(async () => {
+            console.log("Fetched season data");
             menuState.set({
                 state: "loading",
-                status: "Syncing files...",
+                status: "Fetching event data...",
                 close: false
             });
 
-            await pushFiles();
-            console.log("Synced files");
-        }
+            // Fetch event data
+            await fetchEventData().then(async () => {
+                console.log("Fetched event data");
 
-        menuState.set({
-            state: "ready",
-            status: "Data is up to date!",
-            close: true
+                if (await isUnsyncedFiles()) {
+                    menuState.set({
+                        state: "loading",
+                        status: "Syncing files...",
+                        close: false
+                    });
+
+                    // Push files to the server
+                    await pushFiles().then(() => {
+                        console.log("Synced files");
+                        menuState.set({
+                            state: "ready",
+                            status: "Data is up to date!",
+                            close: true
+                        });
+                    })
+                    // File sync failed
+                    .catch(() => {
+                        console.log("Failed to sync files");
+                        menuState.set({
+                            state: "warning",
+                            status: "Failed to sync files",
+                            close: false
+                        });
+                    });
+                } else {
+                    menuState.set({
+                        state: "ready",
+                        status: "Data is up to date!",
+                        close: true
+                    });
+                }
+
+            })
+            // Event data fetch failed
+            .catch(() => {
+                console.warn("Failed to get event data")
+                menuState.set({
+                    state: "warning",
+                    status: "Failed to get event data",
+                    close: false
+                });
+            });
+        })
+        // Season data fetch failed
+        .catch(() => {
+            console.warn('Failed to get season data')
+            menuState.set({
+                state: "warning",
+                status: "Failed to get season data",
+                close: false
+            });
         });
     }
 

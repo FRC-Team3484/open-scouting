@@ -247,6 +247,14 @@
         value = value.filter(e => e.year !== event.year || e.event_code !== event.event_code);
     }
 
+    async function rebuildEventData() {
+        await fetchEventData().then(() => {
+            toast.success("Event cache rebuilt")
+        }).catch(() => {
+            toast.error("Failed to rebuild event cache")
+        })
+    }
+
     // Init
     onMount(async () => {
         user = await validateTokenOnline();
@@ -281,7 +289,7 @@
                         <Dialog.Footer>
                             <Dialog.Close>
                                 <Button variant="outline">Cancel</Button>
-                                <Button onclick={async () => {await fetchEventData(); await toast.success("Event cache rebuilt");}}>Rebuild Event Cache</Button>
+                                <Button onclick={rebuildEventData}>Rebuild Event Cache</Button>
                             </Dialog.Close>
                         </Dialog.Footer>
                     </Dialog.Content>

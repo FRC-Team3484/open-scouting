@@ -4,7 +4,7 @@
 
 	import Button from "../ui/button/button.svelte";
 	import Separator from "../ui/separator/separator.svelte";
-    import { Archive, ArrowRight, Article, Bug, CheckCircle, CircleNotch, Clock, DiscordLogo, FloppyDisk, GithubLogo, House, List, Moon, Notepad, Sun, Warning, X } from "phosphor-svelte";
+    import { Archive, ArrowRight, Article, Bug, CheckCircle, CircleNotch, Clock, DiscordLogo, FloppyDisk, GithubLogo, House, List, Moon, Notepad, Sun, Warning, X, XCircleIcon } from "phosphor-svelte";
 
 	import AboutDrawer from "./AboutDrawer.svelte";
 	import ManageDataDrawer from "./ManageDataDrawer.svelte";
@@ -78,15 +78,18 @@
             </div>
 
             {#if $menuState.status}
-                <div class="flex flex-row gap-2 items-center" transition:slide>
-                    {#if $menuState.state === "ready"}
-                        <CheckCircle weight="bold"/>
-                    {:else if $menuState.state === "loading"}
-                        <CircleNotch weight="bold" class="animate-spin"/>
-                    {:else if $menuState.state === "warning"}
-                        <Warning weight="bold"/>
-                    {/if}
-                    <p>{$menuState.status}</p>
+                <div class="flex flex-row gap-2 items-center justify-between flex-wrap" transition:slide>
+                    <div class="flex flex-row gap-2 items-center">
+                        {#if $menuState.state === "ready"}
+                            <CheckCircle weight="bold"/>
+                        {:else if $menuState.state === "loading"}
+                            <CircleNotch weight="bold" class="animate-spin"/>
+                        {:else if $menuState.state === "warning"}
+                            <Warning weight="bold"/>
+                        {/if}
+                        <p>{$menuState.status}</p>
+                    </div>
+                    <Button variant="outline" size="sm" onclick={() => menuState.set({state: "ready", status: "", close: true})}><XCircleIcon weight="bold" /> Hide</Button>
                 </div>
             {/if}
 

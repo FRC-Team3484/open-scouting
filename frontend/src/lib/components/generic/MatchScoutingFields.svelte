@@ -153,7 +153,7 @@
             synced: false
         });
 
-        toast.success("Match scouting data saved", { duration: 5000 });
+        toast.success("Match scouting data saved locally", { duration: 5000 });
         form.reset();
 
         // Delay 100ms while form is resetting
@@ -164,7 +164,10 @@
         }, 100);
     
 
-        await pushMatchScoutingData();
+        await pushMatchScoutingData().catch((error) => {
+            console.warn("Failed to upload match scouting data", error);
+            toast.error("Failed to upload match scouting data to the server");
+        });
     }
 
     function exportFields() {

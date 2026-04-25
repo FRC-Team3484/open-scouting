@@ -12,6 +12,7 @@
     import * as Dialog from "../ui/dialog";
 	import { toast } from "svelte-sonner";
 	import { fetchEventData, fetchSeasonData, pushFiles, pushMatchScoutingData, pushUnsyncedPitScoutingData } from "$lib/utils/sync";
+	import type Dexie from "dexie";
 
     let totalSpace = $state(0);
     let usedSpace = $state(0);
@@ -47,6 +48,27 @@
     async function markMatchScoutingDataAsUnsynced() {
         await db.match_scouting.toCollection().modify({
             synced: false
+        });
+        await getAmount();
+    }
+
+    async function deleteTable(table: Dexie.Table, name: string): Promise<void> {
+        await table.clear().then(async () => {
+            await getAmount();
+            getSpaceUsed();
+            toast.success(`Deleted all ${name} data`, { duration: 5000 });
+        }).catch(() => {
+            toast.error(`Failed to delete ${name} data`, { duration: 5000 });
+        });
+    }
+
+    async function runFunction(func: Function, operationLabel: string, failureLabel: string): Promise<void> {
+        await func().then(async () => {
+            await getAmount();
+            getSpaceUsed();
+            toast.success(operationLabel, { duration: 5000 });
+        }).catch(() => {
+            toast.error(failureLabel, { duration: 5000 });
         });
     }
 
@@ -94,7 +116,7 @@
                                         <Button variant="outline">Cancel</Button>
                                     </Dialog.Close>
                                     <Dialog.Close>
-                                        <Button type="submit" onclick={async () => { await db.event.clear(); await getAmount(); getSpaceUsed(); await toast.success("Event cache cleared"); }}>Delete</Button>
+                                        <Button type="submit" onclick={() => deleteTable(db.event, "event")}>Delete</Button>
                                     </Dialog.Close>
                                 </Dialog.Footer>
                             </Dialog.Content>
@@ -111,7 +133,7 @@
                                         <Button variant="outline">Cancel</Button>
                                     </Dialog.Close>
                                     <Dialog.Close>
-                                        <Button type="submit" onclick={async () => { await fetchEventData(); await getAmount(); getSpaceUsed(); await toast.success("Event cache rebuilt"); }}>Rebuild</Button>
+                                        <Button type="submit" onclick={() => runFunction(fetchEventData, "Successfully fetched event data", "Failed to fetch event data")}>Rebuild</Button>
                                     </Dialog.Close>
                                 </Dialog.Footer>
                             </Dialog.Content>
@@ -134,7 +156,7 @@
                                         <Button variant="outline">Cancel</Button>
                                     </Dialog.Close>
                                     <Dialog.Close>
-                                        <Button type="submit" onclick={async () => { await db.season_data.clear(); await getAmount(); getSpaceUsed(); await toast.success("Season data cleared"); }}>Delete</Button>
+                                        <Button type="submit" onclick={() => deleteTable(db.season_data, "season")}>Delete</Button>
                                     </Dialog.Close>
                                 </Dialog.Footer>
                             </Dialog.Content>
@@ -151,7 +173,7 @@
                                         <Button variant="outline">Cancel</Button>
                                     </Dialog.Close>
                                     <Dialog.Close>
-                                        <Button type="submit" onclick={async () => { await fetchSeasonData(); await getAmount(); getSpaceUsed(); await toast.success("Season data cache rebuilt"); }}>Rebuild</Button>
+                                        <Button type="submit" onclick={() => runFunction(fetchSeasonData, "Successfully fetched season data", "Failed to fetch season data")}>Rebuild</Button>
                                     </Dialog.Close>
                                 </Dialog.Footer>
                             </Dialog.Content>
@@ -176,7 +198,7 @@
                                             <Button variant="outline">Cancel</Button>
                                         </Dialog.Close>
                                         <Dialog.Close>
-                                            <Button type="submit" onclick={async () => { await pushMatchScoutingData(); await getAmount(); getSpaceUsed(); await toast.success("Match scouting data synced"); }}>Sync</Button>
+                                            <Button type="submit" onclick={() => runFunction(pushMatchScoutingData, "Successfully uploaded match scouting data", "Failed to upload match scouting data")}>Sync</Button>
                                         </Dialog.Close>
                                     </Dialog.Footer>
                                 </Dialog.Content>
@@ -194,12 +216,12 @@
                                         <Button variant="outline">Cancel</Button>
                                     </Dialog.Close>
                                     <Dialog.Close>
-                                        <Button type="submit" onclick={async () => { await db.match_scouting.clear(); await getAmount(); getSpaceUsed(); await toast.success("Match scouting data cleared"); }}>Delete</Button>
+                                        <Button type="submit" onclick={() => deleteTable(db.match_scouting, "match scouting")}>Delete</Button>
                                     </Dialog.Close>
                                 </Dialog.Footer>
                             </Dialog.Content>
                         </Dialog.Root>
-                        <Button onclick={async () => {await markMatchScoutingDataAsUnsynced(); await getAmount();}}>Make All Unsynced</Button>
+                        <Button onclick={() => markMatchScoutingDataAsUnsynced()}>Make All Unsynced</Button>
                     </div>
                     <p class="text-sm text-muted-foreground">Match scouting data stored locally, in case of poor connection requiring reports to be submitted later</p>
                 </div>
@@ -220,7 +242,7 @@
                                             <Button variant="outline">Cancel</Button>
                                         </Dialog.Close>
                                         <Dialog.Close>
-                                            <Button type="submit" onclick={async () => { await pushUnsyncedPitScoutingData(); await getAmount(); getSpaceUsed(); await toast.success("Pit scouting data synced"); }}>Sync</Button>
+                                            <Button type="submit" onclick={() => runFunction(pushUnsyncedPitScoutingData, "Successfully uploaded all unsynced pit scouting data", "Failed to upload pit scouting data")}>Sync</Button>
                                         </Dialog.Close>
                                     </Dialog.Footer>
                                 </Dialog.Content>
@@ -238,7 +260,7 @@
                                         <Button variant="outline">Cancel</Button>
                                     </Dialog.Close>
                                     <Dialog.Close>
-                                        <Button type="submit" onclick={async () => { await db.pit_scouting.clear(); await getAmount(); getSpaceUsed(); await toast.success("Pit scouting data cleared"); }}>Delete</Button>
+                                        <Button type="submit" onclick={() => deleteTable(db.pit_scouting, "pit scouting")}>Delete</Button>
                                     </Dialog.Close>
                                 </Dialog.Footer>
                             </Dialog.Content>
@@ -264,7 +286,7 @@
                                             <Button variant="outline">Cancel</Button>
                                         </Dialog.Close>
                                         <Dialog.Close>
-                                            <Button type="submit" onclick={async () => { await pushFiles(); await getAmount(); getSpaceUsed(); await toast.success("Files synced"); }}>Sync</Button>
+                                            <Button type="submit" onclick={() => runFunction(pushFiles, "Successfully uploaded files", "Failed to upload files")}>Sync</Button>
                                         </Dialog.Close>
                                     </Dialog.Footer>
                                 </Dialog.Content>
@@ -282,7 +304,7 @@
                                         <Button variant="outline">Cancel</Button>
                                     </Dialog.Close>
                                     <Dialog.Close>
-                                        <Button type="submit" onclick={async () => { await db.files.clear(); await getAmount(); getSpaceUsed(); await toast.success("File data cleared"); }}>Delete</Button>
+                                        <Button type="submit" onclick={() => deleteTable(db.files, "files")}>Delete</Button>
                                     </Dialog.Close>
                                 </Dialog.Footer>
                             </Dialog.Content>
