@@ -75,7 +75,7 @@
             // TODO: this needs a proper response schema
             fields = (await getSeasonFieldsFieldsSeasonSeasonUuidGet(season_uuid)).data;
         } else {
-            const season = await db.season_data.get(parseInt(year));
+            const season = await db.season_data.get(season_uuid);
             fields = season?.fields
         }
 
@@ -90,7 +90,7 @@
                 }
             });
         } else {
-            const season = await db.season_data.get(parseInt(year));
+            const season = await db.season_data.get(season_uuid);
             gamePieces = season?.game_pieces
         }
     }

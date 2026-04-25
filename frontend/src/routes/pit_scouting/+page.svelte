@@ -45,7 +45,7 @@
     );
 
     async function get_pit_questions() {
-        const season = await db.season_data.get(parseInt(year));
+        const season = await db.season_data.get(season_uuid);
         pit_questions = season?.pit_scouting_questions.sort((a, b) => a.order - b.order) ?? [];
     }
 
