@@ -15,12 +15,12 @@
 	import { online } from "svelte/reactivity/window";
 	import { toast } from "svelte-sonner";
 	import { changelogDialogOpen } from "$lib/stores/dialog";
-	import { db } from "$lib/utils/db";
+	import SyncingToggleDrawer from "./SyncingToggleDrawer.svelte";
 
     let user = null;
 
     let menu_open: boolean = $state(false);
-    let wasOnline = $state(online.current)
+    let wasOnline = $state(online.current);
 
     menuState.subscribe((value) => {
         if (value.close) {
@@ -92,7 +92,7 @@
 
             <Separator orientation="horizontal" />
 
-            <div class="flex flex-row gap-4 flex-wrap">
+            <div class="flex flex-row gap-2 flex-wrap">
                 <Button variant="outline" onclick={toggleMode}>
                     {#if mode.current === "dark"}
                         <Sun class="h-[1.2rem] w-[1.2rem]"/>
@@ -102,6 +102,8 @@
                         <span>Dark Mode</span>
                     {/if}
                 </Button>
+
+                <SyncingToggleDrawer />
             </div>
 
             <Separator orientation="horizontal" />
