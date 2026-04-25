@@ -15,7 +15,21 @@ import { getServerStatusStatusGet } from "$lib/api/generic/generic";
 import { browser } from "$app/environment";
 import { VERSION } from "./constants";
 import { uploadImageUploadImagePost } from "$lib/api/uploads/uploads";
+import { get } from "svelte/store";
 
+/**
+ * Checks if syncing is enabled by the user
+ * 
+ * @returns True if syncing is enabled
+ */
+function isSyncingEnabled(): boolean {
+    if (get(syncStatus) === false) {
+        console.warn("Syncing is disabled by user");
+        return false;
+    } else {
+        return true;
+    }
+}
 
 /**
  * Fetches season data and stores it locally
@@ -24,6 +38,8 @@ import { uploadImageUploadImagePost } from "$lib/api/uploads/uploads";
  *    and store them using Dexie for later use
  */
 async function fetchSeasonData() {
+    if (!isSyncingEnabled()) return;
+
     const seasonsResponse: Array<SeasonResponse> = (await getSeasonsSeasonsGet()).data;
 
     for (const season of seasonsResponse) {
@@ -42,6 +58,7 @@ async function fetchSeasonData() {
         }
 
         await db.season_data.put({
+            uuid: season.uuid,
             year: season.year,
             fields: fieldData,
             game_pieces: gamePieceData,
@@ -58,6 +75,8 @@ async function fetchSeasonData() {
  *    and store them locally using Dexie for later use
  */
 async function fetchEventData() {
+    if (!isSyncingEnabled()) return;
+
     const seasonsResponse: Array<SeasonResponse> = (await getSeasonsSeasonsGet()).data;
 
     for (const season of seasonsResponse) {
@@ -147,6 +166,8 @@ async function isUnsyncedFiles() {
  * 
  */
 async function pushMatchScoutingData() {
+    if (!isSyncingEnabled()) return;
+
     const unsynced = await db.match_scouting.filter(m => m.synced === false).toArray();
 
     if (unsynced.length > 0) {
@@ -197,6 +218,8 @@ async function pushMatchScoutingData() {
  * @param event_data The event data
  */
 async function pushPitScoutingData(event_data, season_uuid) {
+    if (!isSyncingEnabled()) return;
+
     const unsyncedPits = await db.pit_scouting.filter(
         p => p.synced === false && 
         p.event_code === event_data.event_code && 
@@ -253,6 +276,8 @@ async function pushPitScoutingData(event_data, season_uuid) {
  * @param season_uuid The season uuid
  */
 async function fetchPitScoutingData(event_data, season_uuid) {
+    if (!isSyncingEnabled()) return;
+
     const body: GetPitsForSeasonRequest = {
         season_uuid: season_uuid,
         event_code: event_data.event_code,
@@ -297,6 +322,8 @@ async function fetchPitScoutingData(event_data, season_uuid) {
  * Pushes files to the backend
  */
 async function pushFiles() {
+    if (!isSyncingEnabled()) return;
+
     let files = await db.files.filter(f => f.synced === false).toArray();
 
     for (const file of files) {
@@ -318,6 +345,7 @@ async function pushFiles() {
 
 async function getServerStatus() {
     if (!browser) return;
+    if (!isSyncingEnabled()) return;
 
     await getServerStatusStatusGet().then((response) => {
         if (response.data) {
@@ -366,9 +394,10 @@ async function getServerStatus() {
  * If the locally stored data is out of date, download it and ask the menu to show that status
  */
 async function main() {
+    if (!isSyncingEnabled()) return;
+
     setTimeout(() => {
         getServerStatus();
-        
     }, 500);
 
     if (await isOldData()) {
