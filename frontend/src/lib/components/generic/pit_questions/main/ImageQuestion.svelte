@@ -44,8 +44,8 @@
 
         mode = "none";
         await addAnswers(imageUrls);
-        await pushFiles().catch(() => {
-            console.warn("Failed to upload files to the server");
+        await pushFiles().catch((error) => {
+            console.warn("Failed to upload files to the server", error);
             toast.error("Failed to upload files to the server");
         });
     }

@@ -24,12 +24,12 @@
             status = "fetching";
             await fetchPitScoutingData(eventData, seasonUuid).then(() => {
                 status = "ready";
-            }).catch(() => {
-                console.warn("Failed to fetch pit scouting data");
+            }).catch((error) => {
+                console.warn("Failed to fetch pit scouting data", error);
                 toast.error("Failed to fetch pit scouting data");
             });
-        }).catch(() => {
-            console.warn("Failed to push pit scouting data");
+        }).catch((error) => {
+            console.warn("Failed to push pit scouting data", error);
             toast.error("Failed to push pit scouting data");
         });
     }

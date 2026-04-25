@@ -54,8 +54,8 @@
         await fetchSeasonData().then(() => {
             toast.success("Season data cache rebuilt!");
             window.location.reload();
-        }).catch(() => {
-            toast.error("Failed to fetch season data")
+        }).catch((error) => {
+            toast.error("Failed to fetch season data", error)
         });
     }
 
@@ -83,7 +83,7 @@
                         <Dialog.Footer>
                             <Dialog.Close>
                                 <Button variant="outline">Cancel</Button>
-                                <Button onclick={() => fetchSeasonData}>Rebuild Season Data Cache</Button>
+                                <Button onclick={fetch_season_data}>Rebuild Season Data Cache</Button>
                             </Dialog.Close>
                         </Dialog.Footer>
                     </Dialog.Content>

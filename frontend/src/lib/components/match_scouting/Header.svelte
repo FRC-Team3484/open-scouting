@@ -50,8 +50,8 @@
         await fetchSeasonData().then(() => {
             toast.success("Season data cache rebuilt!");
             window.location.reload();
-        }).catch(() => {
-            toast.error("Failed to fetch season data")
+        }).catch((error) => {
+            toast.error("Failed to fetch season data", error)
         });
     }
 

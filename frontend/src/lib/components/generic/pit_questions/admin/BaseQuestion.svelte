@@ -14,7 +14,8 @@
         await deletePitFieldPitsFieldsFieldUuidDeleteDelete(question.uuid).then(async (response) => {
             await getQuestions();
             toast.success("Question deleted", { duration: 5000 });
-        }).catch(() => {
+        }).catch((error) => {
+            console.warn("Failed to delete question");
             toast.error("Failed to delete question", { duration: 5000 });
         });
     }

@@ -19,8 +19,9 @@
     }
 
     async function deleteSection() {
-        await deleteFieldFieldsDeleteFieldUuidDelete(section.uuid).catch(() => {
-            toast.error("Failed to delete field", { duration: 5000 });
+        await deleteFieldFieldsDeleteFieldUuidDelete(section.uuid).catch((error) => {
+            console.log("Failed to delete section", error)
+            toast.error("Failed to delete section", { duration: 5000 });
         }).then(async () => {
             await getFields(); 
         });

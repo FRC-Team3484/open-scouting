@@ -57,7 +57,8 @@
             await getAmount();
             getSpaceUsed();
             toast.success(`Deleted all ${name} data`, { duration: 5000 });
-        }).catch(() => {
+        }).catch((error) => {
+            console.warn(`Failed to delete ${name} data`, error)
             toast.error(`Failed to delete ${name} data`, { duration: 5000 });
         });
     }
@@ -67,7 +68,8 @@
             await getAmount();
             getSpaceUsed();
             toast.success(operationLabel, { duration: 5000 });
-        }).catch(() => {
+        }).catch((error) => {
+            console.warn(failureLabel, error)
             toast.error(failureLabel, { duration: 5000 });
         });
     }

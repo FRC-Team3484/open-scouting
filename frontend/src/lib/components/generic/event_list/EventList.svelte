@@ -249,9 +249,10 @@
 
     async function rebuildEventData() {
         await fetchEventData().then(() => {
-            toast.success("Event cache rebuilt")
-        }).catch(() => {
-            toast.error("Failed to rebuild event cache")
+            toast.success("Event cache rebuilt");
+        }).catch((error) => {
+            console.warn("Failed to rebuild event cache", error);
+            toast.error("Failed to rebuild event cache");
         })
     }
 

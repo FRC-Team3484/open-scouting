@@ -494,8 +494,8 @@ async function main() {
                         });
                     })
                     // File sync failed
-                    .catch(() => {
-                        console.log("Failed to sync files");
+                    .catch((error) => {
+                        console.log("Failed to sync files", error);
                         menuState.set({
                             state: "warning",
                             status: "Failed to sync files",
@@ -512,8 +512,8 @@ async function main() {
 
             })
             // Event data fetch failed
-            .catch(() => {
-                console.warn("Failed to get event data")
+            .catch((error) => {
+                console.warn("Failed to get event data", error)
                 menuState.set({
                     state: "warning",
                     status: "Failed to get event data",
@@ -522,8 +522,8 @@ async function main() {
             });
         })
         // Season data fetch failed
-        .catch(() => {
-            console.warn('Failed to get season data')
+        .catch((error) => {
+            console.warn('Failed to get season data', error)
             menuState.set({
                 state: "warning",
                 status: "Failed to get season data",
