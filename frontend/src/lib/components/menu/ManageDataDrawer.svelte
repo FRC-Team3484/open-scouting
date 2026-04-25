@@ -11,7 +11,7 @@
 	import Badge from "../ui/badge/badge.svelte";
     import * as Dialog from "../ui/dialog";
 	import { toast } from "svelte-sonner";
-	import { fetchEventData, fetchSeasonData, pushFiles, pushMatchScoutingData } from "$lib/utils/sync";
+	import { fetchEventData, fetchSeasonData, pushFiles, pushMatchScoutingData, pushUnsyncedPitScoutingData } from "$lib/utils/sync";
 
     let totalSpace = $state(0);
     let usedSpace = $state(0);
@@ -208,23 +208,23 @@
                         <p class="font-bold">{pitScoutingData} Team Pits</p>
                         {#if pitScoutingDataUnsynced > 0}
                             <Badge variant="destructive">{pitScoutingDataUnsynced} Unsynced</Badge>
-                            <!-- <Dialog.Root>
+                            <Dialog.Root>
                                 <Dialog.Trigger>
                                     <Button>Sync</Button>
                                 </Dialog.Trigger>
                                 <Dialog.Content>
                                     <Dialog.Title>Are you sure?</Dialog.Title>
-                                    <Dialog.Description>Are you sure you want to sync match scouting data?</Dialog.Description>
+                                    <Dialog.Description>Are you sure you want to sync all unsynced pit scouting data?</Dialog.Description>
                                     <Dialog.Footer>
                                         <Dialog.Close>
                                             <Button variant="outline">Cancel</Button>
                                         </Dialog.Close>
                                         <Dialog.Close>
-                                            <Button type="submit" onclick={async () => { await pushMatchScoutingData(); await getAmount(); getSpaceUsed(); await toast.success("Match scouting data synced"); }}>Sync</Button>
+                                            <Button type="submit" onclick={async () => { await pushUnsyncedPitScoutingData(); await getAmount(); getSpaceUsed(); await toast.success("Pit scouting data synced"); }}>Sync</Button>
                                         </Dialog.Close>
                                     </Dialog.Footer>
                                 </Dialog.Content>
-                            </Dialog.Root> -->
+                            </Dialog.Root>
                         {/if}
                         <Dialog.Root>
                             <Dialog.Trigger>

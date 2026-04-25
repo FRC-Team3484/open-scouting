@@ -1,5 +1,6 @@
 import { compare } from "semver-ts";
 import { menuState } from "$lib/stores/menu";
+import { syncStatus } from "$lib/stores/sync";
 import { changelogDialogOpen, changelogDialogVersion } from "$lib/stores/dialog"
 import { theBlueAllianceApiFetch } from "./api";
 import { db } from "./db";
@@ -269,6 +270,60 @@ async function pushPitScoutingData(event_data, season_uuid) {
     }
 }
 
+async function pushUnsyncedPitScoutingData() {
+    if (!isSyncingEnabled) return;
+
+    const unsyncedPits = await db.pit_scouting.filter(
+        p => p.synced === false
+    ).toArray();
+
+    const seasons = await db.season_data.toArray();
+
+    if (unsyncedPits.length > 0) {
+        menuState.set({
+            state: "loading",
+            status: "Uploading all unsynced pit scouting data...",
+            close: false
+        });
+
+        for (const pit of unsyncedPits) {
+            const season: Object | null = seasons.filter(s => s.year === pit.year)[0];
+            if (season === null) continue;
+
+            const body: SubmitPitFieldAnswerRequest = {
+                uuid: pit.uuid,
+                season_uuid: season.uuid,
+                team_number: pit.team_number,
+                event_code: pit.event_code,
+                event_name: pit.event_name,
+                event_type: pit.event_type,
+                event_city: pit.event_city,
+                event_country: pit.event_country,
+                event_start_date: pit.event_start_date,
+                event_end_date: pit.event_end_date,
+                answers: pit.answers || [],
+                nickname: pit.nickname || ""
+            }
+
+            await submitPitPitsSubmitSeasonUuidTeamNumberPost(season.uuid, pit.team_number, body).then((data) => {
+                if (data.status === 200) {
+                    db.pit_scouting.update(pit.uuid, { synced: true });
+                }
+            });
+
+            console.log("Pit scouting data uploaded", pit.uuid);
+        }
+
+        menuState.set({
+            state: "ready",
+            status: "Pit scouting data uploaded!",
+            close: true
+        });
+    } else {
+        return false;
+    }
+}
+
 /**
  * Gets pit scouting data from the backend and stores it locally, based on the event
  * 
@@ -442,4 +497,4 @@ async function main() {
 
 main().catch((error) => console.error(error));
 
-export { fetchSeasonData, fetchEventData, isOldData, pushMatchScoutingData, pushPitScoutingData, fetchPitScoutingData, pushFiles }
+export { fetchSeasonData, fetchEventData, isOldData, pushMatchScoutingData, pushPitScoutingData, pushUnsyncedPitScoutingData, fetchPitScoutingData, pushFiles }
