@@ -6,31 +6,25 @@
 	import Button from "../ui/button/button.svelte";
 	import { CircleIcon } from "phosphor-svelte";
 	import { getEventInfoEventInfoYearEventCodeGet } from "$lib/api/events/events";
+	import { liveQuery } from "dexie";
 
-    let events = $state([]);
+    let events = liveQuery(() => db.event.filter(e => {
+            const now = new Date();
+            const startDate = new Date(e.start_date);
+            const endDate = new Date(e.end_date);
+
+            endDate.setDate(endDate.getDate() + 1);
+
+            return startDate <= now && now <= endDate
+        }).toArray()
+    );
+
     let visibleEvent = $state(null);
     let container = null;
     let stopAutoScroll = $state(false);
 
-    async function getEvents() {
-        const now = new Date();
-
-        events = await db.event.filter(e => {
-            const startDate = new Date(e.start_date);
-            const endDate = new Date(e.end_date);
-            
-            endDate.setDate(endDate.getDate() + 1);
-
-            return startDate <= now && now <= endDate
-        }).toArray();
-
-        if (events.length > 0) {
-            visibleEvent = events[0];
-        }
-    }
-
     async function getEventDetails() {
-        for (let event of events) {
+        for (let event of $events) {
             const request = await getEventInfoEventInfoYearEventCodeGet(event.year, event.event_code);
 
             if (request.status === 200) {
@@ -65,7 +59,7 @@
         }
 
         const index = children.indexOf(closest);
-        visibleEvent = events[index];
+        visibleEvent = $events[index];
     }
 
     function scrollToEvent(event) {
@@ -76,19 +70,17 @@
     }
 
     function scrollToNext() {
-        const index = events.indexOf(visibleEvent);
-        let nextIndex = (index + 1) % events.length;
+        const index = $events.indexOf(visibleEvent);
+        let nextIndex = (index + 1) % $events.length;
 
-        if (nextIndex > events.length - 1) {
+        if (nextIndex > $events.length - 1) {
             nextIndex = 0;
         }
 
-        scrollToEvent(events[nextIndex]);
+        scrollToEvent($events[nextIndex]);
     }
 
     onMount(() => {
-        getEvents();
-
         const interval = setInterval(() => {
             if (!stopAutoScroll) {
                 scrollToNext();
@@ -98,14 +90,14 @@
         return () => clearInterval(interval);
     });
 
-    // $effect(() => {
-    //     if (events.length > 0) {
-    //         getEventDetails();
-    //     }
-    // });
+    $effect(() => {
+        if ($events && $events.length > 0) {
+            visibleEvent = $events[0];
+        }
+    });
 </script>
 
-{#if events.length > 0}
+{#if $events && $events.length > 0}
     <div transition:slide class="mb-4 md:mb-8">
         <div transition:scale>
             <Card.Root class="hidden min-[250px]:flex p-2">
@@ -116,7 +108,7 @@
                                 <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-500 opacity-75"></span>
                                 <span class="relative inline-flex size-3 rounded-full bg-blue-500"></span>
                             </span>
-                            <p class="text-sm text-muted-foreground">{events.length} {events.length === 1 ? "event" : "events"} now</p>
+                            <p class="text-sm text-muted-foreground">{$events.length} {$events.length == 1 ? "event" : "events"} now</p>
                             {#if stopAutoScroll}
                                 <div transition:slide={{axis: 'x'}}>
                                     <p class="text-xs text-muted-foreground whitespace-nowrap">Scrolling paused</p>
@@ -125,7 +117,7 @@
                         </div>
 
                         <div class="flex flex-row overflow-y-hidden w-full max-w-[80vw] md:max-w-sm mx-auto snap-x snap-mandatory" bind:this={container} on:scroll={updateVisible}>
-                            {#each events as event}
+                            {#each $events as event}
                                 <div class="flex flex-col gap-2 w-full shrink-0 snap-center border rounded-lg p-2">
                                     <div class="flex flex-row gap-2  justify-between " id={event.event_code}>
                                         <div class="flex flex-col items-start">
@@ -140,8 +132,8 @@
                         </div>
 
                         <div class="flex flex-row gap-2 items-center">
-                            {#each events as event}
-                                {#if event === visibleEvent}
+                            {#each $events as event}
+                                {#if event == visibleEvent}
                                     <CircleIcon weight="fill" size={8} class="opacity-100" onclick={() => scrollToEvent(event)} />
                                 {:else}
                                     <CircleIcon weight="fill" size={8} class="opacity-50 hover:opacity-100 transition-opacity" onclick={() => scrollToEvent(event)} />
