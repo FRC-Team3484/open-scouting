@@ -12,10 +12,18 @@ export class OpenScoutingDB extends Dexie {
     
     this.version(1).stores({
       match_scouting: "&uuid, data, user_uuid, year, team_number, match_number, match_type, event_code, event_name, event_type, event_city, event_country, event_start_date, event_end_date, synced",
-      season_data: "&uuid, year, fields, game_pieces, pit_scouting_questions, fetch_time",
+      season_data: "$year, fields, game_pieces, pit_scouting_questions, fetch_time",
       event: "&uuid, year, event_code, name, type, city, country, start_date, end_date, week, custom, fetch_time",
       pit_scouting: "&uuid, answers, nickname, team_number, year, event_code, event_name, event_type, event_city, event_country, event_start_date, event_end_date, synced",
       files: "&uuid, data, url, synced"
+    });
+    // Delete entire season_data table when changing to support uuid as primary key
+    // Then sync will re-fetch the items from the server
+    this.version(2).stores({
+      season_data: null
+    });
+    this.version(3).stores({
+      season_data: "&uuid, year, fields, game_pieces, pit_scouting_questions, fetch_time"
     });
 
     this.match_scouting = this.table('match_scouting');
