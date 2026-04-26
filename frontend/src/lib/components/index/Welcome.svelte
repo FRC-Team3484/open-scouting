@@ -7,7 +7,7 @@
 	import LiveEvents from "./LiveEvents.svelte";
 </script>
 
-<div class="flex flex-col gap-4 items-center">
+<div class="flex flex-col gap-4 items-center mb-8">
     <LiveEvents />
     
     <Logo />

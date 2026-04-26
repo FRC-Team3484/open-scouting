@@ -6,6 +6,8 @@
 	import User from "./User.svelte";
 	import ExperimentalWarning from "./ExperimentalWarning.svelte";
     import * as Sheet from "$lib/components/ui/sheet/index.js";
+	import { page } from "$app/state";
+	import { fade, slide } from "svelte/transition";
 </script>
 
 <div class="hidden md:flex fixed top-0 left-0 right-0 w-full h-24 flex-row justify-between items-center border-1 bg-card/50 border-accent rounded-b-lg backdrop-blur-lg p-2 z-10">
@@ -22,7 +24,11 @@
     </div>
 
     <div class="flex flex-row gap-4 items-center">
-        <Button variant="default" href="/start"><ArrowRight weight="bold" /> Get Started</Button>
+        {#if page.url.pathname == "/"}
+            <div transition:slide={{ axis: "x" }}>
+                <div transition:fade><Button variant="default" href="/start"><ArrowRight weight="bold" /> Get Started</Button></div>
+            </div>
+        {/if}
 
         <User show_text={false} />
     </div>
@@ -54,5 +60,9 @@
         <ExperimentalWarning size="sm" />
     </div>
 
-    <Button variant="default" href="/start"><ArrowRight weight="bold" /> Get Started</Button>
+    {#if page.url.pathname == "/"}
+        <div transition:slide={{ axis: "x" }}>
+            <div transition:fade><Button variant="default" href="/start"><ArrowRight weight="bold" /> Get Started</Button></div>
+        </div>
+    {/if}
 </div>
