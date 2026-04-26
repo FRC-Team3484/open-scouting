@@ -84,7 +84,6 @@
         const interval = setInterval(() => {
             if (!stopAutoScroll) {
                 scrollToNext();
-                console.log("scorlling")
             }
         }, 5000);
 

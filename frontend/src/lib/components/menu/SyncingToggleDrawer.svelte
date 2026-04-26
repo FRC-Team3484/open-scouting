@@ -65,7 +65,7 @@
                 </ul>
             {:else if !$syncStatus || syncing}
                 <ul class="list-disc list-inside ml-8">
-                    <li class="mt-2">Your scouting reports and pit scouting data will be immeadtly synced with the server, and new season and event data will be fetched.</li>
+                    <li class="mt-2">Your scouting reports and pit scouting data will be immediately synced with the server, and new season and event data will be fetched.</li>
                     <li>You can always manually sync data using the "Manage Local Data" button in the menu.</li>
                 </ul>
             {/if}
