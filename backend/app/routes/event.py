@@ -1,10 +1,11 @@
 from collections import defaultdict
+from tortoise.queryset import QuerySet
 from uuid import UUID
 from fastapi import APIRouter, Depends
 
 from ..schemas.generic import MessageResponse
-from ..models import Event, MatchScoutingSubmission, Season, TeamPit
-from ..schemas.event import AdminEventResponse, EventResponse, CustomEventRequest
+from ..models import Event, MatchScoutingAnswer, MatchScoutingSubmission, PitScoutingAnswer, PitScoutingField, Season, TeamPit
+from ..schemas.event import AdminEventResponse, EventInfoResponse, EventResponse, CustomEventRequest
 from ..utils import get_season, IS_DEV
 from ..dependencies import require_superuser
 
@@ -178,3 +179,90 @@ async def delete_team_pits(event_uuid: UUID, superuser = Depends(require_superus
     await Event.filter(uuid=event_uuid).update(pits_generated=False)
     
     return MessageResponse(message="Team pits deleted")
+
+@router.get("/event/info/{year}/{event_code}", response_model=EventInfoResponse)
+async def get_event_info(year: int, event_code: str) -> EventInfoResponse:
+    """
+    Get match and pit scouting information about an event
+
+    Parameters:
+        year (`int`): The year of the event
+        event_code (`str`): The event code of the event
+
+    Returns:
+        EventInfoResponse: The information about the event
+    """
+    season: Season = await get_season(year=year)
+    
+    event: Event | None = await Event.get_or_none(season=season, event_code=event_code)
+
+    if not event:
+        return EventInfoResponse(
+            match_scouting_submissions=0,
+            match_scouting_answers=0,
+            pits=0,
+            pit_answers=0,
+            pits_complete=0,
+            pits_incomplete=0,
+            pits_not_started=0
+        )
+
+    match_scouting_submissions: QuerySet[MatchScoutingSubmission] = MatchScoutingSubmission.filter(event=event)
+    match_scouting_answers: QuerySet[MatchScoutingAnswer] = MatchScoutingAnswer.filter(submission__event=event)
+
+    pits: list[TeamPit] = await TeamPit.filter(event=event)
+    pit_ids = [p.uuid for p in pits]
+
+    pit_answers: list[PitScoutingAnswer] = await PitScoutingAnswer.filter(team__event=event)
+
+    pit_fields: list[PitScoutingField] = await PitScoutingField.filter(season=season, archived=False)
+    required_fields = [f.uuid for f in pit_fields if f.required]
+
+    answers = await PitScoutingAnswer.filter(team_id__in=pit_ids).values(
+        "team_id", "field_id"
+    )
+
+    answers_by_pit = defaultdict(set)
+
+    for a in answers:
+        answers_by_pit[a["team_id"]].add(a["field_id"])
+
+    pits_complete = 0
+    pits_incomplete = 0
+    pits_not_started = 0
+
+    for pit in pits:
+        pit_answered_fields = answers_by_pit.get(pit.uuid, set())
+
+        required_answered = len([
+            f for f in required_fields if f in pit_answered_fields
+        ])
+
+        total_required = len(required_fields)
+
+        total_answered = len(pit_answered_fields)
+
+        if total_required == 0:
+            if total_answered > 0:
+                pits_complete += 1
+            else:
+                pits_not_started += 1
+
+        elif required_answered == total_required:
+            pits_complete += 1
+
+        elif total_answered > 0:
+            pits_incomplete += 1
+
+        else:
+            pits_not_started += 1
+
+    return EventInfoResponse(
+        match_scouting_submissions=await match_scouting_submissions.count(),
+        match_scouting_answers=await match_scouting_answers.count(),
+        pits=len(pits),
+        pit_answers=len(pit_answers),
+        pits_complete=pits_complete,
+        pits_incomplete=pits_incomplete,
+        pits_not_started=pits_not_started
+    )

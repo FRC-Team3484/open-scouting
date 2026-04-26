@@ -8,6 +8,7 @@
     import { ArrowBendDownRight, Calendar, Eye, Info, PlusCircle, UploadSimple, User, X } from "phosphor-svelte";
     import { slide } from "svelte/transition";
     import { pushFiles } from "$lib/utils/sync";
+	import { toast } from "svelte-sonner";
 
     let { pit, question, answers, user } = $props();
 
@@ -43,7 +44,10 @@
 
         mode = "none";
         await addAnswers(imageUrls);
-        await pushFiles();
+        await pushFiles().catch((error) => {
+            console.warn("Failed to upload files to the server", error);
+            toast.error("Failed to upload files to the server");
+        });
     }
 
     async function addAnswers(imageUrls: string[]) {

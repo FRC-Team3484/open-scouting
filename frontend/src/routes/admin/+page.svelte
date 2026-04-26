@@ -17,8 +17,9 @@
 	import MatchScoutingSubmissionsManager from "$lib/components/admin/MatchScoutingSubmissionsManager.svelte";
 	import PitScoutingDataManager from "$lib/components/admin/PitScoutingDataManager.svelte";
 	import { overrideItemIdKeyNameBeforeInitialisingDndZones } from "svelte-dnd-action";
+	import { CircleNotchIcon } from "phosphor-svelte";
 
-    let user = null;
+    let user = $state(null);
     let page = $state("start");
     let show_warning_dialog = $state(!(env.PUBLIC_MODE == "dev"));
 
@@ -26,8 +27,7 @@
 
     onMount(async () => {
         user = await validateTokenOnline();
-        if (!user.is_superuser) {
-            toast.error("403: Forbidden", { duration: 5000 });
+        if (!user || !user.is_superuser) {
             window.location.href = "/";
         }
     });
@@ -42,56 +42,60 @@
 </script>
 
 <PageContainer>
-    {#if page === "start"}
-        <Card.Root class="w-auto min-w-64">
-            <Card.Header>
-                <Card.Title>Server Administration</Card.Title>
-                <Card.Description>Manage the server's seasons, fields, users, and events</Card.Description>
-            </Card.Header>
+    {#if user != null && user.is_superuser}
+        {#if page === "start"}
+            <Card.Root class="w-auto min-w-64">
+                <Card.Header>
+                    <Card.Title>Server Administration</Card.Title>
+                    <Card.Description>Manage the server's seasons, fields, users, and events</Card.Description>
+                </Card.Header>
 
-            <Card.Content>
-                <div class="flex flex-col gap-4">
-                    <Button id="seasons" onclick={() => page = "seasons"}>Manage Seasons</Button>
-                    <Separator orientation="horizontal" />
-                    <Button onclick={() => page = "match_fields"}>Manage Match Scouting Fields</Button>
-                    <Button onclick={() => page = "pit_scouting_questions"}>Manage Pit Scouting Questions</Button>
-                    <Separator orientation="horizontal" />
-                    <Button onclick={() => page = "users"}>Manage Users</Button>
-                    <Button onclick={() => page = "events"}>Manage Events</Button>
-                    <Button onclick={() => page = "match_scouting"}>Manage Match Scouting Data</Button>
-                    <Button onclick={() => page = "pit_scouting"}>Manage Pit Scouting Data</Button>
-                </div>
-            </Card.Content>
-        </Card.Root>
+                <Card.Content>
+                    <div class="flex flex-col gap-4">
+                        <Button id="seasons" onclick={() => page = "seasons"}>Manage Seasons</Button>
+                        <Separator orientation="horizontal" />
+                        <Button onclick={() => page = "match_fields"}>Manage Match Scouting Fields</Button>
+                        <Button onclick={() => page = "pit_scouting_questions"}>Manage Pit Scouting Questions</Button>
+                        <Separator orientation="horizontal" />
+                        <Button onclick={() => page = "users"}>Manage Users</Button>
+                        <Button onclick={() => page = "events"}>Manage Events</Button>
+                        <Button onclick={() => page = "match_scouting"}>Manage Match Scouting Data</Button>
+                        <Button onclick={() => page = "pit_scouting"}>Manage Pit Scouting Data</Button>
+                    </div>
+                </Card.Content>
+            </Card.Root>
 
-    {:else if page === "seasons"}
-        <AdminHeader handleNavigate={handleNavigate}/>
-        <SeasonsManager />
+        {:else if page === "seasons"}
+            <AdminHeader handleNavigate={handleNavigate}/>
+            <SeasonsManager />
 
-    {:else if page === "match_fields"}
-        <AdminHeader handleNavigate={handleNavigate}/>
-        <MatchScoutingFieldsManager />
+        {:else if page === "match_fields"}
+            <AdminHeader handleNavigate={handleNavigate}/>
+            <MatchScoutingFieldsManager />
 
-    {:else if page === "pit_scouting_questions"}
-        <AdminHeader handleNavigate={handleNavigate}/>
-        <PitScoutingQuestionsManager/>
+        {:else if page === "pit_scouting_questions"}
+            <AdminHeader handleNavigate={handleNavigate}/>
+            <PitScoutingQuestionsManager/>
 
-    {:else if page === "users"}
-        <AdminHeader handleNavigate={handleNavigate}/>
-        <UsersManager />
+        {:else if page === "users"}
+            <AdminHeader handleNavigate={handleNavigate}/>
+            <UsersManager />
 
-    {:else if page === "events"}
-        <AdminHeader handleNavigate={handleNavigate}/>
-        <EventManager />
+        {:else if page === "events"}
+            <AdminHeader handleNavigate={handleNavigate}/>
+            <EventManager />
 
-    {:else if page === "match_scouting"}
-        <AdminHeader handleNavigate={handleNavigate}/>
-        <MatchScoutingSubmissionsManager />
+        {:else if page === "match_scouting"}
+            <AdminHeader handleNavigate={handleNavigate}/>
+            <MatchScoutingSubmissionsManager />
 
-    {:else if page === "pit_scouting"}
-        <AdminHeader handleNavigate={handleNavigate}/>
-        <PitScoutingDataManager />
+        {:else if page === "pit_scouting"}
+            <AdminHeader handleNavigate={handleNavigate}/>
+            <PitScoutingDataManager />
 
+        {/if}
+    {:else}
+        <CircleNotchIcon weight="bold" class="animate-spin" size={32} />
     {/if}
 </PageContainer>
 

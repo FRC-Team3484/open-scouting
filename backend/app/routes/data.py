@@ -2,11 +2,12 @@ from collections import defaultdict
 import json
 from statistics import mean
 from typing import Annotated
+import uuid
 
 from fastapi import APIRouter, Query
 
 from ..utils import IS_DEV
-from ..models import MatchScoutingAnswer, MatchScoutingField, MatchScoutingSubmission, Season, TeamPit
+from ..models import Event, MatchScoutingAnswer, MatchScoutingField, MatchScoutingSubmission, Season, TeamPit
 from ..utils import get_season
 
 
@@ -14,6 +15,23 @@ router: APIRouter = APIRouter(
     tags=["Data"],
     include_in_schema=IS_DEV
 )
+
+
+def _is_valid_uuid(value) -> bool:
+    """ 
+    Check if a string is a valid UUID
+
+    Paramaters:
+        - value: The string to check
+
+    Returns:
+        - bool: True if the string is a valid UUID, False otherwise
+    """
+    try:
+        uuid.UUID(str(value))
+        return True
+    except ValueError:
+        return False
 
 # TODO: This needs a proper response_model
 @router.get("/data/filters")
@@ -164,7 +182,7 @@ async def get_data(
     if event_codes:
         event_codes = [
             n.strip() for n in event_codes.split(",")
-            if n.strip().isalpha()
+            if n.strip().isalpha() or _is_valid_uuid(n.strip())
         ]
 
     if team_numbers:

@@ -4,7 +4,7 @@
 
 	import Button from "../ui/button/button.svelte";
 	import Separator from "../ui/separator/separator.svelte";
-    import { Archive, ArrowRight, Article, Bug, CheckCircle, CircleNotch, Clock, DiscordLogo, FloppyDisk, GithubLogo, House, List, Moon, Notepad, Sun, Warning, X } from "phosphor-svelte";
+    import { Archive, ArrowRight, Article, Bug, CheckCircle, CircleNotch, Clock, DiscordLogo, FloppyDisk, GithubLogo, House, List, Moon, Notepad, Sun, Warning, X, XCircleIcon } from "phosphor-svelte";
 
 	import AboutDrawer from "./AboutDrawer.svelte";
 	import ManageDataDrawer from "./ManageDataDrawer.svelte";
@@ -15,12 +15,12 @@
 	import { online } from "svelte/reactivity/window";
 	import { toast } from "svelte-sonner";
 	import { changelogDialogOpen } from "$lib/stores/dialog";
-	import { db } from "$lib/utils/db";
+	import SyncingToggleDrawer from "./SyncingToggleDrawer.svelte";
 
     let user = null;
 
     let menu_open: boolean = $state(false);
-    let wasOnline = $state(online.current)
+    let wasOnline = $state(online.current);
 
     menuState.subscribe((value) => {
         if (value.close) {
@@ -78,21 +78,24 @@
             </div>
 
             {#if $menuState.status}
-                <div class="flex flex-row gap-2 items-center" transition:slide>
-                    {#if $menuState.state === "ready"}
-                        <CheckCircle weight="bold"/>
-                    {:else if $menuState.state === "loading"}
-                        <CircleNotch weight="bold" class="animate-spin"/>
-                    {:else if $menuState.state === "warning"}
-                        <Warning weight="bold"/>
-                    {/if}
-                    <p>{$menuState.status}</p>
+                <div class="flex flex-row gap-2 items-center justify-between flex-wrap" transition:slide>
+                    <div class="flex flex-row gap-2 items-center">
+                        {#if $menuState.state === "ready"}
+                            <CheckCircle weight="bold"/>
+                        {:else if $menuState.state === "loading"}
+                            <CircleNotch weight="bold" class="animate-spin"/>
+                        {:else if $menuState.state === "warning"}
+                            <Warning weight="bold"/>
+                        {/if}
+                        <p>{$menuState.status}</p>
+                    </div>
+                    <Button variant="outline" size="sm" onclick={() => menuState.set({state: "ready", status: "", close: true})}><XCircleIcon weight="bold" /> Hide</Button>
                 </div>
             {/if}
 
             <Separator orientation="horizontal" />
 
-            <div class="flex flex-row gap-4 flex-wrap">
+            <div class="flex flex-row gap-2 flex-wrap">
                 <Button variant="outline" onclick={toggleMode}>
                     {#if mode.current === "dark"}
                         <Sun class="h-[1.2rem] w-[1.2rem]"/>
@@ -102,6 +105,8 @@
                         <span>Dark Mode</span>
                     {/if}
                 </Button>
+
+                <SyncingToggleDrawer />
             </div>
 
             <Separator orientation="horizontal" />

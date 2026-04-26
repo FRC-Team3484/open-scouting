@@ -46,6 +46,15 @@
         }
     }
 
+    async function fetch_season_data() {
+        await fetchSeasonData().then(() => {
+            toast.success("Season data cache rebuilt!");
+            window.location.reload();
+        }).catch((error) => {
+            toast.error("Failed to fetch season data", error)
+        });
+    }
+
     onMount(async () => {
         user = await validateTokenOnline();
 
@@ -70,7 +79,7 @@
                         <Dialog.Footer>
                             <Dialog.Close>
                                 <Button variant="outline">Cancel</Button>
-                                <Button onclick={async () => {await fetchSeasonData(); await toast.success("Season data cache rebuilt"); window.location.reload();}}>Rebuild Season Data Cache</Button>
+                                <Button onclick={fetch_season_data}>Rebuild Season Data Cache</Button>
                             </Dialog.Close>
                         </Dialog.Footer>
                     </Dialog.Content>

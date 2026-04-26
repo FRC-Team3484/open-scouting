@@ -12,7 +12,8 @@
     let { field, editable = false, getFields = () => {}, children } = $props();
 
     async function deleteField() {
-        await deleteFieldFieldsDeleteFieldUuidDelete(field.uuid).catch(() => {
+        await deleteFieldFieldsDeleteFieldUuidDelete(field.uuid).catch((error) => {
+            console.warn("Faield to delete field", error);
             toast.error("Failed to delete field", { duration: 5000 });
         }).then(async () => {
             await getFields(); 

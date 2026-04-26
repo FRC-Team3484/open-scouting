@@ -75,7 +75,7 @@
             // TODO: this needs a proper response schema
             fields = (await getSeasonFieldsFieldsSeasonSeasonUuidGet(season_uuid)).data;
         } else {
-            const season = await db.season_data.get(parseInt(year));
+            const season = await db.season_data.get(season_uuid);
             fields = season?.fields
         }
 
@@ -90,7 +90,7 @@
                 }
             });
         } else {
-            const season = await db.season_data.get(parseInt(year));
+            const season = await db.season_data.get(season_uuid);
             gamePieces = season?.game_pieces
         }
     }
@@ -153,7 +153,7 @@
             synced: false
         });
 
-        toast.success("Match scouting data saved", { duration: 5000 });
+        toast.success("Match scouting data saved locally", { duration: 5000 });
         form.reset();
 
         // Delay 100ms while form is resetting
@@ -164,7 +164,10 @@
         }, 100);
     
 
-        await pushMatchScoutingData();
+        await pushMatchScoutingData().catch((error) => {
+            console.warn("Failed to upload match scouting data", error);
+            toast.error("Failed to upload match scouting data to the server");
+        });
     }
 
     function exportFields() {

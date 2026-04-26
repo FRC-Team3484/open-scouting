@@ -6,7 +6,6 @@
 	import Filters from "$lib/components/data/Filters.svelte";
 	import Header from "$lib/components/data/Header.svelte";
 	import PageContainer from "$lib/components/layout/PageContainer.svelte";
-	import { compare } from "semver-ts";
 	import { onMount, tick, untrack } from "svelte";
 
     // Page should be loaded like 
@@ -16,6 +15,9 @@
     let filters = $state({year: 0, event_codes: [], team_numbers: []});
     let compareFilters = $state({year: 0, event_codes: [], team_numbers: [], fields: []});
     let mode: "all" | "compare" = $state("all");
+
+    let lastYear: number | null = $state(null);
+    let lastCompareYear: number | null = $state(null);
 
     let fields: Array<{ name: string; value: string }> = $state([]); // [{ name: "", value: "" }, ...]
 
@@ -129,22 +131,34 @@
     });
 
     $effect(() => {
-        filters.year;
+        const year = filters.year;
 
-        untrack(() => {
-            filters.event_codes = [];
-            filters.team_numbers = [];
-        })
+        if (year === 0) return;
+
+        if (lastYear !== null && year !== lastYear) {
+            untrack(() => {
+                filters.event_codes = [];
+                filters.team_numbers = [];
+            });
+        }
+
+        lastYear = year;
     });
 
     $effect(() => {
-        compareFilters.year;
+        const year = compareFilters.year;
 
-        untrack(() => {
-            compareFilters.event_codes = [];
-            compareFilters.team_numbers = [];
-            compareFilters.fields = [];
-        })
+        if (year === 0) return;
+
+        if (lastCompareYear !== null && year !== lastCompareYear) {
+            untrack(() => {
+                compareFilters.event_codes = [];
+                compareFilters.team_numbers = [];
+                compareFilters.fields = [];
+            });
+        }
+
+        lastCompareYear = year;
     });
 </script>
 

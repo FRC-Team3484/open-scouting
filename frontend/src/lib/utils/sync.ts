@@ -1,5 +1,6 @@
 import { compare } from "semver-ts";
 import { menuState } from "$lib/stores/menu";
+import { syncStatus } from "$lib/stores/sync";
 import { changelogDialogOpen, changelogDialogVersion } from "$lib/stores/dialog"
 import { theBlueAllianceApiFetch } from "./api";
 import { db } from "./db";
@@ -15,7 +16,21 @@ import { getServerStatusStatusGet } from "$lib/api/generic/generic";
 import { browser } from "$app/environment";
 import { VERSION } from "./constants";
 import { uploadImageUploadImagePost } from "$lib/api/uploads/uploads";
+import { get } from "svelte/store";
 
+/**
+ * Checks if syncing is enabled by the user
+ * 
+ * @returns True if syncing is enabled
+ */
+function isSyncingEnabled(): boolean {
+    if (get(syncStatus) === false) {
+        console.warn("Syncing is disabled by user");
+        return false;
+    } else {
+        return true;
+    }
+}
 
 /**
  * Fetches season data and stores it locally
@@ -24,6 +39,8 @@ import { uploadImageUploadImagePost } from "$lib/api/uploads/uploads";
  *    and store them using Dexie for later use
  */
 async function fetchSeasonData() {
+    if (!isSyncingEnabled()) return;
+
     const seasonsResponse: Array<SeasonResponse> = (await getSeasonsSeasonsGet()).data;
 
     for (const season of seasonsResponse) {
@@ -42,6 +59,7 @@ async function fetchSeasonData() {
         }
 
         await db.season_data.put({
+            uuid: season.uuid,
             year: season.year,
             fields: fieldData,
             game_pieces: gamePieceData,
@@ -58,6 +76,8 @@ async function fetchSeasonData() {
  *    and store them locally using Dexie for later use
  */
 async function fetchEventData() {
+    if (!isSyncingEnabled()) return;
+
     const seasonsResponse: Array<SeasonResponse> = (await getSeasonsSeasonsGet()).data;
 
     for (const season of seasonsResponse) {
@@ -74,6 +94,7 @@ async function fetchEventData() {
                 country: event.country,
                 start_date: event.start_date,
                 end_date: event.end_date,
+                week: event.week,
                 custom: false,
                 fetch_time: new Date()
             });
@@ -96,6 +117,7 @@ async function fetchEventData() {
                 country: event.country,
                 start_date: event.start_date,
                 end_date: event.end_date,
+                week: null,
                 custom: true,
                 fetch_time: new Date()
             });
@@ -145,6 +167,8 @@ async function isUnsyncedFiles() {
  * 
  */
 async function pushMatchScoutingData() {
+    if (!isSyncingEnabled()) return;
+
     const unsynced = await db.match_scouting.filter(m => m.synced === false).toArray();
 
     if (unsynced.length > 0) {
@@ -195,6 +219,8 @@ async function pushMatchScoutingData() {
  * @param event_data The event data
  */
 async function pushPitScoutingData(event_data, season_uuid) {
+    if (!isSyncingEnabled()) return;
+
     const unsyncedPits = await db.pit_scouting.filter(
         p => p.synced === false && 
         p.event_code === event_data.event_code && 
@@ -244,6 +270,60 @@ async function pushPitScoutingData(event_data, season_uuid) {
     }
 }
 
+async function pushUnsyncedPitScoutingData() {
+    if (!isSyncingEnabled) return;
+
+    const unsyncedPits = await db.pit_scouting.filter(
+        p => p.synced === false
+    ).toArray();
+
+    const seasons = await db.season_data.toArray();
+
+    if (unsyncedPits.length > 0) {
+        menuState.set({
+            state: "loading",
+            status: "Uploading all unsynced pit scouting data...",
+            close: false
+        });
+
+        for (const pit of unsyncedPits) {
+            const season: Object | null = seasons.filter(s => s.year === pit.year)[0];
+            if (season === null) continue;
+
+            const body: SubmitPitFieldAnswerRequest = {
+                uuid: pit.uuid,
+                season_uuid: season.uuid,
+                team_number: pit.team_number,
+                event_code: pit.event_code,
+                event_name: pit.event_name,
+                event_type: pit.event_type,
+                event_city: pit.event_city,
+                event_country: pit.event_country,
+                event_start_date: pit.event_start_date,
+                event_end_date: pit.event_end_date,
+                answers: pit.answers || [],
+                nickname: pit.nickname || ""
+            }
+
+            await submitPitPitsSubmitSeasonUuidTeamNumberPost(season.uuid, pit.team_number, body).then((data) => {
+                if (data.status === 200) {
+                    db.pit_scouting.update(pit.uuid, { synced: true });
+                }
+            });
+
+            console.log("Pit scouting data uploaded", pit.uuid);
+        }
+
+        menuState.set({
+            state: "ready",
+            status: "Pit scouting data uploaded!",
+            close: true
+        });
+    } else {
+        return false;
+    }
+}
+
 /**
  * Gets pit scouting data from the backend and stores it locally, based on the event
  * 
@@ -251,6 +331,8 @@ async function pushPitScoutingData(event_data, season_uuid) {
  * @param season_uuid The season uuid
  */
 async function fetchPitScoutingData(event_data, season_uuid) {
+    if (!isSyncingEnabled()) return;
+
     const body: GetPitsForSeasonRequest = {
         season_uuid: season_uuid,
         event_code: event_data.event_code,
@@ -295,6 +377,8 @@ async function fetchPitScoutingData(event_data, season_uuid) {
  * Pushes files to the backend
  */
 async function pushFiles() {
+    if (!isSyncingEnabled()) return;
+
     let files = await db.files.filter(f => f.synced === false).toArray();
 
     for (const file of files) {
@@ -316,6 +400,7 @@ async function pushFiles() {
 
 async function getServerStatus() {
     if (!browser) return;
+    if (!isSyncingEnabled()) return;
 
     await getServerStatusStatusGet().then((response) => {
         if (response.data) {
@@ -364,11 +449,13 @@ async function getServerStatus() {
  * If the locally stored data is out of date, download it and ask the menu to show that status
  */
 async function main() {
+    if (!isSyncingEnabled()) return;
+
     setTimeout(() => {
         getServerStatus();
-        
     }, 500);
 
+    // Check if data is old
     if (await isOldData()) {
         console.log("Data is out of date. Fetching...");
         menuState.set({
@@ -377,32 +464,71 @@ async function main() {
             close: false
         });
 
-        await fetchSeasonData();
-        console.log("Fetched season data");
-        menuState.set({
-            state: "loading",
-            status: "Fetching event data...",
-            close: false
-        });
-
-        await fetchEventData();
-        console.log("Fetched event data");
-
-        if (await isUnsyncedFiles()) {
+        // Fetch season data
+        await fetchSeasonData().then(async () => {
+            console.log("Fetched season data");
             menuState.set({
                 state: "loading",
-                status: "Syncing files...",
+                status: "Fetching event data...",
                 close: false
             });
 
-            await pushFiles();
-            console.log("Synced files");
-        }
+            // Fetch event data
+            await fetchEventData().then(async () => {
+                console.log("Fetched event data");
 
-        menuState.set({
-            state: "ready",
-            status: "Data is up to date!",
-            close: true
+                if (await isUnsyncedFiles()) {
+                    menuState.set({
+                        state: "loading",
+                        status: "Syncing files...",
+                        close: false
+                    });
+
+                    // Push files to the server
+                    await pushFiles().then(() => {
+                        console.log("Synced files");
+                        menuState.set({
+                            state: "ready",
+                            status: "Data is up to date!",
+                            close: true
+                        });
+                    })
+                    // File sync failed
+                    .catch((error) => {
+                        console.log("Failed to sync files", error);
+                        menuState.set({
+                            state: "warning",
+                            status: "Failed to sync files",
+                            close: false
+                        });
+                    });
+                } else {
+                    menuState.set({
+                        state: "ready",
+                        status: "Data is up to date!",
+                        close: true
+                    });
+                }
+
+            })
+            // Event data fetch failed
+            .catch((error) => {
+                console.warn("Failed to get event data", error)
+                menuState.set({
+                    state: "warning",
+                    status: "Failed to get event data",
+                    close: false
+                });
+            });
+        })
+        // Season data fetch failed
+        .catch((error) => {
+            console.warn('Failed to get season data', error)
+            menuState.set({
+                state: "warning",
+                status: "Failed to get season data",
+                close: false
+            });
         });
     }
 
@@ -411,4 +537,4 @@ async function main() {
 
 main().catch((error) => console.error(error));
 
-export { fetchSeasonData, fetchEventData, isOldData, pushMatchScoutingData, pushPitScoutingData, fetchPitScoutingData, pushFiles }
+export { fetchSeasonData, fetchEventData, isOldData, pushMatchScoutingData, pushPitScoutingData, pushUnsyncedPitScoutingData, fetchPitScoutingData, pushFiles }

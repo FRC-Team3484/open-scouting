@@ -38,7 +38,7 @@
             questions = (await getPitFieldsPitsFieldsSeasonUuidGet(season_uuid)).data;
             questions = questions.sort((a, b) => a.order - b.order);
         } else {
-            const season = await db.season_data.get(parseInt(year));
+            const season = await db.season_data.get(season_uuid);
             questions = season?.pit_scouting_questions.sort((a, b) => a.order - b.order) ?? [];
         }
     }
