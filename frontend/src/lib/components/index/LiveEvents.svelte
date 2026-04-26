@@ -16,7 +16,7 @@
             endDate.setDate(endDate.getDate() + 1);
 
             return startDate <= now && now <= endDate
-        }).toArray()
+        }).limit(25).toArray()
     );
 
     let visibleEvent = $state(null);
