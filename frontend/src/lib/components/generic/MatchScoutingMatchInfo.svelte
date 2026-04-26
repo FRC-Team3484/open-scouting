@@ -11,6 +11,7 @@
 	import { theBlueAllianceApiFetch } from "$lib/utils/api";
 	import { onMount } from "svelte";
 	import { fade, slide } from "svelte/transition";
+	import { matchScoutingMatchNumber, matchScoutingTeamNumber, matchScoutingTeamPosition } from "$lib/stores/match_scouting";
 
     let { event_data } = $props();
 
@@ -112,7 +113,13 @@
     onMount(async () => {
         await getMatchList();
         getTeamInfo();
-    })
+    });
+    
+    $effect(() => {
+        matchScoutingTeamNumber.set(team_number);
+        matchScoutingMatchNumber.set(match_number);
+        matchScoutingTeamPosition.set(selected_position);
+    });
 </script>
 
 <Card.Root class="w-auto min-w-64 md:min-w-128">
@@ -175,7 +182,7 @@
                         <Select.Root type="single" bind:value={selected_position} name="position" onValueChange={getTeamInfo}>
                             <Select.Trigger>{selected_position_label}</Select.Trigger>
                             <Select.Content>
-                                <Select.Label>Match Types</Select.Label>
+                                <Select.Label>Position</Select.Label>
                                     {#each positions as position}
                                         <Select.Item value={position.value} label={position.label} />
                                     {/each}
