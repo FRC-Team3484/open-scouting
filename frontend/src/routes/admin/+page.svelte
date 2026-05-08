@@ -9,7 +9,6 @@
 	import Separator from "$lib/components/ui/separator/separator.svelte";
 	import SeasonsManager from "$lib/components/admin/SeasonsManager.svelte";
 	import AdminHeader from "$lib/components/admin/AdminHeader.svelte";
-	import Dialog from "$lib/components/generic/Dialog.svelte";
 	import MatchScoutingFieldsManager from "$lib/components/admin/MatchScoutingFieldsManager.svelte";
 	import PitScoutingQuestionsManager from "$lib/components/admin/PitScoutingQuestionsManager.svelte";
 	import UsersManager from "$lib/components/admin/UsersManager.svelte";
@@ -18,6 +17,7 @@
 	import PitScoutingDataManager from "$lib/components/admin/PitScoutingDataManager.svelte";
 	import { overrideItemIdKeyNameBeforeInitialisingDndZones } from "svelte-dnd-action";
 	import { CircleNotchIcon } from "phosphor-svelte";
+    import * as AlertDialog from "$lib/components/ui/alert-dialog/index.js";
 
     let user = $state(null);
     let page = $state("start");
@@ -99,11 +99,13 @@
     {/if}
 </PageContainer>
 
-<Dialog 
-    open={show_warning_dialog} 
-    title="Open Scouting Administration" 
-    description="By continuing, understand that changes made here are irreversible, and may cause unintended consequences. Know what you're doing and proceed with caution." 
-    cancel_text=""
-    submit_text="Continue"
-    onSubmit={closeWarningDialog}
-/>
+<AlertDialog.Root open={show_warning_dialog}>
+    <AlertDialog.Content>
+        <AlertDialog.Title>Open Scouting Administration</AlertDialog.Title>
+        <AlertDialog.Description>By continuing, understand that changes made here are irreversible, and may cause unintended consequences. Know what you're doing and proceed with caution.</AlertDialog.Description>
+        
+        <AlertDialog.Footer>
+            <AlertDialog.Action onclick={() => {show_warning_dialog = false}}>Continue</AlertDialog.Action>
+        </AlertDialog.Footer>
+    </AlertDialog.Content>
+</AlertDialog.Root>
