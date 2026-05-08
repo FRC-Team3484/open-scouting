@@ -1,43 +1,44 @@
+<!-- 
+@component
+Container component to display both the GamePieceManager (admin only) and MatchScoutingFields (global) components on the admin page
+-->
 <script lang="ts">
+    import { onMount } from "svelte";
     import * as Card from "$lib/components/ui/card/index.js";
     import * as Select from "$lib/components/ui/select/index.js";
-	import { onMount } from "svelte";
+	import Separator from "../ui/separator/separator.svelte";
 
 	import MatchScoutingFields from "../generic/MatchScoutingFields.svelte";
 	import GamePieceManager from "./GamePieceManager.svelte";
-	import Separator from "../ui/separator/separator.svelte";
 
     import { getSeasonsSeasonsGet } from "$lib/api/seasons/seasons";
 	import type { SeasonResponse } from "$lib/api/model";
 
+
     let seasons: SeasonResponse[] = $state([]);
-    let season_value: string | undefined = $state("");
-
+    let selected_season_uuid: string | undefined = $state("");
     const seasons_label = $derived(
-        seasons.find((f) => f.uuid === season_value)?.name ?? "Select a season"
+        seasons.find((f) => f.uuid === selected_season_uuid)?.name ?? "Select a season"
     );
+    let selected_season: SeasonResponse | undefined = $derived(
+        seasons.find((f) => f.uuid === selected_season_uuid)
+    )
 
-    let season_year = $state(0);
-    let season_uuid = $state("");
-
+    /**
+     * Get all seasons from the server
+     * 
+     * Sets the currently selected season to the active season from the list
+     */
     async function get_seasons() {
         seasons = (await getSeasonsSeasonsGet()).data;
-        season_value = seasons.find((f) => f.active)?.uuid;
-        update_season_values(season_value);
-    }
+        const active_season = seasons.find((f) => f.active)
 
-    function update_season_values(value: string | undefined) {
-        const season = seasons.find(s => s.uuid === value);
-        if (!season) return;
-
-        season_year = season.year;
-        season_uuid = season.uuid;
+        selected_season_uuid = active_season?.uuid;
     }
 
     onMount(async () => {
         get_seasons();
-    })
-
+    });
 </script>
 
 <Card.Root class="w-auto min-w-64 mb-4">
@@ -50,7 +51,7 @@
     <Card.Content>
         <div class="flex flex-row gap-2 flex-wrap items-center">
             <p>Season</p>
-            <Select.Root type="single" name="season" id="season" bind:value={season_value} onValueChange={update_season_values}>
+            <Select.Root type="single" name="season" bind:value={selected_season_uuid}>
                 <Select.Trigger>
                     {seasons_label}
                 </Select.Trigger>
@@ -66,11 +67,11 @@
 </Card.Root>
 
 <div class="flex flex-col gap-4">
-    {#if season_uuid != ""}
-        <GamePieceManager season_uuid={season_uuid} />
+    {#if selected_season}
+        <GamePieceManager season_uuid={selected_season.uuid} />
 
         <Separator />
 
-        <MatchScoutingFields season_uuid={season_uuid} year={season_year} editable={true} />
+        <MatchScoutingFields season_uuid={selected_season.uuid} year={selected_season.year} editable={true} />
     {/if}
 </div>

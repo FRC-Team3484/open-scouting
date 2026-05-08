@@ -1,19 +1,32 @@
+<!-- 
+@component
+Handles the admin page for user management
+
+This page lets superusers delete users, and make or revoke superuser status for one or more users.
+-->
 <script lang="ts">
-	import { deleteUserUsersDeleteUuidDelete, getUsersUsersGet, removeSuperuserUsersRemoveSuperuserUuidPost, setSuperuserUsersSetSuperuserUuidPost } from "$lib/api/auth/auth";
-	import type { UserResponse } from "$lib/api/model";
-    import * as Card from "$lib/components/ui/card";
 	import { onMount } from "svelte";
+	import { toast } from "svelte-sonner";
+
+    import * as Card from "$lib/components/ui/card";
 	import Badge from "../ui/badge/badge.svelte";
 	import Button from "../ui/button/button.svelte";
 	import Separator from "../ui/separator/separator.svelte";
     import * as AlertDialog from "$lib/components/ui/alert-dialog";
-	import { toast } from "svelte-sonner";
+
+	import { deleteUserUsersDeleteUuidDelete, getUsersUsersGet, removeSuperuserUsersRemoveSuperuserUuidPost, setSuperuserUsersSetSuperuserUuidPost } from "$lib/api/auth/auth";
+	import type { UserResponse } from "$lib/api/model";
+
 	import { validateTokenOnline } from "$lib/utils/user";
+
 
     let users: UserResponse[] = $state([]);
     let selected: string[] = $state([]);
     let user_self = $state(null);
 
+    /**
+     * Get all users from the server
+     */
     async function getUsers() {
         selected = [];
 
@@ -28,6 +41,12 @@
         })
     }
 
+    /**
+     * Delete a user from the server
+     * 
+     * @param uuid The UUID of the user to delete
+     * @param once If false, log messages about the deletion state will be handled elsehwere
+     */
     async function deleteUser(uuid: string, once: boolean = true) {
         await deleteUserUsersDeleteUuidDelete(uuid).then((res) => {
             if (res.status !== 200) {
@@ -40,6 +59,9 @@
         })
     }
 
+    /**
+     * Delete all selected users
+     */
     async function deleteSelected() {
         for (const uuid of selected) {
             await deleteUser(uuid, false);
@@ -49,6 +71,11 @@
         getUsers();
     }
 
+    /**
+     * Make a user a superuser
+     * 
+     * @param uuid The UUID of the user to make a superuser
+     */
     async function makeSuperuser(uuid: string) {
         await setSuperuserUsersSetSuperuserUuidPost(uuid).then((res) => {
             if (res.status !== 200) {
@@ -62,6 +89,11 @@
         })
     }
 
+    /**
+     * Revoke superuser status from a user
+     * 
+     * @param uuid The UUID of the user to revoke the superuser status
+     */
     async function revokeSuperuser(uuid: string) {
         await removeSuperuserUsersRemoveSuperuserUuidPost(uuid).then((res) => {
             if (res.status !== 200) {
@@ -79,7 +111,7 @@
         await getUsers();
 
         user_self = await validateTokenOnline();
-    })
+    });
 </script>
 
 <div class="flex flex-col gap-4">
