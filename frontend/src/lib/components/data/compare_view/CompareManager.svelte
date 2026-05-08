@@ -2,13 +2,13 @@
     import * as Card from "$lib/components/ui/card/index.js";
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
 	import { ArrowClockwise, CircleNotch, Export, FileCsv, FileText } from "phosphor-svelte";
-	import Button from "../ui/button/button.svelte";
-	import TeamData from "./TeamData.svelte";
+	import Button from "$lib/components/ui/button/button.svelte";
+	import TeamData from "../data_view/TeamData.svelte";
 	import { toast } from "svelte-sonner";
-	import Separator from "../ui/separator/separator.svelte";
+	import Separator from "$lib/components/ui/separator/separator.svelte";
 	import { getDataDataGetGet } from "$lib/api/data/data";
 	import type { GetDataDataGetGetParams } from "$lib/api/model";
-	import CompareTable from "./CompareTable.svelte";
+	import CompareTable from "../compare_view/CompareTable.svelte";
     import * as Tabs from "$lib/components/ui/tabs";
 	import CompareCharts from "./CompareCharts.svelte";
 

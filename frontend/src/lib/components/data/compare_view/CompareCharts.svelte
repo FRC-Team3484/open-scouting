@@ -1,7 +1,7 @@
 <script lang="ts">
 	import * as Card from "$lib/components/ui/card";
-	import CompareCapability from "./CompareCapability.svelte";
-	import CompareScore from "./CompareScore.svelte";
+	import CompareCapability from "./charts/CompareCapability.svelte";
+	import CompareScore from "./charts/CompareScore.svelte";
 
     let { data, filters, fields } = $props();
 

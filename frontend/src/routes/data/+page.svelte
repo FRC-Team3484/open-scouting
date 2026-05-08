@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { replaceState } from "$app/navigation";
-	import CompareFilters from "$lib/components/data/CompareFilters.svelte";
-	import CompareManager from "$lib/components/data/CompareManager.svelte";
-	import DataManager from "$lib/components/data/DataManager.svelte";
-	import Filters from "$lib/components/data/Filters.svelte";
+	import CompareFilters from "$lib/components/data/compare_view/CompareFilters.svelte";
+	import CompareManager from "$lib/components/data/compare_view/CompareManager.svelte";
+	import DataManager from "$lib/components/data/data_view/DataManager.svelte";
+	import Filters from "$lib/components/data/data_view/Filters.svelte";
 	import Header from "$lib/components/data/Header.svelte";
 	import PageContainer from "$lib/components/layout/PageContainer.svelte";
 	import { onMount, tick, untrack } from "svelte";

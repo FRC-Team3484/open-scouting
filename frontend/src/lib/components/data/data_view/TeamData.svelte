@@ -1,7 +1,7 @@
 <script lang="ts">
     import * as Card from "$lib/components/ui/card/index.js";
 	import { CaretDown, CaretUp } from "phosphor-svelte";
-	import Button from "../ui/button/button.svelte";
+	import Button from "../../ui/button/button.svelte";
 	import { slide } from "svelte/transition";
 	import TeamScores from "./TeamScores.svelte";
 	import TeamCapabilities from "./TeamCapabilities.svelte";

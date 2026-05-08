@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Separator from "../ui/separator/separator.svelte";
+	import Separator from "$lib/components/ui/separator/separator.svelte";
 	import BaseTeamFolder from "./BaseTeamFolder.svelte";
 
     let { fields } = $props();

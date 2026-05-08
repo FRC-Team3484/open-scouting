@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { slide } from "svelte/transition";
     import * as Card from "$lib/components/ui/card/index.js";
-	import Button from "../ui/button/button.svelte";
+	import Button from "../../ui/button/button.svelte";
 	import { CaretDown, CaretUp } from "phosphor-svelte";
 
     let { title, children, expanded = false } = $props();

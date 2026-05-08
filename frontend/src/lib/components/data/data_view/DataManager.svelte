@@ -2,10 +2,10 @@
     import * as Card from "$lib/components/ui/card/index.js";
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
 	import { ArrowClockwise, CircleNotch, Export, FileCsv, FileText } from "phosphor-svelte";
-	import Button from "../ui/button/button.svelte";
+	import Button from "../../ui/button/button.svelte";
 	import TeamData from "./TeamData.svelte";
 	import { toast } from "svelte-sonner";
-	import Separator from "../ui/separator/separator.svelte";
+	import Separator from "../../ui/separator/separator.svelte";
 	import { getDataDataGetGet } from "$lib/api/data/data";
 	import type { GetDataDataGetGetParams } from "$lib/api/model";
 

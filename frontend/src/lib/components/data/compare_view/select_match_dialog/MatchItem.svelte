@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Badge } from "../ui/badge";
-	import Button from "../ui/button/button.svelte";
+	import { Badge } from "../../../ui/badge";
+	import Button from "../../../ui/button/button.svelte";
 
     let { match, compLevel, selectMatch, showCompLevel = false } = $props();
 

@@ -2,7 +2,7 @@
     import * as Table from "$lib/components/ui/table";
     import * as Card from "$lib/components/ui/card";
 	import { onMount } from "svelte";
-	import BaseDialog from "../generic/dialogs/BaseDialog.svelte";
+	import BaseDialog from "../../generic/dialogs/BaseDialog.svelte";
 
     let { data, filters, fields } = $props();
 

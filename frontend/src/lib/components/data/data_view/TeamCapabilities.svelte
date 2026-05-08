@@ -1,6 +1,6 @@
 <script lang="ts">
 	import BaseTeamFolder from "./BaseTeamFolder.svelte";
-	import CapabilityDisplay from "./CapabilityDisplay.svelte";
+	import CapabilityDisplay from "./displays/CapabilityDisplay.svelte";
 
     let { capabilities } = $props();
 </script>

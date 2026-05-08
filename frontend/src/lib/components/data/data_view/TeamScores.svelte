@@ -1,5 +1,5 @@
 <script lang="ts">
-	import ScoreDisplay from "./ScoreDisplay.svelte";
+	import ScoreDisplay from "./displays/ScoreDisplay.svelte";
 	import BaseTeamFolder from "./BaseTeamFolder.svelte";
 
     let { title, gamePieces } = $props();

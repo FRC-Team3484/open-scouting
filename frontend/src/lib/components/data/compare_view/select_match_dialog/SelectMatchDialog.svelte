@@ -1,15 +1,15 @@
 <script lang="ts">
-	import BaseDialog from "../generic/dialogs/BaseDialog.svelte";
+	import BaseDialog from "../../../generic/dialogs/BaseDialog.svelte";
 	import { db } from "$lib/utils/db";
 	import { onMount } from "svelte";
-	import FilterList from "./FilterList.svelte";
+	import FilterList from "../../FilterList.svelte";
 	import { Buildings, CaretUpDown, CircleNotch, List } from "phosphor-svelte";
 	import { theBlueAllianceApiFetch } from "$lib/utils/api";
     import * as Alert from "$lib/components/ui/alert/index.js";
 	import { slide } from "svelte/transition";
 	import MatchItem from "./MatchItem.svelte";
     import * as Collapsible from "$lib/components/ui/collapsible/index.js";
-	import { buttonVariants } from "../ui/button";
+	import { buttonVariants } from "../../../ui/button";
 	import { get } from "svelte/store";
 
     let { open = $bindable(false), year, selectMatch } = $props();

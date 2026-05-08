@@ -4,15 +4,15 @@
     import * as AlertDialog from "$lib/components/ui/alert-dialog/index.js";
 	import { Buildings, Calendar, Faders, Info, PlusCircle, Users, X } from "phosphor-svelte";
 	import { onMount } from "svelte";
-	import FilterList from "./FilterList.svelte";
-	import Button from "../ui/button/button.svelte";
+	import FilterList from "../FilterList.svelte";
+	import Button from "$lib/components/ui/button/button.svelte";
 	import { getSeasonsSeasonsGet } from "$lib/api/seasons/seasons";
 	import type { GetDataFiltersDataFiltersGetParams, SeasonResponse } from "$lib/api/model";
 	import { getDataFiltersDataFiltersGet } from "$lib/api/data/data";
 	import { toast } from "svelte-sonner";
-	import EventList from "../generic/event_list/EventList.svelte";
-	import type { Filters as EventListFilters } from "../generic/event_list/EventList.svelte";
-	import BaseDialog from "../generic/dialogs/BaseDialog.svelte";
+	import EventList from "$lib/components/generic/event_list/EventList.svelte";
+	import type { Filters as EventListFilters } from "$lib/components/generic/event_list/EventList.svelte";
+	import BaseDialog from "$lib/components/generic/dialogs/BaseDialog.svelte";
 	import { db } from "$lib/utils/db";
     
     let { filters = $bindable() } = $props();
