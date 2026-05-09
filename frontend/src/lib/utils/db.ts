@@ -1,11 +1,74 @@
 import Dexie from 'dexie';
 
+// Interfaces for tables
+export interface MatchScoutingData {
+  uuid: string
+  data: any
+  user_uuid: string
+  year: number
+  team_number: number
+  match_number: number 
+  match_type: string
+  event_code: string
+  event_name: string
+  event_type: string
+  event_city: string
+  event_country: string
+  event_start_date: string
+  event_end_date: string
+  synced: boolean
+}
+export interface Season {
+  uuid: string 
+  year: number
+  fields: any
+  game_pieces: any
+  pit_scouting_questions: any
+  fetch_time: Date
+}
+export interface Event {
+  uuid: string
+  year: number
+  event_code: string
+  name: string
+  type: string
+  city: string
+  country: string
+  start_date: string
+  end_date: string
+  week: number | null
+  custom: boolean
+  fetch_time: Date
+}
+export interface PitScoutingData {
+  uuid: string
+  answers: any
+  nickname: string
+  team_number: number
+  year: number
+  event_code: string
+  event_name: string
+  event_type: string
+  event_city: string
+  event_country: string
+  event_start_date: string
+  event_end_date: string
+  synced: boolean
+}
+export interface File {
+  uuid: string
+  data: any
+  url: string
+  synced: boolean
+}
+
+// Create DB
 export class OpenScoutingDB extends Dexie {
-  match_scouting! : Dexie.Table<{uuid: string, data: any, user_uuid: string, year: number, team_number: number, match_number: number, match_type: string, event_code: string, event_name: string, event_type: string, event_city: string, event_country: string, event_start_date: string, event_end_date: string, synced: boolean}, string>;
-  season_data! : Dexie.Table<{uuid: string, year: number, fields: any, game_pieces: any, pit_scouting_questions: any, fetch_time: Date}, number>;
-  event! : Dexie.Table<{uuid: string, year: number, event_code: string, name: string, type: string, city: string, country: string, start_date: string, end_date: string, week: number | null, custom: boolean, fetch_time: Date}, string>;
-  pit_scouting! : Dexie.Table<{uuid: string, answers: any, nickname: string, team_number: number, year: number, event_code: string, event_name: string, event_type: string, event_city: string, event_country: string, event_start_date: string, event_end_date: string, synced: boolean}, string>;
-  files! : Dexie.Table<{uuid: string, data: any, url: string, synced: boolean}, string>;
+  match_scouting! : Dexie.Table<MatchScoutingData>;
+  season_data! : Dexie.Table<Season>;
+  event! : Dexie.Table<Event>;
+  pit_scouting! : Dexie.Table<PitScoutingData>;
+  files! : Dexie.Table<File>;
 
   constructor() {
     super('open-scouting');
