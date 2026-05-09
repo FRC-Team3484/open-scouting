@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount, tick } from "svelte";
+	import { onMount } from "svelte";
 	import { flip } from "svelte/animate";
 	import { liveQuery } from "dexie";
 	import { toast } from "svelte-sonner";
@@ -13,6 +13,7 @@
 	import Separator from "$lib/components/ui/separator/separator.svelte";
 
 	import { db } from "$lib/utils/db";
+    import type { Event as EventType } from "$lib/utils/db";
 	import { getUserSetting, setUserSetting, validateTokenOnline } from "$lib/utils/user";
 	import { fetchEventData } from "$lib/utils/sync";
 	import Event from "./Event.svelte";
@@ -22,7 +23,7 @@
     // Props
     interface Props {
         year?: number | null // If year is null, show all events across all years
-        value?: [] // Allows for selecting multiple events
+        value?: EventType[] // Allows for selecting multiple events
         multiple?: boolean,
         limits?: [] // Given a list of event_codes, limit to only showing those events, used for the data page
         defaultViewOptions?: ViewOptions | null,
@@ -53,7 +54,7 @@
 
     // Variables
     let events = liveQuery(() => db.event.toArray());
-    let filteredEvents = $derived.by(() => {
+    let filteredEvents: EventType[] = $derived.by(() => {
         if ($events) {
             let eventsToFilter = $events;
             if (year) {
@@ -185,7 +186,7 @@
             return [];
         }
     });
-    let eventTypes = $derived.by(() => {
+    let eventTypes: string[] = $derived.by(() => {
         if ($events) {
             return Array.from(new Set($events.map(e => e.type)));
         } else {
@@ -193,9 +194,9 @@
         }
     })
     let user = $state(null);
-    let favoriteEvents: [] = $state([]);
+    let favoriteEvents: string[] = $state([]);
 
-    let search = $state("");
+    let search: string = $state("");
     let viewOptions: ViewOptions = $state({
         view: "week",
         showNearby: false,
@@ -209,7 +210,7 @@
         eventType: []
     });
 
-    let eventCount = $derived.by(() => {
+    let eventCount: number = $derived.by(() => {
         if (filteredEvents) {
             if (viewOptions.view === "alphabetical") {
                 return filteredEvents.length;
@@ -220,7 +221,7 @@
             return 0;
         }
     });
-    let createCustomEventOpen = $state(false);
+    let createCustomEventOpen: boolean = $state(false);
 
     // Functions
     async function favoriteEvent(e: MouseEvent, eventData) {
