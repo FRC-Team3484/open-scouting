@@ -45,21 +45,25 @@ Props:
     }
 </script>
 
+{#snippet teams()}
+    <div class="flex flex-row gap-1 items-center flex-wrap">
+        <div class="flex flex-row gap-1 flex-wrap">
+            {#each match?.alliances.blue.team_keys as team}
+                <Badge class="bg-blue-500">{team.replace("frc", "")}</Badge>
+            {/each}
+        </div>
+        <div class="flex flex-row gap-1 flex-wrap">
+            {#each match?.alliances.red.team_keys as team}
+                <Badge class="bg-red-500">{team.replace("frc", "")}</Badge>
+            {/each}
+        </div>
+    </div>
+{/snippet}
+
 <div class="flex flex-col lg:flex-row gap-2 lg:items-center flex-wrap">
     {#if compLevel == "sf"}
-        <Button variant="outline" onclick={() => selectMatch(getTeams())}>{compLevelLabel} Match {match?.set_number}</Button>
+        <Button variant="outline" class="flex! h-auto! min-h-9! flex-wrap! whitespace-normal! wrap-break-word! items-start! shrink! justify-start! text-left" onclick={() => selectMatch(getTeams())}>{compLevelLabel} Match {match?.set_number} {@render teams()}</Button>
     {:else}
-        <Button variant="outline" onclick={() => selectMatch(getTeams())}>{compLevelLabel} Match {match?.match_number}</Button>
+        <Button variant="outline" class="flex! h-auto! min-h-9! flex-wrap! whitespace-normal! wrap-break-word! items-start! shrink! justify-start! text-left" onclick={() => selectMatch(getTeams())}>{compLevelLabel} Match {match?.match_number} {@render teams()}</Button>
     {/if}
-
-    <div class="flex flex-row gap-1 items-center">
-        {#each match?.alliances.blue.team_keys as team}
-            <Badge class="bg-blue-500">{team.replace("frc", "")}</Badge>
-        {/each}
-        {#each match?.alliances.red.team_keys as team}
-            <Badge class="bg-red-500">{team.replace("frc", "")}</Badge>
-        {/each}
-    </div>
-    <div class="flex flex-row gap-1 items-center">
-    </div>
 </div>
