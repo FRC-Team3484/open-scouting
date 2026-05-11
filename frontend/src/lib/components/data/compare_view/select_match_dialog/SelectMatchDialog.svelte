@@ -33,17 +33,18 @@ Props:
 
 <script lang="ts">
 	import { slide } from "svelte/transition";
-	import { BuildingsIcon, CaretUpDownIcon, CircleNotchIcon, ListIcon } from "phosphor-svelte";
+	import { BuildingsIcon, CaretUpDownIcon, CircleNotchIcon, ListIcon, PlusCircleIcon } from "phosphor-svelte";
 
     import * as Alert from "$lib/components/ui/alert/index.js";
     import * as Collapsible from "$lib/components/ui/collapsible/index.js";
+	import Button from "$lib/components/ui/button/button.svelte";
 	import { buttonVariants } from "../../../ui/button";
 
 	import { db, type Event } from "$lib/utils/db";
 	import { theBlueAllianceApiFetch } from "$lib/utils/api";
-	import FilterList from "../../FilterList.svelte";
 	import BaseDialog from "../../../generic/dialogs/BaseDialog.svelte";
 	import MatchItem from "./MatchItem.svelte";
+	import EventList from "$lib/components/generic/event_list/EventList.svelte";
 
 
     interface Props {
@@ -53,25 +54,30 @@ Props:
     }
     let { open = $bindable(false), year, selectMatch }: Props = $props();
 
-    let events: Event[] = $state([]);
-    let selectedEvents: string[] | undefined = $state([]);
+    let selectedEvents: Event[] = $state([]);
+    let selectedEvent: Event | null = $derived.by(() => {
+        if (selectedEvents.length === 1) {
+            return selectedEvents[0] ?? null;
+        } else {
+            return null;
+        }
+    });
+    const eventUpcoming: boolean = $derived.by(() => {
+        if (!selectedEvent) return false;
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        return new Date(selectedEvent.end_date) > today;
+    });
+
     let matches: Match[] = $state([]);
     let closestMatches: Match[] = $derived.by(() => {
         const now = Date.now() / 1000;
         return matches.toSorted((a, b) => Math.abs(a.predicted_time - now) - Math.abs(b.predicted_time - now)).slice(0, 5);
     });
 
-    let matchType: string = $state("qm");
-    let matchNumber: number = $state(1);
-
     let matchesState: "selectEvent" | "loading" | "invalidEvent" | "ready" | "noMatches" = $state("selectEvent");
-
-    /**
-     * Get all events from the local database
-     */
-    async function getEvents(): Promise<void> {
-        events = await db.event.filter(e => e.year === year && e.custom === false).toArray();
-    }
+    let selectEventOpen: boolean = $state(false);
 
     /**
      * Given a selected event, get the matches for that event from TBA
@@ -81,9 +87,9 @@ Props:
     async function getMatches(eventCode: string): Promise<void> {
         matchesState = "loading";
 
-        matches = await theBlueAllianceApiFetch(`/event/${year + eventCode}/matches/simple`);
+        matches = await theBlueAllianceApiFetch(`/event/${year + eventCode}/matches/simple`)
 
-        if (matches?.Error) {
+        if (matches?.error) {
             matchesState = "invalidEvent";
         } else if (matches.length > 0) {
             matchesState = "ready";
@@ -98,28 +104,12 @@ Props:
      * If selectedEvents is updated, get the matches for that event. If no event is selected, set the state to be ready to select an event
      */
     $effect(() => {
-        if (selectedEvents.length > 0) {
-            getMatches(selectedEvents[0]);
+        if (selectedEvent) {
+            selectEventOpen = false;
+            getMatches(selectedEvent.event_code);
         } else if (selectedEvents.length === 0) {
             matchesState = "selectEvent";
         }
-    });
-
-    /**
-     * When the match type is updated, set the match number to 1
-     */
-    $effect(() => {
-        matchType;
-        matchNumber = 1;
-    });
-
-    /**
-     * When the year is updated, fetch events again
-     */
-    $effect(() => {
-        year;
-
-        getEvents();
     });
 </script>
 
@@ -128,7 +118,7 @@ Props:
         <div class="flex flex-row gap-2 flex-wrap items-center">
             <BuildingsIcon weight="bold" size={16} />
             <p>Event</p>
-            <FilterList filterTitle="Add Event Filter" values={events.map((e) => e.event_code)} labels={events.map((e) => e.name)} bind:selected={selectedEvents} onlyOne />
+            <Button variant="outline" onclick={() => {selectEventOpen = true}}><PlusCircleIcon weight="bold" /> Set</Button>
         </div>
 
         <div class="flex flex-row gap-2 flex-wrap items-center">
@@ -139,7 +129,7 @@ Props:
                 <p class="text-muted-foreground">Getting matches...</p>
             {:else if matchesState === "invalidEvent"}
                 <p class="text-muted-foreground">Invalid event</p>
-            {:else if matchesState === "ready"}
+            {:else if matchesState === "ready" && selectedEvent}
             
                 <div class="flex flex-col gap-2 w-full">
                     <div class="flex flex-row gap-2 flex-wrap items-center">
@@ -147,7 +137,7 @@ Props:
                         <p>Match</p>
                     </div>
 
-                    <Collapsible.Root open={new Date(events.find((e) => e.event_code === selectedEvents[0] && e.year === year)?.end_date) < new Date(`${year}-${('0' + (new Date().getMonth() + 1)).slice(-2) + '-' + ('0' + new Date().getDate()).slice(-2)}`)}>
+                    <Collapsible.Root open={eventUpcoming}>
                         <Collapsible.Trigger class={buttonVariants({ variant: "outline", class: "w-full" })}>Matches Soon <CaretUpDownIcon weight="bold" size={16} /></Collapsible.Trigger>
 
                         <Collapsible.Content>
@@ -160,7 +150,7 @@ Props:
                         </Collapsible.Content>
                     </Collapsible.Root>
 
-                    <Collapsible.Root open={new Date(events.find((e) => e.event_code === selectedEvents[0] && e.year === year)?.end_date) > new Date(`${year}-${('0' + (new Date().getMonth() + 1)).slice(-2) + '-' + ('0' + new Date().getDate()).slice(-2)}`)}>
+                    <Collapsible.Root open={!eventUpcoming}>
                         <Collapsible.Trigger class={buttonVariants({ variant: "outline", class: "w-full" })}>All Matches <CaretUpDownIcon weight="bold" size={16} /></Collapsible.Trigger>
 
                         <Collapsible.Content>
@@ -181,8 +171,10 @@ Props:
                         </Collapsible.Content>
                     </Collapsible.Root>
                 </div>
-            {:else if matchesState === "noMatches"}
-                <p>No matches found for <span class="font-mono">{year + selectedEvents[0]}</span></p>
+            {:else if matchesState === "noMatches" && selectedEvent}
+                <p>No matches found for <span class="font-mono">{year + selectedEvent.event_code}</span></p>
+            {:else}
+                <p class="text-muted-foreground">There was a problem displaying matches</p>
             {/if}
         </div>
 
@@ -197,4 +189,8 @@ Props:
             </div>
         {/if}
     </div>
+</BaseDialog>
+
+<BaseDialog title="Select Event" description="Select an event to show matches for" bind:open={selectEventOpen}>
+    <EventList year={year} bind:value={selectedEvents} multiple={false} />
 </BaseDialog>
