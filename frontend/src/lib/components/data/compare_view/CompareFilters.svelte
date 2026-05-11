@@ -1,29 +1,41 @@
+<!-- 
+@component
+Handles displaying and setting the filters for the compare view on the data page
+-->
 <script lang="ts">
+	import { onMount } from "svelte";
+	import { BuildingsIcon, CalendarIcon, FadersIcon, InfoIcon, PlusCircleIcon, SelectionIcon, UsersIcon, XIcon } from "phosphor-svelte";
+	import { toast } from "svelte-sonner";
+    import { db, type Event } from "$lib/utils/db";
+
     import * as Card from "$lib/components/ui/card/index.js";
     import * as Select from "$lib/components/ui/select/index.js";
     import * as AlertDialog from "$lib/components/ui/alert-dialog/index.js";
-	import { Buildings, Calendar, Faders, Info, PlusCircle, Selection, Users, X } from "phosphor-svelte";
-	import { onMount } from "svelte";
-	import FilterList from "../FilterList.svelte";
 	import Button from "../../ui/button/button.svelte";
+	import Separator from "../../ui/separator/separator.svelte";
+
 	import { getSeasonsSeasonsGet } from "$lib/api/seasons/seasons";
 	import type { GetDataFiltersDataFiltersGetParams, SeasonResponse } from "$lib/api/model";
 	import { getDataFiltersDataFiltersGet } from "$lib/api/data/data";
-	import { toast } from "svelte-sonner";
-	import Separator from "../../ui/separator/separator.svelte";
+	import FilterList from "../FilterList.svelte";
 	import SelectMatchDialog from "./select_match_dialog/SelectMatchDialog.svelte";
 	import BaseDialog from "../../generic/dialogs/BaseDialog.svelte";
 	import EventList from "../../generic/event_list/EventList.svelte";
     import type { Filters as EventListFilters } from "../../generic/event_list/EventList.svelte";
-    import { db } from "$lib/utils/db";
+	import type { CompareFilters, Field } from "../../../../routes/data/+page.svelte";
 
-    let { filters = $bindable(), fields } = $props();
+    
+    interface Props {
+        filters: CompareFilters
+        fields: Field[]
+    }
+    let { filters = $bindable(), fields }: Props = $props();
 
     let seasons: SeasonResponse[] = $state([]);
-    let seasons_label = $derived(seasons.find((s) => s.year === filters.year)?.name ?? "Select Year");
-    let events = $state([]);
-    let teams = $state([]);
-    let selectedEvents = $state([]);
+    let seasons_label: string = $derived(seasons.find((s) => s.year === filters.year)?.name ?? "Select Year");
+    let events: unknown[] = $state([]);
+    let teams: unknown[] = $state([]);
+    let selectedEvents: Event[] = $state([]);
     let eventListOpen = $state(false);
     let hydratedFromUrl = $state(false);
 
@@ -31,7 +43,12 @@
 
     let selectMatchOpen = $state(false);
 
-    async function loadSeasons() {
+    /**
+     * Load all seasons from the server
+     * 
+     * TODO: Should this fetch the local seasons instead?
+     */
+    async function loadSeasons(): Promise<void> {
         seasons = (await getSeasonsSeasonsGet()).data;
 
         if (!filters.year && seasons.length > 0) {
@@ -40,7 +57,10 @@
         }
     }
 
-    async function loadFilters() {
+    /**
+     * Based on the current filters, load what other filters are allowed
+     */
+    async function loadFilters(): Promise<void> {
         if (!filters.year) return;
 
         const params: GetDataFiltersDataFiltersGetParams = {
@@ -70,7 +90,12 @@
         });
     }
 
-    function selectMatch(teams: string[]) {
+    /**
+     * Given team numbers, select the match to use for the team filters
+     * 
+     * @param teams The array of team numbers to use
+     */
+    function selectMatch(teams: string[]): void {
         filters.team_numbers = teams;
         selectMatchOpen = false;
     }
@@ -79,6 +104,9 @@
         await loadSeasons();
     });
 
+    /**
+     * When filters change, get the new list of allowed filters
+     */
     $effect(() => {
         filters.year;
         filters.event_codes;
@@ -86,7 +114,9 @@
 
         loadFilters();
     });
-
+    /**
+     * Hydrate the event list with the correctly selected event when the page loads
+     */
     $effect(() => {
         const year = filters.year;
         const codes = filters.event_codes;
@@ -108,6 +138,9 @@
         })();
     });
 
+    /**
+     * When an event is selected by the event list, update the event code filters accordingly
+     */
     $effect(() => {
         filters.event_codes = selectedEvents.map(e => e.event_code);
     });
@@ -117,12 +150,12 @@
     <Card.Content>
         <div class="flex flex-col gap-2">
             <div class="flex flex-row gap-2 items-center">
-                <Faders weight="bold" size={24} />
+                <FadersIcon weight="bold" size={24} />
                 <p class="text-lg font-bold"> Compare</p>
 
                 <AlertDialog.Root>
                     <AlertDialog.Trigger>
-                        <Button size="icon-sm" variant="outline"><Info weight="bold" /></Button>
+                        <Button size="icon-sm" variant="outline"><InfoIcon weight="bold" /></Button>
                     </AlertDialog.Trigger>
 
                     <AlertDialog.Content>
@@ -147,7 +180,7 @@
             <div class="flex flex-col gap-2">
                 <div class="flex flex-col gap-2">
                     <div class="flex flex-row gap-1 items-center">
-                        <Calendar weight="bold" size={16} />
+                        <CalendarIcon weight="bold" size={16} />
                         <p>Year</p>
                     </div>
                     <Select.Root type="single" bind:value={filters.year}>
@@ -164,29 +197,29 @@
 
                 <div class="flex flex-col gap-2">
                     <div class="flex flex-row gap-1 items-center">
-                        <Buildings weight="bold" size={16} />
+                        <BuildingsIcon weight="bold" size={16} />
                         <p>Events</p>
                     </div>
 
                     <div class="flex flex-row gap-2 max-h-screen max-w-screen flex-wrap items-center">
                         {#each selectedEvents as event}
                             <div class="flex flex-row gap-1 items-center">
-                                <Button variant="outline" onclick={() => selectedEvents = selectedEvents.filter((e) => e.event_code !== event.event_code)}><X weight="bold" /> {event.name}</Button>
+                                <Button variant="outline" onclick={() => selectedEvents = selectedEvents.filter((e) => e.event_code !== event.event_code)}><XIcon weight="bold" /> {event.name}</Button>
                             </div>
                         {/each}
-                        <Button variant="outline" class="w-auto" onclick={() => eventListOpen = true}><PlusCircle weight="bold" /> Add</Button>
+                        <Button variant="outline" class="w-auto" onclick={() => eventListOpen = true}><PlusCircleIcon weight="bold" /> Add</Button>
                     </div>
                 </div>
 
                 <div class="flex flex-col gap-2">
                     <div class="flex flex-row gap-1 items-center">
-                        <Users weight="bold" size={16} />
+                        <UsersIcon weight="bold" size={16} />
                         <p>Teams</p>
                     </div> 
 
                     <div class="flex flex-row gap-2 items-center flex-wrap">
                         <FilterList filterTitle="Add Team Filter" values={teams.map((t) => t.team_number.toString())} labels={teams.map((t) => t.team_number.toString())} bind:selected={filters.team_numbers} />
-                        <Button variant="outline" onclick={() => selectMatchOpen = true}><Selection weight="bold" /> Select Match</Button>
+                        <Button variant="outline" onclick={() => selectMatchOpen = true}><SelectionIcon weight="bold" /> Select Match</Button>
                     </div>
                 </div>
 
@@ -194,7 +227,7 @@
 
                 <div class="flex flex-col gap-2">
                     <div class="flex flex-row gap-1 items-center">
-                        <Users weight="bold" size={16} />
+                        <UsersIcon weight="bold" size={16} />
                         <p>Fields</p>
                     </div> 
 

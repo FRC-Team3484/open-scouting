@@ -1,7 +1,23 @@
-<script lang="ts">
-	import { defaultChartPadding, ScatterChart, Tooltip } from "layerchart";
+<!-- 
+@component
+The scatter chart for showing a score or miss stat
 
-    let { field, data } = $props();
+Props:
+    - `field` (`Field`) - This field's info
+    - `data` (`FlatData`) - Data from the parent
+-->
+<script lang="ts">
+	import { defaultChartPadding, ScatterChart } from "layerchart";
+
+	import type { Field } from "../../../../../routes/data/+page.svelte";
+	import type { FlatData } from "../CompareCharts.svelte";
+    
+
+    interface Props {
+        field: Field
+        data: FlatData
+    }
+    let { field, data }: Props = $props();
 
     const chartData = $derived.by(() => {
         if (!data || !field) return [];

@@ -1,7 +1,23 @@
+<!-- 
+@component
+The bar chart for showing a capability stat
+
+Props:
+    - `field` (`Field`) - This field's info
+    - `data` (`FlatData`) - Data from the parent
+-->
 <script lang="ts">
 	import { BarChart, defaultChartPadding } from "layerchart";
 
-	let { field, data } = $props();
+	import type { FlatData } from "../CompareCharts.svelte";
+	import type { Field } from "../../../../../routes/data/+page.svelte";
+
+	
+	interface Props {
+		field: Field,
+		data: FlatData
+	}
+	let { field, data }: Props = $props();
 
 	const barSeries = $derived.by(() => {
 		if (!data || !field) return [];

@@ -1,17 +1,32 @@
+<!-- 
+@component
+Renders the table for comparing data between teams in the compare view on the data page
+-->
 <script lang="ts">
     import * as Table from "$lib/components/ui/table";
     import * as Card from "$lib/components/ui/card";
-	import { onMount } from "svelte";
+
 	import BaseDialog from "../../generic/dialogs/BaseDialog.svelte";
+	import type { CompareFilters, Field } from "../../../../routes/data/+page.svelte";
 
-    let { data, filters, fields } = $props();
 
-    let allValuesOpen = $state(false);
-    let allValuesValues = $state([]);
-    let allValuesType = $state("dict");
-    let allValuesFieldName = $state("");
+    interface Props {
+        data: unknown
+        filters: CompareFilters
+        fields: Field[]
+    }
+    let { data, filters, fields }: Props = $props();
 
-    function highestValue(values: any) {
+    let allValuesOpen: boolean = $state(false);
+    let allValuesValues: string[] = $state([]);
+    let allValuesType: string = $state("dict");
+    let allValuesFieldName: string = $state("");
+
+    /**
+     * Given an array of values, find the highest one
+     * @param values
+     */
+    function highestValue(values: string[]) {
         if (!values) return "";
 
         const [k, v] = Object.entries(values).reduce((a, b) => b[1] > a[1] ? b : a);
@@ -20,6 +35,15 @@
         return `${label}: ${v}%`;
     }
 
+    /**
+     * Show all values 
+     * 
+     * Used when the user clicks on a cell that's only showing the average
+     * 
+     * @param values The values to show
+     * @param fieldName The name of the field to show values for
+     * @param type The type of the field
+     */
     function showAllValues(values: any, fieldName: string, type: "array" | "dict" = "dict") {
         allValuesOpen = true;
         allValuesValues = values;

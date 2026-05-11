@@ -1,40 +1,87 @@
+<!-- 
+@component
+The dialog for selecting teams based on a certain match number at a competition
+
+Props:
+    - `open` (`boolean`) - If the dialog should be open or not
+    - `year` (`number`) - The year of the event
+    - `selectMatch` (`(teams: string[]) => void`) - Given a list of team numbers, add those team numbers to the filters
+-->
+<script lang="ts" module>
+    interface Alliance {
+        dq_team_keys: string[]
+        score: number
+        surrogate_team_keys: string[]
+        team_keys: string[]
+    }
+    export interface Match {
+        actual_time: number
+        alliances: {
+            blue: Alliance
+            red: Alliance
+        }
+        comp_level: string
+        event_key: string
+        key: string
+        match_number: number
+        predicted_time: number
+        set_number: number
+        time: number
+        winning_alliance: string | null
+    }
+</script>
+
 <script lang="ts">
-	import BaseDialog from "../../../generic/dialogs/BaseDialog.svelte";
-	import { db } from "$lib/utils/db";
-	import { onMount } from "svelte";
-	import FilterList from "../../FilterList.svelte";
-	import { Buildings, CaretUpDown, CircleNotch, List } from "phosphor-svelte";
-	import { theBlueAllianceApiFetch } from "$lib/utils/api";
-    import * as Alert from "$lib/components/ui/alert/index.js";
 	import { slide } from "svelte/transition";
-	import MatchItem from "./MatchItem.svelte";
+	import { BuildingsIcon, CaretUpDownIcon, CircleNotchIcon, ListIcon } from "phosphor-svelte";
+
+    import * as Alert from "$lib/components/ui/alert/index.js";
     import * as Collapsible from "$lib/components/ui/collapsible/index.js";
 	import { buttonVariants } from "../../../ui/button";
-	import { get } from "svelte/store";
 
-    let { open = $bindable(false), year, selectMatch } = $props();
+	import { db, type Event } from "$lib/utils/db";
+	import { theBlueAllianceApiFetch } from "$lib/utils/api";
+	import FilterList from "../../FilterList.svelte";
+	import BaseDialog from "../../../generic/dialogs/BaseDialog.svelte";
+	import MatchItem from "./MatchItem.svelte";
 
-    let events = $state([]);
-    let selectedEvents = $state([]);
-    let matches = $state([]);
-    let closestMatches = $derived.by(() => {
+
+    interface Props {
+        open: boolean
+        year: number
+        selectMatch: (teams: string[]) => void
+    }
+    let { open = $bindable(false), year, selectMatch }: Props = $props();
+
+    let events: Event[] = $state([]);
+    let selectedEvents: string[] | undefined = $state([]);
+    let matches: Match[] = $state([]);
+    let closestMatches: Match[] = $derived.by(() => {
         const now = Date.now() / 1000;
         return matches.toSorted((a, b) => Math.abs(a.predicted_time - now) - Math.abs(b.predicted_time - now)).slice(0, 5);
     });
 
-    let matchType = $state("qm");
-    let matchNumber = $state(1);
+    let matchType: string = $state("qm");
+    let matchNumber: number = $state(1);
 
     let matchesState: "selectEvent" | "loading" | "invalidEvent" | "ready" | "noMatches" = $state("selectEvent");
 
-    async function getEvents() {
+    /**
+     * Get all events from the local database
+     */
+    async function getEvents(): Promise<void> {
         events = await db.event.filter(e => e.year === year && e.custom === false).toArray();
     }
 
-    async function getMatches(event) {
+    /**
+     * Given a selected event, get the matches for that event from TBA
+     * 
+     * @param eventCode The event code for this event
+     */
+    async function getMatches(eventCode: string): Promise<void> {
         matchesState = "loading";
 
-        matches = await theBlueAllianceApiFetch(`/event/${year + event}/matches/simple`);
+        matches = await theBlueAllianceApiFetch(`/event/${year + eventCode}/matches/simple`);
 
         if (matches?.Error) {
             matchesState = "invalidEvent";
@@ -47,23 +94,28 @@
         }
     }
 
+    /**
+     * If selectedEvents is updated, get the matches for that event. If no event is selected, set the state to be ready to select an event
+     */
     $effect(() => {
         if (selectedEvents.length > 0) {
             getMatches(selectedEvents[0]);
-        }
-    });
-
-    $effect(() => {
-        if (selectedEvents.length === 0) {
+        } else if (selectedEvents.length === 0) {
             matchesState = "selectEvent";
         }
     });
 
+    /**
+     * When the match type is updated, set the match number to 1
+     */
     $effect(() => {
         matchType;
         matchNumber = 1;
     });
 
+    /**
+     * When the year is updated, fetch events again
+     */
     $effect(() => {
         year;
 
@@ -74,7 +126,7 @@
 <BaseDialog title="Select a Match" description="Select a match at an event to automatically select the teams that played in that match." bind:open> 
     <div class="flex flex-col gap-2">
         <div class="flex flex-row gap-2 flex-wrap items-center">
-            <Buildings weight="bold" size={16} />
+            <BuildingsIcon weight="bold" size={16} />
             <p>Event</p>
             <FilterList filterTitle="Add Event Filter" values={events.map((e) => e.event_code)} labels={events.map((e) => e.name)} bind:selected={selectedEvents} onlyOne />
         </div>
@@ -83,7 +135,7 @@
             {#if matchesState === "selectEvent"}
                 <p class="text-muted-foreground">Select an event</p>
             {:else if matchesState === "loading"}
-                <CircleNotch class="animate-spin" size={16} />
+                <CircleNotchIcon class="animate-spin" size={16} />
                 <p class="text-muted-foreground">Getting matches...</p>
             {:else if matchesState === "invalidEvent"}
                 <p class="text-muted-foreground">Invalid event</p>
@@ -91,12 +143,12 @@
             
                 <div class="flex flex-col gap-2 w-full">
                     <div class="flex flex-row gap-2 flex-wrap items-center">
-                        <List weight="bold" size={16} />
+                        <ListIcon weight="bold" size={16} />
                         <p>Match</p>
                     </div>
 
                     <Collapsible.Root open={new Date(events.find((e) => e.event_code === selectedEvents[0] && e.year === year)?.end_date) < new Date(`${year}-${('0' + (new Date().getMonth() + 1)).slice(-2) + '-' + ('0' + new Date().getDate()).slice(-2)}`)}>
-                        <Collapsible.Trigger class={buttonVariants({ variant: "outline", class: "w-full" })}>Matches Soon <CaretUpDown weight="bold" size={16} /></Collapsible.Trigger>
+                        <Collapsible.Trigger class={buttonVariants({ variant: "outline", class: "w-full" })}>Matches Soon <CaretUpDownIcon weight="bold" size={16} /></Collapsible.Trigger>
 
                         <Collapsible.Content>
                             <div class="flex flex-col gap-2">
@@ -109,7 +161,7 @@
                     </Collapsible.Root>
 
                     <Collapsible.Root open={new Date(events.find((e) => e.event_code === selectedEvents[0] && e.year === year)?.end_date) > new Date(`${year}-${('0' + (new Date().getMonth() + 1)).slice(-2) + '-' + ('0' + new Date().getDate()).slice(-2)}`)}>
-                        <Collapsible.Trigger class={buttonVariants({ variant: "outline", class: "w-full" })}>All Matches <CaretUpDown weight="bold" size={16} /></Collapsible.Trigger>
+                        <Collapsible.Trigger class={buttonVariants({ variant: "outline", class: "w-full" })}>All Matches <CaretUpDownIcon weight="bold" size={16} /></Collapsible.Trigger>
 
                         <Collapsible.Content>
                             <div class="flex flex-col gap-2">

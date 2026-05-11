@@ -1,11 +1,36 @@
+<!-- 
+@component
+Renders the charts for the compare chart view mode on the data page
+
+Props:
+    - `data` (`unknown`) The data for the chart
+    - `filters` (`CompareFilters`) The current filters
+    - `fields` (`Field[]`) The avaliable field filters
+-->
+<script lang="ts" module>
+    export interface FlatData {
+        team_number: number
+        nickname: string
+        fields: any
+    }
+</script>
+
 <script lang="ts">
 	import * as Card from "$lib/components/ui/card";
+	import type { CompareFilters, Field } from "../../../../routes/data/+page.svelte";
 	import CompareCapability from "./charts/CompareCapability.svelte";
 	import CompareScore from "./charts/CompareScore.svelte";
 
-    let { data, filters, fields } = $props();
 
-    const flattenedData = $derived.by(() => {
+    interface Props {
+        data: unknown
+        filters: CompareFilters
+        fields: Field[]
+    }
+    let { data, filters, fields }: Props = $props();
+
+    
+    const flattenedData: FlatData[] = $derived.by(() => {
         return data.map(team => {
             const fields = [
                 ...Object.values(team.auton ?? {})
@@ -40,10 +65,14 @@
             <div class="flex flex-col gap-2">
                 {#each filters.fields as field}
                     {@const fieldData = fields.find(f => f.value === field)}
-                    {#if fieldData.stat_type === "autom_score" || fieldData.stat_type === "teleop_score" || fieldData.stat_type === "auton_miss" || fieldData.stat_type === "teleop_miss"}
-                        <CompareScore field={field} data={flattenedData} />
-                    {:else if fieldData.stat_type === "capability"}
-                        <CompareCapability field={field} data={flattenedData} />
+                    {#if fieldData}
+                        {#if fieldData.stat_type === "autom_score" || fieldData.stat_type === "teleop_score" || fieldData.stat_type === "auton_miss" || fieldData.stat_type === "teleop_miss"}
+                            <CompareScore field={field} data={flattenedData} />
+                        {:else if fieldData.stat_type === "capability"}
+                            <CompareCapability field={field} data={flattenedData} />
+                        {/if}
+                    {:else}
+                        <p class="text-sm text-muted-foreground">Failed to load field data</p>
                     {/if}
                 {/each}
             </div>
