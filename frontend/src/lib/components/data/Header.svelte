@@ -1,10 +1,24 @@
+<!-- 
+@component
+The header for the data page
+
+Allows changing the selected page mode between all or compare
+
+Props:
+    - `mode` (`all | compare`) - The current page mode
+-->
 <script lang="ts">
     import * as Card from "$lib/components/ui/card/index.js";
-	import Logo from "../generic/Logo.svelte";
     import * as Select from "$lib/components/ui/select/index.js";
 	import Label from "../ui/label/label.svelte";
 
-    let { mode = $bindable() } = $props();
+	import Logo from "../generic/Logo.svelte";
+
+
+    interface Props {
+        mode: "all" | "compare"
+    }
+    let { mode = $bindable() }: Props = $props();
 </script>
 
 <Card.Root>
