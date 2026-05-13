@@ -1,8 +1,20 @@
+<!-- 
+@component
+The chart for an individual score or miss field
+
+Props:
+    - `field` (`unknown`) - The field details
+-->
 <script lang="ts">
     import { ScatterChart } from "layerchart";
     import * as Card from "$lib/components/ui/card";
 
-    let { field } = $props();
+
+    // TODO: `data` from DataManager needs a proper response schema
+    interface Props {
+        field: unknown
+    }
+    let { field }: Props = $props();
 </script>
 
 

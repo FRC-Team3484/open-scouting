@@ -1,21 +1,35 @@
+<!-- 
+@component
+Container component for each team on the default data view page
+
+Props:
+    - `team` (`unknown`) - The team information from the server
+-->
 <script lang="ts">
-    import * as Card from "$lib/components/ui/card/index.js";
-	import { CaretDown, CaretUp } from "phosphor-svelte";
-	import Button from "../../ui/button/button.svelte";
 	import { slide } from "svelte/transition";
+	import { CaretDownIcon, CaretUpIcon } from "phosphor-svelte";
+
+    import * as Card from "$lib/components/ui/card/index.js";
+
+	import Button from "../../ui/button/button.svelte";
 	import TeamScores from "./TeamScores.svelte";
 	import TeamCapabilities from "./TeamCapabilities.svelte";
 	import TeamOthers from "./TeamOthers.svelte";
 	import TeamSummary from "./TeamSummary.svelte";
 
-    let { team } = $props();
 
-    let expanded = $state(false);
+    // TODO: `data` from DataManager needs a proper response schema
+    interface Props {
+        team: unknown
+    }
+    let { team }: Props = $props();
+
+    let expanded: boolean = $state(false);
 </script>
 
 <Card.Root class="py-2 md:py-6">
     <Card.Content>
-        <div class="flex flex-col gap-2 lg:min-w-128 max-w-[80vw]">
+        <div class="flex flex-col gap-2 lg:min-w-lg max-w-[80vw]">
             <div class="flex flex-row gap-2 justify-between">
                 <div class="flex flex-row gap-2 items-center">
                     <p class="font-bold">{team.team_number}</p>
@@ -24,9 +38,9 @@
 
                 <Button size="icon-sm" variant="ghost" onclick={() => expanded = !expanded}>
                     {#if expanded}
-                        <CaretDown weight="bold" />
+                        <CaretDownIcon weight="bold" />
                     {:else}
-                        <CaretUp weight="bold" />
+                        <CaretUpIcon weight="bold" />
                     {/if}
                 </Button>
             </div>

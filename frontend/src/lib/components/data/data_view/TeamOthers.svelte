@@ -1,8 +1,20 @@
+<!-- 
+@component
+The other section for each team on the default data view page
+
+Props:
+    - `others` (`unknown`) - All other fields for the team
+-->
 <script lang="ts">
     import * as Card from "$lib/components/ui/card/index.js";
 	import BaseTeamFolder from "./BaseTeamFolder.svelte";
     
-    let { others } = $props();
+
+    // TODO: `data` from DataManager needs a proper response schema
+    interface Props {
+        others: unknown
+    }
+    let { others }: Props = $props();
 </script>
 
 <BaseTeamFolder title="Other">

@@ -1,8 +1,22 @@
+<!-- 
+@component
+The scores and miss section for each team on the default data view page
+
+Props:
+    - `title` (`string`) - The title of this section
+    - `gamePieces` (`unknown`) - The game piece information from the server
+-->
 <script lang="ts">
 	import ScoreDisplay from "./displays/ScoreDisplay.svelte";
 	import BaseTeamFolder from "./BaseTeamFolder.svelte";
 
-    let { title, gamePieces } = $props();
+
+    // TODO: `data` from DataManager needs a proper response schema
+    interface Props {
+        title: string
+        gamePieces: unknown
+    }
+    let { title, gamePieces }: Props = $props();
 </script>
 
 <BaseTeamFolder title={title}>

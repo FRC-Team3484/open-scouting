@@ -1,9 +1,22 @@
+<!-- 
+@component
+The chart for an individual capability
+
+Props:
+    - `capability` (`unknown`) - The capability details
+-->
 <script lang="ts">
-    import * as Card from "$lib/components/ui/card/index.js";
-    import * as Chart from "$lib/components/ui/chart/index.js";
 	import { PieChart } from "layerchart";
 
-    let { capability } = $props();
+    import * as Card from "$lib/components/ui/card/index.js";
+    import * as Chart from "$lib/components/ui/chart/index.js";
+
+
+    // TODO: `data` from DataManager needs a proper response schema
+    interface Props {
+        capability: unknown
+    }
+    let { capability }: Props = $props();
 
     const chartConfig = {
         percentage: {

@@ -1,8 +1,21 @@
+<!-- 
+@component
+The summary section for each team on the default data view page
+
+Props:
+    - `fields` (`unknown`) - All fields for the team
+-->
 <script lang="ts">
 	import Separator from "$lib/components/ui/separator/separator.svelte";
+
 	import BaseTeamFolder from "./BaseTeamFolder.svelte";
 
-    let { fields } = $props();
+    
+    // TODO: `data` from DataManager needs a proper response schema
+    interface Props {
+        fields: unknown
+    }
+    let { fields }: Props = $props();
 
     let scoreFields = $derived(fields.filter((f) => f.stat_type === "teleop_score" || f.stat_type === "autom_score" || f.stat_type === "teleop_miss" || f.stat_type === "auton_miss"));
     let capabilityFields = $derived(fields.filter((f) => f.stat_type === "capability"));

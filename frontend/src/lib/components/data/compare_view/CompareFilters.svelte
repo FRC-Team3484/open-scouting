@@ -1,6 +1,10 @@
 <!-- 
 @component
 Handles displaying and setting the filters for the compare view on the data page
+
+Props:
+    - `filters` (`Filters`) - The current filters from the parent
+    - `fields` (`Field[]`) - The avaliable match scouting fields from the parent
 -->
 <script lang="ts">
 	import { onMount } from "svelte";
@@ -114,6 +118,7 @@ Handles displaying and setting the filters for the compare view on the data page
 
         loadFilters();
     });
+
     /**
      * Hydrate the event list with the correctly selected event when the page loads
      */

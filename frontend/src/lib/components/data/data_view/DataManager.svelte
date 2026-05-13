@@ -1,19 +1,38 @@
+<!-- 
+@component
+Handles rendering the data on the regular data page view
+
+Props:
+    - `filters` (`Filters`) - The current filters from the parent
+-->
 <script lang="ts">
+	import { toast } from "svelte-sonner";
+	import { ArrowClockwiseIcon, CircleNotchIcon, ExportIcon, FileCsvIcon, FileTextIcon } from "phosphor-svelte";
+
     import * as Card from "$lib/components/ui/card/index.js";
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
-	import { ArrowClockwise, CircleNotch, Export, FileCsv, FileText } from "phosphor-svelte";
 	import Button from "../../ui/button/button.svelte";
 	import TeamData from "./TeamData.svelte";
-	import { toast } from "svelte-sonner";
 	import Separator from "../../ui/separator/separator.svelte";
+
 	import { getDataDataGetGet } from "$lib/api/data/data";
 	import type { GetDataDataGetGetParams } from "$lib/api/model";
+	import type { Filters } from "../../../../routes/data/+page.svelte";
 
-    let { filters } = $props();
 
-    let data = $state(null);
-    let loadConfirmed = $state(false);
+    interface Props {
+        filters: Filters
+    }
+    let { filters }: Props = $props();
 
+    let data: unknown = $state(null);
+    let loadConfirmed: boolean = $state(false);
+    
+    /**
+     * Based on the filters, load data from the server
+     * 
+     * TODO: This needs a proper response schema
+     */
     async function loadData() {
         if (filters.year > 0) {
             const params: GetDataDataGetGetParams = {
@@ -45,6 +64,9 @@
         }
     }
 
+    /**
+     * Export the loaded data as JSON
+     */
     function exportAsJson() {
         const jsonData = JSON.stringify(data);
         const blob = new Blob([jsonData], {type: 'application/json'});
@@ -58,7 +80,10 @@
         window.URL.revokeObjectURL(url);
     }
 
-    export function exportAsCsv() {
+    /**
+     * Export the loaded data as CSV
+     */
+    function exportAsCsv() {
         if (!Array.isArray(data) || data.length === 0) return;
 
         const rows: string[][] = [];
@@ -169,8 +194,10 @@
         URL.revokeObjectURL(url);
     }
 
+    /**
+     * Don't load data unless a filter has been selected, because unfiltered data may take a long time to render
+    */
     $effect(() => {
-        // Don't load data unless a filter has been selected, because unfiltered data may take a long time to render
         if (filters.year != 0 && filters.event_codes.length > 0 || filters.team_numbers.length > 0) {
             loadConfirmed = true;
             loadData();
@@ -192,7 +219,7 @@
     </Card.Root>
 {:else if filters.year != 0}
     {#if data == null}
-        <CircleNotch weight="bold" class="animate-spin my-4" size={24} />
+        <CircleNotchIcon weight="bold" class="animate-spin my-4" size={24} />
     {:else if data.length == 0}
         <div class="flex flex-col gap-1 my-4 flex-wrap max-w-64">
             <p class="text-muted-foreground">No data found</p>
@@ -209,20 +236,20 @@
                 <Card.Content>
                     <div class="flex flex-row gap-2 items-center">
                         <p class="text-sm text-muted-foreground">Loaded {data.length} {data.length == 1 ? "team" : "teams"} with data</p>
-                        <Button size="sm" variant="outline" onclick={() => loadData()}><ArrowClockwise weight="bold" /> Refresh</Button>
+                        <Button size="sm" variant="outline" onclick={() => loadData()}><ArrowClockwiseIcon weight="bold" /> Refresh</Button>
                         <DropdownMenu.Root>
                             <DropdownMenu.Trigger>
-                                <Button size="sm" variant="outline"><Export weight="bold" /> Export</Button>
+                                <Button size="sm" variant="outline"><ExportIcon weight="bold" /> Export</Button>
                             </DropdownMenu.Trigger>
 
                             <DropdownMenu.Content class="w-56" align="start">
                                 <DropdownMenu.Label>Export as...</DropdownMenu.Label>
                                 <DropdownMenu.Group>
                                     <DropdownMenu.Item onclick={exportAsJson}>
-                                        <FileText weight="bold" /> JSON
+                                        <FileTextIcon weight="bold" /> JSON
                                     </DropdownMenu.Item>
                                     <DropdownMenu.Item onclick={exportAsCsv}>
-                                        <FileCsv weight="bold" /> CSV
+                                        <FileCsvIcon weight="bold" /> CSV
                                     </DropdownMenu.Item>
                                 </DropdownMenu.Group>
                             </DropdownMenu.Content>

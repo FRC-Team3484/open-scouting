@@ -1,21 +1,35 @@
+<!-- 
+@component
+Handles the filters for the regular data view page
+
+Props:
+    - `filters` (`Filters`) - The current filters from the parent
+-->
 <script lang="ts">
+	import { onMount } from "svelte";
+	import { BuildingsIcon, CalendarIcon, FadersIcon, InfoIcon, PlusCircleIcon, UserIcon, XIcon } from "phosphor-svelte";
+	import { toast } from "svelte-sonner";
+
     import * as Card from "$lib/components/ui/card/index.js";
     import * as Select from "$lib/components/ui/select/index.js";
     import * as AlertDialog from "$lib/components/ui/alert-dialog/index.js";
-	import { Buildings, Calendar, Faders, Info, PlusCircle, Users, X } from "phosphor-svelte";
-	import { onMount } from "svelte";
-	import FilterList from "../FilterList.svelte";
 	import Button from "$lib/components/ui/button/button.svelte";
+
+	import { db } from "$lib/utils/db";
+	import type { Filters as EventListFilters } from "$lib/components/generic/event_list/EventList.svelte";
 	import { getSeasonsSeasonsGet } from "$lib/api/seasons/seasons";
 	import type { GetDataFiltersDataFiltersGetParams, SeasonResponse } from "$lib/api/model";
 	import { getDataFiltersDataFiltersGet } from "$lib/api/data/data";
-	import { toast } from "svelte-sonner";
-	import EventList from "$lib/components/generic/event_list/EventList.svelte";
-	import type { Filters as EventListFilters } from "$lib/components/generic/event_list/EventList.svelte";
 	import BaseDialog from "$lib/components/generic/dialogs/BaseDialog.svelte";
-	import { db } from "$lib/utils/db";
+	import FilterList from "../FilterList.svelte";
+	import EventList from "$lib/components/generic/event_list/EventList.svelte";
+	import type { Filters } from "../../../../routes/data/+page.svelte";
     
-    let { filters = $bindable() } = $props();
+
+    interface Props {
+        filters: Filters
+    }
+    let { filters = $bindable() }: Props = $props();
 
     let seasons: SeasonResponse[] = $state([]);
     let seasons_label = $derived(seasons.find((s) => s.year === filters.year)?.name ?? "Select Year");
@@ -27,6 +41,11 @@
 
     const eventListDefaultFilters: EventListFilters = { showPast: true, showFavorites: false, showCustom: false, showSelected: false, eventType: [] };
 
+    /**
+     * Load all seasons from the server
+     * 
+     * TODO: Should this fetch the local seasons instead?
+     */
     async function loadSeasons() {
         seasons = (await getSeasonsSeasonsGet()).data;
 
@@ -36,6 +55,9 @@
         }
     }
 
+    /**
+     * Based on the current filters, load what other filters are allowed
+     */
     async function loadFilters() {
         if (!filters.year) return;
 
@@ -70,6 +92,9 @@
         await loadSeasons();
     });
 
+    /**
+     * When filters change, get the new list of allowed filters
+     */
     $effect(() => {
         filters.year;
         filters.event_codes;
@@ -78,6 +103,9 @@
         loadFilters();
     });
 
+    /**
+     * Hydrate the event list with the correctly selected event when the page loads
+     */
     $effect(() => {
         const year = filters.year;
         const codes = filters.event_codes;
@@ -99,6 +127,9 @@
         })();
     });
 
+    /**
+     * When an event is selected by the event list, update the event code filters accordingly
+     */
     $effect(() => {
         filters.event_codes = selectedEvents.map(e => e.event_code);
     });
@@ -108,12 +139,12 @@
     <Card.Content>
         <div class="flex flex-col gap-2">
             <div class="flex flex-row gap-2 items-center">
-                <Faders weight="bold" size={24} />
+                <FadersIcon weight="bold" size={24} />
                 <p class="text-lg font-bold"> Filters</p>
 
                 <AlertDialog.Root>
                     <AlertDialog.Trigger>
-                        <Button size="icon-sm" variant="outline"><Info weight="bold" /></Button>
+                        <Button size="icon-sm" variant="outline"><InfoIcon weight="bold" /></Button>
                     </AlertDialog.Trigger>
 
                     <AlertDialog.Content>
@@ -133,7 +164,7 @@
             <div class="flex flex-col gap-2">
                 <div class="flex flex-col gap-2">
                     <div class="flex flex-row gap-1 items-center">
-                        <Calendar weight="bold" size={16} />
+                        <CalendarIcon weight="bold" size={16} />
                         <p>Year</p>
                     </div>
                     <Select.Root type="single" bind:value={filters.year}>
@@ -150,23 +181,23 @@
 
                 <div class="flex flex-col gap-2">
                     <div class="flex flex-row gap-1 items-center">
-                        <Buildings weight="bold" size={16} />
+                        <BuildingsIcon weight="bold" size={16} />
                         <p>Events</p>
                     </div>
 
                     <div class="flex flex-row gap-2 max-h-screen max-w-screen flex-wrap items-center">
                         {#each selectedEvents as event}
                             <div class="flex flex-row gap-1 items-center">
-                                <Button variant="outline" onclick={() => selectedEvents = selectedEvents.filter((e) => e.event_code !== event.event_code)}><X weight="bold" /> {event.name}</Button>
+                                <Button variant="outline" onclick={() => selectedEvents = selectedEvents.filter((e) => e.event_code !== event.event_code)}><XIcon weight="bold" /> {event.name}</Button>
                             </div>
                         {/each}
-                        <Button variant="outline" class="w-auto" onclick={() => eventListOpen = true}><PlusCircle weight="bold" /> Add</Button>
+                        <Button variant="outline" class="w-auto" onclick={() => eventListOpen = true}><PlusCircleIcon weight="bold" /> Add</Button>
                     </div>
                 </div>
 
                 <div class="flex flex-col gap-2">
                     <div class="flex flex-row gap-1 items-center">
-                        <Users weight="bold" size={16} />
+                        <UserIcon weight="bold" size={16} />
                         <p>Teams</p>
                     </div> 
 

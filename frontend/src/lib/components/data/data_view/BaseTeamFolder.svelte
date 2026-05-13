@@ -1,10 +1,29 @@
+<!-- 
+@component
+The base folder for each team section (TeamSummary, TeamScores, TeamCapabilities and TeamOthers)
+
+Allows for collapsing the section, and shows an error if there's no avaliable data
+
+Props:
+    - `title` (`string`) - The title of the section
+    - `children` (`children`) - The child components of the section
+    - `expanded` (`boolean`) - If the section is expanded by default or not
+-->
 <script lang="ts">
 	import { slide } from "svelte/transition";
+	import type { Snippet } from "svelte";
+	import { CaretDownIcon, CaretUpIcon } from "phosphor-svelte";
+
     import * as Card from "$lib/components/ui/card/index.js";
 	import Button from "../../ui/button/button.svelte";
-	import { CaretDown, CaretUp } from "phosphor-svelte";
 
-    let { title, children, expanded = false } = $props();
+
+    interface Props {
+        title: string
+        children: Snippet
+        expanded?: boolean
+    }
+    let { title, children, expanded = false }: Props = $props();
 </script>
 
 <Card.Root>
@@ -14,9 +33,9 @@
 
             <Button size="icon-sm" variant="ghost" onclick={() => expanded = !expanded}>
                 {#if expanded}
-                    <CaretDown weight="bold" />
+                    <CaretDownIcon weight="bold" />
                 {:else}
-                    <CaretUp weight="bold" />
+                    <CaretUpIcon weight="bold" />
                 {/if}
             </Button>
         </div>
