@@ -1,8 +1,24 @@
+<!-- 
+@component
+A number stat display for the event page
+
+Shows scouting information for an event
+
+Props:
+    - `value` (`string | number`) - The value to display
+    - `label` (`string`) - The label for the stat
+    - `color` (`none | green | orange | red`) - The color of the number stat
+-->
 <script lang="ts">
     import * as Card from "$lib/components/ui/card/index.js";
 
-    // color can be none,green,orange,red
-    let { value, label, color = "none" } = $props();
+    
+    interface Props {
+        value: string | number
+        label: string
+        color: "none" | "green" | "orange" | "red"
+    }
+    let { value, label, color = "none" }: Props = $props();
 </script>
 
 <Card.Root class="p-2">

@@ -1,24 +1,42 @@
+<!-- 
+@component
+
+Renders details for a single event on the event page
+
+Props:
+    - `selectedEvent` (`Event[]`) - The event to show info for
+-->
 <script lang="ts">
-    import * as Card from "$lib/components/ui/card/index.js";
+	import { toast } from "svelte-sonner";
+	import { slide } from "svelte/transition";
 	import { ArrowSquareOutIcon, CalendarBlankIcon, ChartBarIcon, DatabaseIcon, PlusCircleIcon, WrenchIcon } from "phosphor-svelte";
+
+    import * as Card from "$lib/components/ui/card/index.js";
 	import Badge from "../ui/badge/badge.svelte";
 	import Separator from "../ui/separator/separator.svelte";
 	import Button from "../ui/button/button.svelte";
-	import NumberStat from "./NumberStat.svelte";
-	import { getEventInfoEventInfoYearEventCodeGet } from "$lib/api/events/events";
-	import { toast } from "svelte-sonner";
-	import type { EventInfoResponse } from "$lib/api/model";
-	import { slide } from "svelte/transition";
 
-    let { selectedEvent } = $props();
+	import { getEventInfoEventInfoYearEventCodeGet } from "$lib/api/events/events";
+	import type { EventInfoResponse } from "$lib/api/model";
+	import type { Event } from "$lib/utils/db";
+	import NumberStat from "./NumberStat.svelte";
+    
+
+    interface Props {
+        selectedEvent: Event[]
+    }
+    let { selectedEvent }: Props = $props();
 
     let scoutingInfo: EventInfoResponse | null = $state(null);
 
-    let event = $derived.by(() => {
+    let event: Event | null = $derived.by(() => {
         if (selectedEvent.length == 0) return null
-        return selectedEvent[0]
+        return selectedEvent[0] ?? null
     });
 
+    /**
+     * Get scouting info for the event (match and pit scouting information)
+     */
     async function getScoutingInfo() {
         scoutingInfo = null;
 
@@ -33,11 +51,14 @@
         })
     }
 
+    /**
+     * When the event changes, get scouting info again
+     */
     $effect(() => {
         event;
 
-        getScoutingInfo();
-    })
+        if (event) getScoutingInfo();
+    });
 </script>
 
 <Card.Root>
