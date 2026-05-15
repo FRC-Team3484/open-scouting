@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ChartBar, Table } from "phosphor-svelte";
+	import { ChartBarIcon, TableIcon } from "phosphor-svelte";
 	import MajorFeature from "../MajorFeature.svelte";
 	import Generic from "./Generic.svelte";
 </script>
@@ -11,13 +11,13 @@
 {#snippet features()}
     <MajorFeature text="Data View Table View">
         {#snippet icon()}
-            <Table weight="bold" />
+            <TableIcon weight="bold" />
         {/snippet}
     </MajorFeature>
 
     <MajorFeature text="Data View Chart View">
         {#snippet icon()}
-            <ChartBar weight="bold" />
+            <ChartBarIcon weight="bold" />
         {/snippet}
     </MajorFeature>
 {/snippet}

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ChartBar, Image, List, Pencil, Table } from "phosphor-svelte";
+	import { ImageIcon, ListIcon, PencilIcon } from "phosphor-svelte";
 	import MajorFeature from "../MajorFeature.svelte";
 	import Generic from "./Generic.svelte";
 </script>
@@ -11,19 +11,19 @@
 {#snippet features()}
     <MajorFeature text="Optional Pit Scouting Questions">
         {#snippet icon()}
-            <List weight="bold" />
+            <ListIcon weight="bold" />
         {/snippet}
     </MajorFeature>
 
     <MajorFeature text="Admin Pit Scouting Presets">
         {#snippet icon()}
-            <Pencil weight="bold" />
+            <PencilIcon weight="bold" />
         {/snippet}
     </MajorFeature>
 
     <MajorFeature text="Offline Pit Scouting Image Uploads">
         {#snippet icon()}
-            <Image weight="bold" />
+            <ImageIcon weight="bold" />
         {/snippet}
     </MajorFeature>
 {/snippet}

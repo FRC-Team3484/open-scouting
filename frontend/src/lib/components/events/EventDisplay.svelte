@@ -37,7 +37,7 @@ Props:
     /**
      * Get scouting info for the event (match and pit scouting information)
      */
-    async function getScoutingInfo() {
+    async function getScoutingInfo(): Promise<void> {
         scoutingInfo = null;
 
         if (event == null) return;

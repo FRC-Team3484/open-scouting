@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Confetti, List, Sidebar, Textbox, Warning } from "phosphor-svelte";
+	import { ConfettiIcon, ListIcon, SidebarIcon, TextboxIcon, WarningIcon } from "phosphor-svelte";
 	import MajorFeature from "../MajorFeature.svelte";
 	import Generic from "./Generic.svelte";
 </script>
@@ -11,31 +11,31 @@
 {#snippet features()}
     <MajorFeature text="2026 Rebuilt Support">
         {#snippet icon()}
-            <Confetti weight="bold" />
+            <ConfettiIcon weight="bold" />
         {/snippet}
     </MajorFeature>
     
     <MajorFeature text="Experimental Build Warning">
         {#snippet icon()}
-            <Warning weight="bold" />
+            <WarningIcon weight="bold" />
         {/snippet}
     </MajorFeature>
 
     <MajorFeature text="Import/Export Scouting Fields">
         {#snippet icon()}
-            <Textbox weight="bold" />
+            <TextboxIcon weight="bold" />
         {/snippet}
     </MajorFeature>
 
     <MajorFeature text="Import/Export Pit Scouting Questions">
         {#snippet icon()}
-            <List weight="bold" />
+            <ListIcon weight="bold" />
         {/snippet}
     </MajorFeature>
 
     <MajorFeature text="Better UI Usability">
         {#snippet icon()}
-            <Sidebar weight="bold" />
+            <SidebarIcon weight="bold" />
         {/snippet}
     </MajorFeature>
 {/snippet}

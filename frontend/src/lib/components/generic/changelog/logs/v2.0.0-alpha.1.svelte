@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ChartLine, CloudSlash, FloppyDisk, List, Lock, Pencil, Phone, Star, Textbox } from "phosphor-svelte";
+	import { ChartLineIcon, CloudSlashIcon, FloppyDiskIcon, ListIcon, LockIcon, PencilIcon, PhoneIcon, StarIcon, TextboxIcon } from "phosphor-svelte";
 	import MajorFeature from "../MajorFeature.svelte";
 	import Generic from "./Generic.svelte";
 </script>
@@ -11,55 +11,55 @@
 {#snippet features()}
     <MajorFeature text="Complete Rebuild">
         {#snippet icon()}
-            <Star weight="bold" />
+            <StarIcon weight="bold" />
         {/snippet}
     </MajorFeature>
     
     <MajorFeature text="Match Scouting">
         {#snippet icon()}
-            <Textbox weight="bold" />
+            <TextboxIcon weight="bold" />
         {/snippet}
     </MajorFeature>
 
     <MajorFeature text="Pit Scouting">
         {#snippet icon()}
-            <List weight="bold" />
+            <ListIcon weight="bold" />
         {/snippet}
     </MajorFeature>
 
     <MajorFeature text="Data View">
         {#snippet icon()}
-            <ChartLine weight="bold" />
+            <ChartLineIcon weight="bold" />
         {/snippet}
     </MajorFeature>
 
     <MajorFeature text="Authentication">
         {#snippet icon()}
-            <Lock weight="bold" />
+            <LockIcon weight="bold" />
         {/snippet}
     </MajorFeature>
 
     <MajorFeature text="Admin Interface">
         {#snippet icon()}
-            <Pencil weight="bold" />
+            <PencilIcon weight="bold" />
         {/snippet}
     </MajorFeature>
 
     <MajorFeature text="Local Data Storage">
         {#snippet icon()}
-            <FloppyDisk weight="bold" />
+            <FloppyDiskIcon weight="bold" />
         {/snippet}
     </MajorFeature>
 
     <MajorFeature text="Offline Support">
         {#snippet icon()}
-            <CloudSlash weight="bold" />
+            <CloudSlashIcon weight="bold" />
         {/snippet}
     </MajorFeature>
 
     <MajorFeature text="Mobile Friendly">
         {#snippet icon()}
-            <Phone weight="bold" />
+            <PhoneIcon weight="bold" />
         {/snippet}
     </MajorFeature>
 {/snippet}

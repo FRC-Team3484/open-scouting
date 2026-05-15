@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { CalendarCheck, ChartBar, FilmScript } from "phosphor-svelte";
+	import { CalendarCheckIcon, ChartBarIcon, FilmScriptIcon } from "phosphor-svelte";
 	import MajorFeature from "../MajorFeature.svelte";
 	import Generic from "./Generic.svelte";
 </script>
@@ -11,19 +11,19 @@
 {#snippet features()}
     <MajorFeature text="Custom Events">
         {#snippet icon()}
-            <CalendarCheck weight="bold" />
+            <CalendarCheckIcon weight="bold" />
         {/snippet}
     </MajorFeature>
     
     <MajorFeature text="Unified Dialog Handler">
         {#snippet icon()}
-            <FilmScript weight="bold" />
+            <FilmScriptIcon weight="bold" />
         {/snippet}
     </MajorFeature>
 
     <MajorFeature text="Direct Data View Links">
         {#snippet icon()}
-            <ChartBar weight="bold" />
+            <ChartBarIcon weight="bold" />
         {/snippet}
     </MajorFeature>
 {/snippet}
