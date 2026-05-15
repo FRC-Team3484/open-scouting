@@ -69,6 +69,7 @@
 							start_date: form.data.event_start_date,
 							end_date: form.data.event_end_date,
 							custom: true,
+							week: null,
 							fetch_time: new Date()
 						});
 
