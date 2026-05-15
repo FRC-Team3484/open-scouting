@@ -1,3 +1,10 @@
+<!-- 
+@component
+Dialog component for creating custom events from the event list
+
+Props:
+	- `open` (`boolean`) - If the dialog is open or not
+-->
 <script lang="ts">
 	import { onMount } from "svelte";
 	import { superForm } from "sveltekit-superforms";
@@ -11,15 +18,18 @@
 	import Label from "$lib/components/ui/label/label.svelte";
 	import Separator from "$lib/components/ui/separator/separator.svelte";
 	
+	import { db } from "$lib/utils/db";
 	import { CreateCustomEventEventCustomSeasonUuidCreatePostBody } from "$lib/zod/events/events";
 	import { getSeasonsSeasonsGet } from "$lib/api/seasons/seasons";
 	import type { SeasonResponse } from "$lib/api/model";
 	import { createCustomEventEventCustomSeasonUuidCreatePost } from "$lib/api/events/events";
-
 	import BaseDialog from "./BaseDialog.svelte";
-	import { db } from "$lib/utils/db";
 
-	let { open = $bindable(false) } = $props();
+
+	interface Props {
+		open: boolean
+	}
+	let { open = $bindable(false) }: Props = $props();
 
 	let seasons: SeasonResponse[] = $state([]);
 	let selectedSeasonLabel: string = $derived(
@@ -83,6 +93,11 @@
 
 	const { form: formData, enhance } = form
 
+	/**
+	 * Gets all the years from the server, then sets the current one to the active season
+	 * 
+	 * TODO: Should this fetch seasons from the local database?
+	 */
 	async function getYears() {
 		const response = (await getSeasonsSeasonsGet()).data
 

@@ -1,10 +1,19 @@
+<!-- 
+@component
+Dialog for adding new match scouting fields on the admin page
+
+Props:
+    - `seasonUuid` (`string`) - The selected season UUID
+    - `gamePieces` (`GamepieceResponse[]`) - Avaliable game pieces from the server
+    - `getStructure` (`() => void`) - The function to get new field data from the server
+-->
 <script lang="ts">
     import { toast } from "svelte-sonner";
     import { untrack } from "svelte";
-	import { PlusCircle, X } from "phosphor-svelte";
-
-	import { addFieldDialogOpen, addFieldEditData, addFieldParentUuid } from "$lib/stores/dialog";
-
+	import { PlusCircleIcon, XIcon } from "phosphor-svelte";
+	import { zod4Client } from "sveltekit-superforms/adapters";
+	import { superForm } from "sveltekit-superforms";
+    
     import * as Dialog from "$lib/components/ui/dialog";
 	import { Input } from "$lib/components/ui/input";
 	import Button from "$lib/components/ui/button/button.svelte";
@@ -12,15 +21,21 @@
     import * as Select from "$lib/components/ui/select";
 	import { Checkbox } from "$lib/components/ui/checkbox";
     import * as Form from "$lib/components/ui/form";
-    
-    import BaseDialog from "./BaseDialog.svelte";
-	import { zod4Client } from "sveltekit-superforms/adapters";
-	import { CreateSeasonFieldFieldsSeasonSeasonUuidCreatePostBody } from "$lib/zod/match-scouting-fields/match-scouting-fields";
-	import { superForm } from "sveltekit-superforms";
 	import Label from "$lib/components/ui/label/label.svelte";
+    
+	import { addFieldDialogOpen, addFieldEditData, addFieldParentUuid } from "$lib/stores/dialog";
+	import { CreateSeasonFieldFieldsSeasonSeasonUuidCreatePostBody } from "$lib/zod/match-scouting-fields/match-scouting-fields";
 	import { createSeasonFieldFieldsSeasonSeasonUuidCreatePost, editSeasonFieldFieldsSeasonSeasonUuidEditFieldUuidPost } from "$lib/api/match-scouting-fields/match-scouting-fields";
+    import BaseDialog from "./BaseDialog.svelte";
+	import type { GamepieceResponse } from "$lib/api/model";
 
-    let { season_uuid, gamePieces, getStructure } = $props();
+
+    interface Props {
+        seasonUuid: string
+        gamePieces: GamepieceResponse[]
+        getStructure: () => void
+    }
+    let { seasonUuid, gamePieces, getStructure }: Props = $props();
 
     const fieldTypes = [
         { name: "string", label: "String" },
@@ -41,13 +56,13 @@
         { name: "ignore", label: "Ignore" },
     ];
 
-    let dialogTitle = $state("Add Field");
-    let dialogDescription = $state("Create a new field");
+    let dialogTitle: string = $state("Add Field");
+    let dialogDescription: string = $state("Create a new field");
     
     const defaultValues = {
         name: "",
         description: "",
-        season_uuid: season_uuid,
+        season_uuid: seasonUuid,
         field_type: "",
         stat_type: "",
         required: false,
@@ -75,13 +90,13 @@
 
             if (form.valid) {
                 if (Object.keys($addFieldEditData).length > 0) {
-                    await editSeasonFieldFieldsSeasonSeasonUuidEditFieldUuidPost(season_uuid, $addFieldEditData.uuid, form.data).then((response) => {
+                    await editSeasonFieldFieldsSeasonSeasonUuidEditFieldUuidPost(seasonUuid, $addFieldEditData.uuid, form.data).then((response) => {
                         if (response.status !== 200) {
                             toast.error("Failed to update field", { duration: 5000 });
                         }
                     });
                 } else {
-                    await createSeasonFieldFieldsSeasonSeasonUuidCreatePost(season_uuid, form.data).then((response) => {
+                    await createSeasonFieldFieldsSeasonSeasonUuidCreatePost(seasonUuid, form.data).then((response) => {
                         if (response.status !== 200) {
                             toast.error("Failed to create field", { duration: 5000 });
                         }
@@ -99,6 +114,10 @@
 
     const { form: formData, enhance } = form
 
+    /**
+     * Set the dialog title and loaded data based 
+     *     on if the user is adding or editing a field
+    */
     $effect(() => {
         if ($addFieldDialogOpen === false) {
             addFieldParentUuid.set("");
@@ -106,7 +125,7 @@
 
             form.reset();
             untrack(() => {
-                $formData.season_uuid = season_uuid;
+                $formData.season_uuid = seasonUuid;
             });
             dialogTitle = "Add Field";
             dialogDescription = "Create a new field";
@@ -116,7 +135,7 @@
             if (data && Object.keys(data).length > 0) {
                 untrack(() => {
                     $formData = data;
-                    $formData.season_uuid = season_uuid;
+                    $formData.season_uuid = seasonUuid;
                     dialogTitle = "Edit Field";
                     dialogDescription = `Editing field '${$formData.name}'`;
                 })
@@ -124,16 +143,22 @@
         }
     });
 
+    /**
+     * When the user changes the game piece, populate it into the form
+     */
     $effect(() => {
-        if (gamePieces && gamePieces.length > 0) {
+        if (gamePieces && gamePieces.length > 0 && gamePieces[0]) {
             $formData.game_piece_uuid = gamePieces[0].uuid;
             defaultValues.game_piece_uuid = gamePieces[0].uuid;
         }
     });
 
+    /**
+     * When the season changes, populate it into the form
+     */
     $effect(() => {
-        $formData.season_uuid = season_uuid;
-        defaultValues.season_uuid = season_uuid;
+        $formData.season_uuid = seasonUuid;
+        defaultValues.season_uuid = seasonUuid;
     })
 </script>
 
@@ -256,14 +281,14 @@
                             $formData.options.choices = [...$formData.options.choices, {id: crypto.randomUUID(), name: document.getElementById("choice_name").value}]
                             ; document.getElementById("choice_name").value = ""
                             }}>
-                            <PlusCircle weight="bold" />Add Choice
+                            <PlusCircleIcon weight="bold" />Add Choice
                         </Button>
 
                         {#each $formData.options.choices as choice, i (choice.id)}
                             <div class="flex flex-row gap-2 items-center justify-between">
                                 <p>{choice.name}</p>
                                 <Button variant="destructive" type="button" onclick={() => $formData.options.choices = $formData.options.choices.filter((_, j) => j !== i)}>
-                                    <X weight="bold" />
+                                    <XIcon weight="bold" />
                                 </Button>
                             </div>
                         {/each}

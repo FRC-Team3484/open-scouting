@@ -511,5 +511,5 @@
 </div>
 
 
-<AddFieldDialog season_uuid={season_uuid} gamePieces={gamePieces} getStructure={getStructure} />
-<AddSectionDialog season_uuid={season_uuid} getStructure={getStructure} />
+<AddFieldDialog seasonUuid={season_uuid} gamePieces={gamePieces} getStructure={getStructure} />
+<AddSectionDialog seasonUuid={season_uuid} getStructure={getStructure} />
