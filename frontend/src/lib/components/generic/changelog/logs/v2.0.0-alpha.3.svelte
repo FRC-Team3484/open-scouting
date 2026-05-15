@@ -28,8 +28,4 @@
     </MajorFeature>
 {/snippet}
 
-{#snippet details()}
-
-{/snippet}
-
-<Generic summary={summary} features={features} details={details} />
+<Generic summary={summary} features={features} />

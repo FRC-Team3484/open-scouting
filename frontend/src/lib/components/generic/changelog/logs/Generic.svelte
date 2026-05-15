@@ -13,9 +13,9 @@ Props:
 
 
     interface Props {
-        summary: Snippet
-        features: Snippet
-        details: Snippet
+        summary?: Snippet
+        features?: Snippet
+        details?: Snippet
     }
     let { summary, features, details }: Props = $props();
 </script>
