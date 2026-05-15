@@ -3,10 +3,36 @@ import { sveltekit } from '@sveltejs/kit/vite';
 import { SvelteKitPWA } from '@vite-pwa/sveltekit';
 import { defineConfig } from 'vite';
 
+function restartOnChangelogChange() {
+	return {
+		name: "restart-on-changelog-change",
+
+		configureServer(server) {
+			const logsPath =
+				"src/lib/components/generic/changelog/logs/";
+
+			server.watcher.on("add", async file => {
+				if (file.includes(logsPath)) {
+					console.log("A new changelog file was created. Restarting server.");
+					await server.restart();
+				}
+			});
+
+			server.watcher.on("unlink", async file => {
+				if (file.includes(logsPath)) {
+					console.log("A new changelog file was deleted. Restarting server.");
+					await server.restart();
+				}
+			});
+		}
+	};
+}
+
 export default defineConfig({
 	plugins: [
 		tailwindcss(),
 		sveltekit(),
+		restartOnChangelogChange(),
 		SvelteKitPWA({
 			registerType: 'autoUpdate',
 			devOptions: { enabled: false, type: 'module' },
