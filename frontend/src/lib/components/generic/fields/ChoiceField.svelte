@@ -1,8 +1,27 @@
+<!-- 
+@component
+Match scouting field with a single choice input from a given list of choices
+
+TODO: Get a proper response schema for field.options.choices
+
+Props:
+    - `field` (`MatchScoutingFieldResponse`) - Data for this field
+    - `editable` (`boolean`) - If this field is editable or not
+    - `getFields` (`() => void`) - Function for fetching field data
+-->
 <script lang="ts">
 	import * as Select from "$lib/components/ui/select/index.js";
+
+	import type { MatchScoutingFieldResponse } from "$lib/api/model";
 	import BaseField from "./BaseField.svelte";
 
-	let { field, editable, getFields } = $props();
+
+	interface Props {
+        field: MatchScoutingFieldResponse
+        editable: boolean
+        getFields: () => void
+    }
+	let { field, editable, getFields }: Props = $props();
 
 	let value = $state("na");
 

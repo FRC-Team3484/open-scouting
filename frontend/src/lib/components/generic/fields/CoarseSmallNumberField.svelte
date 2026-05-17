@@ -1,12 +1,32 @@
+<!-- 
+@component
+Match scouting field with a coarse integer input
+
+"Coarse" referrs to a integer value that does not need to be exact. 
+This field provides -10 / -5 / -1 / +1 / +5 / +10 buttons.
+Initally introduced for scouting Fuel in 2026.
+
+Props:
+    - `field` (`MatchScoutingFieldResponse`) - Data for this field
+    - `editable` (`boolean`) - If this field is editable or not
+    - `getFields` (`() => void`) - Function for fetching field data
+-->
 <script lang="ts">
+	import { MinusIcon, PlusIcon } from "phosphor-svelte";
+
 	import Button from "$lib/components/ui/button/button.svelte";
 	import Input from "$lib/components/ui/input/input.svelte";
-	import { Minus, Plus } from "phosphor-svelte";
-	import BaseField from "./BaseField.svelte";
 
-    export let field: any;
-    export let editable: boolean = false;
-    export let getFields: () => void = () => {};
+	import type { MatchScoutingFieldResponse } from "$lib/api/model";
+	import BaseField from "./BaseField.svelte";
+    
+
+    interface Props {
+        field: MatchScoutingFieldResponse
+        editable: boolean
+        getFields: () => void
+    }
+    let { field, editable, getFields }: Props = $props();
 </script>
 
 <BaseField field={field} editable={editable} getFields={getFields}>
@@ -31,7 +51,7 @@
                     const input = document.querySelector(`input[name="${field.uuid}"]`) as HTMLInputElement | null;
                     input?.stepUp(1);
                 }}>
-                <Plus weight="bold" /> 1
+                <PlusIcon weight="bold" /> 1
             </Button>
             <Button
                 class="touch-manipulation"
@@ -41,7 +61,7 @@
                     const input = document.querySelector(`input[name="${field.uuid}"]`) as HTMLInputElement | null;
                     input?.stepUp(5);
                 }}>
-                <Plus weight="bold" /> 5
+                <PlusIcon weight="bold" /> 5
             </Button>
             <Button
                 class="touch-manipulation"
@@ -51,7 +71,7 @@
                     const input = document.querySelector(`input[name="${field.uuid}"]`) as HTMLInputElement | null;
                     input?.stepUp(10);
                 }}>
-                <Plus weight="bold" /> 10
+                <PlusIcon weight="bold" /> 10
             </Button>
         </div>
 
@@ -64,7 +84,7 @@
                     const input = document.querySelector(`input[name="${field.uuid}"]`) as HTMLInputElement | null;
                     input?.stepDown(1);
                 }}>
-                <Minus weight="bold" /> 1
+                <MinusIcon weight="bold" /> 1
             </Button>
             <Button
                 class="touch-manipulation"
@@ -74,7 +94,7 @@
                     const input = document.querySelector(`input[name="${field.uuid}"]`) as HTMLInputElement | null;
                     input?.stepDown(5);
                 }}>
-                <Minus weight="bold" /> 5
+                <MinusIcon weight="bold" /> 5
             </Button>
             <Button
                 class="touch-manipulation"
@@ -84,7 +104,7 @@
                     const input = document.querySelector(`input[name="${field.uuid}"]`) as HTMLInputElement | null;
                     input?.stepDown(10);
                 }}>
-                <Minus weight="bold" /> 10
+                <MinusIcon weight="bold" /> 10
             </Button>
         </div>
     </div>

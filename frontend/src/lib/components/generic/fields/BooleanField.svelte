@@ -1,10 +1,29 @@
+<!-- 
+@component
+Match scouting field with a boolean input
+
+Uses a "fake" checkbox to ensure there's always either a true or false value added to the form
+
+Props:
+    - `field` (`MatchScoutingFieldResponse`) - Data for this field
+    - `editable` (`boolean`) - If this field is editable or not
+    - `getFields` (`() => void`) - Function for fetching field data
+-->
 <script lang="ts">
     import Switch from "$lib/components/ui/switch/switch.svelte";
+
+	import type { MatchScoutingFieldResponse } from "$lib/api/model";
 	import BaseField from "./BaseField.svelte";
 
-    let { field, editable, getFields } = $props();
 
-    let checked = $state(false);
+    interface Props {
+        field: MatchScoutingFieldResponse
+        editable: boolean
+        getFields: () => void
+    }
+    let { field, editable, getFields }: Props = $props();
+
+    let checked: boolean = $state(false);
 </script>
 
 <BaseField field={field} editable={editable} getFields={getFields}>
