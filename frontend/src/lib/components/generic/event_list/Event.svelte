@@ -1,16 +1,48 @@
+<!-- 
+@component
+Renders info for each event on the event list
+
+TODO: Get a proper interface for user
+
+Props:
+    - `event` (`Event`) - The event that is displayed
+    - `favoriteEvents` (`string[]`) - The user's favorite events, from the parent
+    - `user` (`unknown`) - The user from the parent
+    - `favoriteEvent` (`(event: Event) => Promise<void>`) - The function to favorite an event
+    - `selectEvent` (`(event: Event) => void`) - The function to select an event
+    - `deselectEvent` (`(event: Event) => void`) - The function to deselect an event
+    - `selectedEvents` (`Event[]`) - All selected events from the parent
+-->
 <script lang="ts">
 	import { scale, slide } from "svelte/transition";
+	import { ArrowSquareOutIcon, CalendarIcon, CheckSquareIcon, InfoIcon, MapPinIcon, SquareIcon, StarIcon, WrenchIcon } from "phosphor-svelte";
 
 	import Badge from "$lib/components/ui/badge/badge.svelte";
 	import Button from "$lib/components/ui/button/button.svelte";
     import * as Card from "$lib/components/ui/card/index.js";
 	import Skeleton from "$lib/components/ui/skeleton/skeleton.svelte";
-	import { ArrowRightIcon, ArrowSquareOutIcon, CalendarIcon, CheckSquareIcon, InfoIcon, MapPinIcon, SquareIcon, StarIcon, WrenchIcon } from "phosphor-svelte";
+	import type { Event } from "$lib/utils/db";
 
-    // Props
-    let { event, favoriteEvents, user, favoriteEvent, selectEvent, deselectEvent, selectedEvents, multiple } = $props();
-
-    // Variables
+    
+    interface Props {
+        event: Event
+        favoriteEvents: string[]
+        user: unknown
+        favoriteEvent: (event: Event) => Promise<void>
+        selectEvent: (event: Event) => void
+        deselectEvent: (event: Event) => void
+        selectedEvents: Event[]
+    }
+    let { 
+        event, 
+        favoriteEvents, 
+        user, 
+        favoriteEvent, 
+        selectEvent, 
+        deselectEvent, 
+        selectedEvents, 
+    }: Props = $props();
+    
     let selected = $derived.by(() => {
         if (!selectedEvents) return false;
 
@@ -19,9 +51,6 @@
             e.event_code === event.event_code
         );
     });
-
-    // Functions
-    
 </script>
 
 <Card.Root>
