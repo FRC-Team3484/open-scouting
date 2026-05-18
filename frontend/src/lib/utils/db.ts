@@ -3,7 +3,9 @@ import Dexie from 'dexie';
 // Interfaces for tables
 export interface MatchScoutingData {
     uuid: string
-    data: any
+    data: { 
+        [key: string]: string 
+    }
     user_uuid: string
     year: number
     team_number: number
@@ -18,13 +20,62 @@ export interface MatchScoutingData {
     event_end_date: string
     synced: boolean
 }
+export interface SeasonMatchScoutingField {
+    uuid: string
+    name: string
+    description: string
+    field_type: string
+    stat_type: string
+    game_piece_uuid: string | null
+    required: boolean
+    options: {
+        choices: {
+            id: string
+            name: string
+        }[]        
+        default: number
+        maximum: number
+        minimum: number
+    }
+    order: number
+    organization_id: string
+    fields: SeasonMatchScoutingField[]
+}
+export interface SeasonGamePiece {
+    uuid: string
+    season: string // uuid
+    name: string
+    created_at: Date
+}
+export interface SeasonPitScoutingQuestion {
+    uuid: string
+    season: string // uuid
+    name: string
+    description: string
+    required: boolean
+    field_type: string
+    options: {
+        choices: {
+            id: string
+            name: string
+        }[]
+    }
+    order: number
+    organization: string | null // uuid
+    created_at: Date
+}
 export interface Season {
     uuid: string
     year: number
-    fields: any
-    game_pieces: any
-    pit_scouting_questions: any
+    fields: SeasonMatchScoutingField[]
+    game_pieces: SeasonGamePiece[]
+    pit_scouting_questions: SeasonPitScoutingQuestion[]
     fetch_time: Date
+}
+// Create a version of Season without recursive fields to keep dexie from being unhappy
+export interface SeasonStored
+    extends Omit<Season, "fields"> {
+    fields: any[];
 }
 export interface Event {
     uuid: string
@@ -40,9 +91,16 @@ export interface Event {
     custom: boolean
     fetch_time: Date
 }
+export interface PitScoutingAnswer {
+    uuid: string
+    field_uuid: string
+    value: string | number | boolean
+    username: string
+    created_at: string
+}
 export interface PitScoutingData {
     uuid: string
-    answers: any
+    answers: PitScoutingAnswer[]
     nickname: string
     team_number: number
     year: number
@@ -57,7 +115,7 @@ export interface PitScoutingData {
 }
 export interface File {
     uuid: string
-    data: any
+    data: File
     url: string
     synced: boolean
 }
@@ -65,7 +123,7 @@ export interface File {
 // Create DB
 export class OpenScoutingDB extends Dexie {
     match_scouting!: Dexie.Table<MatchScoutingData>;
-    season_data!: Dexie.Table<Season>;
+    season_data!: Dexie.Table<SeasonStored>;
     event!: Dexie.Table<Event>;
     pit_scouting!: Dexie.Table<PitScoutingData>;
     files!: Dexie.Table<File>;
