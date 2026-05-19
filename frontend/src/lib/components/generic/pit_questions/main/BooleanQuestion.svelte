@@ -30,7 +30,7 @@ Props:
     let { pit, question, answers, user }: Props = $props();
 
     let checked = $state(false);
-    let resetBase;
+    let baseQuestion: ReturnType<typeof BaseQuestion>;
 
     /**
      * Add the typed answer to this question
@@ -43,11 +43,11 @@ Props:
         });
 
         checked = false;
-        resetBase();
+        baseQuestion.reset();
     }
 </script>
 
-<BaseQuestion question={question} answers={answers} bind:reset={resetBase}>
+<BaseQuestion question={question} answers={answers} bind:this={baseQuestion}>
     <div class="flex flex-row gap-2 items-center">
         <!-- Use a hidden input to return a boolean value always, instead of only when checked if using a checkbox -->
         <input type="hidden" name={question.uuid} value={checked ? "true" : "false"} />

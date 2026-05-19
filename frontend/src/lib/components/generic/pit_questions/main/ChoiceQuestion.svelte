@@ -29,7 +29,7 @@ Props:
         question.options.choices.find((o) => o.id === value) ?? { id: "na", name: "N/A" }
     )
 
-    let resetBase;
+    let baseQuestion: ReturnType<typeof BaseQuestion>;
 
     /**
      * Add the typed answer to this question
@@ -42,11 +42,11 @@ Props:
         });
 
         value = "na";
-        resetBase();
+        baseQuestion.reset();
     }
 </script>
 
-<BaseQuestion question={question} answers={answers} bind:reset={resetBase}>
+<BaseQuestion question={question} answers={answers} bind:this={baseQuestion}>
     <div class="flex flex-row gap-2 items-center">
 
         <Select.Root type="single" name={question.uuid} required={question.required} bind:value>

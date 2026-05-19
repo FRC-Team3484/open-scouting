@@ -3,12 +3,10 @@
 Base pit scouting question component for the actual pit scouting page
 
 TODO: Create a proper type interface for pit scouting answers from the db
-TODO: Change how the reset function works to be more Svelte-like
 
 Props:
     - `question` (`SeasonPitScoutingQuestion`) - Data for the question
     - `answers` (`PitScoutingAnswer[]`) - Answers for this question
-    - `reset` (`() => void`) - Internal, bindable function, used by children questions to reset their mode
     - `children` (`Snippet`) - Child components to render
 -->
 <script lang="ts">
@@ -25,16 +23,20 @@ Props:
     interface Props {
         question: SeasonPitScoutingQuestion
         answers: PitScoutingAnswer[]
-        reset: () => void
         children: Snippet
     }
-    let { question, answers, reset = $bindable(), children }: Props = $props();
+    let { question, answers, children }: Props = $props();
 
     type Mode = "none" | "view" | "add";
 
     let mode: Mode = $state("none");
 
-    reset = () => {
+    /**
+     * Close any open menus on the component
+     * 
+     * Called by other components using this one as a base
+     */
+    export function reset() {
         mode = "none";
     }
 </script>

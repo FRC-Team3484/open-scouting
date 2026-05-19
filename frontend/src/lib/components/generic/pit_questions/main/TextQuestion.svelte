@@ -25,7 +25,8 @@ Props:
     let { pit, question, answers, user }: Props = $props();
 
     let value = $state("");
-    let resetBase: () => void;
+    let baseQuestion: ReturnType<typeof BaseQuestion>;
+
 
     /**
      * Add the typed answer to this question
@@ -38,11 +39,11 @@ Props:
         });
 
         value = "";
-        resetBase();
+        baseQuestion.reset();
     }
 </script>
 
-<BaseQuestion question={question} answers={answers} bind:reset={resetBase}>
+<BaseQuestion question={question} answers={answers} bind:this={baseQuestion}>
     <div class="flex flex-row gap-2 items-center">
         <Input type="text" placeholder={question.name} bind:value />
         <Button onclick={addAnswer}>Save</Button>
