@@ -1,16 +1,26 @@
+<!-- 
+@component
+Navigation bar for the entire application
+
+Changes to a smaller version with an expandable side panel on smaller screens.
+Shows a "Get Started" button on the start page.
+Displays information provided in MatchScoutingMatchInfo on the match scouting page.
+-->
 <script lang="ts">
-	import Button from "../ui/button/button.svelte";
-	import Logo from "./Logo.svelte";
-	import { ArrowRight, List } from "phosphor-svelte";
-	import Separator from "../ui/separator/separator.svelte";
-	import User from "./User.svelte";
-	import ExperimentalWarning from "./ExperimentalWarning.svelte";
-    import * as Sheet from "$lib/components/ui/sheet/index.js";
 	import { page } from "$app/state";
 	import { fade, slide } from "svelte/transition";
-	import { matchScoutingMatchNumber, matchScoutingTeamNumber, matchScoutingTeamPosition } from "$lib/stores/match_scouting";
+	import { ArrowRightIcon, ListIcon } from "phosphor-svelte";
+
+	import Button from "../ui/button/button.svelte";
+    import * as Sheet from "$lib/components/ui/sheet/index.js";
 	import Badge from "../ui/badge/badge.svelte";
     import * as Card from "$lib/components/ui/card/index.js"
+	import Separator from "../ui/separator/separator.svelte";
+
+	import { matchScoutingMatchNumber, matchScoutingTeamNumber, matchScoutingTeamPosition } from "$lib/stores/match_scouting";
+	import Logo from "./Logo.svelte";
+	import User from "./User.svelte";
+	import ExperimentalWarning from "./ExperimentalWarning.svelte";
 </script>
 
 {#snippet matchScoutingInfo()}
@@ -71,7 +81,7 @@
     <div class="flex flex-row gap-2 items-center">
         <Sheet.Root>
             <Sheet.Trigger class="p-2 text-md border-1 border-border rounded-md bg-input/30">
-                <List weight="bold"/>
+                <ListIcon weight="bold"/>
             </Sheet.Trigger>
             <Sheet.Content class="flex flex-col gap-4 p-4 justify-between" side="left">
                 <div class="flex flex-col gap-4">
@@ -87,7 +97,7 @@
                     <Sheet.Close><Button variant="outline" href="/events" class="w-full">Events</Button></Sheet.Close>
                 </div>
 
-                <ExperimentalWarning/>
+                <ExperimentalWarning />
             </Sheet.Content>
         </Sheet.Root>
         <ExperimentalWarning size="sm" />
@@ -97,7 +107,7 @@
 
     {#if page.url.pathname == "/"}
         <div transition:slide={{ axis: "x" }}>
-            <div transition:fade><Button variant="default" href="/start"><ArrowRight weight="bold" /> Get Started</Button></div>
+            <div transition:fade><Button variant="default" href="/start"><ArrowRightIcon weight="bold" /> Get Started</Button></div>
         </div>
     {/if}
 </div>

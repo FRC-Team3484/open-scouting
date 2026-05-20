@@ -1,10 +1,19 @@
+<!-- 
+@component
+Handles the submit button for match scouting
+-->
 <script lang="ts">
+	import { toast } from "svelte-sonner";
+	import { CheckCircleIcon, TrashIcon, XCircleIcon } from "phosphor-svelte";
+
     import * as Card from "$lib/components/ui/card/index.js";
     import * as Dialog from "$lib/components/ui/dialog/index.js";
-	import { CheckCircleIcon, TrashIcon, XCircleIcon } from "phosphor-svelte";
     import Button from "../ui/button/button.svelte";
-	import { toast } from "svelte-sonner";
 
+
+    /**
+     * Reset the form fields
+     */
     function resetForm() {
         const form: HTMLFormElement | null = document.querySelector("#match-scouting-form");
         if (form) {

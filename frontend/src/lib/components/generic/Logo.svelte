@@ -1,13 +1,24 @@
+<!-- 
+@component
+Generic component for showing the Open Scouting logo
+
+Props:
+    - `text` (`boolean`) - If "Open Scouting" logo text should be shown
+    - `style` (`"tiny" | "small" | "normal"`) - The style of logo to show
+    - `href` (`string | null`) - The link to open when clicked. If null, it's not clickable
+    - `alignment` (`"column" | "row" | "auto"`) - The alignment of the component
+-->
 <script lang="ts">
     import icon_rounded from "$lib/assets/icon_rounded.png"
 
-    type Style = "tiny" | "small" | "normal";
-    type alignment = "column" | "row" | "auto";
 
-    export let text: boolean = true;
-    export let style: Style = "normal";
-    export let href: string | null = null;
-    export let alignment: alignment = "auto";
+    interface Props {
+        text?: boolean
+        style?: "tiny" | "small" | "normal"
+        href?: string | null
+        alignment?: "column" | "row" | "auto"
+    }
+    let { text = true, style = "normal", href = null, alignment = "auto"}: Props = $props();
 </script>
 
 <div class={`flex items-center ${alignment === "auto" ? "flex-col md:flex-row" : (alignment === "row" ? "flex-row" : "flex-col")} gap-4`}>

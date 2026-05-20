@@ -1,11 +1,26 @@
+<!-- 
+@component
+Main component for rendering match scouting fields
+
+Used in both the admin and regular pages.
+
+TODO: Add a proper interface for the user object
+TODO: getSeasonFieldsFieldsSeasonSeasonUuidGet needs a proper response schema
+TODO: getMatchScoutingFieldPresetsFieldsGetPresetsGet needs a proper response schema
+TODO: Normalize the interface to use for game pieces
+
+Props:
+    - `season_uuid` (`string`) - The uuid of the season to render fields for
+    - `year` (`number`) - The year to render fields for
+    - `event_data` (`Event`) - The current event that is being scouted
+    - `editable` (`boolean`) - If the fields are editable or not
+-->
 <script lang="ts">
 	import { onMount } from "svelte";
 	import { flip } from "svelte/animate";
 	import { toast } from "svelte-sonner";
-	import { dragHandleZone, overrideItemIdKeyNameBeforeInitialisingDndZones } from "svelte-dnd-action";
-	import { CircleNotch, DownloadSimple, Export, FolderPlus, Info, PlusCircle, Trash, Warning, XCircle } from "phosphor-svelte";
-
-    import { addFieldDialogOpen, addSectionDialogOpen } from "$lib/stores/dialog";
+	import { dragHandleZone } from "svelte-dnd-action";
+	import { CircleNotchIcon, DownloadSimpleIcon, ExportIcon, FolderPlusIcon, InfoIcon, PlusCircleIcon, TrashIcon, WarningIcon, XCircleIcon } from "phosphor-svelte";
 
 	import Skeleton from "../ui/skeleton/skeleton.svelte";
     import * as Card from "$lib/components/ui/card/index.js";
@@ -16,14 +31,15 @@
 	import Input from "../ui/input/input.svelte";
 	import * as Alert from "../ui/alert/index.js";
 
-	import { db } from "$lib/utils/db";
+	import { db, type Event as EventType, type SeasonGamePiece, type SeasonMatchScoutingField } from "$lib/utils/db";
 	import { validateTokenOnline } from "$lib/utils/user";
 	import { pushMatchScoutingData } from "$lib/utils/sync";
+    import { addFieldDialogOpen, addSectionDialogOpen } from "$lib/stores/dialog";
     
 	import { clearSeasonFieldsFieldsSeasonSeasonUuidClearDelete, createSeasonFieldFieldsSeasonSeasonUuidCreatePost, getMatchScoutingFieldPresetsFieldsGetPresetsGet, getSeasonFieldsFieldsSeasonSeasonUuidGet, moveMatchScoutingFieldsFieldsSeasonUuidReorderPatch } from "$lib/api/match-scouting-fields/match-scouting-fields";
 	import { getSeasonGamepiecesGamepiecesSeasonSeasonUuidGet } from "$lib/api/gamepieces/gamepieces";
 	import type { GamepieceResponse } from "$lib/api/model";
-
+    
 	import StringField from "./fields/StringField.svelte";
 	import LargeNumberField from "./fields/LargeNumberField.svelte";
 	import SmallNumberField from "./fields/SmallNumberField.svelte";
@@ -34,32 +50,24 @@
 
 	import AddSectionDialog from "./dialogs/AddSectionDialog.svelte";
 	import AddFieldDialog from "./dialogs/AddFieldDialog.svelte";
-	import MathScoutingSubmit from "./MathScoutingSubmit.svelte";
+	import MatchScoutingSubmit from "./MatchScoutingSubmit.svelte";
 	import MatchScoutingTeamInfo from "./MatchScoutingMatchInfo.svelte";
 	import CoarseSmallNumberField from "./fields/CoarseSmallNumberField.svelte";
         
-    let matchScoutingTeamInfoChild;
+    
+    interface Props {
+        season_uuid: string
+        year: number
+        event_data?: EventType | null
+        editable: boolean
+    }
+    let { season_uuid, year, event_data = null, editable }: Props = $props();
 
-    type Node = {
-        id: string;
-        type: "section" | "field";
-        name: string;
-        order: number;
-        children?: Node[]; // only for sections
-        field_type?: string;
-        stat_type?: string;
-        game_piece_uuid?: string;
-        required?: boolean;
-        options?: any;
-    };
-
-    let fields: Node[] = $state([]);
-    let gamePieces: GamepieceResponse[] = $state([]);
-
-    type ChoiceType = {id: string; name: string }[];
-    let choices: ChoiceType[] = [];
-
+    let fields: SeasonMatchScoutingField[] = $state([]);
+    let gamePieces: SeasonGamePiece[] | GamepieceResponse[] = $state([]);
+    
     let user;
+    let matchScoutingTeamInfoChild: ReturnType<typeof MatchScoutingTeamInfo>;
 
     let fieldFile = $state(null);
     let presets = $state([]);
@@ -67,10 +75,11 @@
     let selectedPreset = $derived(
         presets.find(p => p.name === selectedPresetName) ?? null
     );
-
-    let { season_uuid, year, event_data = {}, editable } = $props();
-
-    async function getStructure() {
+    
+    /**
+     * Get the structure of fields and sections from the server if editing, and from the offline cache otherwise
+     */
+    async function getStructure(): Promise<void> {
         if (editable) {
             // TODO: this needs a proper response schema
             fields = (await getSeasonFieldsFieldsSeasonSeasonUuidGet(season_uuid)).data;
@@ -82,7 +91,10 @@
         fields = normalizeOrders(fields);
     }
 
-    async function getGamePieces() {
+    /**
+     * Get game pieces from the server if editing, and from the offline cache otherwise
+     */
+    async function getGamePieces(): Promise<void> {
         if (editable) {
             await getSeasonGamepiecesGamepiecesSeasonSeasonUuidGet(season_uuid).then((response) => {
                 if (response.status === 200) {
@@ -91,11 +103,22 @@
             });
         } else {
             const season = await db.season_data.get(season_uuid);
-            gamePieces = season?.game_pieces
+            if (season?.game_pieces) {
+                gamePieces = season?.game_pieces
+            } else {
+                console.warn("Could not get game pieces from season data");
+            }
         }
     }
 
-    async function submit(event: Event) {
+    /**
+     * Submit match scouting data to the local cache
+     * 
+     * Then, attempt to push it to the server
+     * 
+     * @param event Click event
+     */
+    async function submit(event: Event): Promise<void> {
         event.preventDefault();
 
         const form = event.currentTarget as HTMLFormElement;
@@ -131,10 +154,6 @@
             }
         }
 
-        // Exclude answers with an empty string as a value
-
-        console.log(filteredFields);
-
         await db.match_scouting.add({
             uuid: crypto.randomUUID(),
             data: filteredFields,
@@ -162,7 +181,6 @@
             
             scrollTo({ top: 0, behavior: "smooth" });
         }, 100);
-    
 
         await pushMatchScoutingData().catch((error) => {
             console.warn("Failed to upload match scouting data", error);
@@ -170,7 +188,10 @@
         });
     }
 
-    function exportFields() {
+    /**
+     * Export field data as JSON
+     */
+    function exportFields(): void {
         const json = JSON.stringify(fields, null, 2);
         const blob = new Blob([json], { type: "application/json" });
         const url = URL.createObjectURL(blob);
@@ -181,7 +202,10 @@
         URL.revokeObjectURL(url);
     }
 
-    async function getPresets() {
+    /**
+     * Get match scouting field presets from the server
+     */
+    async function getPresets(): Promise<void> {
         // TODO: this needs a proper response schema
         await getMatchScoutingFieldPresetsFieldsGetPresetsGet().then((response) => {
             if (response.status === 200) {
@@ -190,7 +214,15 @@
         });
     }
 
-    async function createFieldRecursive(field, parentUuid: string) {
+    /**
+     * Given a field, recursively create it and any of it's children on the server
+     * 
+     * Used when importing fields from a preset
+     * 
+     * @param field The field to create
+     * @param parentUuid The UUID of the parent, if recurring
+     */
+    async function createFieldRecursive(field: SeasonMatchScoutingField, parentUuid: string | null = null): Promise<void> {
         const body = {
             uuid: field.uuid,
             name: field.name,
@@ -200,7 +232,7 @@
             stat_type: field.stat_type,
             required: field.required,
             order: field.order,
-            organization_uuid: field.organization_uuid ?? null as string | null,
+            organization_uuid: field.organization_id ?? null as string | null,
             parent_uuid: parentUuid ?? null as string | null,
             options: field.options ?? {
                 choices: [],
@@ -227,11 +259,17 @@
 
         }).catch((error) => {
             console.error("Failed to create field:", field.name, error);
+            toast.error(`Failed to create field '${field.name}'`);
             return;
         });
     }
 
-    async function importFieldsToServer(newFields) {
+    /**
+     * Given a list of new fields that the admin is importing, upload them to the server and fetch the new ones
+     * 
+     * @param newFields The fields to import
+     */
+    async function importFieldsToServer(newFields: SeasonMatchScoutingField[]): void {
         await clearSeasonFieldsFieldsSeasonSeasonUuidClearDelete(season_uuid).then(async (response) => {
             if (response.status === 200) {
                 for (const field of newFields) {
@@ -245,8 +283,12 @@
         });
     }
 
-    function importAsFile() {
-        const file = fieldFile[0];
+    /**
+     * Import match scouting fields from JSON
+     */
+    function importAsFile(): void {
+        if (!fieldFile) {toast.error("No file selected"); return;}
+        const file: File = fieldFile[0];
 
         if (file && file.type === "application/json") {
             const reader = new FileReader();
@@ -274,14 +316,22 @@
         }
     }
 
-    function importAsPreset() {
+    /**
+     * Import the selected field preset to the server
+     */
+    function importAsPreset(): void {
         if (selectedPreset) {
             importFieldsToServer(selectedPreset.preset);
         }
     }
 
-    function normalizeOrders(items) {
-        return items.map((item, index) => ({
+    /**
+     * Given a list of fields, normalize their order attribute to match their order in the list
+     * 
+     * @param fields The fields to normalize
+     */
+    function normalizeOrders(fields: SeasonMatchScoutingField[]): SeasonMatchScoutingField[] {
+        return fields.map((item, index) => ({
             ...item,
             order: index,
             fields: Array.isArray(item.fields)
@@ -290,15 +340,34 @@
         }));
     }
 
-    function handleDndConsider(e) {
+    /**
+     * Handler for when a drag item is being hovered over a drop area
+     * 
+     * @param e Drag and drop event
+     */
+    function handleDndConsider(e: Event) {
         fields = e.detail.items;
     }
 
-    async function handleDndFinalize(e) {
+    /**
+     * Handler for when a drag item has been released into a drop area
+     * 
+     * @param e Drag and drop event
+     */
+    async function handleDndFinalize(e: Event) {
         fields = normalizeOrders(e.detail.items);
         await updateOrders();
     }
 
+    /**
+     * Recursively flatten fields into fields with no child fields
+     * 
+     * Used when updating field orders to the server
+     * 
+     * @param fields The fields to flatten
+     * @param result If recursing, the results so far
+     * @param parent_uuid If recursing, the parent UUID
+     */
     function flattenFields(fields, result = [], parent_uuid = null) {
         for (const item of fields) {
             result.push({
@@ -314,6 +383,9 @@
         return result;
     }
 
+    /**
+     * Update the order attribute for the current fields
+     */
     async function updateOrders() {
         const flatFields = flattenFields(fields);
 
@@ -324,6 +396,9 @@
         });
     }
 
+    /**
+     * Wait 100ms for season_uuid to populate before intializing the component
+     */
     onMount(async () => {   
         while (!season_uuid) {
             await new Promise(resolve => setTimeout(resolve, 100));
@@ -334,6 +409,9 @@
         user = await validateTokenOnline();
     });
 
+    /**
+     * When season_uuid or year changes, initalize the component again
+     */
     $effect(() => {
         season_uuid;
         year;
@@ -345,34 +423,34 @@
 
 <div class="flex flex-col gap-4">
     {#if season_uuid == ""}
-        <Skeleton class="w-128 h-32" />
-        <Skeleton class="w-128 h-32" />
-        <Skeleton class="w-128 h-32" />
+        <Skeleton class="w-lg h-32" />
+        <Skeleton class="w-lg h-32" />
+        <Skeleton class="w-lg h-32" />
     {:else}
         {#if editable}
             <Card.Root class="w-auto min-w-64">
                 <Card.Content>
                     <div class="flex flex-col gap-4">
-                        <Button onclick={() => addFieldDialogOpen.set(true)}><PlusCircle weight="bold" /> Add Field</Button>
-                        <Button onclick={() => addSectionDialogOpen.set(true)}><FolderPlus weight="bold" /> Add Section</Button>
+                        <Button onclick={() => addFieldDialogOpen.set(true)}><PlusCircleIcon weight="bold" /> Add Field</Button>
+                        <Button onclick={() => addSectionDialogOpen.set(true)}><FolderPlusIcon weight="bold" /> Add Section</Button>
                         <div class="flex flex-row gap-2 flex-wrap">
                             <Dialog.Root onOpenChange={getPresets}>
                                 <Dialog.Trigger>
-                                    <Button variant="outline" class="w-full"><DownloadSimple weight="bold" /> Import Fields</Button>
+                                    <Button variant="outline" class="w-full"><DownloadSimpleIcon weight="bold" /> Import Fields</Button>
                                 </Dialog.Trigger>
                                 <Dialog.Content>
                                     <Dialog.Title>Import Field Data</Dialog.Title>
                                     <Dialog.Description>Import Field Data either from a JSON file, or from a preset provided by the server.</Dialog.Description>
                                     
                                     <Alert.Root variant="destructive">
-                                        <Warning weight="bold" />
+                                        <WarningIcon weight="bold" />
                                         <Alert.Description>All existing field data for this season will be permanently overwritten</Alert.Description>
                                     </Alert.Root>
 
                                     <p class="font-bold">Upload a JSON file:</p>
                                     <div class="flex flex-row gap-2 flex-wrap">
                                         <Input type="file" accept="application/json" id="presetfile" bind:files={fieldFile} />
-                                        <Button variant="outline" size="icon-sm" onclick={() => fieldFile = null}><Trash weight="bold" /></Button>
+                                        <Button variant="outline" size="icon-sm" onclick={() => fieldFile = null}><TrashIcon weight="bold" /></Button>
 
                                         <Dialog.Close>
                                             <Button onclick={() => importAsFile()} disabled={fieldFile == null}>Import JSON File</Button>
@@ -382,7 +460,7 @@
                                     <p class="font-bold">Choose a preset:</p>
                                     <div class="flex flex-row gap-2 flex-wrap">
                                         {#if presets == null}
-                                            <CircleNotch class="animate-spin" size={22} />
+                                            <CircleNotchIcon class="animate-spin" size={22} />
                                             <p>Loading presets...</p>
                                         {:else if presets.length == 0}
                                             <p class="text-muted-foreground">No presets found on the server</p>
@@ -407,7 +485,7 @@
                                                 </Select.Content>
                                             </Select.Root>
 
-                                            <Button variant="outline" size="icon-sm" onclick={() => selectedPresetName = null}><XCircle weight="bold" /></Button>
+                                            <Button variant="outline" size="icon-sm" onclick={() => selectedPresetName = null}><XCircleIcon weight="bold" /></Button>
 
                                             <Dialog.Close>
                                                 <Button onclick={() => importAsPreset()} disabled={selectedPresetName == null}>Import Preset</Button>
@@ -422,11 +500,11 @@
                                     </Dialog.Footer>
                                 </Dialog.Content>
                             </Dialog.Root>
-                            <Button variant="outline" onclick={() => exportFields()} class="flex-2"><Export weight="bold" /> Export Fields as JSON</Button>
+                            <Button variant="outline" onclick={() => exportFields()} class="flex-2"><ExportIcon weight="bold" /> Export Fields as JSON</Button>
 
                             <Dialog.Root>
                                 <Dialog.Trigger>
-                                    <Button variant="outline" size="icon"><Info weight="bold" /></Button>
+                                    <Button variant="outline" size="icon"><InfoIcon weight="bold" /></Button>
                                 </Dialog.Trigger>
                                 <Dialog.Content>
                                     <Dialog.Title>About Exported Field Data</Dialog.Title>
@@ -452,7 +530,7 @@
                     <Card.Root class="w-auto min-w-64">
                         <Card.Content>
                             <div class="flex flex-row gap-2 items-center">
-                                <Info weight="bold"/>
+                                <InfoIcon weight="bold"/>
                                 <p class="text-sm">Team number, match number, and match type fields are visible during full match scouting</p>
                             </div>
                         </Card.Content>
@@ -501,7 +579,7 @@
                 {/if}
 
                 {#if !editable}
-                    <MathScoutingSubmit />
+                    <MatchScoutingSubmit />
                 {/if}
             </form>
         {:else}
