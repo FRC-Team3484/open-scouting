@@ -25,7 +25,7 @@ Props:
 
 
     interface Props {
-        event_data: Event
+        event_data: Event | null
     }
     let { event_data = $bindable() }: Props = $props();
 

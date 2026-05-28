@@ -25,7 +25,7 @@ Props:
 
 
     interface Props {
-        event_data: Event
+        event_data: Event | null
     }
     let { event_data = $bindable() }: Props = $props();
 
@@ -106,7 +106,9 @@ Props:
                     </Dialog.Content>
                 </Dialog.Root>
             </div>
-            <p>Scouting <span class="font-bold font-mono">{event_data.name}</span> in <span class="font-bold">{event_data.year}</span> as <span class="font-bold">{username}</span></p>
+            {#if event_data}
+                <p>Scouting <span class="font-bold font-mono">{event_data.name}</span> in <span class="font-bold">{event_data.year}</span> as <span class="font-bold">{username}</span></p>
+            {/if}
         </div>
     </div>
 </Card.Root>

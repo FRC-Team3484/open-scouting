@@ -1,11 +1,13 @@
+<!-- 
+Page returned from the server on a 404 or other internal error
+-->
 <script lang="ts">
     import "../app.css";
+	import { BugIcon, HouseIcon, SmileySadIcon } from "phosphor-svelte";
 	import { page } from "$app/state";
+
 	import PageContainer from "$lib/components/layout/PageContainer.svelte";
 	import Button from "$lib/components/ui/button/button.svelte";
-	import { Bug, House, SmileySad } from "phosphor-svelte";
-
-
 </script>
 
 <PageContainer>
@@ -20,10 +22,10 @@
             <p>This probably wasn't supposed to happen</p>
         {/if}
         <div class="flex flex-row gap-2 mb-8">
-            <Button href="/"><House weight="bold" /> Home</Button>
-            <Button href="https://github.com/FRC-Team3484/open-scouting/issues" variant="outline"><Bug weight="bold" /> Issues</Button>
+            <Button href="/"><HouseIcon weight="bold" /> Home</Button>
+            <Button href="https://github.com/FRC-Team3484/open-scouting/issues" variant="outline"><BugIcon weight="bold" /> Issues</Button>
         </div>
 
-        <SmileySad weight="bold" size={48} />
+        <SmileySadIcon weight="bold" size={48} />
     </div>
 </PageContainer>

@@ -1,3 +1,10 @@
+<!-- 
+The data page, which shows match scouting data in both all and compare view modes.
+
+Page should be loaded like 
+    /?mode=all&year=2025&event_codes=paca,ohcl&team_numbers=1234,3484
+    /?mode=compare&year=2025&event_codes=paca,ohcl&team_numbers=1234,3484&fields=uuid,uuid
+-->
 <script module lang="ts">
     export interface Field {
         value: string
@@ -28,10 +35,6 @@
 	import Header from "$lib/components/data/Header.svelte";
 	import PageContainer from "$lib/components/layout/PageContainer.svelte";
 
-
-    // Page should be loaded like 
-    // /?mode=all&year=2025&event_codes=paca,ohcl&team_numbers=1234,3484
-    // /?mode=compare&year=2025&event_codes=paca,ohcl&team_numbers=1234,3484&fields=uuid,uuid
 
     let filters: Filters = $state({year: 0, event_codes: [], team_numbers: []});
     let compareFilters: CompareFilters = $state({year: 0, event_codes: [], team_numbers: [], fields: []});

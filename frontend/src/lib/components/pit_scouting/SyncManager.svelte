@@ -5,6 +5,10 @@ Sync manager component for the pit scouting page
 TODO: Respect the user's syncing setting
 TODO: Make the 100ms delay to ensure seasonUuid has loaded more reliable
 TODO: Make the pit scouting sync frequency configurable
+
+Props:
+    - `eventData` (`Event`) - The event data
+    - `seasonUuid` (`string`) - The season uuid
 -->
 <script lang="ts">
 	import { onMount } from "svelte";

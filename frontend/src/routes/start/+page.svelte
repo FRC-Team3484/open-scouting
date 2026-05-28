@@ -1,3 +1,13 @@
+<!-- 
+The start page, where the user must authenticate, select a year, select an event, 
+	and select an action before they start scouting.
+
+Handles the URL parameters for the page, with nice URL navigation through each step.
+Supports linking to an action, where the user will be presented with a redirect page.
+
+Example URL:
+	/start?year=2026&event_code=alhu&event_name=Rocket City Regional&action=match_scouting
+-->
 <script lang="ts" module>
 	export interface StartUser {
 		username: string
@@ -12,18 +22,18 @@
 </script>
 
 <script lang="ts">
+	import { onMount, tick } from "svelte";
+	import { pushState, replaceState } from "$app/navigation";
+	import { toast } from "svelte-sonner";
+
 	import Authentication from "$lib/components/start/Authentication.svelte";
 	import Header from "$lib/components/start/Header.svelte";
 	import Year from "$lib/components/start/Year.svelte";
 	import Events from "$lib/components/start/Events.svelte";
 	import Action from "$lib/components/start/Action.svelte";
 	import PageContainer from "$lib/components/layout/PageContainer.svelte";
-	import { onMount, tick } from "svelte";
-	import { pushState, replaceState } from "$app/navigation";
-	import { toast } from "svelte-sonner";
 	import Link from "$lib/components/start/Link.svelte";
-	
-	// /start?year=2026&event_code=alhu&event_name=Rocket City Regional&action=match_scouting
+
 
 	let page: "auth" | "year" | "events" | "action" | "link" = $state("auth"); // auth, year, events, action, link
 
@@ -218,6 +228,11 @@
 		}
 	}
 
+	/**
+	 * Waits one page tick and then loads the URL parameters
+	 * 
+	 * Adds an event listener to replace the page state as needed.
+	*/
 	onMount(() => {
 		tick().then(() => {
 			loadUrlParams();
@@ -235,24 +250,18 @@
     <Header startOver={startOver} page={page} user={user} year={year} event={selected_event}/>
 		
 	{#if page === "auth"}
-		<!-- 1 - Authentication -->
 		<Authentication handleNavigate={handleNavigate} setUser={setUser}/>
 
 	{:else if page === "year"}
-		<!-- 2 - Year -->
 		<Year handleNavigate={handleNavigate} setYear={setYear}/>
 
 	{:else if page === "events"}
-		<!-- 3 - Events -->
 		<Events handleNavigate={handleNavigate} year={year} setEvent={setEvent}/>
 
 	{:else if page === "action"}
-		<!-- 4 - Action -->
 		<Action year={year} event={selected_event} user={user}/>
 
 	{:else if page === "link"}
-		<!-- Link -->
 		<Link year={year} event={selected_event} user={user} action={action} startOver={startOver} />
-
 	{/if}
 </PageContainer>
