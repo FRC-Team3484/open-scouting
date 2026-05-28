@@ -1,11 +1,31 @@
-<script lang="ts">
-	import { onMount } from 'svelte';
+<!-- 
+@component
+Universal page layout component, which provides a unified centered page layout and style
 
-	let { centered = true, disableSleep = false, children } = $props();
+Also can be asked to disable device sleeping on a certain page, after it's been interacted with.
+
+Props:
+	- `centered` (`boolean`) - If the page should be centered
+	- `disableSleep` (`boolean`) - If device sleep should be disabled
+	- `children` (`Snippet`) - The content of the page
+-->
+<script lang="ts">
+	import { onMount, type Snippet } from 'svelte';
+
+
+	interface Props {
+		centered?: boolean
+		disableSleep?: boolean
+		children?: Snippet
+	}
+	let { centered = true, disableSleep = false, children }: Props = $props();
 
 	let page: HTMLDivElement;
 	let noSleep: any;
 
+	/**
+	 * On mount, register the click listener to disable page sleeping, if enabled
+	 */
 	onMount(async () => {
 		if (!disableSleep) return;
 
@@ -25,5 +45,7 @@
 	`}
 	bind:this={page}
 >
-	{@render children()}
+	{#if children}
+		{@render children()}
+	{/if}
 </div>
