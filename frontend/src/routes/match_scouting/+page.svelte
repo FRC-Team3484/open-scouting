@@ -10,7 +10,7 @@
     let season_uuid: string = $state("");
     let year: string = $state("");
 
-    let event_data: Event;
+    let event_data: Event | null = $state(null);
 
     async function get_season_uuid(year: string) {
         await getSeasonsSeasonsGet().then((response) => {

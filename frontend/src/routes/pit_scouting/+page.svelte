@@ -3,7 +3,7 @@
 	import { liveQuery } from "dexie";
 	import { CircleNotch } from "phosphor-svelte";
 
-	import { db } from "$lib/utils/db";
+	import { db, type Event } from "$lib/utils/db";
 	import { validateTokenOnline } from "$lib/utils/user";
 	import PageContainer from "$lib/components/layout/PageContainer.svelte";
 	import AddPit from "$lib/components/pit_scouting/AddPit.svelte";
@@ -16,17 +16,7 @@
     let season_uuid: string = $state("");
     let year: string = $state("");
 
-    let event_data = $state({
-        year: 0,
-        event_code: "",
-        event_name: "",
-        event_type: "",
-        event_city: "",
-        event_country: "",
-        event_start_date: "",
-        event_end_date: "",
-        event_custom: false
-    });
+    let event_data: Event | null = $state(null);
 
     let pit_questions = $state([]);
 

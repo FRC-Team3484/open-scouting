@@ -1,17 +1,35 @@
+<!-- 
+@component
+Represents a single pit on the pit scouting page
+
+Renders questions for this pit, gets how complete it is, and allows for expanding each pit.
+
+TODO: Add a proper interface for user
+-->
 <script lang="ts">
-    import * as Card from "$lib/components/ui/card/index.js";
-	import { CaretDown, CaretUp, CheckCircle, DotsThreeCircle, XCircle } from "phosphor-svelte";
-	import Button from "../ui/button/button.svelte";
 	import { slide } from "svelte/transition";
+	import { CaretDownIcon, CaretUpIcon, CheckCircleIcon, DotsThreeCircleIcon, XCircleIcon } from "phosphor-svelte";
+
+    import * as Card from "$lib/components/ui/card/index.js";
+	import Button from "../ui/button/button.svelte";
+
+	import type { PitScoutingData, SeasonPitScoutingQuestion } from "$lib/utils/db";
 	import TextQuestion from "../generic/pit_questions/main/TextQuestion.svelte";
 	import NumberQuestion from "../generic/pit_questions/main/NumberQuestion.svelte";
 	import BooleanQuestion from "../generic/pit_questions/main/BooleanQuestion.svelte";
 	import ChoiceQuestion from "../generic/pit_questions/main/ChoiceQuestion.svelte";
 	import ImageQuestion from "../generic/pit_questions/main/ImageQuestion.svelte";
 
-    let { pit, pit_questions, user, show_avatar = false } = $props();
 
-    let pitCompletion = $derived.by(() => {
+    interface Props {
+        pit: PitScoutingData
+        pit_questions: SeasonPitScoutingQuestion[]
+        user: unknown
+        show_avatar?: boolean
+    }
+    let { pit, pit_questions, user, show_avatar = false }: Props = $props();
+
+    let pitCompletion: {answered: number, total: number, status: "done" | "incomplete" | "none"} = $derived.by(() => {
         if (!pit || !pit_questions?.length) {
             return {
                 answered: 0,
@@ -44,32 +62,32 @@
         };
     });
 
-    let expanded = $state(false);
-    let avatar_loaded = $state(true);
+    let expanded: boolean = $state(false);
+    let avatar_loaded: boolean = $state(true);
 </script>
 
-<Card.Root class="w-full md:w-auto min-w-64 md:min-w-128" data-teamNumber={pit.team_number}>
+<Card.Root class="w-full md:w-auto min-w-64 md:min-w-lg" data-teamNumber={pit.team_number}>
     <Card.Content>
         <div class="flex flex-col gap-2 md:gap-4">
             <div class="flex flex-row gap-2 items-center justify-between">
                 <div class="flex flex-row gap-2 items-center flex-wrap cursor-pointer" onclick={() => expanded = !expanded} tabindex="0" onkeydown={(e) => { if (e.key === "Enter") { expanded = !expanded; }}} role="button">
                     {#if show_avatar && avatar_loaded}
-                        <img src={`https://www.thebluealliance.com/avatar/2026/frc${pit.team_number}.png`} class="w-10 h-10 aspect-square rounded-md bg-accent p-1" onerror={() => avatar_loaded = false}>
+                        <img src={`https://www.thebluealliance.com/avatar/2026/frc${pit.team_number}.png`} class="w-10 h-10 aspect-square rounded-md bg-accent p-1" onerror={() => avatar_loaded = false} alt={`Avatar for team ${pit.team_number}`}>
                     {/if}
 
                     {#if pitCompletion.status === "done"}
                         <div class="flex flex-row gap-0.5 items-center text-green-300">
-                            <CheckCircle weight="bold" /> 
+                            <CheckCircleIcon weight="bold" /> 
                             <p>{pitCompletion.answered}/{pitCompletion.total}</p>
                         </div>
                     {:else if pitCompletion.status === "incomplete"}
                         <div class="flex flex-row gap-0.5 items-center text-orange-400">
-                            <DotsThreeCircle weight="bold" /> 
+                            <DotsThreeCircleIcon weight="bold" /> 
                             <p>{pitCompletion.answered}/{pitCompletion.total}</p>
                         </div>
                     {:else}
                         <div class="flex flex-row gap-0.5 items-center text-red-400">
-                            <XCircle weight="bold" /> 
+                            <XCircleIcon weight="bold" /> 
                             <p>{pitCompletion.answered}/{pitCompletion.total}</p>
                         </div>
                     {/if}
@@ -80,9 +98,9 @@
 
                 <Button size="icon" variant="ghost" onclick={() => expanded = !expanded}>
                     {#if expanded}
-                        <CaretDown weight="bold" />
+                        <CaretDownIcon weight="bold" />
                     {:else}
-                        <CaretUp weight="bold" />
+                        <CaretUpIcon weight="bold" />
                     {/if}
                 </Button>
             </div>
