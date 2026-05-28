@@ -69,7 +69,7 @@ Displays information provided in MatchScoutingMatchInfo on the match scouting pa
     <div class="flex flex-row gap-4 items-center">
         {#if page.url.pathname == "/"}
             <div transition:slide={{ axis: "x" }}>
-                <div transition:fade><Button variant="default" href="/start"><ArrowRight weight="bold" /> Get Started</Button></div>
+                <div transition:fade><Button variant="default" href="/start"><ArrowRightIcon weight="bold" /> Get Started</Button></div>
             </div>
         {/if}
 
