@@ -1,3 +1,16 @@
+<script lang="ts" module>
+	export interface StartUser {
+		username: string
+		team_number: number
+		uuid: string | null
+	}
+	export interface StartEvent {
+		event_code: string
+		year: number
+		name: string
+	}
+</script>
+
 <script lang="ts">
 	import Authentication from "$lib/components/index/Authentication.svelte";
 	import Header from "$lib/components/index/Header.svelte";
@@ -12,20 +25,20 @@
 	
 	// /start?year=2026&event_code=alhu&event_name=Rocket City Regional&action=match_scouting
 
-	let page = $state("auth"); // auth, year, events, action, link
+	let page: "auth" | "year" | "events" | "action" | "link" = $state("auth"); // auth, year, events, action, link
 
-	let user = $state({
+	let user: StartUser = $state({
 		username: "",
 		team_number: 0,
 		uuid: ""
 	});
-	let year = $state(0);
-	let selected_event = $state({
+	let year: number = $state(0);
+	let selected_event: StartEvent = $state({
 		event_code: "",
 		year: 0,
 		name: ""
 	});
-	let action = $state(""); // match_scouting, pit_scouting, data
+	let action: null | "match_scouting" | "pit_scouting" | "data" = $state(null); // match_scouting, pit_scouting, data
 
 	/**
 	 * Sets the local user information. Should be used from another component
@@ -34,7 +47,7 @@
 	 * @param team_number The team number for the user that's authenticating
 	 * @param uuid The uuid for the user that's authenticating
 	 */
-	function setUser(username: string, team_number: number, uuid: string): void {
+	function setUser(username: string, team_number: number, uuid: string | null): void {
 		user = {
 			username: username,
 			team_number: team_number,
@@ -82,7 +95,7 @@
 			year: 0,
 			name: ""
 		}
-		action = "";
+		action = null;
 	}
 	
 	/**

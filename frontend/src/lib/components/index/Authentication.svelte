@@ -1,19 +1,34 @@
+<!-- 
+@component
+The authentication section on the start page
+
+TODO: Implement organization support
+TODO: Actually load profile picture from server
+
+Props:
+    - `handleNavigate` (function) - The function for changing the authentication page
+    - `setUser` (function) - The function for setting the user
+-->
 <script lang="ts">
+	import { onMount } from "svelte";
+	import { ArrowRightIcon, SignOutIcon, SignInIcon } from "phosphor-svelte";
+
     import Button from "$lib/components/ui/button/button.svelte";
 	import Input from "$lib/components/ui/input/input.svelte"
 	import Label from "$lib/components/ui/label/label.svelte"
 	import * as Card from "$lib/components/ui/card/index.js";
     import * as Avatar from "$lib/components/ui/avatar/index.js";
-    import * as Select from "$lib/components/ui/select/index.js";
-    import * as Tabs from "$lib/components/ui/tabs";
-
-	import { ArrowRight, ArrowLeft, Building, SignOut, SignIn } from "phosphor-svelte";
-	import { signOut, validateTokenOnline } from "$lib/utils/user";
-	import { onMount } from "svelte";
 	import Skeleton from "../ui/skeleton/skeleton.svelte";
+
+	import { signOut, validateTokenOnline } from "$lib/utils/user";
 	import { getUserOrganizationsOrganizationsMeListGet } from "$lib/api/organizations/organizations";
 
-    let { handleNavigate, setUser } = $props();
+
+    interface Props {
+        handleNavigate: (nextPage: string) => void;
+        setUser: (username: string, team_number: number, uuid: string | null) => void;
+    }
+    let { handleNavigate, setUser }: Props = $props();
 
     let user: any = $state(null);
     let organizations: any = $state(null);
@@ -22,23 +37,24 @@
 
     let username = $state("");
     let teamNumber = $state("");
-    let canContinue = $state(false);
 
-    $effect(() => {
-        canContinue = username.trim() !== "" && teamNumber.trim() !== "";
-    });
-
+    /**
+     * Continues to the next page
+     */
     function continueForward() {
         setUser(username, parseInt(teamNumber), null);
         handleNavigate("year");
     };
-
+    
+    /**
+     * When the component mounts, get the user's information
+     */
     onMount(async () => {
         try {
             user = await validateTokenOnline();
-            if (user) {
-                organizations = await getUserOrganizationsOrganizationsMeListGet();
-            }
+            // if (user) {
+                //     organizations = await getUserOrganizationsOrganizationsMeListGet();
+                // }
         } catch (error) {
             console.error(error);
         }
@@ -62,8 +78,8 @@
             </Card.Content>
 
             <Card.Footer>
-                <Button disabled={!canContinue} onclick={continueForward}>
-                    <ArrowRight weight="bold" /> Continue
+                <Button disabled={username.trim() !== "" && teamNumber.trim() !== ""} onclick={continueForward}>
+                    <ArrowRightIcon weight="bold" /> Continue
                 </Button>
             </Card.Footer>
         </Card.Root>
@@ -115,7 +131,7 @@
             <Card.Footer class="flex flex-row gap-2 mt-auto flex-wrap">
                 {#if user}
                     <Button variant="outline" onclick={async () => {await signOut(); window.location.reload()}}>
-                        <SignOut weight="bold" />
+                        <SignOutIcon weight="bold" />
                         Sign Out
                     </Button>
                     <Button onclick={() => {setUser(user.username, user.team_number, user.uuid); handleNavigate("year")}}>
@@ -125,10 +141,10 @@
                             <Avatar.Fallback>{user.username.substring(0, 1)}</Avatar.Fallback>
                         </Avatar.Root>
                         
-                        Continue as {user.username} <ArrowRight weight="bold" />
+                        Continue as {user.username} <ArrowRightIcon weight="bold" />
                     </Button>
                 {:else}
-                    <Button href="/authentication">Sign In <SignIn weight="bold" /></Button>
+                    <Button href="/authentication">Sign In <SignInIcon weight="bold" /></Button>
                 {/if}
             </Card.Footer>
         </Card.Root>

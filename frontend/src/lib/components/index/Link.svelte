@@ -1,15 +1,37 @@
+<!-- 
+@component
+The link redirect section on the start page
+
+Props:
+    - `year` (`year`) - The selected year
+    - `event` (`StartEvent`) - The selected event
+    - `user` (`StartUser`) - The user
+    - `action` (`null | "match_scouting" | "pit_scouting" | "data"`) - The action
+-->
 <script lang="ts">
     import * as Card from "$lib/components/ui/card/index.js";
 	import { LinkIcon } from "phosphor-svelte";
 	import Separator from "../ui/separator/separator.svelte";
 	import { onMount } from "svelte";
 	import Button from "../ui/button/button.svelte";
+	import type { StartEvent, StartUser } from "../../../routes/start/+page.svelte";
 
-    let { year, event, user, action, startOver } = $props();
+
+    interface Props {
+        year: number;
+        event: StartEvent;
+        user: StartUser;
+        action: null | "match_scouting" | "pit_scouting" | "data";
+        startOver: () => void;
+    }
+    let { year, event, user, action, startOver }: Props = $props();
 
     let timer = $state(0);
-    let interval = null;
+    let interval: NodeJS.Timeout | null = null;
 
+    /**
+     * Redirect the user to the given page, based on all of the selected options
+     */
     function redirect() {
         let user_string = "";
 
@@ -28,17 +50,22 @@
         }
     }
 
+    /**
+     * Create the interval to redirect the user
+     */
     onMount(() => {
         interval = setInterval(() => {
             timer += 1;
-            if (timer == 5) {
+            if (timer == 5 && interval) {
                 clearInterval(interval);
                 redirect();
             }
         }, 1000);
 
         return () => {
-            clearInterval(interval);
+            if (interval) {
+                clearInterval(interval);
+            }
         }
     });
 </script>

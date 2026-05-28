@@ -1,14 +1,30 @@
+<!-- 
+@component
+The event section on the start page
+
+Props:
+    - `handleNavigate` (function) - The function for changing the page
+    - `year` (`number`) - The year to scout for
+    - `setEvent` (function) - The function for setting the event
+-->
 <script lang="ts">
     import * as Card from "$lib/components/ui/card/index.js";
 
 	import EventList from "../generic/event_list/EventList.svelte";
+    import { type Event } from "$lib/utils/db";
 
-    let { handleNavigate, year, setEvent } = $props();
 
-    let selectedEvent = $state([]);
+    interface Props {
+        handleNavigate: (nextPage: string) => void;
+        year: number | null;
+        setEvent: (event_code: string, year: number, name: string) => void;
+    }
+    let { handleNavigate, year, setEvent }: Props = $props();
+
+    let selectedEvent: Event[] = $state([]);
 
     $effect(() => {
-        if (selectedEvent.length > 0) {
+        if (selectedEvent.length > 0 && selectedEvent[0]) {
             setEvent(selectedEvent[0].event_code, selectedEvent[0].year, selectedEvent[0].name);
             handleNavigate("action");
         }

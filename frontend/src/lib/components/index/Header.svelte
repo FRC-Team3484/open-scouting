@@ -1,23 +1,39 @@
+<!-- 
+@component
+The header of the start page
+
+Props:
+    - `startOver` (function) - The function for starting over
+    - `page` (`"auth" | "year" | "events" | "action" | "link"`) - The current page
+    - `user` (`StartUser`) - The user
+    - `year` (`number`) - The year
+    - `event` (`StartEvent`) - The event
+-->
 <script lang="ts">
-    import { fade, slide } from "svelte/transition";
+    import { slide } from "svelte/transition";
+	import { ArrowDownIcon, ArrowLeftIcon } from "phosphor-svelte";
 
     import * as Card from "$lib/components/ui/card";
-	import { ArrowDown, ArrowLeft, ArrowUp } from "phosphor-svelte";
 	import Logo from "../generic/Logo.svelte";
 	import Button from "../ui/button/button.svelte";
 	import Separator from "../ui/separator/separator.svelte";
 	import Progress from "../ui/progress/progress.svelte";
+	import type { StartEvent, StartUser } from "../../../routes/start/+page.svelte";
 
-    let details = false;
-    let progress = 1;
+    
+    interface Props {
+        startOver: () => void;
+        page: "auth" | "year" | "events" | "action" | "link";
+        user: StartUser;
+        year: number;
+        event: StartEvent;
+    }
+    let { startOver, page, user, year, event }: Props = $props();
 
-    export let startOver: () => void;
-    export let page: string;
-    export let user: any;
-    export let year: number;
-    export let event: any;
+    let details: boolean = $state(false);
+    let progress: number = $state(1);
 
-    $: {
+    $effect(() => {
         switch (page) {
             case "auth":
                 progress = 1;
@@ -30,16 +46,14 @@
                 break;
             case "action":
                 progress = 4;
-                details = true;
                 break;
             case "link":
                 progress = 4;
-                details = true;
                 break;
             default:
                 progress = 1;
         }
-    }
+    });
 </script>
 
 <Card.Card class="w-auto">
@@ -52,7 +66,7 @@
                         <Logo text={false} style="tiny" href="/"/>
                         <p class="text-lg font-bold font-mono text-left">Open <br>Scouting</p>
                     </div>
-                    <Button onclick={() => startOver()} class="max-w-fill" variant="ghost" disabled={progress == 1}><ArrowLeft weight="bold" /> Start Over</Button>
+                    <Button onclick={() => startOver()} class="max-w-fill" variant="ghost" disabled={progress == 1}><ArrowLeftIcon weight="bold" /> Start Over</Button>
                 </div>
 
                 <Separator orientation="vertical" class="min-h-16" />
@@ -62,7 +76,7 @@
                     <Progress value={progress} max={4} />
                     <Button onclick={() => details = !details} class="max-w-fit" variant="ghost">
                         <div class="flex items-center">
-                            <ArrowDown weight="bold" class="transform transition-transform duration-200 ease-in-out {details ? 'rotate-180' : 'rotate-0'}" />
+                            <ArrowDownIcon weight="bold" class="transform transition-transform duration-200 ease-in-out {details ? 'rotate-180' : 'rotate-0'}" />
                         </div>
                         Details
                     </Button>
