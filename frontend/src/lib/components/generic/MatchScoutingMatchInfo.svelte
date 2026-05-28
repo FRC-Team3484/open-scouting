@@ -182,7 +182,7 @@ Props:
         
                 <Dialog.Root>
                     <Dialog.Trigger>
-                        <Button variant="ghost" size="icon"><Info weight="bold" /></Button>
+                        <Button variant="ghost" size="icon"><InfoIcon weight="bold" /></Button>
                     </Dialog.Trigger>
                     
                     <Dialog.Content>
