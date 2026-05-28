@@ -9,7 +9,7 @@ Also allows for viewing old changelogs, managing local db data, and viewing the 
 	import { toggleMode, mode } from "mode-watcher";
 	import { online } from "svelte/reactivity/window";
 	import { toast } from "svelte-sonner";
-    import { ArchiveIcon, ArrowRightIcon, ArticleIcon, BugIcon, CheckCircleIcon, CircleNotchIcon, DiscordLogoIcon, GithubLogoIcon, HouseIcon, ListIcon, MoonIcon, NotepadIcon, SunIcon, WarningIcon, XCircleIcon } from "phosphor-svelte";
+    import { ArchiveIcon, ArrowRightIcon, BugIcon, CheckCircleIcon, CircleNotchIcon, DiscordLogoIcon, GithubLogoIcon, HouseIcon, ListIcon, MoonIcon, NotepadIcon, RocketIcon, SunIcon, WarningIcon, XCircleIcon } from "phosphor-svelte";
 
 	import Button from "../ui/button/button.svelte";
 	import Separator from "../ui/separator/separator.svelte";
@@ -124,7 +124,7 @@ Also allows for viewing old changelogs, managing local db data, and viewing the 
                 <Button variant="outline" href="https://discord.gg/M3wESZUP35"><DiscordLogoIcon weight="bold" /> Discord</Button>
                 <Button variant="outline" href="https://github.com/FRC-Team3484/open-scouting"><GithubLogoIcon weight="bold" /> Source Code</Button>
                 <Button variant="outline" href="https://github.com/FRC-Team3484/open-scouting/issues"><BugIcon weight="bold" /> Issues</Button>
-                <Button variant="outline" href="https://github.com/FRC-Team3484/open-scouting/releases"><ArticleIcon weight="bold" /> Releases</Button>
+                <Button variant="outline" href="https://github.com/FRC-Team3484/open-scouting/releases"><RocketIcon weight="bold" /> Releases</Button>
                 <Button variant="outline" href="https://open-scouting-legacy.nfoert.dev"><ArchiveIcon weight="bold" /> Legacy v1</Button>
             </div>
 
