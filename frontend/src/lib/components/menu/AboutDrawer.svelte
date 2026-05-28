@@ -3,7 +3,7 @@
 The about drawer in the menu
 -->
 <script lang="ts">
-	import { DotsThreeOutlineIcon, XCircleIcon } from "phosphor-svelte";
+	import { DotIcon, DotsThreeOutlineIcon, XCircleIcon } from "phosphor-svelte";
 
     import * as Sheet from "$lib/components/ui/sheet";
 	import Button from "../ui/button/button.svelte";
@@ -31,8 +31,15 @@ The about drawer in the menu
             <div class="flex flex-col gap-1">
                 <p class="text-lg font-bold">Credits</p>
                 <p class="text-md opacity-70">Made by <a href="https://github.com/FRC-Team3484" class="underline">FRC 3484 Short Circuit</a></p>
-                <p class="text-md opacity-70">Started by <a href="https://github.com/nfoert" class="underline">nfoert</a></p>
                 <p class="text-md opacity-70">Powered by <a href="https://www.thebluealliance.com/" class="underline">The Blue Alliance</a></p>
+                
+                <p class="text-md opacity-70 mt-4">
+                    Made with
+                    <a href="https://svelte.dev" class="underline">SvelteKit</a>, 
+                    <a href="https://fastapi.tiangolo.com/" class="underline">FastAPI</a>, 
+                    <a href="https://shadcn-svelte.com" class="underline">shadcn-svelte</a> and 
+                    <a href="https://tailwindcss.com" class="underline">TailwindCSS</a>
+                </p>
             </div>
 
             <Sheet.Footer>
