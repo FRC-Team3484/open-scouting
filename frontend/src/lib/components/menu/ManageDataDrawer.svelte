@@ -1,18 +1,29 @@
+<!-- 
+@component
+The manage local data drawer for the menu
+
+Allows for viewing the current space used by IndexedDB, delete data, and sync some data.
+
+TODO: Further refactor this component, as it's long and hard to read through
+-->
 <script lang="ts">
-    import DrawerHeader from "$lib/components/generic/drawers/DrawerHeader.svelte";
+
+    import { onMount } from "svelte";
+    import { FloppyDiskIcon } from "phosphor-svelte";
+	import { toast } from "svelte-sonner";
+    import type Dexie from "dexie";
 
     import * as Sheet from "$lib/components/ui/sheet";
-	import { FloppyDisk } from "phosphor-svelte";
 	import Button from "../ui/button/button.svelte";
 	import { Separator } from "../ui/separator";
-	import { onMount } from "svelte";
 	import Progress from "../ui/progress/progress.svelte";
-	import { db } from "$lib/utils/db";
-	import Badge from "../ui/badge/badge.svelte";
     import * as Dialog from "../ui/dialog";
-	import { toast } from "svelte-sonner";
+	import Badge from "../ui/badge/badge.svelte";
+
+	import { db } from "$lib/utils/db";
+    import DrawerHeader from "$lib/components/generic/drawers/DrawerHeader.svelte";
 	import { fetchEventData, fetchSeasonData, pushFiles, pushMatchScoutingData, pushUnsyncedPitScoutingData } from "$lib/utils/sync";
-	import type Dexie from "dexie";
+
 
     let totalSpace = $state(0);
     let usedSpace = $state(0);
@@ -26,6 +37,9 @@
     let files = $state(0);
     let filesUnsynced = $state(0);
 
+    /**
+     * Get the space used by IndexedDB
+     */
     function getSpaceUsed() {
         const quota = navigator.storage.estimate();
         quota.then((result) => {
@@ -34,6 +48,9 @@
         });
     }
 
+    /**
+     * Get the amount of each kind of data
+     */
     async function getAmount() {
         events = await db.event.count();
         seasonData = await db.season_data.count();
@@ -45,6 +62,11 @@
         filesUnsynced = await db.files.filter(m => m.synced === false).count();
     }
 
+    /**
+     * Mark all match scouting data as unsynced
+     * 
+     * Fix from https://github.com/FRC-Team3484/open-scouting/issues/157
+     */
     async function markMatchScoutingDataAsUnsynced() {
         await db.match_scouting.toCollection().modify({
             synced: false
@@ -52,24 +74,39 @@
         await getAmount();
     }
 
+    /**
+     * Delete all data in a db table
+     * 
+     * @param table The table to delete
+     * @param name The human readable name of the table
+     */
     async function deleteTable(table: Dexie.Table, name: string): Promise<void> {
         await table.clear().then(async () => {
             await getAmount();
             getSpaceUsed();
             toast.success(`Deleted all ${name} data`, { duration: 5000 });
         }).catch((error) => {
-            console.warn(`Failed to delete ${name} data`, error)
+            console.warn(`Failed to delete ${name} data`, error);
             toast.error(`Failed to delete ${name} data`, { duration: 5000 });
         });
     }
 
+    /**
+     * Run a function and show a success or failure message
+     * 
+     * Used for fetching and pushing data
+     * 
+     * @param func The function to run
+     * @param operationLabel The message to show on success
+     * @param failureLabel The message to show on failure
+     */
     async function runFunction(func: Function, operationLabel: string, failureLabel: string): Promise<void> {
         await func().then(async () => {
             await getAmount();
             getSpaceUsed();
             toast.success(operationLabel, { duration: 5000 });
         }).catch((error) => {
-            console.warn(failureLabel, error)
+            console.warn(failureLabel, error);
             toast.error(failureLabel, { duration: 5000 });
         });
     }
@@ -77,12 +114,12 @@
     onMount(() => {
         getSpaceUsed();
         getAmount();
-    })
+    });
 </script>
 
 <Sheet.Root>
     <Sheet.Trigger>
-        <Button variant="outline" class="w-full"><FloppyDisk weight="bold" /> Manage Local Data</Button>
+        <Button variant="outline" class="w-full"><FloppyDiskIcon weight="bold" /> Manage Local Data</Button>
     </Sheet.Trigger>
 
     <Sheet.Content class="max-h-[80vh] overflow-y-scroll lg:mx-64 2xl:mx-128 border-1 p-4 rounded-t-lg" side="bottom">
