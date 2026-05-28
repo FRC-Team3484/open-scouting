@@ -1,5 +1,8 @@
 import { VERSION } from "./constants";
 
+/**
+ * Pretty console print
+ */
 export function main() {
     console.log(
         `%c\n\nOpen Scouting %c${VERSION}\n%cgithub.com/FRC-Team3484/open-scouting\n\n\n`,
