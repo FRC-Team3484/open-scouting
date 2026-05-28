@@ -12,16 +12,16 @@
 </script>
 
 <script lang="ts">
-	import Authentication from "$lib/components/index/Authentication.svelte";
-	import Header from "$lib/components/index/Header.svelte";
-	import Year from "$lib/components/index/Year.svelte";
-	import Events from "$lib/components/index/Events.svelte";
-	import Action from "$lib/components/index/Action.svelte";
+	import Authentication from "$lib/components/start/Authentication.svelte";
+	import Header from "$lib/components/start/Header.svelte";
+	import Year from "$lib/components/start/Year.svelte";
+	import Events from "$lib/components/start/Events.svelte";
+	import Action from "$lib/components/start/Action.svelte";
 	import PageContainer from "$lib/components/layout/PageContainer.svelte";
 	import { onMount, tick } from "svelte";
 	import { pushState, replaceState } from "$app/navigation";
 	import { toast } from "svelte-sonner";
-	import Link from "$lib/components/index/Link.svelte";
+	import Link from "$lib/components/start/Link.svelte";
 	
 	// /start?year=2026&event_code=alhu&event_name=Rocket City Regional&action=match_scouting
 
