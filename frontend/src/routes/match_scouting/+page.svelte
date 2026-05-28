@@ -3,22 +3,14 @@
 	import MatchScoutingFields from "$lib/components/generic/MatchScoutingFields.svelte";
 	import PageContainer from "$lib/components/layout/PageContainer.svelte";
 	import Header from "$lib/components/match_scouting/Header.svelte";
+	import type { Event } from "$lib/utils/db";
 	import { CircleNotch } from "phosphor-svelte";
 	import { onMount } from "svelte";
 
     let season_uuid: string = $state("");
     let year: string = $state("");
 
-    let event_data = $state({
-        year: 0,
-        event_code: "",
-        event_name: "",
-        event_type: "",
-        event_city: "",
-        event_country: "",
-        event_start_date: "",
-        event_end_date: ""
-    });
+    let event_data: Event;
 
     async function get_season_uuid(year: string) {
         await getSeasonsSeasonsGet().then((response) => {

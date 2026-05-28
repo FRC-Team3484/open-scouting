@@ -1,21 +1,41 @@
-<script lang="ts">
-    import * as Card from "$lib/components/ui/card/index.js";
-	import { onMount } from "svelte";
-	import Logo from "../generic/Logo.svelte";
-    import { validateTokenOnline } from "$lib/utils/user";
-    import * as Dialog from "$lib/components/ui/dialog/index.js";
-	import { CloudSlash } from "phosphor-svelte";
-	import Button from "../ui/button/button.svelte";
-	import { toast } from "svelte-sonner";
-	import { fetchSeasonData } from "$lib/utils/sync";
-	import { db } from "$lib/utils/db";
+<!-- 
+@component
+The header for the match scouting page
 
-    let { event_data } = $props();
+Loads event data from the URL, and exposes it as bindable for sibling components.
+
+TODO: Add a proper interface for user
+
+Props:
+    - `event_data` (`Event`) - The bindable event data
+-->
+<script lang="ts">
+	import { onMount } from "svelte";
+	import { toast } from "svelte-sonner";
+	import { CloudSlashIcon } from "phosphor-svelte";
+
+    import * as Card from "$lib/components/ui/card/index.js";
+    import * as Dialog from "$lib/components/ui/dialog/index.js";
+	import Button from "../ui/button/button.svelte";
+    
+	import { db, type Event } from "$lib/utils/db";
+	import { fetchSeasonData } from "$lib/utils/sync";
+    import { validateTokenOnline } from "$lib/utils/user";
+	import Logo from "../generic/Logo.svelte";
+
+
+    interface Props {
+        event_data: Event
+    }
+    let { event_data = $bindable() }: Props = $props();
 
     let user = null;
 
     let username = $state("");
 
+    /**
+     * Get the event data from the URL, and load the event from the database
+     */
     async function get_info() {
         const get_event = new URL(window.location.href).searchParams.get("event");
         const get_year = new URL(window.location.href).searchParams.get("year");
@@ -28,6 +48,8 @@
             username = user.username;
         }
 
+        if (!get_event || !get_year) return;
+
         const event = await db.event
             .where("event_code")
             .equals(get_event)
@@ -35,31 +57,30 @@
             .first();
 
         if (event) {
-            event_data.year = event.year;
-            event_data.event_code = event.event_code;
-            event_data.event_name = event.name;
-            event_data.event_type = event.type;
-            event_data.event_city = event.city;
-            event_data.event_country = event.country;
-            event_data.event_start_date = event.start_date;
-            event_data.event_end_date = event.end_date;
+            event_data = event;
         }
     }
 
+    /**
+     * Rebuild the season data cache
+     */
     async function fetch_season_data() {
         await fetchSeasonData().then(() => {
             toast.success("Season data cache rebuilt!");
             window.location.reload();
         }).catch((error) => {
-            toast.error("Failed to fetch season data", error)
+            toast.error("Failed to fetch season data", error);
         });
     }
 
+    /**
+     * Get the user data and event data from the URL
+     */
     onMount(async () => {
         user = await validateTokenOnline();
 
         await get_info();
-    })
+    });
 </script>
 
 <Card.Root class="mb-4">
@@ -70,7 +91,7 @@
                 <p class="text-2xl font-bold">Match Scouting</p>
                 <Dialog.Root>
                     <Dialog.Trigger>
-                        <Button variant="outline" size="icon"><CloudSlash weight="bold" /></Button>
+                        <Button variant="outline" size="icon"><CloudSlashIcon weight="bold" /></Button>
                     </Dialog.Trigger>
                     <Dialog.Content>
                         <Dialog.Title>Using Offline Data</Dialog.Title>
@@ -85,7 +106,7 @@
                     </Dialog.Content>
                 </Dialog.Root>
             </div>
-            <p>Scouting <span class="font-bold font-mono">{event_data.event_name}</span> in <span class="font-bold">{event_data.year}</span> as <span class="font-bold">{username}</span></p>
+            <p>Scouting <span class="font-bold font-mono">{event_data.name}</span> in <span class="font-bold">{event_data.year}</span> as <span class="font-bold">{username}</span></p>
         </div>
     </div>
 </Card.Root>
