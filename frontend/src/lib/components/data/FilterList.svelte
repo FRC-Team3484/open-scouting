@@ -28,8 +28,8 @@ Props:
         filterTitle: string
         values: any[]
         labels: string[]
-        selected: any[]
-        onlyOne: boolean
+        selected?: any[]
+        onlyOne?: boolean
     }
     let { filterTitle, values, labels, selected = $bindable([]), onlyOne = false }: Props = $props();
 
