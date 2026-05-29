@@ -6,9 +6,9 @@ import uuid
 
 from fastapi import APIRouter, Query
 
-from ..utils import IS_DEV
+from ..utils import IS_DEV, get_season
 from ..models import Event, MatchScoutingAnswer, MatchScoutingField, MatchScoutingSubmission, Season, TeamPit
-from ..utils import get_season
+from ..schemas.data import DataFiltersResponse, DataTeamResponse
 
 
 router: APIRouter = APIRouter(
@@ -33,13 +33,12 @@ def _is_valid_uuid(value) -> bool:
     except ValueError:
         return False
 
-# TODO: This needs a proper response_model
-@router.get("/data/filters")
+@router.get("/data/filters", response_model=DataFiltersResponse)
 async def get_data_filters(
         year: int,
         event_codes: Annotated[str | None, Query()] = None,
         team_numbers: Annotated[str | None, Query()] = None
-    ):
+    ) -> DataFiltersResponse:
     """
     For a year, list of event codes, and list of team numbers, return a JSON object 
         containing the available filters that can additionally be applied
@@ -89,13 +88,12 @@ async def get_data_filters(
         "teams": teams,
     }
 
-# TODO: This needs a proper response_model
-@router.get("/data/get")
+@router.get("/data/get", response_model=list[DataTeamResponse])
 async def get_data(
         year: int,
         event_codes: Annotated[str | None, Query()] = None,
         team_numbers: Annotated[str | None, Query()] = None
-    ):
+    ) -> list[DataTeamResponse]:
     """
     Given a year, event codes, and team numbers, return the data that matches those filters
 
@@ -413,7 +411,7 @@ async def get_data(
         teams[team_number]["summary"] = summary_items
 
     # Convert defaultdicts to lists
-    result = []
+    result: list[DataTeamResponse] = []
     for team in teams.values():
         team["teleop"] = dict(team["teleop"])
         team["auton"] = dict(team["auton"])
