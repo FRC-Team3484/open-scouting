@@ -24,7 +24,15 @@ export const GetDataFiltersDataFiltersGetQueryParams = zod.object({
   "team_numbers": zod.union([zod.string(),zod.null()]).optional()
 })
 
-export const GetDataFiltersDataFiltersGetResponse = zod.unknown()
+export const GetDataFiltersDataFiltersGetResponse = zod.object({
+  "events": zod.array(zod.object({
+  "event_code": zod.string(),
+  "event_name": zod.string()
+})),
+  "teams": zod.array(zod.object({
+  "team_number": zod.number()
+}))
+})
 
 /**
  * Given a year, event codes, and team numbers, return the data that matches those filters
@@ -114,5 +122,59 @@ export const GetDataDataGetGetQueryParams = zod.object({
   "team_numbers": zod.union([zod.string(),zod.null()]).optional()
 })
 
-export const GetDataDataGetGetResponse = zod.unknown()
+export const GetDataDataGetGetResponseItem = zod.object({
+  "team_number": zod.number(),
+  "nickname": zod.union([zod.string(),zod.null()]),
+  "teleop": zod.record(zod.string(), zod.array(zod.object({
+  "field_uuid": zod.string(),
+  "field_type": zod.string(),
+  "field_name": zod.string(),
+  "values": zod.array(zod.object({
+  "match_number": zod.number(),
+  "value": zod.unknown()
+})),
+  "min": zod.number(),
+  "max": zod.number(),
+  "avg": zod.number()
+}))),
+  "auton": zod.record(zod.string(), zod.array(zod.object({
+  "field_uuid": zod.string(),
+  "field_type": zod.string(),
+  "field_name": zod.string(),
+  "values": zod.array(zod.object({
+  "match_number": zod.number(),
+  "value": zod.unknown()
+})),
+  "min": zod.number(),
+  "max": zod.number(),
+  "avg": zod.number()
+}))),
+  "capability": zod.array(zod.object({
+  "field_uuid": zod.string(),
+  "field_type": zod.string(),
+  "field_name": zod.string(),
+  "values": zod.array(zod.unknown()),
+  "percentages": zod.array(zod.object({
+  "value": zod.unknown(),
+  "percentage": zod.number()
+}))
+})),
+  "other": zod.array(zod.object({
+  "field_uuid": zod.string(),
+  "field_type": zod.string(),
+  "field_name": zod.string(),
+  "values": zod.array(zod.object({
+  "match_number": zod.number(),
+  "value": zod.unknown()
+}))
+})),
+  "summary": zod.array(zod.object({
+  "field_uuid": zod.string(),
+  "field_name": zod.string(),
+  "stat_type": zod.string(),
+  "avg": zod.union([zod.number(),zod.string()]),
+  "values": zod.unknown()
+}))
+})
+export const GetDataDataGetGetResponse = zod.array(GetDataDataGetGetResponseItem)
 

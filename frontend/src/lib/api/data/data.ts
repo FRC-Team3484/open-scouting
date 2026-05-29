@@ -5,6 +5,8 @@
  * OpenAPI spec version: v2.2.0
  */
 import type {
+  DataFiltersResponse,
+  DataTeamResponse,
   GetDataDataGetGetParams,
   GetDataFiltersDataFiltersGetParams,
   HTTPValidationError
@@ -13,7 +15,7 @@ import type {
 import { customInstance } from '.././client';
 
 export type getDataFiltersDataFiltersGetResponse200 = {
-  data: unknown
+  data: DataFiltersResponse
   status: 200
 }
 
@@ -70,7 +72,7 @@ export const getDataFiltersDataFiltersGet = async (params: GetDataFiltersDataFil
 
 
 export type getDataDataGetGetResponse200 = {
-  data: unknown
+  data: DataTeamResponse[]
   status: 200
 }
 
