@@ -8,7 +8,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from ..dependencies import require_superuser
 from ..models import GamePiece, MatchScoutingField, Organization, Season, User
 from ..schemas.generic import MessageResponse
-from ..schemas.fields import MatchScoutingFieldRequest, MatchScoutingFieldResponse, ReorderMatchScoutingFieldsRequest
+from ..schemas.fields import MatchScoutingFieldRequest, MatchScoutingFieldResponse, MatchScoutingSeasonFieldsResponse, ReorderMatchScoutingFieldsRequest
 from ..utils import get_season, IS_DEV
 
 
@@ -17,9 +17,8 @@ router: APIRouter = APIRouter(
     include_in_schema=IS_DEV
 )
 
-# TODO: This needs a proper response_model
-@router.get("/fields/season/{season_uuid}")
-async def get_season_fields(season_uuid: UUID) -> list[Any]:
+@router.get("/fields/season/{season_uuid}", response_model=list[MatchScoutingSeasonFieldsResponse])
+async def get_season_fields(season_uuid: UUID) -> list[MatchScoutingSeasonFieldsResponse]:
     """
     Get all match scouting fields for a season
 
@@ -42,7 +41,7 @@ async def get_season_fields(season_uuid: UUID) -> list[Any]:
     field_map = {f.uuid: f for f in field_list}
 
     # Prepare the tree structure
-    tree = []
+    tree: list[MatchScoutingSeasonFieldsResponse] = []
 
     # Attach children recursively
     for field in field_list:

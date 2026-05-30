@@ -8,6 +8,7 @@ import type {
   HTTPValidationError,
   MatchScoutingFieldRequest,
   MatchScoutingFieldResponse,
+  MatchScoutingSeasonFieldsResponse,
   MessageResponse,
   ReorderMatchScoutingFieldsRequest
 } from '../model';
@@ -15,7 +16,7 @@ import type {
 import { customInstance } from '.././client';
 
 export type getSeasonFieldsFieldsSeasonSeasonUuidGetResponse200 = {
-  data: unknown[]
+  data: MatchScoutingSeasonFieldsResponse[]
   status: 200
 }
 

@@ -38,6 +38,7 @@ export * from './matchScoutingFieldResponse';
 export * from './matchScoutingRequest';
 export * from './matchScoutingRequestFields';
 export * from './matchScoutingResponse';
+export * from './matchScoutingSeasonFieldsResponse';
 export * from './messageResponse';
 export * from './organizationMemberResponse';
 export * from './organizationRequest';

@@ -131,7 +131,7 @@ export const GetDataDataGetGetResponseItem = zod.object({
   "field_name": zod.string(),
   "values": zod.array(zod.object({
   "match_number": zod.number(),
-  "value": zod.union([zod.string(),zod.boolean(),zod.number(),zod.number()])
+  "value": zod.union([zod.string(),zod.boolean(),zod.number(),zod.number(),zod.null()])
 })),
   "min": zod.number(),
   "max": zod.number(),
@@ -143,7 +143,7 @@ export const GetDataDataGetGetResponseItem = zod.object({
   "field_name": zod.string(),
   "values": zod.array(zod.object({
   "match_number": zod.number(),
-  "value": zod.union([zod.string(),zod.boolean(),zod.number(),zod.number()])
+  "value": zod.union([zod.string(),zod.boolean(),zod.number(),zod.number(),zod.null()])
 })),
   "min": zod.number(),
   "max": zod.number(),
@@ -153,9 +153,9 @@ export const GetDataDataGetGetResponseItem = zod.object({
   "field_uuid": zod.string(),
   "field_type": zod.string(),
   "field_name": zod.string(),
-  "values": zod.array(zod.union([zod.string(),zod.boolean(),zod.number(),zod.number()])),
+  "values": zod.array(zod.union([zod.string(),zod.boolean(),zod.number(),zod.number(),zod.null()])),
   "percentages": zod.array(zod.object({
-  "value": zod.union([zod.string(),zod.boolean(),zod.number(),zod.number()]),
+  "value": zod.union([zod.string(),zod.boolean(),zod.number(),zod.number(),zod.null()]),
   "percentage": zod.number()
 }))
 })),
@@ -165,7 +165,7 @@ export const GetDataDataGetGetResponseItem = zod.object({
   "field_name": zod.string(),
   "values": zod.array(zod.object({
   "match_number": zod.number(),
-  "value": zod.union([zod.string(),zod.boolean(),zod.number(),zod.number()])
+  "value": zod.union([zod.string(),zod.boolean(),zod.number(),zod.number(),zod.null()])
 }))
 })),
   "summary": zod.array(zod.object({

@@ -1,4 +1,4 @@
-from typing import Any, Iterator
+from typing import Any, Iterator, Optional
 from uuid import UUID
 
 from pydantic import BaseModel, Field, RootModel
@@ -52,3 +52,17 @@ class ReorderMatchScoutingFieldsRequest(RootModel[list[ReorderMatchScoutingField
 
     def __iter__(self) -> Iterator[ReorderMatchScoutingField]:
         return iter(self.root)
+
+# For /fields/season/{season_uuid}
+class MatchScoutingSeasonFieldsResponse(BaseModel):
+    uuid: UUID
+    name: str
+    description: str | None
+    field_type: str
+    stat_type: str
+    game_piece_uuid: UUID | None = None
+    required: bool
+    options: MatchScoutingFieldOptions
+    order: int
+    organization_id: UUID | None
+    fields: list["MatchScoutingSeasonFieldsResponse"] = Field(default_factory=list)

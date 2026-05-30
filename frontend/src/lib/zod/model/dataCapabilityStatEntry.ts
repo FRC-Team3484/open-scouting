@@ -10,6 +10,6 @@ export interface DataCapabilityStatEntry {
   field_uuid: string;
   field_type: string;
   field_name: string;
-  values: (string | boolean | number)[];
+  values: (string | boolean | number | null)[];
   percentages: DataPercentageValue[];
 }
