@@ -5,7 +5,6 @@ Main component for rendering match scouting fields
 Used in both the admin and regular pages.
 
 TODO: Add a proper interface for the user object
-TODO: getSeasonFieldsFieldsSeasonSeasonUuidGet needs a proper response schema
 TODO: getMatchScoutingFieldPresetsFieldsGetPresetsGet needs a proper response schema
 TODO: Normalize the interface to use for game pieces
 
@@ -38,7 +37,7 @@ Props:
     
 	import { clearSeasonFieldsFieldsSeasonSeasonUuidClearDelete, createSeasonFieldFieldsSeasonSeasonUuidCreatePost, getMatchScoutingFieldPresetsFieldsGetPresetsGet, getSeasonFieldsFieldsSeasonSeasonUuidGet, moveMatchScoutingFieldsFieldsSeasonUuidReorderPatch } from "$lib/api/match-scouting-fields/match-scouting-fields";
 	import { getSeasonGamepiecesGamepiecesSeasonSeasonUuidGet } from "$lib/api/gamepieces/gamepieces";
-	import type { GamepieceResponse } from "$lib/api/model";
+	import type { GamepieceResponse, MatchScoutingSeasonFieldsResponse } from "$lib/api/model";
     
 	import StringField from "./fields/StringField.svelte";
 	import LargeNumberField from "./fields/LargeNumberField.svelte";
@@ -63,10 +62,10 @@ Props:
     }
     let { season_uuid, year, event_data = null, editable }: Props = $props();
 
-    let fields: SeasonMatchScoutingField[] = $state([]);
+    let fields: SeasonMatchScoutingField[] | MatchScoutingSeasonFieldsResponse[] = $state([]);
     let gamePieces: SeasonGamePiece[] | GamepieceResponse[] = $state([]);
     
-    let user;
+    let user: unknown;
     let matchScoutingTeamInfoChild: ReturnType<typeof MatchScoutingTeamInfo>;
 
     let fieldFile = $state(null);
@@ -81,14 +80,27 @@ Props:
      */
     async function getStructure(): Promise<void> {
         if (editable) {
-            // TODO: this needs a proper response schema
-            fields = (await getSeasonFieldsFieldsSeasonSeasonUuidGet(season_uuid)).data;
+            await getSeasonFieldsFieldsSeasonSeasonUuidGet(season_uuid).then((response) => {
+                if (response.status === 200) {
+                    fields = response.data;
+                } else {
+                    console.warn("Failed to fetch match scouting fields from the server");
+                    toast.warning("Failed to fetch match scouting fields from the server", { duration: 5000 });
+                }
+            })
         } else {
             const season = await db.season_data.get(season_uuid);
-            fields = season?.fields
+            if (season) {
+                fields = season.fields;
+            } else {
+                console.warn("Failed to fetch match scouting fields from the local database");
+                toast.warning("Failed to fetch match scouting fields from the local database", { duration: 5000 });
+            }
         }
 
-        fields = normalizeOrders(fields);
+        if (fields) {
+            fields = normalizeOrders(fields);
+        }
     }
 
     /**
