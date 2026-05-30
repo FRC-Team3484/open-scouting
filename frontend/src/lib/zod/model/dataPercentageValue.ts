@@ -6,6 +6,6 @@
  */
 
 export interface DataPercentageValue {
-  value: unknown;
+  value: string | boolean | number;
   percentage: number;
 }

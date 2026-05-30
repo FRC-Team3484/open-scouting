@@ -20,6 +20,7 @@ export * from './dataNumericStatEntry';
 export * from './dataOtherStatEntry';
 export * from './dataPercentageValue';
 export * from './dataSummaryEntry';
+export * from './dataSummaryEntryValues';
 export * from './dataTeamResponse';
 export * from './dataTeamResponseAuton';
 export * from './dataTeamResponseTeleop';

@@ -4,11 +4,12 @@
  * FastAPI
  * OpenAPI spec version: v2.2.0
  */
+import type { DataSummaryEntryValues } from './dataSummaryEntryValues';
 
 export interface DataSummaryEntry {
   field_uuid: string;
   field_name: string;
   stat_type: string;
   avg: number | string;
-  values: unknown;
+  values: DataSummaryEntryValues;
 }

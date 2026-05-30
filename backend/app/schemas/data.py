@@ -1,7 +1,3 @@
-
-
-from typing import Any
-
 from pydantic import BaseModel
 
 # /data/filters
@@ -19,10 +15,10 @@ class DataFiltersResponse(BaseModel):
 # /data/get
 class DataMatchValue(BaseModel):
     match_number: int
-    value: Any
+    value: str | bool | int | float | None
 
 class DataPercentageValue(BaseModel):
-    value: Any
+    value: str | bool | int | float | None
     percentage: float
 
 class DataStatEntry(BaseModel):
@@ -37,7 +33,7 @@ class DataNumericStatEntry(DataStatEntry):
     avg: float
 
 class DataCapabilityStatEntry(DataStatEntry):
-    values: list[Any]
+    values: list[str | bool | int | float | None]
     percentages: list[DataPercentageValue]
 
 class DataOtherStatEntry(DataStatEntry):
@@ -48,7 +44,7 @@ class DataSummaryEntry(BaseModel):
     field_name: str
     stat_type: str
     avg: float | str
-    values: Any
+    values: list[int | float] | dict[str | bool, float] # If list, it's a score or miss field with values. If dict, it's key value pairs for a capability field
 
 class DataTeamStats(BaseModel):
     Fuel: list[DataNumericStatEntry] = []
@@ -57,6 +53,7 @@ class DataTeamResponse(BaseModel):
     team_number: int
     nickname: str | None
 
+    # Key is game piece, value is data for each field
     teleop: dict[str, list[DataNumericStatEntry]]
     auton: dict[str, list[DataNumericStatEntry]]
 

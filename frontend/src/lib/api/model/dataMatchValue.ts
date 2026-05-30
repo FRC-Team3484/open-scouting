@@ -7,5 +7,5 @@
 
 export interface DataMatchValue {
   match_number: number;
-  value: unknown;
+  value: string | boolean | number;
 }

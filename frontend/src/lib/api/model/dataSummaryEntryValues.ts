@@ -5,7 +5,4 @@
  * OpenAPI spec version: v2.2.0
  */
 
-export interface DataPercentageValue {
-  value: string | boolean | number;
-  percentage: number;
-}
+export type DataSummaryEntryValues = number[] | {[key: string]: number};
