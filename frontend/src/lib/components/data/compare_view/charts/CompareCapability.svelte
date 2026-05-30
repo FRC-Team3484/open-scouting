@@ -3,35 +3,36 @@
 The bar chart for showing a capability stat
 
 Props:
-    - `field` (`Field`) - This field's info
-    - `data` (`FlatData`) - Data from the parent
+    - `fieldUuid` (`string`) - This field's UUID
+    - `data` (`FlatData[]`) - Data from the parent
 -->
 <script lang="ts">
 	import { BarChart, defaultChartPadding } from "layerchart";
 
 	import type { FlatData } from "../CompareCharts.svelte";
-	import type { Field } from "../../../../../routes/data/+page.svelte";
 
 	
 	interface Props {
-		field: Field,
-		data: FlatData
+		fieldUuid: string,
+		data: FlatData[]
 	}
-	let { field, data }: Props = $props();
+	let { fieldUuid, data }: Props = $props();
 
 	const barSeries = $derived.by(() => {
-		if (!data || !field) return [];
+		if (!data || !fieldUuid) return [];
 
 		const categoriesSet = new Set<string>();
 		data.forEach(team => {
-			const f = team.fields.find(f => f.field_uuid === field);
+			const f = team.fields.find(f => f.field_uuid === fieldUuid);
+			if (f?.stat_type !== "capability") return;
 			if (f?.percentages) f.percentages.forEach(p => categoriesSet.add(p.value || "na"));
 		});
 		const categories = Array.from(categoriesSet);
 
 		return data
 			.map((team, i) => {
-				const f = team.fields.find(f => f.field_uuid === field);
+				const f = team.fields.find(f => f.field_uuid === fieldUuid);
+				if (f?.stat_type !== "capability") return;
 				if (!f?.percentages) return null;
 
 				const seriesData = categories.map(cat => {
@@ -55,7 +56,9 @@ Props:
 </script>
 
 <p class="font-bold text-left">
-	{data[0].fields.find(f => f.field_uuid === field)?.field_name}
+	{#if data[0]}
+		{data[0].fields.find(f => f.field_uuid === fieldUuid)?.field_name}
+	{/if}
 </p>
 
 <BarChart

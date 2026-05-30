@@ -16,7 +16,7 @@ Props:
 	import Separator from "../../ui/separator/separator.svelte";
 
 	import { getDataDataGetGet } from "$lib/api/data/data";
-	import type { GetDataDataGetGetParams } from "$lib/api/model";
+	import type { DataTeamResponse, GetDataDataGetGetParams } from "$lib/api/model";
 	import type { Filters } from "../../../../routes/data/+page.svelte";
 
 
@@ -25,13 +25,11 @@ Props:
     }
     let { filters }: Props = $props();
 
-    let data: unknown = $state(null);
+    let data: DataTeamResponse[] | null | "error" = $state(null);
     let loadConfirmed: boolean = $state(false);
     
     /**
      * Based on the filters, load data from the server
-     * 
-     * TODO: This needs a proper response schema
      */
     async function loadData() {
         if (filters.year > 0) {
@@ -49,7 +47,6 @@ Props:
                 params.team_numbers = filters.team_numbers.join(",");
             }
             
-            // TODO: This needs a proper response schema
             await getDataDataGetGet(params).then((response) => {
                 if (response.status === 200) {
                     data = response.data;

@@ -10,11 +10,11 @@ Props:
 
     import * as Card from "$lib/components/ui/card/index.js";
     import * as Chart from "$lib/components/ui/chart/index.js";
+	import type { DataCapabilityStatEntry } from "$lib/api/model";
 
 
-    // TODO: `data` from DataManager needs a proper response schema
     interface Props {
-        capability: unknown
+        capability: DataCapabilityStatEntry
     }
     let { capability }: Props = $props();
 

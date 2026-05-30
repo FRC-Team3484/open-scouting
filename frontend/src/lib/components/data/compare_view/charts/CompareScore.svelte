@@ -3,29 +3,30 @@
 The scatter chart for showing a score or miss stat
 
 Props:
-    - `field` (`Field`) - This field's info
-    - `data` (`FlatData`) - Data from the parent
+    - `fieldUuid` (`string`) - This field's UUID
+    - `data` (`FlatData[]`) - Data from the parent
 -->
 <script lang="ts">
 	import { defaultChartPadding, ScatterChart } from "layerchart";
 
-	import type { Field } from "../../../../../routes/data/+page.svelte";
 	import type { FlatData } from "../CompareCharts.svelte";
     
 
     interface Props {
-        field: Field
-        data: FlatData
+        fieldUuid: string
+        data: FlatData[]
     }
-    let { field, data }: Props = $props();
+    let { fieldUuid, data }: Props = $props();
 
     const chartData = $derived.by(() => {
-        if (!data || !field) return [];
+        if (!data || !fieldUuid) return [];
 
         return data
             .map((team, i) => {
-                const newField = team.fields.find(f => f.field_uuid === field);
+                const newField = team.fields.find(f => f.field_uuid === fieldUuid);
                 if (!newField || !newField.values) return null;
+
+                console.log("newField", newField);
 
                 const data = newField.values
                     .filter(v => v.match_number != null && v.value != null)
@@ -53,7 +54,9 @@ Props:
 </script>
 
 <p class="text-left font-bold">
-    {data[0].fields.find(f => f.field_uuid === field).field_name}
+    {#if data[0]}
+		{data[0].fields.find(f => f.field_uuid === fieldUuid)?.field_name}
+	{/if}
 </p>
 
 <ScatterChart

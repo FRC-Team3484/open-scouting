@@ -3,16 +3,16 @@
 The chart for an individual score or miss field
 
 Props:
-    - `field` (`unknown`) - The field details
+    - `field` (`DataNumericStatEntry`) - The field details
 -->
 <script lang="ts">
     import { ScatterChart } from "layerchart";
     import * as Card from "$lib/components/ui/card";
+	import type { DataNumericStatEntry } from "$lib/api/model";
 
 
-    // TODO: `data` from DataManager needs a proper response schema
     interface Props {
-        field: unknown
+        field: DataNumericStatEntry
     }
     let { field }: Props = $props();
 </script>

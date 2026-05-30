@@ -3,16 +3,16 @@
 The capabilities section for each team on the default data view page
 
 Props:
-    - `capabilities` (`unknown`) - All capabilities for the team
+    - `capabilities` (`DataCapabilityStatEntry[]`) - All capabilities for the team
 -->
 <script lang="ts">
+	import type { DataCapabilityStatEntry } from "$lib/api/model";
 	import BaseTeamFolder from "./BaseTeamFolder.svelte";
 	import CapabilityDisplay from "./displays/CapabilityDisplay.svelte";
 
 
-    // TODO: `data` from DataManager needs a proper response schema
     interface Props {
-        capabilities: unknown
+        capabilities: DataCapabilityStatEntry[]
     }
     let { capabilities }: Props = $props();
 </script>

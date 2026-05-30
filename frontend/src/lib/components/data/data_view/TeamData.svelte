@@ -3,7 +3,7 @@
 Container component for each team on the default data view page
 
 Props:
-    - `team` (`unknown`) - The team information from the server
+    - `team` (`DataTeamResponse`) - The team information from the server
 -->
 <script lang="ts">
 	import { slide } from "svelte/transition";
@@ -16,11 +16,11 @@ Props:
 	import TeamCapabilities from "./TeamCapabilities.svelte";
 	import TeamOthers from "./TeamOthers.svelte";
 	import TeamSummary from "./TeamSummary.svelte";
+	import type { DataTeamResponse } from "$lib/api/model";
 
 
-    // TODO: `data` from DataManager needs a proper response schema
     interface Props {
-        team: unknown
+        team: DataTeamResponse
     }
     let { team }: Props = $props();
 

@@ -4,17 +4,17 @@ The scores and miss section for each team on the default data view page
 
 Props:
     - `title` (`string`) - The title of this section
-    - `gamePieces` (`unknown`) - The game piece information from the server
+    - `gamePieces` (`[key: string]: DataNumericStatEntry[]`) - The game piece information from the server
 -->
 <script lang="ts">
 	import ScoreDisplay from "./displays/ScoreDisplay.svelte";
 	import BaseTeamFolder from "./BaseTeamFolder.svelte";
+	import type { DataNumericStatEntry } from "$lib/api/model";
 
 
-    // TODO: `data` from DataManager needs a proper response schema
     interface Props {
         title: string
-        gamePieces: unknown
+        gamePieces: { [key: string]: DataNumericStatEntry[] }
     }
     let { title, gamePieces }: Props = $props();
 </script>

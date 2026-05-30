@@ -15,10 +15,10 @@ Props:
     import * as AlertDialog from "$lib/components/ui/alert-dialog/index.js";
 	import Button from "$lib/components/ui/button/button.svelte";
 
-	import { db } from "$lib/utils/db";
+	import { db, type Event } from "$lib/utils/db";
 	import type { Filters as EventListFilters } from "$lib/components/generic/event_list/EventList.svelte";
 	import { getSeasonsSeasonsGet } from "$lib/api/seasons/seasons";
-	import type { GetDataFiltersDataFiltersGetParams, SeasonResponse } from "$lib/api/model";
+	import type { DataFiltersEvent, DataFiltersTeam, GetDataFiltersDataFiltersGetParams, SeasonResponse } from "$lib/api/model";
 	import { getDataFiltersDataFiltersGet } from "$lib/api/data/data";
 	import BaseDialog from "$lib/components/generic/dialogs/BaseDialog.svelte";
 	import FilterList from "../FilterList.svelte";
@@ -32,12 +32,12 @@ Props:
     let { filters = $bindable() }: Props = $props();
 
     let seasons: SeasonResponse[] = $state([]);
-    let seasons_label = $derived(seasons.find((s) => s.year === filters.year)?.name ?? "Select Year");
-    let events = $state([]);
-    let teams = $state([]);
-    let selectedEvents = $state([]);
-    let eventListOpen = $state(false);
-    let hydratedFromUrl = $state(false);
+    let seasons_label: string = $derived(seasons.find((s) => s.year === filters.year)?.name ?? "Select Year");
+    let events: DataFiltersEvent[] = $state([]);
+    let teams: DataFiltersTeam[] = $state([]);
+    let selectedEvents: Event[] = $state([]);
+    let eventListOpen: boolean = $state(false);
+    let hydratedFromUrl: boolean = $state(false);
 
     const eventListDefaultFilters: EventListFilters = { showPast: true, showFavorites: false, showCustom: false, showSelected: false, eventType: [] };
 
@@ -52,6 +52,7 @@ Props:
         if (!filters.year && seasons.length > 0) {
             const activeSeason = seasons.find((s) => s.active);
             filters.year = activeSeason ? activeSeason.year : seasons[0]?.year;
+
         }
     }
 
@@ -75,7 +76,6 @@ Props:
             params.team_numbers = filters.team_numbers.join(",");
         }
 
-        // TODO: This needs a proper response schema
         await getDataFiltersDataFiltersGet(params).then((response) => {
             if (response.status === 200) {
                 events = response.data.events;

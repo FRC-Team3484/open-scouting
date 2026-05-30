@@ -19,7 +19,7 @@ Props:
 	import Separator from "../../ui/separator/separator.svelte";
 
 	import { getSeasonsSeasonsGet } from "$lib/api/seasons/seasons";
-	import type { GetDataFiltersDataFiltersGetParams, SeasonResponse } from "$lib/api/model";
+	import type { DataFiltersEvent, DataFiltersTeam, GetDataFiltersDataFiltersGetParams, SeasonResponse } from "$lib/api/model";
 	import { getDataFiltersDataFiltersGet } from "$lib/api/data/data";
 	import FilterList from "../FilterList.svelte";
 	import SelectMatchDialog from "./select_match_dialog/SelectMatchDialog.svelte";
@@ -37,11 +37,11 @@ Props:
 
     let seasons: SeasonResponse[] = $state([]);
     let seasons_label: string = $derived(seasons.find((s) => s.year === filters.year)?.name ?? "Select Year");
-    let events: unknown[] = $state([]);
-    let teams: unknown[] = $state([]);
+    let events: DataFiltersEvent[] = $state([]);
+    let teams: DataFiltersTeam[] = $state([]);
     let selectedEvents: Event[] = $state([]);
-    let eventListOpen = $state(false);
-    let hydratedFromUrl = $state(false);
+    let eventListOpen: boolean = $state(false);
+    let hydratedFromUrl: boolean = $state(false);
 
     const eventListDefaultFilters: EventListFilters = { showPast: true, showFavorites: false, showCustom: false, showSelected: false, eventType: [] };
 
@@ -81,7 +81,6 @@ Props:
             params.team_numbers = filters.team_numbers.join(",");
         }
 
-        // TODO: This needs a proper response schema
         await getDataFiltersDataFiltersGet(params).then((response) => {
             if (response.status === 200) {
                 events = response.data.events;

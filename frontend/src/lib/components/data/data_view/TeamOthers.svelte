@@ -3,16 +3,17 @@
 The other section for each team on the default data view page
 
 Props:
-    - `others` (`unknown`) - All other fields for the team
+    - `others` (`DataOtherStatEntry[]`) - All other fields for the team
 -->
 <script lang="ts">
     import * as Card from "$lib/components/ui/card/index.js";
+
+	import type { DataOtherStatEntry } from "$lib/api/model";
 	import BaseTeamFolder from "./BaseTeamFolder.svelte";
     
 
-    // TODO: `data` from DataManager needs a proper response schema
     interface Props {
-        others: unknown
+        others: DataOtherStatEntry[]
     }
     let { others }: Props = $props();
 </script>

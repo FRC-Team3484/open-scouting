@@ -3,19 +3,29 @@
 Renders the charts for the compare chart view mode on the data page
 
 Props:
-    - `data` (`unknown`) The data for the chart
+    - `data` (`DataTeamResponse[]`) The data for the chart
     - `filters` (`CompareFilters`) The current filters
     - `fields` (`Field[]`) The avaliable field filters
 -->
 <script lang="ts" module>
+    type FlatField =
+        | (DataNumericStatEntry & {
+            stat_type: "score";
+        })
+        | (DataCapabilityStatEntry & {
+            stat_type: "capability";
+        });
+
     export interface FlatData {
-        team_number: number
-        nickname: string
-        fields: any
+        team_number: number;
+        nickname: string | null;
+        fields: FlatField[];
     }
 </script>
 
 <script lang="ts">
+	import type { DataCapabilityStatEntry, DataNumericStatEntry, DataTeamResponse } from "$lib/api/model";
+
 	import * as Card from "$lib/components/ui/card";
 	import type { CompareFilters, Field } from "../../../../routes/data/+page.svelte";
 	import CompareCapability from "./charts/CompareCapability.svelte";
@@ -23,7 +33,7 @@ Props:
 
 
     interface Props {
-        data: unknown
+        data: DataTeamResponse[]
         filters: CompareFilters
         fields: Field[]
     }
@@ -32,17 +42,25 @@ Props:
     
     const flattenedData: FlatData[] = $derived.by(() => {
         return data.map(team => {
-            const fields = [
+            const fields: FlatField[] = [
                 ...Object.values(team.auton ?? {})
                     .flat()
-                    .map(field => ({ ...field, stat_type: "score" })),
+                    .map(field => ({
+                        ...field,
+                        stat_type: "score" as const
+                    })),
 
                 ...Object.values(team.teleop ?? {})
                     .flat()
-                    .map(field => ({ ...field, stat_type: "score" })),
+                    .map(field => ({
+                        ...field,
+                        stat_type: "score" as const
+                    })),
 
-                ...(team.capability ?? [])
-                    .map(field => ({ ...field, stat_type: "capability" }))
+                ...(team.capability ?? []).map(field => ({
+                    ...field,
+                    stat_type: "capability" as const
+                }))
             ];
 
             return {
@@ -66,10 +84,10 @@ Props:
                 {#each filters.fields as field}
                     {@const fieldData = fields.find(f => f.value === field)}
                     {#if fieldData}
-                        {#if fieldData.stat_type === "autom_score" || fieldData.stat_type === "teleop_score" || fieldData.stat_type === "auton_miss" || fieldData.stat_type === "teleop_miss"}
-                            <CompareScore field={field} data={flattenedData} />
+                        {#if fieldData.stat_type === "auton_score" || fieldData.stat_type === "teleop_score" || fieldData.stat_type === "auton_miss" || fieldData.stat_type === "teleop_miss"}
+                            <CompareScore fieldUuid={field} data={flattenedData} />
                         {:else if fieldData.stat_type === "capability"}
-                            <CompareCapability field={field} data={flattenedData} />
+                            <CompareCapability fieldUuid={field} data={flattenedData} />
                         {/if}
                     {:else}
                         <p class="text-sm text-muted-foreground">Failed to load field data</p>

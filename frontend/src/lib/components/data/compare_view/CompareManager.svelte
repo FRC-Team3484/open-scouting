@@ -1,6 +1,10 @@
 <!-- 
 @component
 Handles getting and displaying the compare view on the data page
+
+Props:
+    - `filters` (`CompareFilters`) - The current filters from the parent
+    - `fields` (`Field[]`) - The avaliable match scouting fields from the parent
 -->
 <script lang="ts">
 	import { toast } from "svelte-sonner";
@@ -15,7 +19,7 @@ Handles getting and displaying the compare view on the data page
 
 	import CompareCharts from "./CompareCharts.svelte";
 	import { getDataDataGetGet } from "$lib/api/data/data";
-	import type { GetDataDataGetGetParams } from "$lib/api/model";
+	import type { DataTeamResponse, GetDataDataGetGetParams } from "$lib/api/model";
 	import type { CompareFilters, Field } from "../../../../routes/data/+page.svelte";
 
 
@@ -25,7 +29,7 @@ Handles getting and displaying the compare view on the data page
     }
     let { filters, fields = $bindable() }: Props = $props();
 
-    let data: unknown = $state(null);
+    let data: DataTeamResponse[] | null | "error" = $state(null);
     let loadConfirmed: boolean = $state(false);
 
     /**
@@ -47,7 +51,6 @@ Handles getting and displaying the compare view on the data page
                 params.team_numbers = filters.team_numbers.join(",");
             }
             
-            // TODO: This needs a proper response schema
             await getDataDataGetGet(params).then((response) => {
                 if (response.status === 200) {
                     data = response.data;
@@ -72,7 +75,7 @@ Handles getting and displaying the compare view on the data page
      * @param data
      * @returns Array<{ name: string; value: string }>
      */
-    function getFields(data: unknown): Field[] {
+    function getFields(data: DataTeamResponse[]): Field[] {
         const fields = new Map();
 
         for (const team of data) {

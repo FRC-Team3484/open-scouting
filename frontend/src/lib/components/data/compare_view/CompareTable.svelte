@@ -8,10 +8,11 @@ Renders the table for comparing data between teams in the compare view on the da
 
 	import BaseDialog from "../../generic/dialogs/BaseDialog.svelte";
 	import type { CompareFilters, Field } from "../../../../routes/data/+page.svelte";
+	import type { DataTeamResponse } from "$lib/api/model";
 
 
     interface Props {
-        data: unknown
+        data: DataTeamResponse[]
         filters: CompareFilters
         fields: Field[]
     }
