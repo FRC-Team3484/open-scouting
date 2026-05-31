@@ -5,7 +5,6 @@ Main component used for rendering pit scouting fields
 Only used on the admin page.
 
 TODO: SeasonPitScoutingQuestion and PitFieldResponse need a unified schema
-TODO: Pit scouting field presets need a proper response schema
 
 Props:
     - `season_uuid` (`string`) - The uuid of the season to render fields for
@@ -30,7 +29,7 @@ Props:
 	import AddPitScoutingQuestionDialog from "./dialogs/AddPitScoutingQuestionDialog.svelte";
 	import { addPitScoutingQuestionDialogOpen } from "$lib/stores/dialog";
 	import { clearPitFieldsPitsFieldsSeasonUuidClearDelete, createPitFieldPitsFieldsSeasonUuidCreatePost, getPitFieldsPitsFieldsSeasonUuidGet, getPitScoutingFieldPresetsPitsGetPresetsGet, movePitFieldsPitsFieldsSeasonUuidReorderPatch } from "$lib/api/pit-scouting/pit-scouting";
-	import type { ReorderPitFieldsRequest } from "$lib/api/model";
+	import type { PitScoutingPresetResponse, ReorderPitFieldsRequest } from "$lib/api/model";
 
 	import TextQuestion from "./pit_questions/admin/TextQuestion.svelte";
 	import NumberQuestion from "./pit_questions/admin/NumberQuestion.svelte";
@@ -49,7 +48,7 @@ Props:
     let questions: SeasonPitScoutingQuestion[] = $state([]);
 
     let fieldFile = $state(null);
-    let presets = $state([]);
+    let presets: PitScoutingPresetResponse[] = $state([]);
     let selectedPresetName = $state(null);
     let selectedPreset = $derived(
         presets.find(p => p.name === selectedPresetName) ?? null
@@ -85,7 +84,6 @@ Props:
      * Get pit scouting presets from the server
      */
     async function getPresets() {
-        // TODO: this needs a proper response schema
         await getPitScoutingFieldPresetsPitsGetPresetsGet().then((response) => {
             if (response.status === 200) {
                 presets = response.data
