@@ -1,8 +1,27 @@
+<!-- 
+@component
+Match scouting field with a multiple choice input from a given list of choices
+
+TODO: Get a proper response schema for field.options.choices
+
+Props:
+    - `field` (`MatchScoutingFieldResponse`) - Data for this field
+    - `editable` (`boolean`) - If this field is editable or not
+    - `getFields` (`() => void`) - Function for fetching field data
+-->
 <script lang="ts">
 	import * as Select from "$lib/components/ui/select/index.js";
+
+	import type { MatchScoutingFieldResponse } from "$lib/api/model";
 	import BaseField from "./BaseField.svelte";
 
-	let { field, editable, getFields } = $props();
+	
+	interface Props {
+        field: MatchScoutingFieldResponse
+        editable: boolean
+        getFields: () => void
+    }
+	let { field, editable, getFields }: Props = $props();
 
 	let options = field.options.choices
 
@@ -17,15 +36,25 @@
 	let selectedOptions = $derived(
 		value.map((id) => options.find((o) => o.name === id) ?? { id, name: "N/A" })
 	)
+	let displayLabel = $derived(
+		selectedOptions.length
+			? selectedOptions.map((o) => o.name).join(", ")
+			: "Select option(s)"
+	);
 
-	// Enforce selection rules
+	/**
+	 * If "na" is selected with others, clear "na"
+	 */
 	$effect(() => {
-		// If "na" is selected alongside others, clear "na"
 		if (value.length > 1 && value.includes("na")) {
 			value = value.filter((v) => v !== "na");
 		}
 	});
 
+
+	/**
+	 * When the form resets, change the value back to "na"
+	 */
 	$effect(() => {
 		const form = document.querySelector("#match-scouting-form");
 
@@ -36,13 +65,6 @@
 		form?.addEventListener("reset", reset);
 		return () => form?.removeEventListener("reset", reset);
 	});
-
-	// Derived display label
-	let displayLabel = $derived(
-		selectedOptions.length
-			? selectedOptions.map((o) => o.name).join(", ")
-			: "Select option(s)"
-	);
 </script>
 
 <BaseField field={field} editable={editable} getFields={getFields}>
@@ -59,10 +81,8 @@
 		<Select.Content>
 			<Select.Label>Options</Select.Label>
 
-			<!-- "N/A" option -->
 			<Select.Item value="na">N/A</Select.Item>
 
-			<!-- All field options -->
 			{#each options as option}
 				<!-- TODO: Currently forcing the value to be the plain text name instead of the ID. Later use the ID to allow for translations -->
 				<Select.Item value={option.name}>

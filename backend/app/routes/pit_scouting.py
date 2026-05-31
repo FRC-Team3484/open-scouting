@@ -12,7 +12,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from ..dependencies import require_superuser
 from ..models import Event, Organization, PitScoutingAnswer, PitScoutingField, Season, TeamPit, User
 from ..schemas.generic import MessageResponse
-from ..schemas.pit_scouting import AdminPitResponse, PitFieldResponse, PitFieldRequest, GetPitsForSeasonRequest, ReorderPitFieldsRequest, SubmitPitFieldAnswerRequest
+from ..schemas.pit_scouting import AdminPitResponse, PitFieldResponse, PitFieldRequest, GetPitsForSeasonRequest, PitScoutingPresetResponse, ReorderPitFieldsRequest, SubmitPitFieldAnswerRequest
 from ..utils import get_season, IS_DEV
 
 router: APIRouter = APIRouter(
@@ -453,8 +453,8 @@ async def delete_pit(pit_uuid: UUID, superuser = Depends(require_superuser)) -> 
     await TeamPit.filter(uuid=pit_uuid).delete()
     return MessageResponse(message="Pit deleted")
 
-@router.get("/pits/get_presets")
-async def get_pit_scouting_field_presets(superuser: User = Depends(require_superuser)) -> list[Any]:    
+@router.get("/pits/get_presets", response_model=list[PitScoutingPresetResponse])
+async def get_pit_scouting_field_presets(superuser: User = Depends(require_superuser)) -> list[PitScoutingPresetResponse]:    
     """
     Get all JSON pit scouting field presets
 
@@ -464,7 +464,7 @@ async def get_pit_scouting_field_presets(superuser: User = Depends(require_super
         `list[Any]`: A list of all pit scouting field presets
     """
     path = Path("./app/pit_scouting_presets")
-    presets = []
+    presets: list[PitScoutingPresetResponse] = []
 
     for file in path.iterdir():
         with open(file, "r") as f:

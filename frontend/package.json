@@ -23,11 +23,12 @@
 		"@tailwindcss/forms": "^0.5.11",
 		"@tailwindcss/vite": "^4.2.4",
 		"@tanstack/table-core": "^8.21.3",
+		"@types/node": "^25.7.0",
 		"@vite-pwa/sveltekit": "^1.1.0",
 		"bits-ui": "^2.18.1",
 		"clsx": "^2.1.1",
 		"formsnap": "^2.0.1",
-		"layerchart": "^2.0.0-next.43",
+		"layerchart": "^2.0.0-next.48",
 		"orval": "^8.9.1",
 		"phosphor-svelte": "^3.1.0",
 		"prettier": "^3.8.3",
@@ -44,7 +45,8 @@
 		"typescript": "^6.0.3",
 		"vaul-svelte": "^1.0.0-next.7",
 		"vite": "^8.0.10",
-		"vite-plugin-pwa": "^1.3.0"
+		"vite-plugin-pwa": "^1.3.0",
+		"workbox-window": "^7.4.1"
 	},
 	"dependencies": {
 		"@thisux/sveltednd": "^0.4.1",

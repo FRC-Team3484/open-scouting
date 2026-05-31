@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ArrowsOutLineVertical, Bug, ChartBar, Export, List } from "phosphor-svelte";
+	import { ArrowsOutLineVerticalIcon, BugIcon, ChartBarIcon, ExportIcon, ListIcon } from "phosphor-svelte";
 	import MajorFeature from "../MajorFeature.svelte";
 	import Generic from "./Generic.svelte";
 </script>
@@ -11,43 +11,43 @@
 {#snippet features()}
     <MajorFeature text="Changelog System">
         {#snippet icon()}
-            <List weight="bold" />
+            <ListIcon weight="bold" />
         {/snippet}
     </MajorFeature>
     
     <MajorFeature text="Data Page Team Summaries">
         {#snippet icon()}
-            <ChartBar weight="bold" />
+            <ChartBarIcon weight="bold" />
         {/snippet}
     </MajorFeature>
 
     <MajorFeature text="Match Scouting Data Export">
         {#snippet icon()}
-            <Export weight="bold" />
+            <ExportIcon weight="bold" />
         {/snippet}
     </MajorFeature>
 
     <MajorFeature text="Copy Links to Events">
         {#snippet icon()}
-            <ChartBar weight="bold" />
+            <ChartBarIcon weight="bold" />
         {/snippet}
     </MajorFeature>
 
     <MajorFeature text="New Number Field for Fuel">
         {#snippet icon()}
-            <ChartBar weight="bold" />
+            <ChartBarIcon weight="bold" />
         {/snippet}
     </MajorFeature>
 
     <MajorFeature text="Reorder Match Scouting and Pit Questions">
         {#snippet icon()}
-            <ArrowsOutLineVertical weight="bold" />
+            <ArrowsOutLineVerticalIcon weight="bold" />
         {/snippet}
     </MajorFeature>
 
     <MajorFeature text="Bug Fixes">
         {#snippet icon()}
-            <Bug weight="bold" />
+            <BugIcon weight="bold" />
         {/snippet}
     </MajorFeature>
 {/snippet}

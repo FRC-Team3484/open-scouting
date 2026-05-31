@@ -1,7 +1,13 @@
+<!-- 
+@component
+Component for managing and creating seasons on the admin page
+
+Allows a superuser to create a new season, make a season the active one, and delete seasons
+-->
 <script lang="ts">
 	import { onMount } from "svelte";
 	import { toast } from "svelte-sonner";
-	import { CheckCircle, PlusCircle, Trash } from "phosphor-svelte";
+	import { CheckCircleIcon, PlusCircleIcon, TrashIcon } from "phosphor-svelte";
 	import { zod4Client } from "sveltekit-superforms/adapters";
 	import { superForm } from "sveltekit-superforms";
 
@@ -14,24 +20,20 @@
 	import Checkbox from "../ui/checkbox/checkbox.svelte";
 	import Label from "../ui/label/label.svelte";
 	import Badge from "../ui/badge/badge.svelte";
-
-    import CustomDialog from "../generic/Dialog.svelte";
+    import * as AlertDialog from "../ui/alert-dialog/index.js";
 
 	import { CreateSeasonSeasonsCreatePostBody } from "$lib/zod/seasons/seasons";
 	import { activateSeasonSeasonsActivateSeasonUuidPost, createSeasonSeasonsCreatePost, deleteSeasonSeasonsDeleteSeasonUuidDelete, getSeasonsSeasonsGet } from "$lib/api/seasons/seasons";
 	import type { SeasonResponse } from "$lib/api/model";
 
-    let seasons: SeasonResponse[] = [];
 
-    let showDeleteDialog: boolean = false;
-    let selectedSeason: SeasonResponse | null = null;
+    let seasons: SeasonResponse[] = [];
 
     const createSeasonDefaultValues = {
         year: new Date().getFullYear(),
         name: "",
         active: false
     }
-
     const createSeasonForm = superForm(createSeasonDefaultValues, {
         SPA: true,
         validators: zod4Client(CreateSeasonSeasonsCreatePostBody),
@@ -48,17 +50,16 @@
             }
         }
     })
-
     const { form: formData, enhance } = createSeasonForm
 
-    async function deleteSeason() {
-        showDeleteDialog = false;
-        if (!selectedSeason) {
-            return;
-        }
-
+    /**
+     * Delete a season from the server
+     * 
+     * @param season The season to delete
+     */
+    async function deleteSeason(season: SeasonResponse) {
         try {
-            await deleteSeasonSeasonsDeleteSeasonUuidDelete(selectedSeason.uuid);
+            await deleteSeasonSeasonsDeleteSeasonUuidDelete(season.uuid);
 
             toast.success("Season deleted", { duration: 5000 });
             await fetchSeasons();
@@ -68,8 +69,12 @@
         
     }
 
-    async function activateSeason(seasonUuid: string) {
-        await activateSeasonSeasonsActivateSeasonUuidPost(seasonUuid).then((response) => {
+    /**
+     * Mark a season as active on the server
+     * @param seasonUuid
+     */
+    async function activateSeason(season: SeasonResponse) {
+        await activateSeasonSeasonsActivateSeasonUuidPost(season.uuid).then((response) => {
             if (response.status !== 200) {
                 toast.error("Failed to activate season", { duration: 5000 });
             } else {
@@ -79,6 +84,9 @@
         });
     }
 
+    /**
+     * Fetch all seasons from the server
+     */
     async function fetchSeasons() {
         seasons = (await getSeasonsSeasonsGet()).data;
     }
@@ -103,16 +111,36 @@
                         <div class="flex flex-row gap-2 items-center justify-between">
                             <div class="flex flex-row gap-2 items-center">
                                 {#if season.active}
-                                    <Badge><CheckCircle weight="bold" /> Active</Badge>
+                                    <Badge><CheckCircleIcon weight="bold" /> Active</Badge>
                                 {/if}
                                 <p>{season.year}</p>
                                 <p class="font-bold">{season.name}</p>
                                 <Separator orientation="vertical" />
                             </div>
                             {#if !season.active}
-                                <Button size="sm" variant="outline" onclick={() => {activateSeason(season.uuid)}}><CheckCircle weight="bold"/> Activate</Button>
+                                <Button size="sm" variant="outline" onclick={() => {activateSeason(season)}}><CheckCircleIcon weight="bold"/> Activate</Button>
                             {/if}
-                            <Button size="sm" variant="destructive" onclick={() => {showDeleteDialog = true; selectedSeason = season}}><Trash weight="bold"/> Delete</Button>
+                            <AlertDialog.Root>
+                                <AlertDialog.Trigger>
+                                    <Button variant="destructive"><TrashIcon weight="bold"/> Delete</Button>
+                                </AlertDialog.Trigger>
+
+                                <AlertDialog.Content>
+                                    <AlertDialog.Title>Delete Season</AlertDialog.Title>
+                                    <p>Are you sure you want to delete this season?</p>
+                                    <ul class="list-disc list-inside">
+                                        <li>This action cannot be undone</li>
+                                        <li>Deleting a season will break database references for match scouting fields, pit scouting questions, and all user submitted data for that season</li>
+                                        <li>Manual database intervention is required to restore this data</li>
+                                    </ul>
+                                    <p>Please ensure you know what you're doing before proceeding.</p>
+
+                                    <AlertDialog.Footer>
+                                        <AlertDialog.Cancel>Close</AlertDialog.Cancel>
+                                        <AlertDialog.Action onclick={() => {deleteSeason(season)}}>Delete</AlertDialog.Action>
+                                    </AlertDialog.Footer>
+                                </AlertDialog.Content>
+                            </AlertDialog.Root>
                         </div>
                     </Card.Content>
                 </Card.Root>
@@ -120,7 +148,7 @@
 
             <Dialog.Root>
                 <Dialog.Trigger>
-                    <Button><PlusCircle weight="bold" />Add Season</Button>
+                    <Button><PlusCircleIcon weight="bold" />Add Season</Button>
                 </Dialog.Trigger>
 
                 <Dialog.Content>
@@ -170,13 +198,3 @@
         </div>
     </Card.Content>
 </Card.Root>
-
-<CustomDialog
-    bind:open={showDeleteDialog}
-    title="Delete Season"
-    description="Are you sure you want to delete this season? This action cannot be undone, and may break things and cause data loss for match and pit scouting fields, and collected data relating to this season. Ensure you know what you're doing before proceeding."
-    cancel_text="Cancel"
-    submit_text="Delete"
-    onSubmit={deleteSeason}
->
-</CustomDialog>

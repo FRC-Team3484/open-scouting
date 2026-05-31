@@ -1,34 +1,26 @@
-<script lang="ts">
-	import { onMount, tick } from "svelte";
-	import { flip } from "svelte/animate";
-	import { liveQuery } from "dexie";
-	import { toast } from "svelte-sonner";
+<!-- 
+@component
+Generic, universal event list component
 
-	import Button from "$lib/components/ui/button/button.svelte";
-    import * as Card from "$lib/components/ui/card/index.js";
-    import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
-	import Input from "$lib/components/ui/input/input.svelte";
-    import * as Dialog from "$lib/components/ui/dialog/index.js";
-	import { FadersIcon, InfoIcon, PlusCircleIcon, PlusIcon, TreeViewIcon } from "phosphor-svelte";
-	import Separator from "$lib/components/ui/separator/separator.svelte";
+Fetches event information from the local database, with a liveQuery.
+Supports rich filtering and view options, and displays the user's 
+    favorite events and any custom events from the server.
+Also includes the ability to create custom events. 
+All props are optional. Can be provided default filters 
+    and view options, and a list of event codes as limits to display
 
-	import { db } from "$lib/utils/db";
-	import { getUserSetting, setUserSetting, validateTokenOnline } from "$lib/utils/user";
-	import { fetchEventData } from "$lib/utils/sync";
-	import Event from "./Event.svelte";
-	import { slide } from "svelte/transition";
-	import CreateCustomEventDialog from "../dialogs/CreateCustomEventDialog.svelte";
+TODO: Clean up this component
+TODO: Improve performace when hundreds or thousands of events are visible
 
-    // Props
-    interface Props {
-        year?: number | null // If year is null, show all events across all years
-        value?: [] // Allows for selecting multiple events
-        multiple?: boolean,
-        limits?: [] // Given a list of event_codes, limit to only showing those events, used for the data page
-        defaultViewOptions?: ViewOptions | null,
-        defaultFilters?: Filters | null
-    }
-
+Props:
+    - `year` (`number | null`) - The year to display events for. If null, all events across all years are shown
+    - `value` (`EventType[]`) - Bindable value for any selected events
+    - `multiple` (`boolean`) - If multiple events can be selected or not
+    - `limits` (`string[]`) - A list of event codes, used to limit the visible events to only those events
+    - `defaultViewOptions` (`ViewOptions | null`) - The default view options
+    - `defaultFilters` (`Filters | null`) - The default filters
+-->
+<script lang="ts" module>
     interface ViewOptions {
         view: "alphabetical" | "week",
         showNearby: boolean,
@@ -41,7 +33,38 @@
         showSelected: boolean
         eventType: string[]
     }
+</script>
+<script lang="ts">
+	import { onMount } from "svelte";
+	import { flip } from "svelte/animate";
+	import { liveQuery, type Observable } from "dexie";
+	import { toast } from "svelte-sonner";
+	import { slide } from "svelte/transition";
+	import { FadersIcon, InfoIcon, PlusCircleIcon, PlusIcon, TreeViewIcon } from "phosphor-svelte";
 
+	import Button from "$lib/components/ui/button/button.svelte";
+    import * as Card from "$lib/components/ui/card/index.js";
+    import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
+	import Input from "$lib/components/ui/input/input.svelte";
+    import * as Dialog from "$lib/components/ui/dialog/index.js";
+	import Separator from "$lib/components/ui/separator/separator.svelte";
+
+	import { db } from "$lib/utils/db";
+    import type { Event as EventType } from "$lib/utils/db";
+	import { getUserSetting, setUserSetting, validateTokenOnline } from "$lib/utils/user";
+	import { fetchEventData } from "$lib/utils/sync";
+	import Event from "./Event.svelte";
+	import CreateCustomEventDialog from "../dialogs/CreateCustomEventDialog.svelte";
+
+    
+    interface Props {
+        year?: number | null // If year is null, show all events across all years
+        value?: EventType[] // Allows for selecting multiple events
+        multiple?: boolean,
+        limits?: string[] // Given a list of event_codes, limit to only showing those events, used for the data page
+        defaultViewOptions?: ViewOptions | null,
+        defaultFilters?: Filters | null
+    }
     let { 
         year = null, 
         value = $bindable([]), 
@@ -51,9 +74,8 @@
         defaultFilters = null
     }: Props = $props();
 
-    // Variables
-    let events = liveQuery(() => db.event.toArray());
-    let filteredEvents = $derived.by(() => {
+    let events: Observable<EventType[]> = liveQuery(() => db.event.toArray());
+    let filteredEvents: EventType[] = $derived.by(() => {
         if ($events) {
             let eventsToFilter = $events;
             if (year) {
@@ -185,7 +207,7 @@
             return [];
         }
     });
-    let eventTypes = $derived.by(() => {
+    let eventTypes: string[] = $derived.by(() => {
         if ($events) {
             return Array.from(new Set($events.map(e => e.type)));
         } else {
@@ -193,9 +215,9 @@
         }
     })
     let user = $state(null);
-    let favoriteEvents: [] = $state([]);
+    let favoriteEvents: string[] = $state([]);
 
-    let search = $state("");
+    let search: string = $state("");
     let viewOptions: ViewOptions = $state({
         view: "week",
         showNearby: false,
@@ -209,7 +231,7 @@
         eventType: []
     });
 
-    let eventCount = $derived.by(() => {
+    let eventCount: number = $derived.by(() => {
         if (filteredEvents) {
             if (viewOptions.view === "alphabetical") {
                 return filteredEvents.length;
@@ -220,11 +242,17 @@
             return 0;
         }
     });
-    let createCustomEventOpen = $state(false);
+    let createCustomEventOpen: boolean = $state(false);
 
-    // Functions
-    async function favoriteEvent(e: MouseEvent, eventData) {
-        const key = `${eventData.year}_${eventData.event_code}`;
+    /**
+     * Mark an event as the user's favorite
+     * 
+     * If it's already the user's favorite, unfavorite it instead
+     * 
+     * @param event The event to favorite
+     */
+    async function favoriteEvent(event: EventType): Promise<void> {
+        const key = `${event.year}_${event.event_code}`;
 
         if (favoriteEvents.includes(key)) {
             favoriteEvents = favoriteEvents.filter(k => k !== key); // reassignment
@@ -235,7 +263,12 @@
         await setUserSetting("favorite_events", favoriteEvents);
     }
 
-    function selectEvent(event) {
+    /**
+     * Select an event, and add it to the bindable value param
+     * 
+     * @param event The event to select
+     */
+    function selectEvent(event: EventType): void {
         if (multiple) {
             value.push(event);
         } else {
@@ -243,11 +276,19 @@
         }
     }
 
-    function deselectEvent(event) {
+    /**
+     * Remove an event from the bindable value param
+     * 
+     * @param event The event to deselect
+     */
+    function deselectEvent(event: EventType): void {
         value = value.filter(e => e.year !== event.year || e.event_code !== event.event_code);
     }
 
-    async function rebuildEventData() {
+    /**
+     * Rebuild the event data cache
+     */
+    async function rebuildEventData(): Promise<void> {
         await fetchEventData().then(() => {
             toast.success("Event cache rebuilt");
         }).catch((error) => {
@@ -256,7 +297,11 @@
         })
     }
 
-    // Init
+    /**
+     * On init, get the user information 
+     * 
+     * If any default view options or filters are provided, set them
+     */
     onMount(async () => {
         user = await validateTokenOnline();
         if (user) {
@@ -397,7 +442,6 @@
                                 selectEvent={selectEvent} 
                                 deselectEvent={deselectEvent} 
                                 selectedEvents={value} 
-                                multiple={multiple} 
                             />
                         </div>
                     {/each}
@@ -415,7 +459,6 @@
                                     selectEvent={selectEvent} 
                                     deselectEvent={deselectEvent} 
                                     selectedEvents={value} 
-                                    multiple={multiple} 
                                 />
                             </div>
                         {/each}

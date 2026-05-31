@@ -1,7 +1,24 @@
+<!-- 
+@component
+Component for each section, handling drag and drop and rendering child components
+
+Handles dragging and dropping, and updating the orders for each field after a drag
+	and drop has completed
+
+TODO: MatchScoutingFieldResponse has no property "fields"
+
+Props:
+    - `field` (`MatchScoutingFieldResponse[]`) - This section's data
+    - `editable` (`boolean`) - If the field is editable or not
+    - `getFields` (`() => void`) - Function for fetching fields again
+    - `updateOrders` (`() => Promise<void>`) - Function for updating the orders of child components
+-->
 <script lang="ts">
 	import { flip } from "svelte/animate";
 	import BaseSection from "./BaseSection.svelte";
+	import { dragHandleZone } from "svelte-dnd-action";
 
+	import type { MatchScoutingFieldResponse } from "$lib/api/model";
 	import StringField from "./StringField.svelte";
 	import LargeNumberField from "./LargeNumberField.svelte";
 	import SmallNumberField from "./SmallNumberField.svelte";
@@ -10,12 +27,22 @@
 	import MultipleChoiceField from "./MultipleChoiceField.svelte";
 	import Section from "./Section.svelte";
 	import CoarseSmallNumberField from "./CoarseSmallNumberField.svelte";
-	import { dragHandleZone } from "svelte-dnd-action";
 
-	let { field = $bindable(), editable, getFields, updateOrders } = $props();
+	interface Props {
+        field: MatchScoutingFieldResponse
+        editable: boolean
+        getFields: () => void
+        updateOrders: () => Promise<void>
+    }
+	let { field = $bindable(), editable, getFields, updateOrders }: Props = $props();
 
-	function normalizeOrders(items) {
-        return items.map((item, index) => ({
+	/**
+	 * Given a list of fields, adjust their internal orders to match their position in the list
+	 * 
+	 * @param fields The fields to normalize
+	 */
+	function normalizeOrders(fields: MatchScoutingFieldResponse[]): MatchScoutingFieldResponse[] {
+        return fields.map((item, index) => ({
             ...item,
             order: index,
             fields: Array.isArray(item.fields)
@@ -24,11 +51,21 @@
         }));
     }
 
-	function onConsider(e: any) {
+	/**
+	 * What to do when the user is hovering a field in the drag and drop zone
+	 * 
+	 * @param e
+	 */
+	function onConsider(e: any): void {
 		field.fields = e.detail.items;
 	}
 
-	async function onFinalize(e: any) {
+	/**
+	 * What to do when the user has released a field into the drag and drop zone
+	 * 
+	 * @param e
+	 */
+	async function onFinalize(e: any): Promise<void> {
 		field.fields = normalizeOrders(e.detail.items);
 		await updateOrders();
 	}
@@ -75,5 +112,4 @@
 			{@render fieldsBlock()}
 		</div>
 	{/if}
-
 </BaseSection>

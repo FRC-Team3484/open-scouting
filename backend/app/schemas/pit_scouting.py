@@ -81,3 +81,7 @@ class AdminPitResponse(BaseModel):
     team_number: int
     answers: int
     created_at: datetime
+
+class PitScoutingPresetResponse(BaseModel):
+    name: str
+    preset: dict[Any, Any]

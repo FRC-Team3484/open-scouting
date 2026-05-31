@@ -1,5 +1,16 @@
+<!-- 
+@component
+Generic component for displaying the user's auth state
+
+TODO: Create a proper interface for the user
+
+Props:
+    - `show_text` (`boolean`) - If true, shows the user's username
+-->
 <script lang="ts">
+	import { dev } from "$app/environment";
 	import { onMount } from "svelte";
+	import { BookIcon, SignOutIcon, UserCircleIcon, WrenchIcon } from "phosphor-svelte";
 
     import Skeleton from "../ui/skeleton/skeleton.svelte";
     import Button from "../ui/button/button.svelte";
@@ -7,10 +18,12 @@
     import * as Avatar from "$lib/components/ui/avatar/index.js";
 
     import { signOut, validateTokenOnline } from "$lib/utils/user";
-	import { dev } from "$app/environment";
-	import { Book, SignOut, UserCircle, Wrench } from "phosphor-svelte";
 
-    let { show_text = true } = $props();
+
+    interface Props {
+        show_text: boolean
+    }
+    let { show_text = true }: Props = $props();
 
     let user = $state(null);
 
@@ -35,21 +48,21 @@
                 <DropdownMenu.Label>{user.username}</DropdownMenu.Label>
                 <DropdownMenu.Group>
                     <DropdownMenu.Item>
-                        <UserCircle weight="bold" /> Profile
+                        <UserCircleIcon weight="bold" /> Profile
                     </DropdownMenu.Item>
                     {#if user.is_superuser}
                         <DropdownMenu.Label>Admin Options</DropdownMenu.Label>
                         <DropdownMenu.Item onclick={() => window.location.href = "/admin"} class="bg-green-400/50 hover:bg-green-300/20! transition-colors m-1">
-                            <Wrench weight="bold" /> Admin Dashboard
+                            <WrenchIcon weight="bold" /> Admin Dashboard
                         </DropdownMenu.Item>
                         <DropdownMenu.Item onclick={() => {if (dev) window.location.href = "http://localhost:8000/docs"; else window.location.href = "/api/docs";}} class="bg-green-400/50 hover:bg-green-300/20! transition-colors m-1">
-                            <Book weight="bold" /> Swagger API Docs
+                            <BookIcon weight="bold" /> Swagger API Docs
                         </DropdownMenu.Item>
                     {/if}
                 </DropdownMenu.Group>
                 <DropdownMenu.Separator />
                 <DropdownMenu.Item onclick={() => {signOut(); window.location.reload()}}>
-                    <SignOut weight="bold" /> Log out
+                    <SignOutIcon weight="bold" /> Log out
                 </DropdownMenu.Item>
             </DropdownMenu.Content>
         </DropdownMenu.Root>

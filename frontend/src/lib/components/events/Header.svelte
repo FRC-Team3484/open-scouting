@@ -1,5 +1,11 @@
+<!-- 
+@component
+
+The header component for the event page
+-->
 <script lang="ts">
     import * as Card from "$lib/components/ui/card/index.js";
+
 	import Logo from "../generic/Logo.svelte";
 </script>
 

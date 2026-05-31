@@ -1,3 +1,10 @@
+<!-- 
+@component
+Handles logging into an account for a user on the authentication page
+
+Props:
+    - `page` - The current authentication page. This is changed in this component when going to the sign in form instead
+-->
 <script lang="ts">
     import { superForm } from "sveltekit-superforms";
 
@@ -5,12 +12,17 @@
     import * as Alert from "$lib/components/ui/alert/index";
     import Input from "../ui/input/input.svelte";
 	import Label from "../ui/label/label.svelte";
+
 	import { loginForAccessTokenTokenPost } from "$lib/api/auth/auth";
-	import { ArrowRight, Warning } from "phosphor-svelte";
+	import { ArrowRightIcon, WarningIcon } from "phosphor-svelte";
 
-    let { page = $bindable() } = $props();
 
-    let message = $state("");
+    interface Props {
+        page: string
+    }
+    let { page = $bindable() }: Props = $props();
+
+    let message: string = $state("");
 
     const defaultValues = {
         username: "",
@@ -40,7 +52,7 @@
 
 {#if message}
     <Alert.Root variant="destructive" class="text-left">
-        <Warning weight="bold" />
+        <WarningIcon weight="bold" />
         <Alert.Title>
             There was a problem
         </Alert.Title>
@@ -74,5 +86,5 @@
     </Form.Field>
 
     <Form.Button>Sign In</Form.Button>
-    <Form.Button type="button" onclick={() => page = "signup"} variant="outline"><ArrowRight weight="bold" /> Create Account</Form.Button>
+    <Form.Button type="button" onclick={() => page = "signup"} variant="outline"><ArrowRightIcon weight="bold" /> Create Account</Form.Button>
 </form>

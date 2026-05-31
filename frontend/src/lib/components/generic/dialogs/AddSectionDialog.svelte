@@ -1,3 +1,11 @@
+<!-- 
+@component
+Dialog for adding new match scouting fields on the admin page
+
+Props:
+    - `seasonUuid` (`string`) - The selected season UUID
+    - `getStructure` (`() => void`) - The function to get new field data from the server
+-->
 <script lang="ts">
     import { addSectionDialogOpen, addSectionEditData, addSectionParentUuid } from "$lib/stores/dialog";
     
@@ -14,7 +22,12 @@
 	import { toast } from "svelte-sonner";
 	import { untrack } from "svelte";
 
-    let { open = $bindable(), season_uuid, getStructure } = $props();
+
+    interface Props {
+        seasonUuid: string
+        getStructure: () => void
+    }
+    let { seasonUuid, getStructure }: Props = $props();
     
     let dialogTitle = $state("Add Section");
     let dialogDescription = $state("Create a new section");
@@ -22,7 +35,7 @@
     const defaultValues = {
         name: "",
         description: "",
-        season_uuid: season_uuid,
+        season_uuid: seasonUuid,
         field_type: "section",
         stat_type: "section",
         required: false,
@@ -50,13 +63,13 @@
                 }
 
                 if (Object.keys($addSectionEditData).length > 0) {
-                    await editSeasonFieldFieldsSeasonSeasonUuidEditFieldUuidPost(season_uuid, $addSectionEditData.uuid, form.data).then((response) => {
+                    await editSeasonFieldFieldsSeasonSeasonUuidEditFieldUuidPost(seasonUuid, $addSectionEditData.uuid, form.data).then((response) => {
                         if (response.status !== 200) {
                             toast.error("Failed to update field", { duration: 5000 });
                         }
                     });
                 } else {
-                    await createSeasonFieldFieldsSeasonSeasonUuidCreatePost(season_uuid, form.data).then((response) => {
+                    await createSeasonFieldFieldsSeasonSeasonUuidCreatePost(seasonUuid, form.data).then((response) => {
                         if (response.status !== 200) {
                             toast.error("Failed to create field", { duration: 5000 });
                         }
@@ -74,6 +87,10 @@
 
     const { form: formData, enhance } = form
 
+    /**
+     * Set the dialog title and loaded data based 
+     *     on if the user is adding or editing a section
+    */
     $effect(() => {
         if ($addSectionDialogOpen === false) {
             addSectionParentUuid.set("");
@@ -81,7 +98,7 @@
 
             form.reset();
             untrack(() => {
-                $formData.season_uuid = season_uuid;
+                $formData.season_uuid = seasonUuid;
             });
             dialogTitle = "Add Section";
             dialogDescription = "Create a new section";
@@ -91,7 +108,7 @@
             if (data && Object.keys(data).length > 0) {
                 untrack(() => {
                     $formData = data;
-                    $formData.season_uuid = season_uuid;
+                    $formData.season_uuid = seasonUuid;
                     dialogTitle = "Edit Section";
                     dialogDescription = `Editing section '${$formData.name}'`;
                 })
@@ -100,8 +117,8 @@
     })
 
     $effect(() => {
-        $formData.season_uuid = season_uuid;
-        defaultValues.season_uuid = season_uuid;
+        $formData.season_uuid = seasonUuid;
+        defaultValues.season_uuid = seasonUuid;
     })
 </script>
 

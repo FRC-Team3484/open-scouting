@@ -1,9 +1,28 @@
+<!-- 
+@component
+Admin preview for the single choice pit scouting question
+
+TODO: Create an interface for question.option.choices
+
+Props:
+    - `question` (`PitFieldResponse`) - The data for this question
+    - `editable` (`boolean`) - If this question is editable or not
+    - `getQuestions` (`() => void`) - The function for fetching the questions
+-->
 <script lang="ts">
 	import * as Select from "$lib/components/ui/select/index.js";
+
+	import type { PitFieldResponse } from "$lib/api/model";
 	import BaseQuestion from "./BaseQuestion.svelte";
 
-    let { question, editable = false, getQuestions = () => {} } = $props();
 
+	interface Props {
+        question: PitFieldResponse
+        editable: boolean
+        getQuestions: () => void
+    }
+    let { question, editable = false, getQuestions = () => {} }: Props = $props();
+	
 	let value = $state("na");
 	
 	let selectedOption = $derived(

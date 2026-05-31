@@ -1,4 +1,18 @@
+<!-- 
+@component
+Dialog for adding new pit scouting questions on the admin page
+
+Props:
+	- `getQuestions` (`() => void`) - The function to get new field data from the server
+    - `seasonUuid` (`string`) - The selected season UUID
+-->
 <script lang="ts">
+	import { toast } from "svelte-sonner";
+	import { untrack } from "svelte";
+	import { PlusCircleIcon, XIcon } from "phosphor-svelte";
+	import { superForm } from "sveltekit-superforms";
+	import { zod4Client } from "sveltekit-superforms/adapters";
+
 	import BaseDialog from "./BaseDialog.svelte";
 	import Input from "$lib/components/ui/input/input.svelte";
 	import * as Select from "$lib/components/ui/select";
@@ -6,19 +20,18 @@
 	import Button from "$lib/components/ui/button/button.svelte";
 	import * as Form from "$lib/components/ui/form";
 	import Label from "$lib/components/ui/label/label.svelte";
-
-	import { addPitScoutingQuestionData, addPitScoutingQuestionDialogOpen } from "$lib/stores/dialog";
-	import { PlusCircle, X } from "phosphor-svelte";
-	import { superForm } from "sveltekit-superforms";
-	import { zod4Client } from "sveltekit-superforms/adapters";
-	import { CreatePitFieldPitsFieldsSeasonUuidCreatePostBody } from "$lib/zod/pit-scouting/pit-scouting";
-	import { createPitFieldPitsFieldsSeasonUuidCreatePost, editPitFieldPitsFieldsSeasonUuidEditFieldUuidPatch } from "$lib/api/pit-scouting/pit-scouting";
-	import { toast } from "svelte-sonner";
-	import { untrack } from "svelte";
-	import Checkbox from "$lib/components/ui/checkbox/checkbox.svelte";
 	import Switch from "$lib/components/ui/switch/switch.svelte";
 
-	let { getQuestions, seasonUuid } = $props();
+	import { addPitScoutingQuestionData, addPitScoutingQuestionDialogOpen } from "$lib/stores/dialog";
+	import { CreatePitFieldPitsFieldsSeasonUuidCreatePostBody } from "$lib/zod/pit-scouting/pit-scouting";
+	import { createPitFieldPitsFieldsSeasonUuidCreatePost, editPitFieldPitsFieldsSeasonUuidEditFieldUuidPatch } from "$lib/api/pit-scouting/pit-scouting";
+
+	
+	interface Props {
+		getQuestions: () => void
+		seasonUuid: string
+	}
+	let { getQuestions, seasonUuid }: Props = $props();
 
 	const questionTypes = [
 		{ value: "text", label: "Text" },
@@ -77,6 +90,10 @@
 
 	const { form: formData, enhance } = form;
 
+	/**
+     * Set the dialog title and loaded data based 
+     *     on if the user is adding or editing a question
+    */
 	$effect(() => {
 		if ($addPitScoutingQuestionDialogOpen === false) {
 			addPitScoutingQuestionData.set({});
@@ -168,14 +185,14 @@
 							$formData.options.choices = [...$formData.options.choices, {id: crypto.randomUUID(), name: document.getElementById("choice_name").value}]
 							; document.getElementById("choice_name").value = ""
 							}}>
-							<PlusCircle weight="bold" />Add Choice
+							<PlusCircleIcon weight="bold" />Add Choice
 						</Button>
 
 						{#each $formData.options.choices as option, i (option.id)}
 							<div class="flex flex-row gap-2 items-center justify-between">
 								<p>{option.name}</p>
 								<Button variant="destructive" type="button" onclick={() => $formData.options.choices = $formData.options.choices.filter((_, j) => j !== i)}>
-									<X weight="bold" />
+									<XIcon weight="bold" />
 								</Button>
 							</div>
 						{/each}
