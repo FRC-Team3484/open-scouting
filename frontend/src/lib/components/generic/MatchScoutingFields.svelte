@@ -5,7 +5,6 @@ Main component for rendering match scouting fields
 Used in both the admin and regular pages.
 
 TODO: Add a proper interface for the user object
-TODO: getMatchScoutingFieldPresetsFieldsGetPresetsGet needs a proper response schema
 TODO: Normalize the interface to use for game pieces
 
 Props:
@@ -37,7 +36,7 @@ Props:
     
 	import { clearSeasonFieldsFieldsSeasonSeasonUuidClearDelete, createSeasonFieldFieldsSeasonSeasonUuidCreatePost, getMatchScoutingFieldPresetsFieldsGetPresetsGet, getSeasonFieldsFieldsSeasonSeasonUuidGet, moveMatchScoutingFieldsFieldsSeasonUuidReorderPatch } from "$lib/api/match-scouting-fields/match-scouting-fields";
 	import { getSeasonGamepiecesGamepiecesSeasonSeasonUuidGet } from "$lib/api/gamepieces/gamepieces";
-	import type { GamepieceResponse, MatchScoutingSeasonFieldsResponse } from "$lib/api/model";
+	import type { GamepieceResponse, MatchScoutingPresetResponse, MatchScoutingSeasonFieldsResponse } from "$lib/api/model";
     
 	import StringField from "./fields/StringField.svelte";
 	import LargeNumberField from "./fields/LargeNumberField.svelte";
@@ -69,7 +68,7 @@ Props:
     let matchScoutingTeamInfoChild: ReturnType<typeof MatchScoutingTeamInfo>;
 
     let fieldFile = $state(null);
-    let presets = $state([]);
+    let presets: MatchScoutingPresetResponse[] = $state([]);
     let selectedPresetName = $state(null);
     let selectedPreset = $derived(
         presets.find(p => p.name === selectedPresetName) ?? null
@@ -218,7 +217,6 @@ Props:
      * Get match scouting field presets from the server
      */
     async function getPresets(): Promise<void> {
-        // TODO: this needs a proper response schema
         await getMatchScoutingFieldPresetsFieldsGetPresetsGet().then((response) => {
             if (response.status === 200) {
                 presets = response.data
