@@ -11,6 +11,7 @@ import type {
   MessageResponse,
   PitFieldRequest,
   PitFieldResponse,
+  PitScoutingPresetResponse,
   ReorderPitFieldsRequest,
   SubmitPitFieldAnswerRequest
 } from '../model';
@@ -538,7 +539,7 @@ export const deletePitPitsDeletePitUuidDelete = async (pitUuid: string, options?
 
 
 export type getPitScoutingFieldPresetsPitsGetPresetsGetResponse200 = {
-  data: unknown[]
+  data: PitScoutingPresetResponse[]
   status: 200
 }
 

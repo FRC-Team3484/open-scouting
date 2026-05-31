@@ -48,6 +48,8 @@ export * from './organizationResponse';
 export * from './pitFieldOptions';
 export * from './pitFieldRequest';
 export * from './pitFieldResponse';
+export * from './pitScoutingPresetResponse';
+export * from './pitScoutingPresetResponsePreset';
 export * from './reorderMatchScoutingField';
 export * from './reorderMatchScoutingFieldsRequest';
 export * from './reorderPitField';

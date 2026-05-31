@@ -316,6 +316,9 @@ Returns:
     `list[Any]`: A list of all pit scouting field presets
  * @summary Get Pit Scouting Field Presets
  */
-export const GetPitScoutingFieldPresetsPitsGetPresetsGetResponseItem = zod.unknown()
+export const GetPitScoutingFieldPresetsPitsGetPresetsGetResponseItem = zod.object({
+  "name": zod.string(),
+  "preset": zod.record(zod.string(), zod.unknown())
+})
 export const GetPitScoutingFieldPresetsPitsGetPresetsGetResponse = zod.array(GetPitScoutingFieldPresetsPitsGetPresetsGetResponseItem)
 
