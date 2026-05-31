@@ -66,3 +66,7 @@ class MatchScoutingSeasonFieldsResponse(BaseModel):
     order: int
     organization_id: UUID | None
     fields: list["MatchScoutingSeasonFieldsResponse"] = Field(default_factory=list)
+
+class MatchScoutingPresetResponse(BaseModel):
+    name: str
+    preset: dict[Any, Any]

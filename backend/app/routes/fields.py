@@ -8,7 +8,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from ..dependencies import require_superuser
 from ..models import GamePiece, MatchScoutingField, Organization, Season, User
 from ..schemas.generic import MessageResponse
-from ..schemas.fields import MatchScoutingFieldRequest, MatchScoutingFieldResponse, MatchScoutingSeasonFieldsResponse, ReorderMatchScoutingFieldsRequest
+from ..schemas.fields import MatchScoutingFieldRequest, MatchScoutingFieldResponse, MatchScoutingPresetResponse, MatchScoutingSeasonFieldsResponse, ReorderMatchScoutingFieldsRequest
 from ..utils import get_season, IS_DEV
 
 
@@ -308,18 +308,18 @@ async def move_match_scouting_fields(
 
     return MessageResponse(message="Fields reordered")
 
-@router.get("/fields/get_presets")
-async def get_match_scouting_field_presets(superuser: User = Depends(require_superuser)) -> list[Any]:    
+@router.get("/fields/get_presets", response_model=list[MatchScoutingPresetResponse])
+async def get_match_scouting_field_presets(superuser: User = Depends(require_superuser)) -> list[MatchScoutingPresetResponse]:    
     """
     Get all JSON match scouting field presets
 
     Requires superuser access
 
     Returns:
-        `list[Any]`: A list of all match scouting field presets
+        `list[MatchScoutingPresetResponse]`: A list of all match scouting field presets
     """
     path = Path("./app/match_scouting_presets")
-    presets = []
+    presets: list[Any] = []
 
     for file in path.iterdir():
         with open(file, "r") as f:

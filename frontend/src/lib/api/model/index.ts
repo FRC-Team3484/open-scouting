@@ -35,6 +35,8 @@ export * from './hTTPValidationError';
 export * from './matchScoutingFieldOptions';
 export * from './matchScoutingFieldRequest';
 export * from './matchScoutingFieldResponse';
+export * from './matchScoutingPresetResponse';
+export * from './matchScoutingPresetResponsePreset';
 export * from './matchScoutingRequest';
 export * from './matchScoutingRequestFields';
 export * from './matchScoutingResponse';

@@ -209,10 +209,13 @@ export const MoveMatchScoutingFieldsFieldsSeasonUuidReorderPatchResponse = zod.o
 Requires superuser access
 
 Returns:
-    `list[Any]`: A list of all match scouting field presets
+    `list[MatchScoutingPresetResponse]`: A list of all match scouting field presets
  * @summary Get Match Scouting Field Presets
  */
-export const GetMatchScoutingFieldPresetsFieldsGetPresetsGetResponseItem = zod.unknown()
+export const GetMatchScoutingFieldPresetsFieldsGetPresetsGetResponseItem = zod.object({
+  "name": zod.string(),
+  "preset": zod.record(zod.string(), zod.unknown())
+})
 export const GetMatchScoutingFieldPresetsFieldsGetPresetsGetResponse = zod.array(GetMatchScoutingFieldPresetsFieldsGetPresetsGetResponseItem)
 
 /**

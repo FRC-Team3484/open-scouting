@@ -8,6 +8,7 @@ import type {
   HTTPValidationError,
   MatchScoutingFieldRequest,
   MatchScoutingFieldResponse,
+  MatchScoutingPresetResponse,
   MatchScoutingSeasonFieldsResponse,
   MessageResponse,
   ReorderMatchScoutingFieldsRequest
@@ -279,7 +280,7 @@ export const moveMatchScoutingFieldsFieldsSeasonUuidReorderPatch = async (season
 
 
 export type getMatchScoutingFieldPresetsFieldsGetPresetsGetResponse200 = {
-  data: unknown[]
+  data: MatchScoutingPresetResponse[]
   status: 200
 }
 
@@ -304,7 +305,7 @@ export const getGetMatchScoutingFieldPresetsFieldsGetPresetsGetUrl = () => {
 Requires superuser access
 
 Returns:
-    `list[Any]`: A list of all match scouting field presets
+    `list[MatchScoutingPresetResponse]`: A list of all match scouting field presets
  * @summary Get Match Scouting Field Presets
  */
 export const getMatchScoutingFieldPresetsFieldsGetPresetsGet = async ( options?: RequestInit): Promise<getMatchScoutingFieldPresetsFieldsGetPresetsGetResponse> => {
