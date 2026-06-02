@@ -18,7 +18,6 @@ TODO: Add a proper interface for user
 	import Pit from "$lib/components/pit_scouting/Pit.svelte";
 	import SyncManager from "$lib/components/pit_scouting/SyncManager.svelte";
 	import PitStatus from "$lib/components/pit_scouting/PitStatus.svelte";
-	import { getSeasonsSeasonsGet } from "$lib/api/seasons/seasons";
 
     let season_uuid: string = $state("");
     let year: string | null = $state(null);
@@ -37,20 +36,16 @@ TODO: Add a proper interface for user
 
     /**
      * Get the season uuid for the given year
-     * 
-     * TODO: Fetch seasons from the local database instead
-     * 
+     *       
      * @param year The year to get the season uuid for
      */
-    async function get_season_uuid(year: string): Promise<void> {
-        await getSeasonsSeasonsGet().then((response) => {
-            if (response.status === 200) {
-                const season = response.data.find((season) => season.year.toString() == year);
-                if (season) {
-                    season_uuid = season.uuid;
-                }
+    async function get_season_uuid(year: string) {
+        await db.season_data.toArray().then((seasons) => {
+            const season = seasons.find((season) => season.year.toString() == year);
+            if (season) {
+                season_uuid = season.uuid;
             } else {
-                console.warn("Failed to get seasons");
+                console.warn("Failed to get season");
             }
         })
     }

@@ -25,7 +25,7 @@ Unlike the MatchScoutingFieldsManager, this component is only used on the admin 
     )
 
     /**
-     * Get all seasons from the server
+     * Get all seasons from the server. Fetching from the server is good here, because we don't want stale data on the admin page.
      * 
      * Sets the currently selected season to the active season from the list
      */

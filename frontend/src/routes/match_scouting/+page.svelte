@@ -7,8 +7,7 @@ TODO: Fetch season uuid from the local database instead
 	import { onMount } from "svelte";
 	import { CircleNotchIcon } from "phosphor-svelte";
 
-	import { getSeasonsSeasonsGet } from "$lib/api/seasons/seasons";
-	import type { Event } from "$lib/utils/db";
+	import { db, type Event } from "$lib/utils/db";
 	import MatchScoutingFields from "$lib/components/generic/MatchScoutingFields.svelte";
 	import PageContainer from "$lib/components/layout/PageContainer.svelte";
 	import Header from "$lib/components/match_scouting/Header.svelte";
@@ -21,20 +20,16 @@ TODO: Fetch season uuid from the local database instead
 
     /**
      * Get the season uuid for the given year
-     * 
-     * TODO: Fetch seasons from the local database instead
-     * 
+     *       
      * @param year The year to get the season uuid for
      */
     async function get_season_uuid(year: string) {
-        await getSeasonsSeasonsGet().then((response) => {
-            if (response.status === 200) {
-                const season = response.data.find((season) => season.year.toString() == year);
-                if (season) {
-                    season_uuid = season.uuid;
-                }
+        await db.season_data.toArray().then((seasons) => {
+            const season = seasons.find((season) => season.year.toString() == year);
+            if (season) {
+                season_uuid = season.uuid;
             } else {
-                console.warn("Failed to get seasons");
+                console.warn("Failed to get season");
             }
         })
     }

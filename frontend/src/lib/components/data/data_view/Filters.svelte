@@ -15,10 +15,9 @@ Props:
     import * as AlertDialog from "$lib/components/ui/alert-dialog/index.js";
 	import Button from "$lib/components/ui/button/button.svelte";
 
-	import { db, type Event } from "$lib/utils/db";
+	import { db, type Event, type SeasonStored } from "$lib/utils/db";
 	import type { Filters as EventListFilters } from "$lib/components/generic/event_list/EventList.svelte";
-	import { getSeasonsSeasonsGet } from "$lib/api/seasons/seasons";
-	import type { DataFiltersEvent, DataFiltersTeam, GetDataFiltersDataFiltersGetParams, SeasonResponse } from "$lib/api/model";
+	import type { DataFiltersEvent, DataFiltersTeam, GetDataFiltersDataFiltersGetParams } from "$lib/api/model";
 	import { getDataFiltersDataFiltersGet } from "$lib/api/data/data";
 	import BaseDialog from "$lib/components/generic/dialogs/BaseDialog.svelte";
 	import FilterList from "../FilterList.svelte";
@@ -31,7 +30,7 @@ Props:
     }
     let { filters = $bindable() }: Props = $props();
 
-    let seasons: SeasonResponse[] = $state([]);
+    let seasons: SeasonStored[] = $state([]);
     let seasons_label: string = $derived(seasons.find((s) => s.year === filters.year)?.name ?? "Select Year");
     let events: DataFiltersEvent[] = $state([]);
     let teams: DataFiltersTeam[] = $state([]);
@@ -42,18 +41,19 @@ Props:
     const eventListDefaultFilters: EventListFilters = { showPast: true, showFavorites: false, showCustom: false, showSelected: false, eventType: [] };
 
     /**
-     * Load all seasons from the server
-     * 
-     * TODO: Should this fetch the local seasons instead?
+     * Load all seasons from the local database
      */
-    async function loadSeasons() {
-        seasons = (await getSeasonsSeasonsGet()).data;
+    async function loadSeasons(): Promise<void> {
+        await db.season_data.toArray().then((seasons) => {
+            seasons = seasons.sort((a, b) => b.year - a.year);
 
-        if (!filters.year && seasons.length > 0) {
-            const activeSeason = seasons.find((s) => s.active);
-            filters.year = activeSeason ? activeSeason.year : seasons[0]?.year;
-
-        }
+            if (!filters.year && seasons.length > 0) {
+                const activeSeason = seasons.find((s) => s.active);
+                if (activeSeason && seasons[0]) {
+                    filters.year = activeSeason ? activeSeason.year : seasons[0].year;
+                }
+            }
+        });
     }
 
     /**

@@ -10,7 +10,7 @@ Props:
 	import { onMount } from "svelte";
 	import { BuildingsIcon, CalendarIcon, FadersIcon, InfoIcon, PlusCircleIcon, SelectionIcon, UsersIcon, XIcon } from "phosphor-svelte";
 	import { toast } from "svelte-sonner";
-    import { db, type Event } from "$lib/utils/db";
+    import { db, type Event, type SeasonStored } from "$lib/utils/db";
 
     import * as Card from "$lib/components/ui/card/index.js";
     import * as Select from "$lib/components/ui/select/index.js";
@@ -18,8 +18,7 @@ Props:
 	import Button from "../../ui/button/button.svelte";
 	import Separator from "../../ui/separator/separator.svelte";
 
-	import { getSeasonsSeasonsGet } from "$lib/api/seasons/seasons";
-	import type { DataFiltersEvent, DataFiltersTeam, GetDataFiltersDataFiltersGetParams, SeasonResponse } from "$lib/api/model";
+	import type { DataFiltersEvent, DataFiltersTeam, GetDataFiltersDataFiltersGetParams } from "$lib/api/model";
 	import { getDataFiltersDataFiltersGet } from "$lib/api/data/data";
 	import FilterList from "../FilterList.svelte";
 	import SelectMatchDialog from "./select_match_dialog/SelectMatchDialog.svelte";
@@ -35,7 +34,7 @@ Props:
     }
     let { filters = $bindable(), fields }: Props = $props();
 
-    let seasons: SeasonResponse[] = $state([]);
+    let seasons: SeasonStored[] = $state([]);
     let seasons_label: string = $derived(seasons.find((s) => s.year === filters.year)?.name ?? "Select Year");
     let events: DataFiltersEvent[] = $state([]);
     let teams: DataFiltersTeam[] = $state([]);
@@ -48,17 +47,19 @@ Props:
     let selectMatchOpen = $state(false);
 
     /**
-     * Load all seasons from the server
-     * 
-     * TODO: Should this fetch the local seasons instead?
+     * Load all seasons
      */
     async function loadSeasons(): Promise<void> {
-        seasons = (await getSeasonsSeasonsGet()).data;
+        await db.season_data.toArray().then((seasons) => {
+            seasons = seasons.sort((a, b) => b.year - a.year);
 
-        if (!filters.year && seasons.length > 0) {
-            const activeSeason = seasons.find((s) => s.active);
-            filters.year = activeSeason ? activeSeason.year : seasons[0]?.year;
-        }
+            if (!filters.year && seasons.length > 0) {
+                const activeSeason = seasons.find((s) => s.active);
+                if (activeSeason && seasons[0]) {
+                    filters.year = activeSeason ? activeSeason.year : seasons[0].year;
+                }
+            }
+        });
     }
 
     /**

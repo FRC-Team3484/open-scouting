@@ -17,8 +17,7 @@ Props:
 	import Label from "../ui/label/label.svelte";
 	import Button from "../ui/button/button.svelte";
 
-	import { getSeasonsSeasonsGet } from "$lib/api/seasons/seasons";
-	import type { SeasonResponse } from "$lib/api/model";
+    import { db, type SeasonStored } from "$lib/utils/db";
 
 
     interface Props {
@@ -27,20 +26,19 @@ Props:
     }
     let { handleNavigate, setYear }: Props = $props();
 
-    let years: SeasonResponse[] = $state([]);
+    let years: SeasonStored[] = $state([]);
     let selected_year: {year: number, name: string, uuid: string} | null = $state(null);
 
     /**
-     * Get all years from the server
-     * 
-     * TODO: Should this get the locally stored years?
+     * Get all years from the local database
      */
     onMount(async () => {
-        await getSeasonsSeasonsGet().then((response) => {
-            years = response.data
-            const active_year = years.find(year => year.active);
-            if (active_year) {
-                selected_year = {year: active_year.year, name: active_year.name, uuid: active_year.uuid};
+        await db.season_data.toArray().then((seasons) => {
+            years = seasons.sort((a, b) => b.year - a.year);
+
+            const active_season = seasons.find(season => season.active);
+            if (active_season) {
+                selected_year = {year: active_season.year, name: active_season.name, uuid: active_season.uuid};
             }
         });
     });
@@ -62,7 +60,7 @@ Props:
                 <Select.Content>
                     <Select.Label>Seasons</Select.Label>
                     {#each years as year}
-                        <Select.Item value={{"year":year.year, "name":year.name, "uuid":year.uuid}} label={year.year} />
+                        <Select.Item value={{"year":year.year, "name":year.name, "uuid":year.uuid}} label={`${year.year} (${year.name})`} />
                     {/each}
                 </Select.Content>
             </Select.Root>

@@ -85,7 +85,7 @@ Allows a superuser to create a new season, make a season the active one, and del
     }
 
     /**
-     * Fetch all seasons from the server
+     * Fetch all seasons from the server. Getting seasons from the server is good here, because we don't want stale data on the admin page.
      */
     async function fetchSeasons() {
         seasons = (await getSeasonsSeasonsGet()).data;
