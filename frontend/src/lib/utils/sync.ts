@@ -62,9 +62,11 @@ async function fetchSeasonData() {
         await db.season_data.put({
             uuid: season.uuid,
             year: season.year,
+            name: season.name,
             fields: fieldData,
             game_pieces: gamePieceData,
             pit_scouting_questions: pitData,
+            active: season.active,
             fetch_time: new Date()
         });
     }

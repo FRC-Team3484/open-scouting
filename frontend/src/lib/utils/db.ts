@@ -67,9 +67,11 @@ export interface SeasonPitScoutingQuestion {
 export interface Season {
     uuid: string
     year: number
+    name: string
     fields: SeasonMatchScoutingField[]
     game_pieces: SeasonGamePiece[]
     pit_scouting_questions: SeasonPitScoutingQuestion[]
+    active: boolean
     fetch_time: Date
 }
 // Create a version of Season without recursive fields to keep dexie from being unhappy
@@ -145,6 +147,15 @@ export class OpenScoutingDB extends Dexie {
         });
         this.version(3).stores({
             season_data: "&uuid, year, fields, game_pieces, pit_scouting_questions, fetch_time"
+        });
+
+        // Delete entire season_data when adding name and active field
+        // Then sync will re-fetch the items from the server
+        this.version(4).stores({
+            season_data: null
+        });
+        this.version(5).stores({
+            season_data: "&uuid, year, name, fields, game_pieces, pit_scouting_questions, active, fetch_time"
         });
 
         this.match_scouting = this.table('match_scouting');
