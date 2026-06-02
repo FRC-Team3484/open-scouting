@@ -225,7 +225,20 @@ export const GetPitsPitsGetSeasonUuidPostBody = zod.object({
   "event_custom": zod.boolean()
 })
 
-export const GetPitsPitsGetSeasonUuidPostResponse = zod.unknown()
+export const GetPitsPitsGetSeasonUuidPostResponseItem = zod.object({
+  "uuid": zod.string().uuid(),
+  "team_number": zod.number(),
+  "nickname": zod.string(),
+  "created_at": zod.string().datetime({"offset":true}),
+  "answers": zod.array(zod.object({
+  "uuid": zod.string().uuid(),
+  "field_uuid": zod.string().uuid(),
+  "value": zod.union([zod.string(),zod.boolean(),zod.number(),zod.number()]),
+  "username": zod.string(),
+  "created_at": zod.string().datetime({"offset":true})
+}))
+})
+export const GetPitsPitsGetSeasonUuidPostResponse = zod.array(GetPitsPitsGetSeasonUuidPostResponseItem)
 
 /**
  * Get the season and event from the uuids. Then, check if a pit with that team number exists.

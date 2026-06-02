@@ -12,7 +12,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from ..dependencies import require_superuser
 from ..models import Event, Organization, PitScoutingAnswer, PitScoutingField, Season, TeamPit, User
 from ..schemas.generic import MessageResponse
-from ..schemas.pit_scouting import AdminPitResponse, PitFieldResponse, PitFieldRequest, GetPitsForSeasonRequest, PitScoutingPresetResponse, ReorderPitFieldsRequest, SubmitPitFieldAnswerRequest
+from ..schemas.pit_scouting import AdminPitResponse, GetPitsResponse, PitAnswerResponse, PitFieldResponse, PitFieldRequest, GetPitsForSeasonRequest, PitScoutingPresetResponse, ReorderPitFieldsRequest, SubmitPitFieldAnswerRequest
 from ..utils import get_season, IS_DEV
 
 router: APIRouter = APIRouter(
@@ -277,12 +277,11 @@ async def delete_pit_field(
 
     return MessageResponse(message="Field deleted")
 
-# TODO: This needs a proper response_model
-@router.post("/pits/get/{season_uuid}")
+@router.post("/pits/get/{season_uuid}", response_model=list[GetPitsResponse])
 async def get_pits(
         season_uuid: UUID,
         data: GetPitsForSeasonRequest
-    ):
+    )-> list[GetPitsResponse]:
     """
     Get all pits for a season
 
@@ -329,24 +328,24 @@ async def get_pits(
         event.pits_generated = True
         await event.save()
 
-    pits = await TeamPit.filter(event=event).prefetch_related("answers")
+    pits: list[TeamPit] = await TeamPit.filter(event=event).prefetch_related("answers")
     return [
-        {
-            "uuid": pit.uuid,
-            "team_number": pit.team_number,
-            "nickname": pit.nickname,
-            "created_at": pit.created_at,
-            "answers": [
-                {
-                    "uuid": ans.uuid,
-                    "field_uuid": ans.field_id,
-                    "value": ans.value,
-                    "username": ans.username,
-                    "created_at": ans.created_at
-                }
+        GetPitsResponse(
+            uuid=pit.uuid,
+            team_number=pit.team_number,
+            nickname=pit.nickname,
+            created_at=pit.created_at,
+            answers=[
+                PitAnswerResponse(
+                    uuid=ans.uuid,
+                    field_uuid=ans.field_id,
+                    value=ans.value,
+                    username=ans.username,
+                    created_at=ans.created_at
+                )
                 for ans in pit.answers
             ]
-        }
+        )
         for pit in pits
     ]
 

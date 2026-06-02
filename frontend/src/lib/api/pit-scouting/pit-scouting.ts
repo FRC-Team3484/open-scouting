@@ -7,6 +7,7 @@
 import type {
   AdminPitResponse,
   GetPitsForSeasonRequest,
+  GetPitsResponse,
   HTTPValidationError,
   MessageResponse,
   PitFieldRequest,
@@ -335,7 +336,7 @@ export const deletePitFieldPitsFieldsFieldUuidDeleteDelete = async (fieldUuid: s
 
 
 export type getPitsPitsGetSeasonUuidPostResponse200 = {
-  data: unknown
+  data: GetPitsResponse[]
   status: 200
 }
 
