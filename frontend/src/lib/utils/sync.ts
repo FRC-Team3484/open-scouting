@@ -341,41 +341,46 @@ async function fetchPitScoutingData(event_data, season_uuid) {
     const body: GetPitsForSeasonRequest = {
         season_uuid: season_uuid,
         event_code: event_data.event_code,
-        event_name: event_data.event_name,
-        event_type: event_data.event_type,
-        event_city: event_data.event_city,
-        event_country: event_data.event_country,
-        event_start_date: event_data.event_start_date,
-        event_end_date: event_data.event_end_date,
-        event_custom: event_data.event_custom
+        event_name: event_data.name,
+        event_type: event_data.type,
+        event_city: event_data.city,
+        event_country: event_data.country,
+        event_start_date: event_data.start_date,
+        event_end_date: event_data.end_date,
+        event_custom: event_data.custom
     }
 
-    const pitDataRequest = (await getPitsPitsGetSeasonUuidPost(season_uuid, body)).data;
-
-    for (const pit of pitDataRequest) {
-        const pit_in_db = await db.pit_scouting.get(pit.uuid);
-        const synced = pit_in_db ? pit_in_db.synced : true;
-
-        if (synced) {
-            await db.pit_scouting.put({
-                uuid: pit.uuid,
-                answers: pit.answers,
-                nickname: pit.nickname,
-                team_number: pit.team_number,
-                year: event_data.year,
-                event_code: event_data.event_code,
-                event_name: event_data.event_name,
-                event_type: event_data.event_type,
-                event_city: event_data.event_city,
-                event_country: event_data.event_country,
-                event_start_date: event_data.event_start_date,
-                event_end_date: event_data.event_end_date,
-                synced: true
-            });
+    await getPitsPitsGetSeasonUuidPost(season_uuid, body).then(async (response) => {
+        if (response.status === 200) {
+            for (const pit of response.data) {
+                const pit_in_db = await db.pit_scouting.get(pit.uuid);
+                const synced = pit_in_db ? pit_in_db.synced : true;
+        
+                if (synced) {
+                    await db.pit_scouting.put({
+                        uuid: pit.uuid,
+                        answers: pit.answers,
+                        nickname: pit.nickname,
+                        team_number: pit.team_number,
+                        year: event_data.year,
+                        event_code: event_data.event_code,
+                        event_name: event_data.event_name,
+                        event_type: event_data.event_type,
+                        event_city: event_data.event_city,
+                        event_country: event_data.event_country,
+                        event_start_date: event_data.event_start_date,
+                        event_end_date: event_data.event_end_date,
+                        synced: true
+                    });
+                } else {
+                    console.warn("Pit not synced: " + pit.uuid);
+                }
+            }
         } else {
-            console.warn("Pit not synced: " + pit.uuid);
+            console.warn("Failed to fetch pit scouting data");
         }
-    }
+    });
+
 }
 
 /**

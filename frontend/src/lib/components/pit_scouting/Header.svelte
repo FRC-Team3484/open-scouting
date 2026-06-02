@@ -109,7 +109,9 @@ Props:
                     </Dialog.Content>
                 </Dialog.Root>
             </div>
-            <p>Pit scouting teams at <span class="font-bold font-mono">{event_data.name}</span> in <span class="font-bold">{event_data.year}</span> as <span class="font-bold">{username}</span></p>
+            {#if event_data}
+                <p>Pit scouting teams at <span class="font-bold font-mono">{event_data.name}</span> in <span class="font-bold">{event_data.year}</span> as <span class="font-bold">{username}</span></p>
+            {/if}
         </div>
     </div>
 </Card.Root>
