@@ -1,16 +1,26 @@
+<!-- 
+@component
+Drawer for enabling and disabling data sync
+-->
 <script lang="ts">
-    import * as Sheet from "$lib/components/ui/sheet";
+	import { toast } from "svelte-sonner";
 	import { CircleNotchIcon, CloudCheckIcon, CloudSlashIcon, XCircleIcon } from "phosphor-svelte";
+
+    import * as Sheet from "$lib/components/ui/sheet";
 	import Button from "../ui/button/button.svelte";
 	import { Separator } from "../ui/separator";
+
 	import DrawerHeader from "../generic/drawers/DrawerHeader.svelte";
     import { syncStatus } from "$lib/stores/sync";
 	import { fetchEventData, fetchSeasonData, pushMatchScoutingData, pushUnsyncedPitScoutingData } from "$lib/utils/sync";
-	import { toast } from "svelte-sonner";
 
-    let open = $state(false);
-    let syncing = $state(false);
 
+    let open: boolean = $state(false);
+    let syncing: boolean  = $state(false);
+
+    /**
+     * Sync all data, used when re-enabling syncing
+     */
     async function sync() {
         syncing = true;
         try {
@@ -36,7 +46,7 @@
             <Button variant="outline" class="w-full"><CloudCheckIcon weight="bold" /> Enable Syncing</Button>
         {/if}
     </Sheet.Trigger>
-    <Sheet.Content class="max-h-[80vh] overflow-y-scroll lg:mx-64 2xl:mx-128 border-1 p-4 rounded-t-lg" side="bottom">
+    <Sheet.Content class="max-h-[80vh] overflow-y-scroll lg:mx-64 2xl:mx-128 border p-4 rounded-t-lg" side="bottom">
         <div class="overflow-y-scroll pr-2">
             {#if $syncStatus && !syncing}
                 <DrawerHeader title="Disable Syncing?" description="" />

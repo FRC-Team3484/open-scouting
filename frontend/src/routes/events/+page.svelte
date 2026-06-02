@@ -1,17 +1,29 @@
+<!-- 
+The event page. Shows detailed match and pit scouting information for a single event.
+
+Provides quick links to the data, scouting, and pit scouting pages for the event. Also links to TBA, if applicable.
+On smaller screens, the event list is moved into a dialog.
+-->
 <script lang="ts">
+	import { onMount, tick } from "svelte";
+	import { ListIcon } from "phosphor-svelte";
 	import { replaceState } from "$app/navigation";
+
+	import Button from "$lib/components/ui/button/button.svelte";
+
+	import { db, type Event } from "$lib/utils/db";
 	import EventDisplay from "$lib/components/events/EventDisplay.svelte";
 	import Header from "$lib/components/events/Header.svelte";
 	import BaseDialog from "$lib/components/generic/dialogs/BaseDialog.svelte";
 	import EventList from "$lib/components/generic/event_list/EventList.svelte";
-	import Button from "$lib/components/ui/button/button.svelte";
-	import { db } from "$lib/utils/db";
-	import { ListIcon } from "phosphor-svelte";
-	import { onMount, tick } from "svelte";
 
-    let selectedEvent = $state([]);
-    let dialogOpen = $state(false);
 
+    let selectedEvent: Event[] = $state([]);
+    let dialogOpen: boolean = $state(false);
+
+    /**
+     * Load the selected event from the URL
+     */
     async function loadUrlParams() {
         const url = new URL(window.location.href);
 
@@ -24,6 +36,9 @@
         }
     }
 
+    /**
+     * Update the URL with the selected event
+     */
     function setUrlParams() {
         const url = new URL(window.location.href);
 
@@ -40,15 +55,20 @@
         });
     }
 
+    /**
+     * Update the URL when the selected event changes
+     */
     $effect(() => {
         if (selectedEvent.length > 0) {
             dialogOpen = false;
         }
 
-
         setUrlParams();
     });
 
+    /**
+     * If on a smaller screen, and no event has been selected (after one second to allow the event list to load), open the dialog automatically
+    */
     onMount(async () => {
         setTimeout(() => {
             if (window.innerWidth < 768 && selectedEvent.length == 0) {

@@ -1,22 +1,43 @@
+<!-- 
+@component
+Component for adding a custom pit for an event
+
+TODO: Use the db interface for Event
+
+Props:
+    - `event_data` (`Event`) - The event
+-->
 <script lang="ts">
+	import { toast } from "svelte-sonner";
+	import { CheckCircleIcon } from "phosphor-svelte";
+
     import * as Card from "$lib/components/ui/card/index.js";
-	import { CheckCircle } from "phosphor-svelte";
 	import Button from "../ui/button/button.svelte";
 	import Input from "../ui/input/input.svelte";
 	import Label from "../ui/label/label.svelte";
+
 	import { theBlueAllianceApiFetch } from "$lib/utils/api";
 	import { db } from "$lib/utils/db";
-	import { toast } from "svelte-sonner";
 
-    let { event_data } = $props();
+
+    interface Props {
+        event_data: any
+    }
+    let { event_data }: Props = $props();
 
     let teamNumber = $state("");
 
+    /**
+     * Get the team's nickname from the The Blue Alliance API
+     */
     async function getNickname() {
         const response = await theBlueAllianceApiFetch(`/team/frc${teamNumber}`);
         return response.nickname;
     }
 
+    /**
+     * Add the pit to the local database
+     */
     async function addPit() {
         const pitExists = await db.pit_scouting.filter(
             pit => pit.year === event_data.year && 
@@ -50,7 +71,7 @@
     }
 </script>
 
-<Card.Root class="w-auto md:min-w-128 mb-4" data-teamNumber="addPit">
+<Card.Root class="w-auto md:min-w-lg mb-4" data-teamNumber="addPit">
     <Card.Header>
         <div class="flex flex-col gap-2 items-start">
             <p class="font-bold">Add Pit</p>
@@ -64,7 +85,7 @@
             <Input type="number" placeholder="Team Number" bind:value={teamNumber} />
             <p class="text-sm text-muted-foreground">The team number for the new pit</p>
 
-            <Button class="w-full" disabled={!teamNumber} onclick={addPit}><CheckCircle weight="bold" /> Add Pit</Button>
+            <Button class="w-full" disabled={!teamNumber} onclick={addPit}><CheckCircleIcon weight="bold" /> Add Pit</Button>
         </div>
     </Card.Content>
 </Card.Root>

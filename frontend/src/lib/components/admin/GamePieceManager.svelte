@@ -1,23 +1,34 @@
+<!-- 
+@component
+Handles creating and editing game pieces on the admin's match scouting fields page
+
+Props:
+    - `season_uuid` (string) - The selected season's uuid
+-->
 <script lang="ts">
     import { onMount } from "svelte";
 	import { toast } from "svelte-sonner";
+	import { superForm } from "sveltekit-superforms";
+	import { zod4Client } from "sveltekit-superforms/adapters";
+	import { PlusCircleIcon, XIcon } from "phosphor-svelte";
 
-	import { PlusCircle, X } from "phosphor-svelte";
     import * as Card from "$lib/components/ui/card/index.js";
     import * as Dialog from "$lib/components/ui/dialog/index.js";
 	import Button from "../ui/button/button.svelte";
 	import Input from "../ui/input/input.svelte";
     import * as AlertDialog from "$lib/components/ui/alert-dialog/index.js";
     import * as Form from "$lib/components/ui/form/index.js";
+	import Label from "../ui/label/label.svelte";
 
     import { getSeasonGamepiecesGamepiecesSeasonSeasonUuidGet, createGamepieceGamepiecesCreatePost, deleteGamepieceGamepiecesDeleteGamepieceUuidDelete } from "$lib/api/gamepieces/gamepieces"
     import { type GamepieceResponse } from "$lib/api/model";
     import { CreateGamepieceGamepiecesCreatePostBody } from "$lib/zod/gamepieces/gamepieces";
-	import { superForm } from "sveltekit-superforms";
-	import { zod4Client } from "sveltekit-superforms/adapters";
-	import Label from "../ui/label/label.svelte";
 
-    let { season_uuid } = $props();
+
+    interface Props {
+        season_uuid: string
+    }
+    let { season_uuid }: Props = $props();
 
     let game_pieces: GamepieceResponse[] = $state([]);
 
@@ -43,7 +54,10 @@
         }
     )
     const { form: formData, enhance } = form
-
+    
+    /**
+     * Get all game pieces from the server
+     */
     async function getGamePieces() {
         const response = await getSeasonGamepiecesGamepiecesSeasonSeasonUuidGet(season_uuid);
         if (response.status === 200) {
@@ -53,6 +67,10 @@
         }
     }
 
+    /**
+     * Delete a game piece from the server
+     * @param uuid The UUID of the game piece to delete
+     */
     async function deleteGamePiece(uuid: string) {
         await deleteGamepieceGamepiecesDeleteGamepieceUuidDelete(uuid).then((request) => {
             if (request.status === 200) {
@@ -63,6 +81,9 @@
         });
     }
 
+    /**
+     * If the season_uuid is not set yet, wait 100ms before getting game pieces
+     */
     onMount(async () => {
         while (!season_uuid) {
             await new Promise(resolve => setTimeout(resolve, 100));
@@ -70,6 +91,9 @@
         getGamePieces();
     });
 
+    /**
+     * If season_uuid changes, fetch game pieces again
+     */
     $effect(() => {
         season_uuid;
         getGamePieces();
@@ -96,7 +120,7 @@
                                 <p>{game_piece.name}</p>
                                 <AlertDialog.Root>
                                     <AlertDialog.Trigger>
-                                        <Button variant="destructive" size="icon"><X weight="bold" /></Button>
+                                        <Button variant="destructive" size="icon"><XIcon weight="bold" /></Button>
                                     </AlertDialog.Trigger>
                                     <AlertDialog.Content>
                                         <AlertDialog.Header>
@@ -117,7 +141,7 @@
             
             <Dialog.Root>
                 <Dialog.Trigger>
-                    <Button><PlusCircle weight="bold" /> Add Game Piece</Button>
+                    <Button><PlusCircleIcon weight="bold" /> Add Game Piece</Button>
                 </Dialog.Trigger>
 
                 <Dialog.Content class="overflow-y-scroll max-h-[calc(100vh-2rem)]">

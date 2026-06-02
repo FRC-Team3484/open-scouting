@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Database, Table } from "phosphor-svelte";
+	import { DatabaseIcon, TableIcon } from "phosphor-svelte";
 	import MajorFeature from "../MajorFeature.svelte";
 	import Generic from "./Generic.svelte";
 </script>
@@ -11,13 +11,13 @@
 {#snippet features()}
     <MajorFeature text="Backend Data Validation">
         {#snippet icon()}
-            <Database weight="bold" />
+            <DatabaseIcon weight="bold" />
         {/snippet}
     </MajorFeature>
     
     <MajorFeature text="Form Validation">
         {#snippet icon()}
-            <Table weight="bold" />
+            <TableIcon weight="bold" />
         {/snippet}
     </MajorFeature>
 {/snippet}

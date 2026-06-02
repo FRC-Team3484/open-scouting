@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { BellIcon, CalendarBlankIcon, ChartBarIcon, ImageIcon, ListIcon, MapPinIcon, PencilIcon, TableIcon } from "phosphor-svelte";
+	import { CalendarBlankIcon, ChartBarIcon, ImageIcon, ListIcon, MapPinIcon, TableIcon } from "phosphor-svelte";
 	import MajorFeature from "../MajorFeature.svelte";
 	import Generic from "./Generic.svelte";
 </script>

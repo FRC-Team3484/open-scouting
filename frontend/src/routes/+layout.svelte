@@ -18,6 +18,9 @@
 	// put the <link rel="manifest"> into the head
 	let webManifest = pwaInfo ? pwaInfo.webManifest.linkTag : '';
 
+	/**
+	 * Register the service worker
+	 */
 	onMount(async () => {
 		main();
 
@@ -46,6 +49,7 @@
 </svelte:head>
 
 <div class="min-h-screen flex flex-col">
+	<!-- Universal components -->
 	<NavBar />
 	<ModeWatcher />
 	<Toaster position="top-right" closeButton />

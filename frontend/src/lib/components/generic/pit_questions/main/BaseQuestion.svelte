@@ -1,17 +1,42 @@
+<!--
+@component
+Base pit scouting question component for the actual pit scouting page
+
+TODO: Create a proper type interface for pit scouting answers from the db
+
+Props:
+    - `question` (`SeasonPitScoutingQuestion`) - Data for the question
+    - `answers` (`PitScoutingAnswer[]`) - Answers for this question
+    - `children` (`Snippet`) - Child components to render
+-->
 <script lang="ts">
+	import { slide } from "svelte/transition";
+	import { CalendarIcon, EyeIcon, PlusCircleIcon, UserIcon, XIcon } from "phosphor-svelte";
+
 	import Badge from "$lib/components/ui/badge/badge.svelte";
     import Button from "$lib/components/ui/button/button.svelte";
     import * as Card from "$lib/components/ui/card/index.js";
-	import { Calendar, Eye, PlusCircle, User, X } from "phosphor-svelte";
-	import { slide } from "svelte/transition";
+	import type { Snippet } from "svelte";
+	import type { PitScoutingAnswer, SeasonPitScoutingQuestion } from "$lib/utils/db";
 
-    let { question, answers, reset = $bindable(), children } = $props();
+
+    interface Props {
+        question: SeasonPitScoutingQuestion
+        answers: PitScoutingAnswer[]
+        children: Snippet
+    }
+    let { question, answers, children }: Props = $props();
 
     type Mode = "none" | "view" | "add";
 
     let mode: Mode = $state("none");
 
-    reset = () => {
+    /**
+     * Close any open menus on the component
+     * 
+     * Called by other components using this one as a base
+     */
+    export function reset() {
         mode = "none";
     }
 </script>
@@ -32,12 +57,12 @@
 
         {#if mode == "none"}
             <div class="flex flex-row gap-2 flex-wrap">
-                <Button size="sm" onclick={() => mode = "add"}><PlusCircle weight="bold" /> Add Answer</Button>
-                <Button size="sm" variant="outline" onclick={() => mode = "view"}><Eye weight="bold" /> View Answers</Button>
+                <Button size="sm" onclick={() => mode = "add"}><PlusCircleIcon weight="bold" /> Add Answer</Button>
+                <Button size="sm" variant="outline" onclick={() => mode = "view"}><EyeIcon weight="bold" /> View Answers</Button>
             </div>
         {:else if mode == "add" || mode == "view"}
             <div class="flex flex-row gap-2 flex-wrap">
-                <Button size="sm" variant="outline" onclick={() => mode = "none"}><X weight="bold" /> Close</Button>
+                <Button size="sm" variant="outline" onclick={() => mode = "none"}><XIcon weight="bold" /> Close</Button>
             </div>
         {/if}
     </div>
@@ -59,9 +84,9 @@
                         {#each answers as answer}
                             <div class="flex flex-row items-center flex-wrap text-left">
                                 <p class="wrap-anywhere">{answer.value}</p>
-                                <User weight="bold" class="text-muted-foreground ml-2 mr-1"/>
+                                <UserIcon weight="bold" class="text-muted-foreground ml-2 mr-1"/>
                                 <p class="text-muted-foreground text-sm">{answer.username}</p>
-                                <Calendar weight="bold" class="text-muted-foreground ml-2 mr-1"/>
+                                <CalendarIcon weight="bold" class="text-muted-foreground ml-2 mr-1"/>
                                 <p class="text-muted-foreground text-sm">{new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(answer.created_at))}</p>
                             </div>
                         {/each}

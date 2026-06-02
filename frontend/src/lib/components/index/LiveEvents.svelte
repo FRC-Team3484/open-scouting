@@ -1,14 +1,24 @@
+<!-- 
+@component
+The live events widget for the index page
+
+Shows any events that are currently live, and allows for scrolling through them.
+Includes a button to view that event on the event page.
+-->
 <script lang="ts">
-    import * as Card from "$lib/components/ui/card/index.js";
-	import { db } from "$lib/utils/db";
 	import { onMount } from "svelte";
 	import { scale, slide } from "svelte/transition";
-	import Button from "../ui/button/button.svelte";
+	import { liveQuery, type Observable } from "dexie";
 	import { CircleIcon } from "phosphor-svelte";
-	import { getEventInfoEventInfoYearEventCodeGet } from "$lib/api/events/events";
-	import { liveQuery } from "dexie";
 
-    let events = liveQuery(() => db.event.filter(e => {
+    import * as Card from "$lib/components/ui/card/index.js";
+	import Button from "../ui/button/button.svelte";
+	import { db, type Event } from "$lib/utils/db";
+
+	import { getEventInfoEventInfoYearEventCodeGet } from "$lib/api/events/events";
+
+    
+    let events: Observable<Event[]> = liveQuery(() => db.event.filter(e => {
             const now = new Date();
             const startDate = new Date(e.start_date);
             const endDate = new Date(e.end_date);
@@ -18,11 +28,17 @@
             return startDate <= now && now <= endDate
         }).limit(25).toArray()
     );
+    let eventDetails: { year: number, event_code: string, [key: string]: any}[] = $state([]);
 
-    let visibleEvent = $state(null);
-    let container = null;
+    let visibleEvent: Event | null = $state(null);
+    let container: HTMLDivElement | undefined = $state<HTMLDivElement>();
     let stopAutoScroll = $state(false);
 
+    /**
+     * Get event details from the server for each event
+     * 
+     * Disabled for now, may be used later
+     */
     async function getEventDetails() {
         for (let event of $events) {
             const request = await getEventInfoEventInfoYearEventCodeGet(event.year, event.event_code);
@@ -39,7 +55,12 @@
         }
     }
 
+    /**
+     * Updates the visible event based on which event is closest to the center of the container
+     */
     function updateVisible() {
+        if (!container) return;
+
         const children = Array.from(container.children);
         const containerRect = container.getBoundingClientRect();
         const center = containerRect.left + containerRect.width / 2;
@@ -59,17 +80,32 @@
         }
 
         const index = children.indexOf(closest);
-        visibleEvent = $events[index];
+        if ($events[index]) {
+            visibleEvent = $events[index];
+        } else {
+            console.warn("Failed to get event index");
+            return;
+        }
     }
 
-    function scrollToEvent(event) {
+    /**
+     * Scrolls to the event with the given event code
+     * 
+     * @param event The event to scroll to
+     */
+    function scrollToEvent(event: Event) {
         const element = document.getElementById(event.event_code);
         if (element) {
             element.scrollIntoView({ behavior: "smooth" });
         }
     }
 
+    /**
+     * Scrolls to the next event
+     */
     function scrollToNext() {
+        if (!visibleEvent) return;
+
         const index = $events.findIndex(e => e.event_code === visibleEvent.event_code);
         let nextIndex = (index + 1) % $events.length;
 
@@ -77,9 +113,17 @@
             nextIndex = 0;
         }
 
-        scrollToEvent($events[nextIndex]);
+        if ($events[nextIndex]) {
+            scrollToEvent($events[nextIndex]);
+        } else {
+            console.warn("Failed to get event index");
+            return;
+        }
     }
 
+    /**
+     * Create the interval that automatically scrolls to the next event every 5 seconds
+     */
     onMount(() => {
         const interval = setInterval(() => {
             if (!stopAutoScroll) {
@@ -90,8 +134,11 @@
         return () => clearInterval(interval);
     });
 
+    /**
+     * When $events is initialized, set the first event as the visible event
+     */
     $effect(() => {
-        if ($events && $events.length > 0) {
+        if ($events && $events.length > 0 && $events[0]) {
             visibleEvent = $events[0];
         }
     });

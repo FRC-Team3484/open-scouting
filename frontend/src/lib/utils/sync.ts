@@ -1,22 +1,23 @@
 import { compare } from "semver-ts";
+import { get } from "svelte/store";
+import { browser } from "$app/environment";
+
+import { db } from "./db";
+import { theBlueAllianceApiFetch } from "./api";
+import { VERSION } from "./constants";
 import { menuState } from "$lib/stores/menu";
 import { syncStatus } from "$lib/stores/sync";
 import { changelogDialogOpen, changelogDialogVersion } from "$lib/stores/dialog"
-import { theBlueAllianceApiFetch } from "./api";
-import { db } from "./db";
 
+import type { SeasonResponse, GamepieceResponse, PitFieldResponse, EventResponse, MatchScoutingRequest, SubmitPitFieldAnswerRequest, GetPitsForSeasonRequest, BodyUploadImageUploadImagePost, UploadImageUploadImagePostParams } from "$lib/api/model";
 import { getSeasonsSeasonsGet } from "$lib/api/seasons/seasons";
 import { getSeasonFieldsFieldsSeasonSeasonUuidGet } from "$lib/api/match-scouting-fields/match-scouting-fields"
 import { getSeasonGamepiecesGamepiecesSeasonSeasonUuidGet } from "$lib/api/gamepieces/gamepieces"
 import { getPitFieldsPitsFieldsSeasonUuidGet, submitPitPitsSubmitSeasonUuidTeamNumberPost, getPitsPitsGetSeasonUuidPost } from "$lib/api/pit-scouting/pit-scouting"
 import { getCustomEventsEventCustomSeasonUuidGet } from "$lib/api/events/events"
 import { submitMatchScoutingScoutingSubmitPost } from "$lib/api/match-scouting/match-scouting";
-import type { SeasonResponse, GamepieceResponse, PitFieldResponse, EventResponse, MatchScoutingRequest, SubmitPitFieldAnswerRequest, GetPitsForSeasonRequest, BodyUploadImageUploadImagePost, UploadImageUploadImagePostParams } from "$lib/api/model";
 import { getServerStatusStatusGet } from "$lib/api/generic/generic";
-import { browser } from "$app/environment";
-import { VERSION } from "./constants";
 import { uploadImageUploadImagePost } from "$lib/api/uploads/uploads";
-import { get } from "svelte/store";
 
 /**
  * Checks if syncing is enabled by the user
@@ -61,9 +62,11 @@ async function fetchSeasonData() {
         await db.season_data.put({
             uuid: season.uuid,
             year: season.year,
+            name: season.name,
             fields: fieldData,
             game_pieces: gamePieceData,
             pit_scouting_questions: pitData,
+            active: season.active,
             fetch_time: new Date()
         });
     }
@@ -145,6 +148,10 @@ async function isOldData() {
 
         const now = new Date();
         const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
+
+        if (!seasonData[0] || !eventData[0]) {
+            return true;
+        }
 
         return seasonData[0].fetch_time < threeDaysAgo || eventData[0].fetch_time < threeDaysAgo;
     } else {
@@ -336,41 +343,46 @@ async function fetchPitScoutingData(event_data, season_uuid) {
     const body: GetPitsForSeasonRequest = {
         season_uuid: season_uuid,
         event_code: event_data.event_code,
-        event_name: event_data.event_name,
-        event_type: event_data.event_type,
-        event_city: event_data.event_city,
-        event_country: event_data.event_country,
-        event_start_date: event_data.event_start_date,
-        event_end_date: event_data.event_end_date,
-        event_custom: event_data.event_custom
+        event_name: event_data.name,
+        event_type: event_data.type,
+        event_city: event_data.city,
+        event_country: event_data.country,
+        event_start_date: event_data.start_date,
+        event_end_date: event_data.end_date,
+        event_custom: event_data.custom
     }
 
-    const pitDataRequest = (await getPitsPitsGetSeasonUuidPost(season_uuid, body)).data;
-
-    for (const pit of pitDataRequest) {
-        const pit_in_db = await db.pit_scouting.get(pit.uuid);
-        const synced = pit_in_db ? pit_in_db.synced : true;
-
-        if (synced) {
-            await db.pit_scouting.put({
-                uuid: pit.uuid,
-                answers: pit.answers,
-                nickname: pit.nickname,
-                team_number: pit.team_number,
-                year: event_data.year,
-                event_code: event_data.event_code,
-                event_name: event_data.event_name,
-                event_type: event_data.event_type,
-                event_city: event_data.event_city,
-                event_country: event_data.event_country,
-                event_start_date: event_data.event_start_date,
-                event_end_date: event_data.event_end_date,
-                synced: true
-            });
+    await getPitsPitsGetSeasonUuidPost(season_uuid, body).then(async (response) => {
+        if (response.status === 200) {
+            for (const pit of response.data) {
+                const pit_in_db = await db.pit_scouting.get(pit.uuid);
+                const synced = pit_in_db ? pit_in_db.synced : true;
+        
+                if (synced) {
+                    await db.pit_scouting.put({
+                        uuid: pit.uuid,
+                        answers: pit.answers,
+                        nickname: pit.nickname,
+                        team_number: pit.team_number,
+                        year: event_data.year,
+                        event_code: event_data.event_code,
+                        event_name: event_data.event_name,
+                        event_type: event_data.event_type,
+                        event_city: event_data.event_city,
+                        event_country: event_data.event_country,
+                        event_start_date: event_data.event_start_date,
+                        event_end_date: event_data.event_end_date,
+                        synced: true
+                    });
+                } else {
+                    console.warn("Pit not synced: " + pit.uuid);
+                }
+            }
         } else {
-            console.warn("Pit not synced: " + pit.uuid);
+            console.warn("Failed to fetch pit scouting data");
         }
-    }
+    });
+
 }
 
 /**
@@ -398,6 +410,11 @@ async function pushFiles() {
     }
 }
 
+/**
+ * Gets the current server status, and checks if the client is up to date
+ * 
+ * Show the changelog dialog, based on if the version has changed and the user's settings.
+ */
 async function getServerStatus() {
     if (!browser) return;
     if (!isSyncingEnabled()) return;

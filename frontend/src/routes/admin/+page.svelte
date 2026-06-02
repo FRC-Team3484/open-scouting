@@ -1,44 +1,59 @@
+<!-- 
+The admin page
+
+This page is only accessible to superusers. Allows for managing seasons, match scouting fields, pit scouting questions, users, events, match scouting data, and pit scouting data.
+Presents a warning dialog to the user when in production.
+
+TODO: Add a proper interface for user
+-->
 <script lang="ts">
-    import { env } from "$env/dynamic/public";
-	import PageContainer from "$lib/components/layout/PageContainer.svelte";
-	import { validateTokenOnline } from "$lib/utils/user";
 	import { onMount } from "svelte";
-	import { toast } from "svelte-sonner";
+    import { env } from "$env/dynamic/public";
+    import { overrideItemIdKeyNameBeforeInitialisingDndZones } from "svelte-dnd-action";
+    import { CircleNotchIcon } from "phosphor-svelte";
+
     import * as Card from "$lib/components/ui/card/index.js";
 	import Button from "$lib/components/ui/button/button.svelte";
 	import Separator from "$lib/components/ui/separator/separator.svelte";
+    import * as AlertDialog from "$lib/components/ui/alert-dialog/index.js";
+    
+	import { validateTokenOnline } from "$lib/utils/user";
+	import PageContainer from "$lib/components/layout/PageContainer.svelte";
 	import SeasonsManager from "$lib/components/admin/SeasonsManager.svelte";
 	import AdminHeader from "$lib/components/admin/AdminHeader.svelte";
-	import Dialog from "$lib/components/generic/Dialog.svelte";
 	import MatchScoutingFieldsManager from "$lib/components/admin/MatchScoutingFieldsManager.svelte";
 	import PitScoutingQuestionsManager from "$lib/components/admin/PitScoutingQuestionsManager.svelte";
 	import UsersManager from "$lib/components/admin/UsersManager.svelte";
 	import EventManager from "$lib/components/admin/EventsManager.svelte";
 	import MatchScoutingSubmissionsManager from "$lib/components/admin/MatchScoutingSubmissionsManager.svelte";
 	import PitScoutingDataManager from "$lib/components/admin/PitScoutingDataManager.svelte";
-	import { overrideItemIdKeyNameBeforeInitialisingDndZones } from "svelte-dnd-action";
-	import { CircleNotchIcon } from "phosphor-svelte";
 
     let user = $state(null);
-    let page = $state("start");
-    let show_warning_dialog = $state(!(env.PUBLIC_MODE == "dev"));
+    type Page = "start" | "seasons" | "match_fields" | "pit_scouting_questions" | "users" | "events" | "match_scouting" | "pit_scouting";
+    let page: Page = $state("start");
+    let show_warning_dialog: boolean = $state(!(env.PUBLIC_MODE == "dev"));
 
     overrideItemIdKeyNameBeforeInitialisingDndZones("uuid");
+    
+    /**
+     * Navigates to the given page
+     * 
+     * @param nextPage The page to navigate to
+     */
+    function handleNavigate(nextPage: string): void {
+        page = <Page>nextPage;
+    }
 
+    /**
+     * When the component mounts, check if the user is authenticated. 
+     * If they're not a superuser, redirect them back to the index page.
+     */
     onMount(async () => {
         user = await validateTokenOnline();
         if (!user || !user.is_superuser) {
             window.location.href = "/";
         }
     });
-
-    function handleNavigate(nextPage: string): void {
-        page = nextPage;
-    }
-
-    function closeWarningDialog(): void {
-        show_warning_dialog = false;
-    }
 </script>
 
 <PageContainer>
@@ -99,11 +114,13 @@
     {/if}
 </PageContainer>
 
-<Dialog 
-    open={show_warning_dialog} 
-    title="Open Scouting Administration" 
-    description="By continuing, understand that changes made here are irreversible, and may cause unintended consequences. Know what you're doing and proceed with caution." 
-    cancel_text=""
-    submit_text="Continue"
-    onSubmit={closeWarningDialog}
-/>
+<AlertDialog.Root open={show_warning_dialog}>
+    <AlertDialog.Content>
+        <AlertDialog.Title>Open Scouting Administration</AlertDialog.Title>
+        <AlertDialog.Description>By continuing, understand that changes made here are irreversible, and may cause unintended consequences. Know what you're doing and proceed with caution.</AlertDialog.Description>
+        
+        <AlertDialog.Footer>
+            <AlertDialog.Action onclick={() => {show_warning_dialog = false}}>Continue</AlertDialog.Action>
+        </AlertDialog.Footer>
+    </AlertDialog.Content>
+</AlertDialog.Root>

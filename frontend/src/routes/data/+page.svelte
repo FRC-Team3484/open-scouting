@@ -1,27 +1,54 @@
+<!-- 
+The data page, which shows match scouting data in both all and compare view modes.
+
+Page should be loaded like 
+    /?mode=all&year=2025&event_codes=paca,ohcl&team_numbers=1234,3484
+    /?mode=compare&year=2025&event_codes=paca,ohcl&team_numbers=1234,3484&fields=uuid,uuid
+-->
+<script module lang="ts">
+    export interface Field {
+        value: string
+        name: string
+        stat_type: string
+    }
+    export interface Filters {
+        year: number
+        event_codes: string[]
+        team_numbers: string[]
+    }
+    export interface CompareFilters {
+        year: number
+        event_codes: string[]
+        team_numbers: string[]
+        fields: string[]
+    }
+</script>
+
 <script lang="ts">
+	import { onMount, tick, untrack } from "svelte";
 	import { replaceState } from "$app/navigation";
-	import CompareFilters from "$lib/components/data/CompareFilters.svelte";
-	import CompareManager from "$lib/components/data/CompareManager.svelte";
-	import DataManager from "$lib/components/data/DataManager.svelte";
-	import Filters from "$lib/components/data/Filters.svelte";
+
+	import CompareViewFilters from "$lib/components/data/compare_view/CompareFilters.svelte";
+	import CompareManager from "$lib/components/data/compare_view/CompareManager.svelte";
+	import DataManager from "$lib/components/data/data_view/DataManager.svelte";
+	import DataViewFilters from "$lib/components/data/data_view/Filters.svelte";
 	import Header from "$lib/components/data/Header.svelte";
 	import PageContainer from "$lib/components/layout/PageContainer.svelte";
-	import { onMount, tick, untrack } from "svelte";
 
-    // Page should be loaded like 
-    // /?mode=all&year=2025&event_codes=paca,ohcl&team_numbers=1234,3484
-    // /?mode=compare&year=2025&event_codes=paca,ohcl&team_numbers=1234,3484&fields=uuid,uuid
 
-    let filters = $state({year: 0, event_codes: [], team_numbers: []});
-    let compareFilters = $state({year: 0, event_codes: [], team_numbers: [], fields: []});
+    let filters: Filters = $state({year: 0, event_codes: [], team_numbers: []});
+    let compareFilters: CompareFilters = $state({year: 0, event_codes: [], team_numbers: [], fields: []});
     let mode: "all" | "compare" = $state("all");
 
     let lastYear: number | null = $state(null);
     let lastCompareYear: number | null = $state(null);
 
-    let fields: Array<{ name: string; value: string }> = $state([]); // [{ name: "", value: "" }, ...]
+    let fields: Field[] = $state([]); // [{ name: "", value: "", stat_type: "" }, ...] from CompareManager
 
-    function setUrlParams() {
+    /**
+     * Set the URL params from the currently selected filters
+     */
+    function setUrlParams(): void {
         const url = new URL(window.location.href);
 
         url.searchParams.set("mode", mode);
@@ -75,7 +102,10 @@
         });
     }
 
-    function loadUrlParams() {
+    /**
+     * Set the current filters from the URL params
+     */
+    function loadUrlParams(): void {
         const url = new URL(window.location.href);
 
         // Only allow good values, default to all if changed by user
@@ -111,10 +141,16 @@
         }
     }
 
+    /**
+     * Load URL params when the component renders
+     */
     onMount(() => {
         loadUrlParams();
     });
     
+    /**
+     * When any filters change, update the URL params
+     */
     $effect(() => {
         filters.year;
         filters.event_codes;
@@ -130,6 +166,9 @@
         setUrlParams();
     });
 
+    /**
+     * Only clear data view filters when changing years if not loading the year from the URL params
+     */
     $effect(() => {
         const year = filters.year;
 
@@ -145,6 +184,9 @@
         lastYear = year;
     });
 
+    /**
+     * Only clear compare view filters when changing years if not loading the year from the URL params
+     */
     $effect(() => {
         const year = compareFilters.year;
 
@@ -167,7 +209,7 @@
     {#if mode === "all"}
         <div class="lg:flex lg:flex-col lg:overflow-y-scroll">
             <div class="flex flex-col lg:flex-row lg:gap-4 lg:items-start">
-                <Filters bind:filters={filters} />
+                <DataViewFilters bind:filters={filters} />
 
                 <DataManager filters={filters} />
             </div>
@@ -175,7 +217,7 @@
     {:else if mode === "compare"}
         <div class="lg:flex lg:flex-col lg:overflow-y-scroll">
             <div class="flex flex-col lg:flex-row lg:gap-4 lg:items-start">
-                <CompareFilters bind:filters={compareFilters} fields={fields} />
+                <CompareViewFilters bind:filters={compareFilters} fields={fields} />
 
                 <CompareManager filters={compareFilters} bind:fields={fields} />
             </div>

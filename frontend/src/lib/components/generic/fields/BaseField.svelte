@@ -1,31 +1,66 @@
+<!-- 
+@component
+Wrapper component for all match scouting fields
+
+If editable, allows for editing and deleting the field. 
+Renders the name, description, and if the field is required or not.
+Any child components are assumed to be a part of the field specific data.
+
+Props:
+    - `field` (`MatchScoutingFieldResponse`) - This field's data
+    - `editable` (`boolean`) - If the field is editable or not
+    - `getFields` (`() => void`) - Function for fetching fields again
+    - `children` (`Snippet`) - Child components
+-->
 <script lang="ts">
-	import { DotsSixVertical, DotsThree, Pencil, Trash } from "phosphor-svelte";
+	import { toast } from "svelte-sonner";
+	import { DotsSixVerticalIcon, DotsThreeIcon, PencilIcon, TrashIcon } from "phosphor-svelte";
+	import { dragHandle } from "svelte-dnd-action";
+	import type { Snippet } from "svelte";
     
 	import Button from "$lib/components/ui/button/button.svelte";
     import * as Card from "$lib/components/ui/card/index.js";
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
-	import { addFieldDialogOpen, addFieldEditData, addFieldParentUuid } from "$lib/stores/dialog";
+
+	import { addFieldDialogOpen, addFieldEditData } from "$lib/stores/dialog";
 	import { deleteFieldFieldsDeleteFieldUuidDelete } from "$lib/api/match-scouting-fields/match-scouting-fields";
-	import { toast } from "svelte-sonner";
-	import { dragHandle } from "svelte-dnd-action";
+	import type { MatchScoutingFieldResponse } from "$lib/api/model";
 
-    let { field, editable = false, getFields = () => {}, children } = $props();
 
+    interface Props {
+        field: MatchScoutingFieldResponse
+        editable: boolean
+        getFields: () => void
+        children: Snippet
+    }
+    let { field, editable = false, getFields = () => {}, children }: Props = $props();
+
+    /**
+     * Delete this field
+     */
     async function deleteField() {
+        if (!field.uuid) {
+            console.warn("Failed to delete field. No uuid.");
+            toast.error("Failed to delete field", { duration: 5000 });
+            return;
+        }
+
         await deleteFieldFieldsDeleteFieldUuidDelete(field.uuid).catch((error) => {
-            console.warn("Faield to delete field", error);
+            console.warn("Failed to delete field", error);
             toast.error("Failed to delete field", { duration: 5000 });
         }).then(async () => {
             await getFields(); 
         });
     }
 
+    /**
+     * Edit this field
+     */
     function editField() {
         addFieldDialogOpen.set(true);
         addFieldEditData.set(field);
     }
 </script>
-
 
 <Card.Root class="w-auto min-w-64">
     <Card.Header>
@@ -34,7 +69,7 @@
                 <div class="flex flex-row gap-2 items-center">
                     {#if editable}
                         <div class="text-muted-foreground" use:dragHandle>
-                            <DotsSixVertical weight="bold" />
+                            <DotsSixVerticalIcon weight="bold" />
                         </div>
                     {/if}
                     <p>
@@ -50,13 +85,13 @@
                 {#if editable}
                     <DropdownMenu.Root>
                         <DropdownMenu.Trigger>
-                            <Button size="icon" variant="outline"><DotsThree weight="bold" /></Button>
+                            <Button size="icon" variant="outline"><DotsThreeIcon weight="bold" /></Button>
                         </DropdownMenu.Trigger>
                         <DropdownMenu.Content class="w-56" align="start">
                             <DropdownMenu.Label>Field Options</DropdownMenu.Label>
                             <DropdownMenu.Group>
-                                <DropdownMenu.Item onclick={editField}><Pencil weight="bold" /> Edit</DropdownMenu.Item>
-                                <DropdownMenu.Item onclick={deleteField}><Trash weight="bold" /> Delete</DropdownMenu.Item>
+                                <DropdownMenu.Item onclick={editField}><PencilIcon weight="bold" /> Edit</DropdownMenu.Item>
+                                <DropdownMenu.Item onclick={deleteField}><TrashIcon weight="bold" /> Delete</DropdownMenu.Item>
                             </DropdownMenu.Group>
                         </DropdownMenu.Content>
                     </DropdownMenu.Root>

@@ -1,12 +1,32 @@
+<!-- 
+@component
+Match scouting field for a small number
+
+Uses the default browser "number" input, with -1 / +1 controls for quicker editing.
+Should be used for score or miss number inputs.
+LargeNumberField should be used for things like team and match numbers.
+
+Props:
+    - `field` (`MatchScoutingFieldResponse`) - Data for this field
+    - `editable` (`boolean`) - If this field is editable or not
+    - `getFields` (`() => void`) - Function for fetching field data
+-->
 <script lang="ts">
+	import { MinusIcon, PlusIcon } from "phosphor-svelte";
+
 	import Button from "$lib/components/ui/button/button.svelte";
 	import Input from "$lib/components/ui/input/input.svelte";
-	import { Minus, Plus } from "phosphor-svelte";
+
+	import type { MatchScoutingFieldResponse } from "$lib/api/model";
 	import BaseField from "./BaseField.svelte";
 
-    export let field: any;
-    export let editable: boolean = false;
-    export let getFields: () => void = () => {};
+    
+    interface Props {
+        field: MatchScoutingFieldResponse
+        editable: boolean
+        getFields: () => void
+    }
+    let { field, editable, getFields }: Props = $props();
 </script>
 
 <BaseField field={field} editable={editable} getFields={getFields}>
@@ -30,7 +50,7 @@
                 const input = document.querySelector(`input[name="${field.uuid}"]`) as HTMLInputElement | null;
                 input?.stepDown();
             }}>
-            <Minus weight="bold" />
+            <MinusIcon weight="bold" />
         </Button>
 
         <!-- Increase button -->
@@ -41,7 +61,7 @@
                 const input = document.querySelector(`input[name="${field.uuid}"]`) as HTMLInputElement | null;
                 input?.stepUp();
             }}>
-            <Plus weight="bold" />
+            <PlusIcon weight="bold" />
         </Button>
     </div>
 </BaseField>
