@@ -1,6 +1,6 @@
 from dataclasses import dataclass
+from datetime import datetime
 from fastapi import Depends, HTTPException, Request
-from fastapi.security import OAuth2PasswordBearer
 
 from .models import Session, User
 from .auth import decode_access_token
@@ -9,30 +9,6 @@ from .auth import decode_access_token
 class Identity:
     user: User | None
     session: Session | None
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
-async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
-    payload = decode_access_token(token)
-    if not payload:
-        raise HTTPException(status_code=401, detail="Invalid or expired token")
-
-    user = await User.get_or_none(uuid=payload.get("sub"))
-    if not user:
-        raise HTTPException(status_code=401, detail="User not found")
-    return user
-
-async def require_user(
-    user: User = Depends(get_current_user),
-) -> User:
-    return user
-
-async def require_superuser(
-    user: User = Depends(get_current_user),
-) -> User:
-    if not user.is_superuser:
-        raise HTTPException(status_code=403, detail="Superuser required")
-    return user
 
 async def get_identity(request: Request) -> Identity:
     """
@@ -57,7 +33,6 @@ async def get_identity(request: Request) -> Identity:
     # Load auth token
     token = request.cookies.get("access_token")
 
-    print(request.cookies)
     if token:
         payload = decode_access_token(token)
 
@@ -79,6 +54,9 @@ async def get_identity(request: Request) -> Identity:
             user_agent=request.headers.get("user-agent"),
             user=None
         )
+    else:
+        session.last_seen = datetime.now()
+        await session.save()
 
     # Attach user to session
     if user and session.user_id != user.uuid:
@@ -90,3 +68,35 @@ async def get_identity(request: Request) -> Identity:
         user=user,
         session=session
     )
+
+async def require_user(identity: Identity = Depends(get_identity)) -> Identity:
+    """
+    Requires a user to be logged in
+
+    Otherwise, throws a 401 error
+
+    Returns:
+        Identity: The current user
+    """
+    if identity.user is None:
+        raise HTTPException(status_code=401, detail="User not authenticated")
+
+    return identity
+
+async def require_superuser(identity: Identity = Depends(get_identity)) -> Identity:
+    """
+    Requires a superuser to be logged in, and a superuser
+
+    Otherwise, throws a 401 if not logged in, or a 403 if not a superuser
+
+    Returns:
+        Identity: The current user
+    """
+    print(identity)
+    if identity.user is None:
+        raise HTTPException(status_code=401, detail="User not authenticated")
+        
+    if not identity.user.is_superuser:
+        raise HTTPException(status_code=403, detail="Superuser required")
+
+    return identity
