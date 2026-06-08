@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from datetime import datetime
-from fastapi import Depends, HTTPException, Request
+from fastapi import Depends, HTTPException, Request, Response
+
+from .utils import IS_DEV
 
 from .models import Session, User
 from .auth import decode_access_token
@@ -10,7 +12,7 @@ class Identity:
     user: User | None
     session: Session | None
 
-async def get_identity(request: Request) -> Identity:
+async def get_identity(request: Request, response: Response) -> Identity:
     """
     Returns the current user and session from the request cookies
 
@@ -57,6 +59,16 @@ async def get_identity(request: Request) -> Identity:
     else:
         session.last_seen = datetime.now()
         await session.save()
+
+    # Set session cookie
+    response.set_cookie(
+        key="session_id",
+        value=str(session.uuid),
+        httponly=True,
+        secure=not IS_DEV,
+        samesite="lax",
+        max_age=60 * 60 * 24 * 30,
+    )
 
     # Attach user to session
     if user and session.user_id != user.uuid:
