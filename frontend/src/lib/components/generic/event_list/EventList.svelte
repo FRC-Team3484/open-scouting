@@ -51,7 +51,7 @@ Props:
 
 	import { db } from "$lib/utils/db";
     import type { Event as EventType } from "$lib/utils/db";
-	import { getUserSetting, setUserSetting, validateTokenOnline } from "$lib/utils/user";
+	import { getUserSetting, setUserSetting, getUser } from "$lib/utils/user";
 	import { fetchEventData } from "$lib/utils/sync";
 	import Event from "./Event.svelte";
 	import CreateCustomEventDialog from "../dialogs/CreateCustomEventDialog.svelte";
@@ -214,7 +214,7 @@ Props:
             return [];
         }
     })
-    let user = $state(null);
+    let user: UserResponse | null = getUser();
     let favoriteEvents: string[] = $state([]);
 
     let search: string = $state("");
@@ -303,7 +303,6 @@ Props:
      * If any default view options or filters are provided, set them
      */
     onMount(async () => {
-        user = await validateTokenOnline();
         if (user) {
             favoriteEvents = await getUserSetting("favorite_events") ?? [];
         }

@@ -2,12 +2,10 @@
 @component
 Renders info for each event on the event list
 
-TODO: Get a proper interface for user
-
 Props:
     - `event` (`Event`) - The event that is displayed
     - `favoriteEvents` (`string[]`) - The user's favorite events, from the parent
-    - `user` (`unknown`) - The user from the parent
+    - `user` (`UserResponse | null`) - The user from the parent
     - `favoriteEvent` (`(event: Event) => Promise<void>`) - The function to favorite an event
     - `selectEvent` (`(event: Event) => void`) - The function to select an event
     - `deselectEvent` (`(event: Event) => void`) - The function to deselect an event
@@ -22,12 +20,13 @@ Props:
     import * as Card from "$lib/components/ui/card/index.js";
 	import Skeleton from "$lib/components/ui/skeleton/skeleton.svelte";
 	import type { Event } from "$lib/utils/db";
+	import type { UserResponse } from "$lib/api/model";
 
     
     interface Props {
         event: Event
         favoriteEvents: string[]
-        user: unknown
+        user: UserResponse | null
         favoriteEvent: (event: Event) => Promise<void>
         selectEvent: (event: Event) => void
         deselectEvent: (event: Event) => void

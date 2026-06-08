@@ -13,7 +13,7 @@ Props:
     import Input from "../ui/input/input.svelte";
 	import Label from "../ui/label/label.svelte";
 
-	import { loginForAccessTokenTokenPost } from "$lib/api/auth/auth";
+	import { loginAuthLoginPost } from "$lib/api/auth/auth";
 	import { ArrowRightIcon, WarningIcon } from "phosphor-svelte";
 
 
@@ -36,10 +36,9 @@ Props:
                     return;
                 }
                 
-                const res = await loginForAccessTokenTokenPost($formData);
+                const res = await loginAuthLoginPost($formData);
 
                 if (res.status === 200) {
-                    localStorage.setItem("access_token", res.data.access_token);
                     window.location.href = "/";
                 } else {
                     message = res.data.detail || "Something went wrong";

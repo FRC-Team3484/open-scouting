@@ -3,8 +3,6 @@ The admin page
 
 This page is only accessible to superusers. Allows for managing seasons, match scouting fields, pit scouting questions, users, events, match scouting data, and pit scouting data.
 Presents a warning dialog to the user when in production.
-
-TODO: Add a proper interface for user
 -->
 <script lang="ts">
 	import { onMount } from "svelte";
@@ -17,7 +15,7 @@ TODO: Add a proper interface for user
 	import Separator from "$lib/components/ui/separator/separator.svelte";
     import * as AlertDialog from "$lib/components/ui/alert-dialog/index.js";
     
-	import { validateTokenOnline } from "$lib/utils/user";
+	import { getUser } from "$lib/utils/user";
 	import PageContainer from "$lib/components/layout/PageContainer.svelte";
 	import SeasonsManager from "$lib/components/admin/SeasonsManager.svelte";
 	import AdminHeader from "$lib/components/admin/AdminHeader.svelte";
@@ -27,8 +25,10 @@ TODO: Add a proper interface for user
 	import EventManager from "$lib/components/admin/EventsManager.svelte";
 	import MatchScoutingSubmissionsManager from "$lib/components/admin/MatchScoutingSubmissionsManager.svelte";
 	import PitScoutingDataManager from "$lib/components/admin/PitScoutingDataManager.svelte";
+	import type { UserResponse } from "$lib/api/model";
 
-    let user = $state(null);
+
+    let user: UserResponse | null = getUser();
     type Page = "start" | "seasons" | "match_fields" | "pit_scouting_questions" | "users" | "events" | "match_scouting" | "pit_scouting";
     let page: Page = $state("start");
     let show_warning_dialog: boolean = $state(!(env.PUBLIC_MODE == "dev"));
@@ -49,7 +49,6 @@ TODO: Add a proper interface for user
      * If they're not a superuser, redirect them back to the index page.
      */
     onMount(async () => {
-        user = await validateTokenOnline();
         if (!user || !user.is_superuser) {
             window.location.href = "/";
         }
