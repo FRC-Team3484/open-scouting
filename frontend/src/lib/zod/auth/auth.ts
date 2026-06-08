@@ -8,6 +8,35 @@ import * as zod from 'zod';
 
 
 /**
+ * Validates the current user, and returns their details
+
+Returns:
+    UserMeResponse: The current user details, and whether they are authenticated or not
+ * @summary Me
+ */
+export const MeAuthMeGetResponse = zod.object({
+  "authenticated": zod.boolean(),
+  "user": zod.union([zod.object({
+  "uuid": zod.string().uuid(),
+  "username": zod.string(),
+  "email": zod.string().email(),
+  "is_superuser": zod.boolean(),
+  "created_at": zod.string().datetime({"offset":true})
+}),zod.null()])
+})
+
+/**
+ * Logs in a user
+
+Returns:
+    MessageResponse: A message indicating that the user has been logged in
+ * @summary Login
+ */
+export const LoginAuthLoginPostResponse = zod.object({
+  "message": zod.string()
+})
+
+/**
  * Create a new user
 
 If this is the first user on the server, make them a superuser
@@ -16,7 +45,7 @@ Paramaters:
     data (SignupRequest): The data to create the user
 
 Returns:
-    TokenResponse: The access token
+    MessageResponse: A message indicating that the user has been created
  * @summary Signup
  */
 export const SignupAuthSignupPostBody = zod.object({
@@ -28,28 +57,8 @@ export const SignupAuthSignupPostBody = zod.object({
   "display_name": zod.string()
 })
 
-export const signupAuthSignupPostResponseTokenTypeDefault = `bearer`;
-
 export const SignupAuthSignupPostResponse = zod.object({
-  "access_token": zod.string(),
-  "token_type": zod.string().default(signupAuthSignupPostResponseTokenTypeDefault)
-})
-
-/**
- * OAuth2 compatible token login, get an access token for future requests
-
-Parameters:
-    form_data (OAuth2PasswordRequestForm): The data to login with
-
-Returns:
-    dict[str, str]: The access token
- * @summary Login For Access Token
- */
-export const loginForAccessTokenTokenPostResponseTokenTypeDefault = `bearer`;
-
-export const LoginForAccessTokenTokenPostResponse = zod.object({
-  "access_token": zod.string(),
-  "token_type": zod.string().default(loginForAccessTokenTokenPostResponseTokenTypeDefault)
+  "message": zod.string()
 })
 
 /**
@@ -160,21 +169,6 @@ export const RemoveSuperuserUsersRemoveSuperuserUuidPostParams = zod.object({
 })
 
 export const RemoveSuperuserUsersRemoveSuperuserUuidPostResponse = zod.object({
-  "uuid": zod.string().uuid(),
-  "username": zod.string(),
-  "email": zod.string().email(),
-  "is_superuser": zod.boolean(),
-  "created_at": zod.string().datetime({"offset":true})
-})
-
-/**
- * Validate the current user
-
-Returns:
-    User: The current user
- * @summary Validate User
- */
-export const ValidateUserAuthValidateGetResponse = zod.object({
   "uuid": zod.string().uuid(),
   "username": zod.string(),
   "email": zod.string().email(),

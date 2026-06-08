@@ -6,18 +6,119 @@
  */
 import type {
   BaseSettings,
-  BodyLoginForAccessTokenTokenPost,
+  BodyLoginAuthLoginPost,
   HTTPValidationError,
   MessageResponse,
   SignupRequest,
-  TokenResponse,
+  UserMeResponse,
   UserResponse
 } from '../model';
 
 import { customInstance } from '.././client';
 
+export type meAuthMeGetResponse200 = {
+  data: UserMeResponse
+  status: 200
+}
+
+export type meAuthMeGetResponseSuccess = (meAuthMeGetResponse200) & {
+  headers: Headers;
+};
+;
+
+export type meAuthMeGetResponse = (meAuthMeGetResponseSuccess)
+
+export const getMeAuthMeGetUrl = () => {
+
+
+
+
+  return `/auth/me`
+}
+
+/**
+ * Validates the current user, and returns their details
+
+Returns:
+    UserMeResponse: The current user details, and whether they are authenticated or not
+ * @summary Me
+ */
+export const meAuthMeGet = async ( options?: RequestInit): Promise<meAuthMeGetResponse> => {
+
+  return customInstance<meAuthMeGetResponse>(getMeAuthMeGetUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+export type loginAuthLoginPostResponse200 = {
+  data: MessageResponse
+  status: 200
+}
+
+export type loginAuthLoginPostResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type loginAuthLoginPostResponseSuccess = (loginAuthLoginPostResponse200) & {
+  headers: Headers;
+};
+export type loginAuthLoginPostResponseError = (loginAuthLoginPostResponse422) & {
+  headers: Headers;
+};
+
+export type loginAuthLoginPostResponse = (loginAuthLoginPostResponseSuccess | loginAuthLoginPostResponseError)
+
+export const getLoginAuthLoginPostUrl = () => {
+
+
+
+
+  return `/auth/login`
+}
+
+/**
+ * Logs in a user
+
+Returns:
+    MessageResponse: A message indicating that the user has been logged in
+ * @summary Login
+ */
+export const loginAuthLoginPost = async (bodyLoginAuthLoginPost: BodyLoginAuthLoginPost, options?: RequestInit): Promise<loginAuthLoginPostResponse> => {
+    const formUrlEncoded = new URLSearchParams();
+if(bodyLoginAuthLoginPost.grant_type !== undefined && bodyLoginAuthLoginPost.grant_type !== null) {
+ formUrlEncoded.append(`grant_type`, bodyLoginAuthLoginPost.grant_type);
+ }
+formUrlEncoded.append(`username`, bodyLoginAuthLoginPost.username);
+formUrlEncoded.append(`password`, bodyLoginAuthLoginPost.password);
+if(bodyLoginAuthLoginPost.scope !== undefined) {
+ formUrlEncoded.append(`scope`, bodyLoginAuthLoginPost.scope);
+ }
+if(bodyLoginAuthLoginPost.client_id !== undefined && bodyLoginAuthLoginPost.client_id !== null) {
+ formUrlEncoded.append(`client_id`, bodyLoginAuthLoginPost.client_id);
+ }
+if(bodyLoginAuthLoginPost.client_secret !== undefined && bodyLoginAuthLoginPost.client_secret !== null) {
+ formUrlEncoded.append(`client_secret`, bodyLoginAuthLoginPost.client_secret);
+ }
+
+  return customInstance<loginAuthLoginPostResponse>(getLoginAuthLoginPostUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded', ...options?.headers },
+    body:
+      formUrlEncoded,
+  }
+);}
+
+
 export type signupAuthSignupPostResponse200 = {
-  data: TokenResponse
+  data: MessageResponse
   status: 200
 }
 
@@ -52,7 +153,7 @@ Paramaters:
     data (SignupRequest): The data to create the user
 
 Returns:
-    TokenResponse: The access token
+    MessageResponse: A message indicating that the user has been created
  * @summary Signup
  */
 export const signupAuthSignupPost = async (signupRequest: SignupRequest, options?: RequestInit): Promise<signupAuthSignupPostResponse> => {
@@ -64,71 +165,6 @@ export const signupAuthSignupPost = async (signupRequest: SignupRequest, options
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(
       signupRequest,)
-  }
-);}
-
-
-export type loginForAccessTokenTokenPostResponse200 = {
-  data: TokenResponse
-  status: 200
-}
-
-export type loginForAccessTokenTokenPostResponse422 = {
-  data: HTTPValidationError
-  status: 422
-}
-
-export type loginForAccessTokenTokenPostResponseSuccess = (loginForAccessTokenTokenPostResponse200) & {
-  headers: Headers;
-};
-export type loginForAccessTokenTokenPostResponseError = (loginForAccessTokenTokenPostResponse422) & {
-  headers: Headers;
-};
-
-export type loginForAccessTokenTokenPostResponse = (loginForAccessTokenTokenPostResponseSuccess | loginForAccessTokenTokenPostResponseError)
-
-export const getLoginForAccessTokenTokenPostUrl = () => {
-
-
-
-
-  return `/token`
-}
-
-/**
- * OAuth2 compatible token login, get an access token for future requests
-
-Parameters:
-    form_data (OAuth2PasswordRequestForm): The data to login with
-
-Returns:
-    dict[str, str]: The access token
- * @summary Login For Access Token
- */
-export const loginForAccessTokenTokenPost = async (bodyLoginForAccessTokenTokenPost: BodyLoginForAccessTokenTokenPost, options?: RequestInit): Promise<loginForAccessTokenTokenPostResponse> => {
-    const formUrlEncoded = new URLSearchParams();
-if(bodyLoginForAccessTokenTokenPost.grant_type !== undefined && bodyLoginForAccessTokenTokenPost.grant_type !== null) {
- formUrlEncoded.append(`grant_type`, bodyLoginForAccessTokenTokenPost.grant_type);
- }
-formUrlEncoded.append(`username`, bodyLoginForAccessTokenTokenPost.username);
-formUrlEncoded.append(`password`, bodyLoginForAccessTokenTokenPost.password);
-if(bodyLoginForAccessTokenTokenPost.scope !== undefined) {
- formUrlEncoded.append(`scope`, bodyLoginForAccessTokenTokenPost.scope);
- }
-if(bodyLoginForAccessTokenTokenPost.client_id !== undefined && bodyLoginForAccessTokenTokenPost.client_id !== null) {
- formUrlEncoded.append(`client_id`, bodyLoginForAccessTokenTokenPost.client_id);
- }
-if(bodyLoginForAccessTokenTokenPost.client_secret !== undefined && bodyLoginForAccessTokenTokenPost.client_secret !== null) {
- formUrlEncoded.append(`client_secret`, bodyLoginForAccessTokenTokenPost.client_secret);
- }
-
-  return customInstance<loginForAccessTokenTokenPostResponse>(getLoginForAccessTokenTokenPostUrl(),
-  {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded', ...options?.headers },
-    body:
-      formUrlEncoded,
   }
 );}
 
@@ -410,45 +446,6 @@ export const removeSuperuserUsersRemoveSuperuserUuidPost = async (uuid: string, 
   {
     ...options,
     method: 'POST'
-
-
-  }
-);}
-
-
-export type validateUserAuthValidateGetResponse200 = {
-  data: UserResponse
-  status: 200
-}
-
-export type validateUserAuthValidateGetResponseSuccess = (validateUserAuthValidateGetResponse200) & {
-  headers: Headers;
-};
-;
-
-export type validateUserAuthValidateGetResponse = (validateUserAuthValidateGetResponseSuccess)
-
-export const getValidateUserAuthValidateGetUrl = () => {
-
-
-
-
-  return `/auth/validate`
-}
-
-/**
- * Validate the current user
-
-Returns:
-    User: The current user
- * @summary Validate User
- */
-export const validateUserAuthValidateGet = async ( options?: RequestInit): Promise<validateUserAuthValidateGetResponse> => {
-
-  return customInstance<validateUserAuthValidateGetResponse>(getValidateUserAuthValidateGetUrl(),
-  {
-    ...options,
-    method: 'GET'
 
 
   }
