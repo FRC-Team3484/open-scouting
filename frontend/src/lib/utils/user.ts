@@ -1,7 +1,8 @@
 import { browser } from "$app/environment";
 import { page } from "$app/state";
-import { getUserSettingsUsersMeGetSettingsGet, updateUserSettingsUsersMeUpdateSettingsPost } from "$lib/api/auth/auth";
+import { getUserSettingsUsersMeGetSettingsGet, logoutAuthLogoutPost, updateUserSettingsUsersMeUpdateSettingsPost } from "$lib/api/auth/auth";
 import type { UserResponse } from "$lib/api/model";
+import { toast } from "svelte-sonner";
 
 function getUser() : UserResponse | null {
     // Remove legacy token from local storage
@@ -16,9 +17,16 @@ function getAuthenticationStatus(): boolean {
     return page.data.user.authenticated;
 }
 
-// TODO: Improve
 async function signOut() {
-    localStorage.removeItem("access_token");
+    await logoutAuthLogoutPost().then(async (response) => {
+        if (response.status === 200) {
+            toast.success("Logged out successfully.");
+            window.location.href = "/";
+        } else {
+            toast.error("Failed to log out.");
+            console.error(response);
+        }
+    });
 }
 
 async function getUserSettings() {

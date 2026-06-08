@@ -16,6 +16,7 @@ Props:
 
 	import { loginAuthLoginPost } from "$lib/api/auth/auth";
 	import { ArrowRightIcon, WarningIcon } from "phosphor-svelte";
+	import { toast } from "svelte-sonner";
 
 
     interface Props {
@@ -41,6 +42,7 @@ Props:
 
                 if (res.status === 200) {
                     await goto("/");
+                    window.location.reload();
                 } else {
                     message = res.data.detail || "Something went wrong";
                 }

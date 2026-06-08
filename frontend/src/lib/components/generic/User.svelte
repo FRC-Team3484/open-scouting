@@ -57,7 +57,7 @@ Props:
                     {/if}
                 </DropdownMenu.Group>
                 <DropdownMenu.Separator />
-                <DropdownMenu.Item onclick={() => {signOut(); window.location.reload()}}>
+                <DropdownMenu.Item onclick={async () => {await signOut()}}>
                     <SignOutIcon weight="bold" /> Log out
                 </DropdownMenu.Item>
             </DropdownMenu.Content>
