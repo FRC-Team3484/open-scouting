@@ -9,11 +9,14 @@ Props:
     - `action` (`null | "match_scouting" | "pit_scouting" | "data"`) - The action
 -->
 <script lang="ts">
-    import * as Card from "$lib/components/ui/card/index.js";
-	import { LinkIcon } from "phosphor-svelte";
-	import Separator from "../ui/separator/separator.svelte";
+    import { goto } from "$app/navigation";
 	import { onMount } from "svelte";
+	import { LinkIcon } from "phosphor-svelte";
+
+    import * as Card from "$lib/components/ui/card/index.js";
+	import Separator from "../ui/separator/separator.svelte";
 	import Button from "../ui/button/button.svelte";
+    
 	import type { StartEvent, StartUser } from "../../../routes/start/+page.svelte";
 
 
@@ -32,7 +35,7 @@ Props:
     /**
      * Redirect the user to the given page, based on all of the selected options
      */
-    function redirect() {
+    async function redirect() {
         let user_string = "";
 
         if (user.uuid) {
@@ -42,11 +45,11 @@ Props:
         }
 
         if (action === "match_scouting") {
-            window.location.href = `/match_scouting?year=${year}&event=${event.event_code}${user_string}`;
+            await goto(`/match_scouting?year=${year}&event=${event.event_code}${user_string}`);
         } else if (action === "pit_scouting") {
-            window.location.href = `/pit_scouting?year=${year}&event=${event.event_code}${user_string}`;
+            await goto(`/pit_scouting?year=${year}&event=${event.event_code}${user_string}`);
         } else if (action === "data") {
-            window.location.href = `/data?year=${year}&event_codes=${event.event_code}`;
+            await goto(`/data?year=${year}&event_codes=${event.event_code}`);
         }
     }
 

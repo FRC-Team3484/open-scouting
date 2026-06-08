@@ -5,17 +5,16 @@ Allows for the user to sign into their account, or create a new account.
 -->
 <script lang="ts">
 	import { onMount } from "svelte";
-	import { env } from "$env/dynamic/public";
 	import { toast } from "svelte-sonner";
+	import { goto } from "$app/navigation";
 
     import * as Card from "$lib/components/ui/card/index.js";
 
-	import { getAuthenticationStatus, getUser } from "$lib/utils/user";
+	import { getAuthenticationStatus } from "$lib/utils/user";
     import Logo from "$lib/components/generic/Logo.svelte";
 	import PageContainer from "$lib/components/layout/PageContainer.svelte";
 	import SignUpForm from "$lib/components/auth/SignUpForm.svelte";
 	import SignInForm from "$lib/components/auth/SignInForm.svelte";
-	import { type UserResponse } from "$lib/api/model";
 
 
     let page: "signin" | "signup" = "signin";
@@ -27,7 +26,7 @@ Allows for the user to sign into their account, or create a new account.
     onMount(async () => {
         if (authenticated) {
             toast.success("You are already signed in, redirecting...");
-            window.location.href = "/";
+            await goto("/");
         }
     })
 </script>

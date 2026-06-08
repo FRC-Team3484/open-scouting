@@ -6,6 +6,7 @@ Props:
     - `page` - The current authentication page. This is changed in this component when going to the sign in form instead
 -->
 <script lang="ts">
+	import { goto } from "$app/navigation";
     import { superForm } from "sveltekit-superforms";
 
     import * as Form from "$lib/components/ui/form/index";
@@ -39,7 +40,7 @@ Props:
                 const res = await loginAuthLoginPost($formData);
 
                 if (res.status === 200) {
-                    window.location.href = "/";
+                    await goto("/");
                 } else {
                     message = res.data.detail || "Something went wrong";
                 }

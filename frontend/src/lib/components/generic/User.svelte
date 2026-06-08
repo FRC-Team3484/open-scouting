@@ -16,6 +16,7 @@ Props:
 
     import { signOut, getUser, getAuthenticationStatus } from "$lib/utils/user";
 	import type { UserResponse } from "$lib/api/model";
+	import { goto } from "$app/navigation";
 
 
     interface Props {
@@ -47,7 +48,7 @@ Props:
                     </DropdownMenu.Item>
                     {#if user.is_superuser}
                         <DropdownMenu.Label>Admin Options</DropdownMenu.Label>
-                        <DropdownMenu.Item onclick={() => window.location.href = "/admin"} class="bg-green-400/50 hover:bg-green-300/20! transition-colors m-1">
+                        <DropdownMenu.Item onclick={async () => await goto("/admin")} class="bg-green-400/50 hover:bg-green-300/20! transition-colors m-1">
                             <WrenchIcon weight="bold" /> Admin Dashboard
                         </DropdownMenu.Item>
                         <DropdownMenu.Item onclick={() => {if (dev) window.location.href = "http://localhost:8000/docs"; else window.location.href = "/api/docs";}} class="bg-green-400/50 hover:bg-green-300/20! transition-colors m-1">

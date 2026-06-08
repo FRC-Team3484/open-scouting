@@ -26,6 +26,7 @@ Presents a warning dialog to the user when in production.
 	import MatchScoutingSubmissionsManager from "$lib/components/admin/MatchScoutingSubmissionsManager.svelte";
 	import PitScoutingDataManager from "$lib/components/admin/PitScoutingDataManager.svelte";
 	import type { UserResponse } from "$lib/api/model";
+	import { goto } from "$app/navigation";
 
 
     let user: UserResponse | null = getUser();
@@ -50,7 +51,7 @@ Presents a warning dialog to the user when in production.
      */
     onMount(async () => {
         if (!user || !user.is_superuser) {
-            window.location.href = "/";
+            await goto("/");
         }
     });
 </script>
