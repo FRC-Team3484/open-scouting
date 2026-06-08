@@ -6,6 +6,7 @@ Props:
     - `page` - The current authentication page. This is changed in this component when going to the sign in form instead
 -->
 <script lang="ts">
+	import { goto } from "$app/navigation";
     import { superForm } from "sveltekit-superforms";
 
     import * as Form from "$lib/components/ui/form/index";
@@ -13,7 +14,7 @@ Props:
     import Input from "../ui/input/input.svelte";
 	import Label from "../ui/label/label.svelte";
 
-	import { loginForAccessTokenTokenPost } from "$lib/api/auth/auth";
+	import { loginAuthLoginPost } from "$lib/api/auth/auth";
 	import { ArrowRightIcon, WarningIcon } from "phosphor-svelte";
 
 
@@ -36,11 +37,11 @@ Props:
                     return;
                 }
                 
-                const res = await loginForAccessTokenTokenPost($formData);
+                const res = await loginAuthLoginPost($formData);
 
                 if (res.status === 200) {
-                    localStorage.setItem("access_token", res.data.access_token);
-                    window.location.href = "/";
+                    await goto("/");
+                    window.location.reload();
                 } else {
                     message = res.data.detail || "Something went wrong";
                 }

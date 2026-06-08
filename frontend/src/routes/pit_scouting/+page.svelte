@@ -2,8 +2,6 @@
 The pit scouting page. Loads the pits from the local database, then renders a Pit component for each pit.
 
 Allows for creating new pits, and includes a section for viewing the progress of each pit.
-
-TODO: Add a proper interface for user
 -->
 <script lang="ts">
     import { onMount } from "svelte";
@@ -11,13 +9,14 @@ TODO: Add a proper interface for user
 	import { CircleNotchIcon } from "phosphor-svelte";
 
 	import { db, type Event, type SeasonPitScoutingQuestion } from "$lib/utils/db";
-	import { validateTokenOnline } from "$lib/utils/user";
+	import { getUser } from "$lib/utils/user";
 	import PageContainer from "$lib/components/layout/PageContainer.svelte";
 	import AddPit from "$lib/components/pit_scouting/AddPit.svelte";
 	import Header from "$lib/components/pit_scouting/Header.svelte";
 	import Pit from "$lib/components/pit_scouting/Pit.svelte";
 	import SyncManager from "$lib/components/pit_scouting/SyncManager.svelte";
 	import PitStatus from "$lib/components/pit_scouting/PitStatus.svelte";
+	import { type UserResponse } from "$lib/api/model";
 
     let season_uuid: string = $state("");
     let year: string | null = $state(null);
@@ -26,7 +25,7 @@ TODO: Add a proper interface for user
 
     let pit_questions: SeasonPitScoutingQuestion[] = $state([]);
 
-    let user: unknown = $state(null);
+    let user: UserResponse | null = getUser();
 
     let pits = liveQuery(
         () => db.pit_scouting
@@ -72,8 +71,6 @@ TODO: Add a proper interface for user
 
         await get_season_uuid(year);
         await get_pit_questions();
-
-        user = await validateTokenOnline();
     });
 </script>
 

@@ -7,7 +7,7 @@ from ..schemas.generic import MessageResponse
 from ..models import Event, MatchScoutingAnswer, MatchScoutingSubmission, PitScoutingAnswer, PitScoutingField, Season, TeamPit
 from ..schemas.event import AdminEventResponse, EventInfoResponse, EventResponse, CustomEventRequest
 from ..utils import get_season, IS_DEV
-from ..dependencies import require_superuser
+from ..dependencies import Identity, require_superuser
 
 router: APIRouter = APIRouter(
     tags=["Events"],
@@ -90,7 +90,7 @@ async def create_custom_event(
     )
 
 @router.get("/events/get", response_model=list[AdminEventResponse])
-async def get_all_events(superuser = Depends(require_superuser)) -> list[AdminEventResponse]:
+async def get_all_events(identity: Identity = Depends(require_superuser)) -> list[AdminEventResponse]:
     """
     Get all events on the server, used for the admin dashboard
 
@@ -131,7 +131,7 @@ async def get_all_events(superuser = Depends(require_superuser)) -> list[AdminEv
     return events
 
 @router.delete("/events/delete/{event_uuid}", response_model=MessageResponse)
-async def delete_event(event_uuid: UUID, superuser = Depends(require_superuser)) -> MessageResponse:
+async def delete_event(event_uuid: UUID, identity: Identity = Depends(require_superuser)) -> MessageResponse:
     """
     Delete an event
 
@@ -147,7 +147,7 @@ async def delete_event(event_uuid: UUID, superuser = Depends(require_superuser))
     return MessageResponse(message="Event deleted")
 
 @router.delete("/events/delete/{event_uuid}/match_scouting_submissions", response_model=MessageResponse)
-async def delete_match_scouting_submissions(event_uuid: UUID, superuser = Depends(require_superuser)) -> MessageResponse:
+async def delete_match_scouting_submissions(event_uuid: UUID, identity: Identity = Depends(require_superuser)) -> MessageResponse:
     """
     Delete all match scouting submissions for an event
 
@@ -163,7 +163,7 @@ async def delete_match_scouting_submissions(event_uuid: UUID, superuser = Depend
     return MessageResponse(message="Match scouting submissions deleted")
 
 @router.delete("/events/delete/{event_uuid}/team_pits", response_model=MessageResponse)
-async def delete_team_pits(event_uuid: UUID, superuser = Depends(require_superuser)) -> MessageResponse:
+async def delete_team_pits(event_uuid: UUID, identity: Identity = Depends(require_superuser)) -> MessageResponse:
     """
     Delete all team pits for an event
 

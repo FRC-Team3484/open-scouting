@@ -13,30 +13,6 @@ This document lists the various client side systems that are available to aid in
   - [Menu Status](#menu-status)
 
 ## Dialogs
-### AlertDialog
-A simple alert dialog that is presented to the user
-
-```html
-<script lang="ts">
-    import Dialog from "$lib/components/generic/Dialog.svelte";
-    
-    let show_warning_dialog = true;
-
-    function closeWarningDialog(): void {
-        show_warning_dialog = false;
-    }
-</script>
-
-<Dialog 
-    open={show_warning_dialog} 
-    title="Open Scouting Administration" 
-    description="By continuing, understand that changes made here are irreversible, and may cause unintended consequences. Know what you're doing and proceed with caution." 
-    cancel_text=""
-    submit_text="Continue"
-    onSubmit={closeWarningDialog}
-/>
-```
-
 ### BaseDialog
 A larger dialog that automatically switches to a drawer on smaller screens
 ```html
@@ -85,7 +61,8 @@ npx shadcn-svelte@latest add
 ## User Managment
 The client can manage the currently authenticated user using `$lib/utils/user.ts`
 
-- `validateTokenOnline()` - If the user is authenticated and has a valid token, returns the user's data
+- `getUser()` - Gets user data, loaded from +layout.server.ts
+- `getAuthenticationStatus()` - Gets the authentication status, loaded from +layout.server.ts
 - `signOut()` - Signs the user out by deleting the access token from the client
 - `getUserSettings()` - Returns all the settings for the user
 - `setUserSettings(settings)` - Updates all the settings for the user

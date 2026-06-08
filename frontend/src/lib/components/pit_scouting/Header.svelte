@@ -4,8 +4,6 @@ The header for the pit scouting page
 
 Loads event data from the URL, and exposes it as bindable for sibling components.
 
-TODO: Add a proper interface for user
-
 Props:
     - `event_data` (`Event`) - The bindable event data
 -->
@@ -20,8 +18,9 @@ Props:
 
 	import { fetchSeasonData } from "$lib/utils/sync";
 	import { db, type Event } from "$lib/utils/db";
-    import { validateTokenOnline } from "$lib/utils/user";
+    import { getUser } from "$lib/utils/user";
 	import Logo from "../generic/Logo.svelte";
+	import { type UserResponse } from "$lib/api/model";
 
 
     interface Props {
@@ -29,7 +28,7 @@ Props:
     }
     let { event_data = $bindable() }: Props = $props();
 
-    let user = null;
+    let user: UserResponse | null = getUser();
 
     let username = $state("");
 
@@ -80,8 +79,6 @@ Props:
      * Get the user data and event data from the URL
      */
     onMount(async () => {
-        user = await validateTokenOnline();
-
         await get_info();
     })
 </script>

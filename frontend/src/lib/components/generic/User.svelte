@@ -2,14 +2,11 @@
 @component
 Generic component for displaying the user's auth state
 
-TODO: Create a proper interface for the user
-
 Props:
     - `show_text` (`boolean`) - If true, shows the user's username
 -->
 <script lang="ts">
 	import { dev } from "$app/environment";
-	import { onMount } from "svelte";
 	import { BookIcon, SignOutIcon, UserCircleIcon, WrenchIcon } from "phosphor-svelte";
 
     import Skeleton from "../ui/skeleton/skeleton.svelte";
@@ -17,7 +14,9 @@ Props:
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
     import * as Avatar from "$lib/components/ui/avatar/index.js";
 
-    import { signOut, validateTokenOnline } from "$lib/utils/user";
+    import { signOut, getUser, getAuthenticationStatus } from "$lib/utils/user";
+	import type { UserResponse } from "$lib/api/model";
+	import { goto } from "$app/navigation";
 
 
     interface Props {
@@ -25,14 +24,11 @@ Props:
     }
     let { show_text = true }: Props = $props();
 
-    let user = $state(null);
-
-    onMount(async () => {
-        user = await validateTokenOnline();
-    })
+    let authenticated: boolean = getAuthenticationStatus();
+    let user: UserResponse | null = getUser();
 </script>
 
-{#if user === null}
+{#if user === null && authenticated}
     <Skeleton class="h-8 w-8 rounded-full" />
 {:else if user}
     <Button variant="outline" size="icon" class="!rounded-full">
@@ -52,7 +48,7 @@ Props:
                     </DropdownMenu.Item>
                     {#if user.is_superuser}
                         <DropdownMenu.Label>Admin Options</DropdownMenu.Label>
-                        <DropdownMenu.Item onclick={() => window.location.href = "/admin"} class="bg-green-400/50 hover:bg-green-300/20! transition-colors m-1">
+                        <DropdownMenu.Item onclick={async () => await goto("/admin")} class="bg-green-400/50 hover:bg-green-300/20! transition-colors m-1">
                             <WrenchIcon weight="bold" /> Admin Dashboard
                         </DropdownMenu.Item>
                         <DropdownMenu.Item onclick={() => {if (dev) window.location.href = "http://localhost:8000/docs"; else window.location.href = "/api/docs";}} class="bg-green-400/50 hover:bg-green-300/20! transition-colors m-1">
@@ -61,7 +57,7 @@ Props:
                     {/if}
                 </DropdownMenu.Group>
                 <DropdownMenu.Separator />
-                <DropdownMenu.Item onclick={() => {signOut(); window.location.reload()}}>
+                <DropdownMenu.Item onclick={async () => {await signOut()}}>
                     <SignOutIcon weight="bold" /> Log out
                 </DropdownMenu.Item>
             </DropdownMenu.Content>

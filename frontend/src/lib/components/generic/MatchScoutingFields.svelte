@@ -4,7 +4,6 @@ Main component for rendering match scouting fields
 
 Used in both the admin and regular pages.
 
-TODO: Add a proper interface for the user object
 TODO: Normalize the interface to use for game pieces
 
 Props:
@@ -30,13 +29,13 @@ Props:
 	import * as Alert from "../ui/alert/index.js";
 
 	import { db, type Event as EventType, type SeasonGamePiece, type SeasonMatchScoutingField } from "$lib/utils/db";
-	import { validateTokenOnline } from "$lib/utils/user";
+	import { getUser } from "$lib/utils/user";
 	import { pushMatchScoutingData } from "$lib/utils/sync";
     import { addFieldDialogOpen, addSectionDialogOpen } from "$lib/stores/dialog";
     
 	import { clearSeasonFieldsFieldsSeasonSeasonUuidClearDelete, createSeasonFieldFieldsSeasonSeasonUuidCreatePost, getMatchScoutingFieldPresetsFieldsGetPresetsGet, getSeasonFieldsFieldsSeasonSeasonUuidGet, moveMatchScoutingFieldsFieldsSeasonUuidReorderPatch } from "$lib/api/match-scouting-fields/match-scouting-fields";
 	import { getSeasonGamepiecesGamepiecesSeasonSeasonUuidGet } from "$lib/api/gamepieces/gamepieces";
-	import type { GamepieceResponse, MatchScoutingPresetResponse, MatchScoutingSeasonFieldsResponse } from "$lib/api/model";
+	import type { GamepieceResponse, MatchScoutingPresetResponse, MatchScoutingSeasonFieldsResponse, UserResponse } from "$lib/api/model";
     
 	import StringField from "./fields/StringField.svelte";
 	import LargeNumberField from "./fields/LargeNumberField.svelte";
@@ -64,7 +63,7 @@ Props:
     let fields: SeasonMatchScoutingField[] | MatchScoutingSeasonFieldsResponse[] = $state([]);
     let gamePieces: SeasonGamePiece[] | GamepieceResponse[] = $state([]);
     
-    let user: unknown;
+    let user: UserResponse | null = getUser();
     let matchScoutingTeamInfoChild: ReturnType<typeof MatchScoutingTeamInfo>;
 
     let fieldFile = $state(null);
@@ -415,8 +414,6 @@ Props:
         }
         getStructure();
         getGamePieces();
-
-        user = await validateTokenOnline();
     });
 
     /**

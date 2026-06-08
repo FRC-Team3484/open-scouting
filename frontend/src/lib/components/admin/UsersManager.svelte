@@ -17,12 +17,12 @@ This page lets superusers delete users, and make or revoke superuser status for 
 	import { deleteUserUsersDeleteUuidDelete, getUsersUsersGet, removeSuperuserUsersRemoveSuperuserUuidPost, setSuperuserUsersSetSuperuserUuidPost } from "$lib/api/auth/auth";
 	import type { UserResponse } from "$lib/api/model";
 
-	import { validateTokenOnline } from "$lib/utils/user";
+	import { getUser } from "$lib/utils/user";
 
 
     let users: UserResponse[] = $state([]);
     let selected: string[] = $state([]);
-    let user_self = $state(null);
+    let user_self: UserResponse | null = getUser();
 
     /**
      * Get all users from the server
@@ -109,8 +109,6 @@ This page lets superusers delete users, and make or revoke superuser status for 
 
     onMount(async () => {
         await getUsers();
-
-        user_self = await validateTokenOnline();
     });
 </script>
 
@@ -163,7 +161,7 @@ This page lets superusers delete users, and make or revoke superuser status for 
                                 {#if user.is_superuser}
                                     <Badge>Superuser</Badge>
                                 {/if}
-                                {#if user_self != null}
+                                {#if user_self}
                                     {#if user.uuid == user_self.uuid}
                                         <Badge>Self</Badge>
                                     {/if}

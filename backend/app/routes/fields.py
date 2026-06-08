@@ -5,7 +5,7 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from ..dependencies import require_superuser
+from ..dependencies import Identity, require_superuser
 from ..models import GamePiece, MatchScoutingField, Organization, Season, User
 from ..schemas.generic import MessageResponse
 from ..schemas.fields import MatchScoutingFieldRequest, MatchScoutingFieldResponse, MatchScoutingPresetResponse, MatchScoutingSeasonFieldsResponse, ReorderMatchScoutingFieldsRequest
@@ -89,7 +89,7 @@ async def get_season_fields(season_uuid: UUID) -> list[MatchScoutingSeasonFields
     return tree
 
 @router.delete("/fields/season/{season_uuid}/clear", response_model=MessageResponse)
-async def clear_season_fields(season_uuid: UUID, superuser: User = Depends(require_superuser)) -> dict[str, str]:
+async def clear_season_fields(season_uuid: UUID, identity: Identity = Depends(require_superuser)) -> dict[str, str]:
     """
     Clear all match scouting fields for a season
 
@@ -110,7 +110,7 @@ async def clear_season_fields(season_uuid: UUID, superuser: User = Depends(requi
 async def create_season_field(
         season_uuid: UUID,
         data: MatchScoutingFieldRequest,
-        superuser: User = Depends(require_superuser)
+        identity: Identity = Depends(require_superuser)
     ) -> MatchScoutingFieldResponse:
     """
     Create a new match scouting field
@@ -234,7 +234,7 @@ async def edit_season_field(
         season_uuid: UUID,
         field_uuid: UUID,
         data: MatchScoutingFieldRequest,
-        superuser: User = Depends(require_superuser)
+        identity: Identity = Depends(require_superuser)
     ) -> MatchScoutingField:
     """
     Edit a match scouting field
@@ -309,7 +309,7 @@ async def move_match_scouting_fields(
     return MessageResponse(message="Fields reordered")
 
 @router.get("/fields/get_presets", response_model=list[MatchScoutingPresetResponse])
-async def get_match_scouting_field_presets(superuser: User = Depends(require_superuser)) -> list[MatchScoutingPresetResponse]:    
+async def get_match_scouting_field_presets(identity: Identity = Depends(require_superuser)) -> list[MatchScoutingPresetResponse]:    
     """
     Get all JSON match scouting field presets
 
@@ -328,7 +328,7 @@ async def get_match_scouting_field_presets(superuser: User = Depends(require_sup
     return presets
 
 @router.delete("/fields/delete/{field_uuid}", response_model=MessageResponse)
-async def delete_field(field_uuid: UUID, superuser: User = Depends(require_superuser)) -> dict[str, str]:
+async def delete_field(field_uuid: UUID, identity: Identity = Depends(require_superuser)) -> dict[str, str]:
     """
     Delete a match scouting field
 

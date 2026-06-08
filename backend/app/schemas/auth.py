@@ -32,3 +32,7 @@ class UserResponse(BaseModel):
 # TODO: Can this take an arbitrary number of settings with any name?
 class BaseSettings(BaseModel):
     favorite_events: list[str]
+
+class UserMeResponse(BaseModel):
+    authenticated: bool
+    user: UserResponse | None

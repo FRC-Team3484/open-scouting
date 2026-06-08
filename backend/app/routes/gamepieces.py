@@ -1,7 +1,7 @@
 from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException
 
-from ..dependencies import require_superuser
+from ..dependencies import Identity, require_superuser
 from ..models import GamePiece, Season, User
 from ..schemas.generic import MessageResponse
 from ..schemas.gamepieces import GamepieceResponse, GamepieceRequest
@@ -33,7 +33,7 @@ async def get_gamepieces() -> list[GamepieceResponse]:
     ]
 
 @router.post("/gamepieces/create", response_model=GamepieceResponse)
-async def create_gamepiece(data: GamepieceRequest, superuser: User = Depends(require_superuser)) -> GamepieceResponse:
+async def create_gamepiece(data: GamepieceRequest, identity: Identity = Depends(require_superuser)) -> GamepieceResponse:
     """
     Create a new game piece
 
@@ -80,7 +80,7 @@ async def get_season_gamepieces(season_uuid: UUID) -> list[GamepieceResponse]:
     ]
 
 @router.delete("/gamepieces/delete/{gamepiece_uuid}", response_model=MessageResponse)
-async def delete_gamepiece(gamepiece_uuid: str, superuser: User = Depends(require_superuser)) -> dict[str, str]:
+async def delete_gamepiece(gamepiece_uuid: str, identity: Identity = Depends(require_superuser)) -> dict[str, str]:
     """
     Delete a game piece
 

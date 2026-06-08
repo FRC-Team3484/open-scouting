@@ -6,6 +6,7 @@ Props:
     - `page` - The current authentication page. This is changed in this component when going to the sign in form instead
 -->
 <script lang="ts">
+	import { goto } from "$app/navigation";
     import { superForm } from "sveltekit-superforms";
 	import { zod4Client } from "sveltekit-superforms/adapters";
 	import { ArrowRightIcon, WarningIcon } from "phosphor-svelte";
@@ -43,8 +44,8 @@ Props:
                 const res = await signupAuthSignupPost(form.data);
 
                 if (res.status === 200) {
-                    localStorage.setItem("access_token", res.data.access_token);
-                    window.location.href = "/";
+                    await goto("/");
+                    window.location.reload();
                 } else {
                     console.error(res);
                     message = res.data.detail[0].msg || "Something went wrong";

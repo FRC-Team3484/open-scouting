@@ -20,8 +20,9 @@ Props:
     import * as Avatar from "$lib/components/ui/avatar/index.js";
 	import Skeleton from "../ui/skeleton/skeleton.svelte";
 
-	import { signOut, validateTokenOnline } from "$lib/utils/user";
+	import { signOut, getUser } from "$lib/utils/user";
 	import { getUserOrganizationsOrganizationsMeListGet } from "$lib/api/organizations/organizations";
+	import { type UserResponse } from "$lib/api/model";
 
 
     interface Props {
@@ -30,7 +31,7 @@ Props:
     }
     let { handleNavigate, setUser }: Props = $props();
 
-    let user: any = $state(null);
+    let user: UserResponse | null = getUser();
     let organizations: any = $state(null);
 
     let organization_value = {"name":"default", "id":"0"};
@@ -51,7 +52,6 @@ Props:
      */
     onMount(async () => {
         try {
-            user = await validateTokenOnline();
             // if (user) {
                 //     organizations = await getUserOrganizationsOrganizationsMeListGet();
                 // }

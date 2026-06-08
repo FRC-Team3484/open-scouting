@@ -94,6 +94,30 @@ class Settings(Model):
     user = fields.ForeignKeyField("models.User", related_name="settings")
     favorite_events = fields.JSONField(null=True, default=list)
 
+class Session(Model):
+    """
+    Defines a user session on the server
+
+    Will be used to keep track of related actions on the server, for moderation purposes.
+        No personal information will ever be stored, it will only be used to be tied to database actions
+
+    Attributes:
+        uuid (UUID): The unique identifier for the session
+        created_at (datetime): The date and time the session was created
+        last_seen (datetime): The date and time the session was last seen
+        user (User): The user the session is associated with
+    """
+    uuid = fields.UUIDField(pk=True)
+
+    created_at = fields.DatetimeField(auto_now_add=True)
+    last_seen = fields.DatetimeField(auto_now=True)
+
+    user = fields.ForeignKeyField(
+        "models.User", 
+        null=True, 
+        related_name="sessions"
+    )
+
 # Main
 class Season(Model):
     """
