@@ -194,6 +194,17 @@ async def signup(
 
     return MessageResponse(message="Signup successful")
 
+@router.post("/auth/logout", response_model=MessageResponse)
+async def logout(response: Response):
+    """
+    Logs out a user
+    """
+
+    response.delete_cookie("access_token", path="/")
+    response.delete_cookie("session_id", path="/")
+
+    return MessageResponse(message="Logout successful")
+
 @router.get("/users/", response_model=list[UserResponse])
 async def get_users(identity: Identity = Depends(require_superuser)) -> list[User]:
     """

@@ -169,6 +169,42 @@ export const signupAuthSignupPost = async (signupRequest: SignupRequest, options
 );}
 
 
+export type logoutAuthLogoutPostResponse200 = {
+  data: MessageResponse
+  status: 200
+}
+
+export type logoutAuthLogoutPostResponseSuccess = (logoutAuthLogoutPostResponse200) & {
+  headers: Headers;
+};
+;
+
+export type logoutAuthLogoutPostResponse = (logoutAuthLogoutPostResponseSuccess)
+
+export const getLogoutAuthLogoutPostUrl = () => {
+
+
+
+
+  return `/auth/logout`
+}
+
+/**
+ * Logs out a user
+ * @summary Logout
+ */
+export const logoutAuthLogoutPost = async ( options?: RequestInit): Promise<logoutAuthLogoutPostResponse> => {
+
+  return customInstance<logoutAuthLogoutPostResponse>(getLogoutAuthLogoutPostUrl(),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
 export type getUsersUsersGetResponse200 = {
   data: UserResponse[]
   status: 200

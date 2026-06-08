@@ -62,6 +62,14 @@ export const SignupAuthSignupPostResponse = zod.object({
 })
 
 /**
+ * Logs out a user
+ * @summary Logout
+ */
+export const LogoutAuthLogoutPostResponse = zod.object({
+  "message": zod.string()
+})
+
+/**
  * Get all users on the server
 
 Requires superuser access
