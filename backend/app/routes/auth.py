@@ -1,15 +1,15 @@
 from sqlite3 import IntegrityError
 from uuid import UUID
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request, Response
 from fastapi.security import OAuth2PasswordRequestForm
 
 from ..utils import IS_DEV
 
 from ..auth import create_access_token, get_password_hash, verify_password
-from ..dependencies import get_current_user, require_user, require_superuser
-from ..models import User, Profile, Settings
+from ..dependencies import Identity, get_current_user, get_identity, require_user, require_superuser
+from ..models import User, Profile, Settings, Session
 from ..schemas.generic import MessageResponse
-from ..schemas.auth import BaseSettings, SignupRequest, TokenResponse, UserResponse
+from ..schemas.auth import BaseSettings, SignupRequest, UserMeResponse, UserMeResponse, UserResponse
 
 
 router: APIRouter = APIRouter(
@@ -17,10 +17,117 @@ router: APIRouter = APIRouter(
     include_in_schema=IS_DEV
 )
 
-@router.post("/auth/signup", response_model=TokenResponse)
+@router.get("/auth/me", response_model=UserMeResponse)
+async def me(
+    identity: Identity = Depends(get_identity)
+):
+    """
+    Validates the current user, and returns their details
+
+    Returns:
+        UserMeResponse: The current user details, and whether they are authenticated or not
+    """
+
+    if identity.user:
+        user = UserResponse(
+            uuid=identity.user.uuid,
+            username=identity.user.username,
+            email=identity.user.email,
+            is_superuser=identity.user.is_superuser,
+            created_at=identity.user.created_at
+        )
+    else:
+        user = None
+
+    print(identity.session)
+
+    return UserMeResponse(
+        authenticated=identity.user is not None,
+        user=user
+    )
+
+@router.post("/auth/login", response_model=MessageResponse)
+async def login(
+    request: Request,
+    response: Response,
+    form_data: OAuth2PasswordRequestForm = Depends(),
+):
+    """
+    Logs in a user
+
+    Returns:
+        MessageResponse: A message indicating that the user has been logged in
+    """
+    user = await User.get_or_none(
+        username=form_data.username
+    )
+
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid username or password"
+        )
+
+    if not verify_password(
+        form_data.password,
+        user.hashed_password
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid username or password"
+        )
+
+    session_id = request.cookies.get("session_id")
+
+    session = None
+
+    if session_id:
+        session = await Session.get_or_none(
+            uuid=session_id
+        )
+
+    if not session:
+        session = await Session.create(
+            ip_address=request.client.host,
+            user_agent=request.headers.get("user-agent")
+        )
+
+    session.user = user
+    await session.save()
+
+    access_token = create_access_token(
+        {
+            "sub": str(user.uuid),
+            "sid": str(session.uuid)
+        }
+    )
+
+    response.set_cookie(
+        key="access_token",
+        value=access_token,
+        httponly=True,
+        secure=IS_DEV,  # False for local dev only
+        samesite="lax",
+        max_age=60 * 60 * 24 * 7,
+    )
+
+    response.set_cookie(
+        key="session_id",
+        value=str(session.uuid),
+        httponly=True,
+        secure=IS_DEV,
+        samesite="lax",
+        max_age=60 * 60 * 24 * 30,
+    )
+
+    return MessageResponse(message="Login successful")
+
+@router.post("/auth/signup", response_model=MessageResponse)
 async def signup(
+    request: Request,
+    response: Response,
     data: SignupRequest
-) -> dict[str, str]:
+):
     """
     Create a new user
 
@@ -30,7 +137,7 @@ async def signup(
         data (SignupRequest): The data to create the user
 
     Returns:
-        TokenResponse: The access token
+        MessageResponse: A message indicating that the user has been created
     """
     if data.password != data.confirm_password:
         raise HTTPException(status_code=400, detail="Passwords do not match")
@@ -56,29 +163,38 @@ async def signup(
 
     user: User | None = await User.get_or_none(username=data.username)
 
-    access_token = create_access_token(data={"sub": str(user.uuid)})
-    return {"access_token": access_token, "token_type": "bearer"}
+    session = await Session.create(
+        user=user,
+        ip_address=request.client.host,
+        user_agent=request.headers.get("user-agent")
+    )
 
-@router.post("/token", response_model=TokenResponse)
-async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()) -> dict[str, str]:
-    """
-    OAuth2 compatible token login, get an access token for future requests
+    access_token = create_access_token(
+        {
+            "sub": str(user.uuid),
+            "sid": str(session.uuid)
+        }
+    )
 
-    Parameters:
-        form_data (OAuth2PasswordRequestForm): The data to login with
+    response.set_cookie(
+        key="access_token",
+        value=access_token,
+        httponly=True,
+        secure=IS_DEV,
+        samesite="lax",
+        max_age=60 * 60 * 24 * 7,
+    )
 
-    Returns:
-        dict[str, str]: The access token
-    """
-    user: User | None = await User.get_or_none(username=form_data.username)
-    if not user or not verify_password(form_data.password, user.hashed_password):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid username or password",
-        )
+    response.set_cookie(
+        key="session_id",
+        value=str(session.uuid),
+        httponly=True,
+        secure=IS_DEV,
+        samesite="lax",
+        max_age=60 * 60 * 24 * 30,
+    )
 
-    access_token: str = create_access_token(data={"sub": str(user.uuid)})
-    return {"access_token": access_token, "token_type": "bearer"}
+    return MessageResponse(message="Signup successful")
 
 @router.get("/users/", response_model=list[UserResponse])
 async def get_users(user = Depends(require_superuser)) -> list[User]:
@@ -206,13 +322,3 @@ async def remove_superuser(uuid: UUID, superuser: User = Depends(require_superus
         user_to_remove_superuser.is_superuser = False
         await user_to_remove_superuser.save()
         return user_to_remove_superuser
-
-@router.get("/auth/validate", response_model=UserResponse)
-async def validate_user(current_user: User = Depends(get_current_user)) -> User:
-    """
-    Validate the current user
-
-    Returns:
-        User: The current user
-    """
-    return current_user
