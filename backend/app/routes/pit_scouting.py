@@ -9,7 +9,7 @@ import httpx
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from ..dependencies import require_superuser
+from ..dependencies import Identity, Identity, require_superuser
 from ..models import Event, Organization, PitScoutingAnswer, PitScoutingField, Season, TeamPit, User
 from ..schemas.generic import MessageResponse
 from ..schemas.pit_scouting import AdminPitResponse, GetPitsResponse, PitAnswerResponse, PitFieldResponse, PitFieldRequest, GetPitsForSeasonRequest, PitScoutingPresetResponse, ReorderPitFieldsRequest, SubmitPitFieldAnswerRequest
@@ -61,7 +61,7 @@ async def get_pit_fields(season_uuid: UUID) -> list[PitFieldResponse]:
     ]
 
 @router.delete("/pits/fields/{season_uuid}/clear", response_model=MessageResponse)
-async def clear_pit_fields(season_uuid: UUID, superuser: User = Depends(require_superuser)):
+async def clear_pit_fields(season_uuid: UUID, identity: Identity = Depends(require_superuser)):
     """
     Clear all pit scouting fields for a season
 
@@ -83,7 +83,7 @@ async def clear_pit_fields(season_uuid: UUID, superuser: User = Depends(require_
 async def create_pit_field(
         season_uuid: UUID,
         data: PitFieldRequest,
-        superuser: User = Depends(require_superuser)
+        identity: Identity = Depends(require_superuser)
     ) -> PitFieldResponse:
     """
     Create a new pit scouting field
@@ -175,7 +175,7 @@ async def edit_pit_field(
         season_uuid: UUID,
         field_uuid: UUID,
         data: PitFieldRequest,
-        superuser: User = Depends(require_superuser)
+        identity: Identity = Depends(require_superuser)
     ) -> PitFieldResponse:
     """
     Edit a pit scouting field
@@ -253,7 +253,7 @@ async def move_pit_fields(
 @router.delete("/pits/fields/{field_uuid}/delete", response_model=MessageResponse)
 async def delete_pit_field(
         field_uuid: UUID,
-        superuser: User = Depends(require_superuser)
+        identity: Identity = Depends(require_superuser)
     ) -> MessageResponse:
     """
     Delete a pit scouting field
@@ -409,7 +409,7 @@ async def submit_pit(
     return {"message": "Pit submitted successfully"}
 
 @router.get("/pits/get", response_model=list[AdminPitResponse])
-async def get_all_pits(superuser = Depends(require_superuser)) -> list[AdminPitResponse]:
+async def get_all_pits(identity: Identity = Depends(require_superuser)) -> list[AdminPitResponse]:
     """
     Get all pits
 
@@ -437,7 +437,7 @@ async def get_all_pits(superuser = Depends(require_superuser)) -> list[AdminPitR
     ]
 
 @router.delete("/pits/delete/{pit_uuid}", response_model=MessageResponse)
-async def delete_pit(pit_uuid: UUID, superuser = Depends(require_superuser)) -> MessageResponse:
+async def delete_pit(pit_uuid: UUID, identity: Identity = Depends(require_superuser)) -> MessageResponse:
     """
     Delete a pit
 
@@ -453,7 +453,7 @@ async def delete_pit(pit_uuid: UUID, superuser = Depends(require_superuser)) -> 
     return MessageResponse(message="Pit deleted")
 
 @router.get("/pits/get_presets", response_model=list[PitScoutingPresetResponse])
-async def get_pit_scouting_field_presets(superuser: User = Depends(require_superuser)) -> list[PitScoutingPresetResponse]:    
+async def get_pit_scouting_field_presets(identity: Identity = Depends(require_superuser)) -> list[PitScoutingPresetResponse]:    
     """
     Get all JSON pit scouting field presets
 

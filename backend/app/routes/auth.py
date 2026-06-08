@@ -6,7 +6,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from ..utils import IS_DEV
 
 from ..auth import create_access_token, get_password_hash, verify_password
-from ..dependencies import Identity, get_current_user, get_identity, require_user, require_superuser
+from ..dependencies import Identity, get_identity, require_user, require_superuser
 from ..models import User, Profile, Settings, Session
 from ..schemas.generic import MessageResponse
 from ..schemas.auth import BaseSettings, SignupRequest, UserMeResponse, UserMeResponse, UserResponse
@@ -38,8 +38,6 @@ async def me(
         )
     else:
         user = None
-
-    print(identity.session)
 
     return UserMeResponse(
         authenticated=identity.user is not None,
@@ -197,7 +195,7 @@ async def signup(
     return MessageResponse(message="Signup successful")
 
 @router.get("/users/", response_model=list[UserResponse])
-async def get_users(user = Depends(require_superuser)) -> list[User]:
+async def get_users(identity: Identity = Depends(require_superuser)) -> list[User]:
     """
     Get all users on the server
 
@@ -210,7 +208,7 @@ async def get_users(user = Depends(require_superuser)) -> list[User]:
     return users
 
 @router.delete("/users/delete/{uuid}", response_model=MessageResponse)
-async def delete_user(uuid: UUID, user: User = Depends(require_user)) -> dict[str, str]:
+async def delete_user(uuid: UUID, identity: Identity = Depends(require_user)) -> dict[str, str]:
     """
     Delete a user on the server
 
@@ -228,31 +226,28 @@ async def delete_user(uuid: UUID, user: User = Depends(require_user)) -> dict[st
         raise HTTPException(status_code=404, detail="User not found")
     else:
         # Only be able to delete user if they are deleting themselves, or if they are a superuser
-        if user_to_delete.uuid == user.uuid or user.is_superuser:        
+        if user_to_delete.uuid == identity.user.uuid or identity.user.is_superuser:        
             await user_to_delete.delete()
             return {"message": "User deleted"}
         else:
             raise HTTPException(status_code=403, detail="User not authorized to delete this user")
 
 @router.get("/users/me/get_settings", response_model=BaseSettings)
-async def get_user_settings(current_user: User = Depends(get_current_user)) -> Settings:
+async def get_user_settings(identity: Identity = Depends(require_user)) -> Settings:
     """
     Get the settings for the current user
 
     Returns:
         BaseSettings: The settings for the current user
     """
-    user: User | None = await User.get_or_none(uuid=current_user.uuid)
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    settings: Settings | None = await Settings.get_or_none(user=user)
+    settings: Settings | None = await Settings.get_or_none(user=identity.user)
 
     if not settings:
-        settings = await Settings.create(user=user)
+        settings = await Settings.create(user=identity.user)
     return settings
 
 @router.post("/users/me/update_settings", response_model=BaseSettings)
-async def update_user_settings(data: BaseSettings, current_user: User = Depends(get_current_user)) -> Settings:
+async def update_user_settings(data: BaseSettings, identity: Identity = Depends(require_user)) -> Settings:
     """
     Update the settings for the current user
 
@@ -262,13 +257,10 @@ async def update_user_settings(data: BaseSettings, current_user: User = Depends(
     Returns:
         BaseSettings: The settings for the current user
     """
-    user: User | None = await User.get_or_none(uuid=current_user.uuid)
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    settings: Settings | None = await Settings.get_or_none(user=user)
+    settings: Settings | None = await Settings.get_or_none(user=identity.user)
 
     if not settings:
-        settings = await Settings.create(user=user)
+        settings = await Settings.create(user=identity.user)
 
     for key, value in data.model_dump().items():
         if hasattr(settings, key):
@@ -280,7 +272,7 @@ async def update_user_settings(data: BaseSettings, current_user: User = Depends(
     return settings
 
 @router.post("/users/set_superuser/{uuid}", response_model=UserResponse)
-async def set_superuser(uuid: UUID, superuser: User = Depends(require_superuser)) -> User:
+async def set_superuser(uuid: UUID, identity: Identity = Depends(require_superuser)) -> User:
     """
     Set a user as a superuser
 
@@ -302,7 +294,7 @@ async def set_superuser(uuid: UUID, superuser: User = Depends(require_superuser)
         return user_to_set_superuser
 
 @router.post("/users/remove_superuser/{uuid}", response_model=UserResponse)
-async def remove_superuser(uuid: UUID, superuser: User = Depends(require_superuser)) -> User:
+async def remove_superuser(uuid: UUID, identity: Identity = Depends(require_superuser)) -> User:
     """
     Remove a user as a superuser
 

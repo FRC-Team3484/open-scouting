@@ -5,7 +5,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException
 from tortoise.exceptions import IntegrityError
 
-from ..dependencies import require_superuser
+from ..dependencies import Identity, require_superuser
 from ..schemas.generic import MessageResponse
 from ..models import Event, MatchScoutingAnswer, MatchScoutingField, MatchScoutingSubmission, Season, User
 from ..schemas.match_scouting import MatchScoutingRequest, MatchScoutingResponse, SubmissionResponse
@@ -90,7 +90,7 @@ async def submit_match_scouting(
     )
 
 @router.get("/scouting/submissions", response_model=list[SubmissionResponse])
-async def get_match_scouting_submissions(superuser = Depends(require_superuser)) -> list[SubmissionResponse]:
+async def get_match_scouting_submissions(identity: Identity = Depends(require_superuser)) -> list[SubmissionResponse]:
     """
     Get all match scouting submissions
 
@@ -120,7 +120,7 @@ async def get_match_scouting_submissions(superuser = Depends(require_superuser))
     ]
 
 @router.delete("/scouting/submissions/delete/{submission_uuid}", response_model=MessageResponse)
-async def delete_match_scouting_submission(submission_uuid: UUID, superuser = Depends(require_superuser)) -> MessageResponse:
+async def delete_match_scouting_submission(submission_uuid: UUID, identity: Identity = Depends(require_superuser)) -> MessageResponse:
     """
     Delete a match scouting submission
 
