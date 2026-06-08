@@ -1,7 +1,5 @@
 import { env } from "$env/dynamic/public";
 
-export const getAuthToken = () => localStorage.getItem('access_token');
-
 export const customInstance = async <T>(
     url: string,
     {
@@ -22,18 +20,21 @@ export const customInstance = async <T>(
         targetUrl += '?' + new URLSearchParams(params);
     }
 
-    const token = getAuthToken();
 
     const finalHeaders: HeadersInit = {
         ...(headers ?? {}),
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
     };
+
+    // TODO: Make less hacky
+    const includeCredentials = targetUrl.includes(`/auth/me`) || targetUrl.includes(`/auth/login`) ? false : true;
 
     const response = await fetch(targetUrl, {
         method,
         headers: finalHeaders,
         body,
+        credentials: includeCredentials ? 'include' : 'omit',
     });
+
 
     const text = [204, 205, 304].includes(response.status) ? null : await response.text();
 
