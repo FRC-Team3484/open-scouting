@@ -104,7 +104,7 @@ async def login(
         key="access_token",
         value=access_token,
         httponly=True,
-        secure=IS_DEV,  # False for local dev only
+        secure=not IS_DEV,  # False for local dev only
         samesite="lax",
         max_age=60 * 60 * 24 * 7,
     )
@@ -113,7 +113,7 @@ async def login(
         key="session_id",
         value=str(session.uuid),
         httponly=True,
-        secure=IS_DEV,
+        secure=not IS_DEV,
         samesite="lax",
         max_age=60 * 60 * 24 * 30,
     )
