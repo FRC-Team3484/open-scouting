@@ -16,7 +16,6 @@ Props:
 
 	import { loginAuthLoginPost } from "$lib/api/auth/auth";
 	import { ArrowRightIcon, WarningIcon } from "phosphor-svelte";
-	import { toast } from "svelte-sonner";
 
 
     interface Props {

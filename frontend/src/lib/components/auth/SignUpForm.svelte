@@ -44,8 +44,8 @@ Props:
                 const res = await signupAuthSignupPost(form.data);
 
                 if (res.status === 200) {
-                    localStorage.setItem("access_token", res.data.access_token);
                     await goto("/");
+                    window.location.reload();
                 } else {
                     console.error(res);
                     message = res.data.detail[0].msg || "Something went wrong";
