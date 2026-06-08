@@ -1,25 +1,22 @@
-import { env } from "$env/dynamic/public";
+import { browser } from "$app/environment";
+import { page } from "$app/state";
 import { getUserSettingsUsersMeGetSettingsGet, updateUserSettingsUsersMeUpdateSettingsPost } from "$lib/api/auth/auth";
+import type { UserResponse } from "$lib/api/model";
 
-async function validateTokenOnline() {
-    const token = localStorage.getItem("access_token");
-    if (!token) {
-        console.log("No token found");
-        return;
-    };
-
-    const res = await fetch(env.PUBLIC_FAST_API_URL + "/auth/validate", {
-        headers: { Authorization: `Bearer ${token}` },
-    });
-
-    if (res.ok) {
-        const data = await res.json();
-        return data;
-    } else {
-        return;
+function getUser() : UserResponse | null {
+    // Remove legacy token from local storage
+    if (browser && localStorage.getItem("access_token")) {
+        localStorage.removeItem("access_token");
     }
+
+    return page.data.user.user;
 }
 
+function getAuthenticationStatus(): boolean {
+    return page.data.user.authenticated;
+}
+
+// TODO: Improve
 async function signOut() {
     localStorage.removeItem("access_token");
 }
@@ -43,4 +40,4 @@ async function setUserSetting(key, value) {
     await setUserSettings(settings);
 }
 
-export { validateTokenOnline, signOut, getUserSettings, setUserSettings, getUserSetting, setUserSetting };
+export { getUser, getAuthenticationStatus, signOut, getUserSettings, setUserSettings, getUserSetting, setUserSetting };
