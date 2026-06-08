@@ -12,8 +12,9 @@
 
 	import "$lib/utils/sync";
 	import Changelog from "$lib/components/generic/changelog/Changelog.svelte";
+	import type { LayoutProps } from "./$types";
 
-	let { children } = $props();
+	let { data, children }: LayoutProps = $props();
 
 	// put the <link rel="manifest"> into the head
 	let webManifest = pwaInfo ? pwaInfo.webManifest.linkTag : '';
