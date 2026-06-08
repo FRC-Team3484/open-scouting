@@ -25,14 +25,11 @@ export const customInstance = async <T>(
         ...(headers ?? {}),
     };
 
-    // TODO: Make less hacky
-    const includeCredentials = targetUrl.includes(`/auth/me`) || targetUrl.includes(`/auth/login`) ? false : true;
-
     const response = await fetch(targetUrl, {
         method,
         headers: finalHeaders,
         body,
-        credentials: includeCredentials ? 'include' : 'omit',
+        credentials: "include",
     });
 
 

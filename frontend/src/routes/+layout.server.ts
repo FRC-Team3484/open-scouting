@@ -2,9 +2,14 @@ import type { LayoutServerLoad } from "./$types";
 import { meAuthMeGet } from "$lib/api/auth/auth";
 
 export const load: LayoutServerLoad = async ({ cookies }) => {
-    // TODO: What happens if one of these is missing
     // Forward cookies from the client to the server
-    const forwardCookies = `session_id=${cookies.get("session_id")};access_token=${cookies.get("access_token")}`;
+    let forwardCookies = "";
+    if (cookies.get("session_id")) {
+        forwardCookies = forwardCookies.concat(`session_id=${cookies.get("session_id")}`);
+    }
+    if (cookies.get("access_token")) {
+        forwardCookies = forwardCookies.concat(`;access_token=${cookies.get("access_token")}`);
+    }
 
     const response = await meAuthMeGet({
         headers: {
@@ -13,6 +18,12 @@ export const load: LayoutServerLoad = async ({ cookies }) => {
     });
 
     if (response.status === 200) {
+        cookies.set("session_id", response.headers.get("set-cookie")?.split(";")[0].split("=")[1], {
+            path: "/",
+            httpOnly: true,
+            sameSite: "lax"
+        });
+
         return {
             user: response.data,
         };
