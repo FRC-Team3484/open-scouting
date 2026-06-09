@@ -2,6 +2,7 @@ from sqlite3 import IntegrityError
 from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, status, Request, Response
 from fastapi.security import OAuth2PasswordRequestForm
+from tortoise.queryset import QuerySet
 
 from ..utils import IS_DEV
 
@@ -34,6 +35,9 @@ async def me(
             username=identity.user.username,
             email=identity.user.email,
             is_superuser=identity.user.is_superuser,
+            display_name=identity.profile.display_name,
+            team_number=identity.profile.team_number,
+            email_verified=identity.user.email_verified,
             created_at=identity.user.created_at
         )
     else:
@@ -206,7 +210,7 @@ async def logout(response: Response):
     return MessageResponse(message="Logout successful")
 
 @router.get("/users/", response_model=list[UserResponse])
-async def get_users(identity: Identity = Depends(require_superuser)) -> list[User]:
+async def get_users(identity: Identity = Depends(require_superuser)) -> list[UserResponse]:
     """
     Get all users on the server
 
@@ -215,8 +219,41 @@ async def get_users(identity: Identity = Depends(require_superuser)) -> list[Use
     Returns:
         list[User]: A list of all users
     """
+    user_list: list[UserResponse] = []
     users: list[User] = await User.all()
-    return users
+
+    for user in users:
+        profile = await Profile.get_or_none(user=user)
+
+        if profile:
+            user_list.append(
+                UserResponse(
+                    uuid=user.uuid,
+                    username=user.username,
+                    email=user.email,
+                    is_superuser=user.is_superuser,
+                    display_name=profile.display_name,
+                    team_number=profile.team_number,
+                    email_verified=user.email_verified,
+                    created_at=user.created_at
+                )
+            )
+        else:
+            print(f"WARN: User {user.username} ({user.uuid}) has no profile")
+            user_list.append(
+                UserResponse(
+                    uuid=user.uuid,
+                    username=user.username,
+                    email=user.email,
+                    is_superuser=user.is_superuser,
+                    display_name="",
+                    team_number=0,
+                    email_verified=user.email_verified,
+                    created_at=user.created_at
+                )
+            )
+
+    return user_list
 
 @router.delete("/users/delete/{uuid}", response_model=MessageResponse)
 async def delete_user(uuid: UUID, identity: Identity = Depends(require_user)) -> dict[str, str]:
@@ -282,8 +319,8 @@ async def update_user_settings(data: BaseSettings, identity: Identity = Depends(
     await settings.save()
     return settings
 
-@router.post("/users/set_superuser/{uuid}", response_model=UserResponse)
-async def set_superuser(uuid: UUID, identity: Identity = Depends(require_superuser)) -> User:
+@router.post("/users/set_superuser/{uuid}", response_model=MessageResponse)
+async def set_superuser(uuid: UUID, identity: Identity = Depends(require_superuser)) -> MessageResponse:
     """
     Set a user as a superuser
 
@@ -302,10 +339,10 @@ async def set_superuser(uuid: UUID, identity: Identity = Depends(require_superus
     else:
         user_to_set_superuser.is_superuser = True
         await user_to_set_superuser.save()
-        return user_to_set_superuser
+        return MessageResponse(message="User set as superuser")
 
-@router.post("/users/remove_superuser/{uuid}", response_model=UserResponse)
-async def remove_superuser(uuid: UUID, identity: Identity = Depends(require_superuser)) -> User:
+@router.post("/users/remove_superuser/{uuid}", response_model=MessageResponse)
+async def remove_superuser(uuid: UUID, identity: Identity = Depends(require_superuser)) -> MessageResponse:
     """
     Remove a user as a superuser
 
@@ -324,4 +361,4 @@ async def remove_superuser(uuid: UUID, identity: Identity = Depends(require_supe
     else:
         user_to_remove_superuser.is_superuser = False
         await user_to_remove_superuser.save()
-        return user_to_remove_superuser
+        return MessageResponse(message="User removed as superuser")

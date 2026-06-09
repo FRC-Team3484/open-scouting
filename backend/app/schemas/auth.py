@@ -27,6 +27,9 @@ class UserResponse(BaseModel):
     username: str
     email: EmailStr
     is_superuser: bool
+    display_name: str
+    team_number: int
+    email_verified: bool
     created_at: datetime
 
 # TODO: Can this take an arbitrary number of settings with any name?

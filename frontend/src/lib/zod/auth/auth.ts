@@ -21,6 +21,9 @@ export const MeAuthMeGetResponse = zod.object({
   "username": zod.string(),
   "email": zod.string().email(),
   "is_superuser": zod.boolean(),
+  "display_name": zod.string(),
+  "team_number": zod.number(),
+  "email_verified": zod.boolean(),
   "created_at": zod.string().datetime({"offset":true})
 }),zod.null()])
 })
@@ -83,6 +86,9 @@ export const GetUsersUsersGetResponseItem = zod.object({
   "username": zod.string(),
   "email": zod.string().email(),
   "is_superuser": zod.boolean(),
+  "display_name": zod.string(),
+  "team_number": zod.number(),
+  "email_verified": zod.boolean(),
   "created_at": zod.string().datetime({"offset":true})
 })
 export const GetUsersUsersGetResponse = zod.array(GetUsersUsersGetResponseItem)
@@ -153,11 +159,7 @@ export const SetSuperuserUsersSetSuperuserUuidPostParams = zod.object({
 })
 
 export const SetSuperuserUsersSetSuperuserUuidPostResponse = zod.object({
-  "uuid": zod.string().uuid(),
-  "username": zod.string(),
-  "email": zod.string().email(),
-  "is_superuser": zod.boolean(),
-  "created_at": zod.string().datetime({"offset":true})
+  "message": zod.string()
 })
 
 /**
@@ -177,10 +179,6 @@ export const RemoveSuperuserUsersRemoveSuperuserUuidPostParams = zod.object({
 })
 
 export const RemoveSuperuserUsersRemoveSuperuserUuidPostResponse = zod.object({
-  "uuid": zod.string().uuid(),
-  "username": zod.string(),
-  "email": zod.string().email(),
-  "is_superuser": zod.boolean(),
-  "created_at": zod.string().datetime({"offset":true})
+  "message": zod.string()
 })
 

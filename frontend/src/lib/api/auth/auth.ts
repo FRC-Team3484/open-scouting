@@ -387,7 +387,7 @@ export const updateUserSettingsUsersMeUpdateSettingsPost = async (baseSettings: 
 
 
 export type setSuperuserUsersSetSuperuserUuidPostResponse200 = {
-  data: UserResponse
+  data: MessageResponse
   status: 200
 }
 
@@ -438,7 +438,7 @@ export const setSuperuserUsersSetSuperuserUuidPost = async (uuid: string, option
 
 
 export type removeSuperuserUsersRemoveSuperuserUuidPostResponse200 = {
-  data: UserResponse
+  data: MessageResponse
   status: 200
 }
 
