@@ -4,22 +4,35 @@ The profile page
 Allows for editing profile details, changing password, and updating settings
 -->
 <script lang="ts">
+	import { onMount } from "svelte";
+	import { goto } from "$app/navigation";
+	import { toast } from "svelte-sonner";
+	import { GearIcon, PencilIcon, SignOutIcon, UserIcon } from "phosphor-svelte";
+    
     import * as Card from "$lib/components/ui/card/index.js";
-	import Button from "$lib/components/ui/button/button.svelte";
-
-	import PageContainer from "$lib/components/layout/PageContainer.svelte";
-	import { GearIcon, SignOutIcon, UserIcon } from "phosphor-svelte";
-	import Logo from "$lib/components/generic/Logo.svelte";
+    import Button from "$lib/components/ui/button/button.svelte";
 	import Separator from "$lib/components/ui/separator/separator.svelte";
+    
+    import PageContainer from "$lib/components/layout/PageContainer.svelte";
+	import Logo from "$lib/components/generic/Logo.svelte";
 	import Section from "$lib/components/profile/Section.svelte";
-	import { getAuthenticationStatus, getUser } from "$lib/utils/user";
+
+	import { getAuthenticationStatus, getUser, signOut } from "$lib/utils/user";
 	import { type UserResponse } from "$lib/api/model";
 	import Badge from "$lib/components/ui/badge/badge.svelte";
 
+    
     let section: "profile" | "settings" = $state("profile");
 
     let user: UserResponse | null = getUser();
     let authenticated: boolean = getAuthenticationStatus();
+
+    onMount(() => {
+        if (!authenticated) {
+            goto("/");
+            toast.error("You must be signed in to view this page.");
+        }
+    })
 </script>
 
 <PageContainer>
@@ -50,7 +63,7 @@ Allows for editing profile details, changing password, and updating settings
                             </Card.Content>
                         </Card.Root>
 
-                        <Button variant="outline"><SignOutIcon weight="bold" /> Sign Out</Button>
+                        <Button variant="outline" onclick={() => signOut()}><SignOutIcon weight="bold" /> Sign Out</Button>
 
                         <Separator class="my-2" />
 
@@ -69,17 +82,23 @@ Allows for editing profile details, changing password, and updating settings
                             <Card.Root>
                                 <Card.Content>
                                     <div class="flex flex-row gap-2">
-                                        <div class="w-16 h-16 bg-muted rounded-full flex items-center justify-center text-2xl">{user?.username.charAt(0)}</div>
+                                        <div class="group w-16 h-16 bg-muted rounded-full flex items-center justify-center relative overflow-hidden active:scale-90 transition-transform">
+                                            <p class="text-2xl text-white select-none">{user?.username.charAt(0)}</p>
+                                            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity z-10"></div>
+                                            <PencilIcon weight="bold" class="absolute inset-0 m-auto text-white opacity-0 group-hover:opacity-100 transition-opacity z-20 text-3xl" />
+                                        </div>
+
 
                                         <div class="flex flex-col gap-1 items-start">
                                             <div class="flex flex-row gap-2">
                                                 <p class="font-bold text-lg">{user?.username}</p>
 
                                                 {#if user?.is_superuser}
-                                                    <Badge>Superuser</Badge>
+                                                    <Badge class="bg-green-400/50">Superuser</Badge>
                                                 {/if}
                                             </div>
                                             <p class="text-md text-muted-foreground">{user?.email}</p>
+                                            <p class="text-md text-muted-foreground">Team: {user?.team_number}</p>
                                         </div>
                                     </div>
                                 </Card.Content>
