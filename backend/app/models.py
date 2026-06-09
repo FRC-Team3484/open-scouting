@@ -20,6 +20,7 @@ class User(Model):
     email = fields.CharField(max_length=255, unique=True)
     hashed_password = fields.CharField(max_length=255)
     is_superuser = fields.BooleanField(default=False)
+    email_verified = fields.BooleanField(default=False, db_default=False)
     created_at = fields.DatetimeField(auto_now_add=True)
 
     @override
@@ -40,6 +41,7 @@ class Profile(Model):
     user = fields.ForeignKeyField("models.User", related_name="profiles")
     display_name = fields.CharField(max_length=255)
     team_number = fields.IntField(null=True)
+    created_at = fields.DatetimeField(auto_now_add=True, null=True)
 
     @override
     def __str__(self) -> str:
