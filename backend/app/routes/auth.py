@@ -69,7 +69,6 @@ async def me(
                     UserSetting(
                         key=key,
                         value=getattr(settings, key),
-                        name=getattr(field, "verbose_name", key),
                         description=getattr(field, "description", None),
                         type=field_type_to_string(field.__class__.__name__),
                     )
