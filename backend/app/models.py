@@ -94,7 +94,7 @@ class Settings(Model):
     """
     uuid = fields.UUIDField(pk=True)
     user = fields.ForeignKeyField("models.User", related_name="settings")
-    favorite_events = fields.JSONField(null=True, default=list)
+    favorite_events = fields.JSONField(null=True, default=list, verbose_name="Favorite Events", description="The list of favorite events for the user")
 
 class Session(Model):
     """

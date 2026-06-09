@@ -25,7 +25,14 @@ export const MeAuthMeGetResponse = zod.object({
   "team_number": zod.number(),
   "email_verified": zod.boolean(),
   "created_at": zod.string().datetime({"offset":true})
-}),zod.null()])
+}),zod.null()]),
+  "settings": zod.union([zod.array(zod.object({
+  "key": zod.string(),
+  "value": zod.union([zod.unknown(),zod.null()]),
+  "name": zod.string(),
+  "description": zod.string(),
+  "type": zod.enum(['string', 'number', 'boolean', 'json'])
+})),zod.null()])
 })
 
 /**

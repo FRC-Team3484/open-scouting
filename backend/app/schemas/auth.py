@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Any, Literal
 from uuid import UUID
 
 from pydantic import BaseModel, EmailStr, model_validator
@@ -36,6 +37,15 @@ class UserResponse(BaseModel):
 class BaseSettings(BaseModel):
     favorite_events: list[str]
 
+# Used in /auth/me, to return the user's current settings
+class UserSetting(BaseModel):
+    key: str
+    value: Any | None
+    name: str
+    description: str
+    type: Literal["string", "number", "boolean", "json"]
+
 class UserMeResponse(BaseModel):
     authenticated: bool
     user: UserResponse | None
+    settings: list[UserSetting] | None

@@ -65,5 +65,7 @@ export * from './submitPitFieldAnswerRequest';
 export * from './uploadImageUploadImagePostParams';
 export * from './userMeResponse';
 export * from './userResponse';
+export * from './userSetting';
+export * from './userSettingType';
 export * from './validationError';
 export * from './validationErrorCtx';

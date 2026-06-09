@@ -1,8 +1,8 @@
+from typing import Literal
 from sqlite3 import IntegrityError
 from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, status, Request, Response
 from fastapi.security import OAuth2PasswordRequestForm
-from tortoise.queryset import QuerySet
 
 from ..utils import IS_DEV
 
@@ -10,7 +10,7 @@ from ..auth import create_access_token, get_password_hash, verify_password
 from ..dependencies import Identity, get_identity, require_user, require_superuser
 from ..models import User, Profile, Settings, Session
 from ..schemas.generic import MessageResponse
-from ..schemas.auth import BaseSettings, SignupRequest, UserMeResponse, UserMeResponse, UserResponse
+from ..schemas.auth import BaseSettings, SignupRequest, UserMeResponse, UserMeResponse, UserResponse, UserSetting
 
 
 router: APIRouter = APIRouter(
@@ -29,6 +29,19 @@ async def me(
         UserMeResponse: The current user details, and whether they are authenticated or not
     """
 
+    def field_type_to_string(type: str) -> Literal["string", "number", "boolean", "json"]:
+        if type == "CharField":
+            return "string"
+        elif type == "IntField":
+            return "number"
+        elif type == "BooleanField":
+            return "boolean"
+        elif type == "JSONField":
+            return "json"
+        else:
+            return "string"
+        
+
     if identity.user:
         user = UserResponse(
             uuid=identity.user.uuid,
@@ -40,12 +53,36 @@ async def me(
             email_verified=identity.user.email_verified,
             created_at=identity.user.created_at
         )
+
+        settings = await Settings.get_or_none(user=identity.user)
+        settings_list: list[UserSetting] | None = []
+
+        if settings:
+            for key, field in Settings._meta.fields_map.items():
+                if key in {"user", "uuid"}:
+                    continue
+
+                if key.endswith("_id"):
+                    continue
+                    
+                settings_list.append(
+                    UserSetting(
+                        key=key,
+                        value=getattr(settings, key),
+                        name=getattr(field, "verbose_name", key),
+                        description=getattr(field, "description", None),
+                        type=field_type_to_string(field.__class__.__name__),
+                    )
+                )
+
     else:
         user = None
+        settings_list = None
 
     return UserMeResponse(
         authenticated=identity.user is not None,
-        user=user
+        user=user,
+        settings=settings_list
     )
 
 @router.post("/auth/login", response_model=MessageResponse)
