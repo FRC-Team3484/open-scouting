@@ -43,7 +43,7 @@ Props:
             <DropdownMenu.Content class="w-56" align="start">
                 <DropdownMenu.Label>{user.username}</DropdownMenu.Label>
                 <DropdownMenu.Group>
-                    <DropdownMenu.Item>
+                    <DropdownMenu.Item onclick={async () => await goto("/profile")}>
                         <UserCircleIcon weight="bold" /> Profile
                     </DropdownMenu.Item>
                     {#if user.is_superuser}
