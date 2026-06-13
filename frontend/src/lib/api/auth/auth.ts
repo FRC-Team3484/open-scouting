@@ -9,6 +9,8 @@ import type {
   BodyLoginAuthLoginPost,
   HTTPValidationError,
   MessageResponse,
+  SetDisplayNameUsersMeSetDisplayNamePostParams,
+  SetTeamNumberUsersMeSetTeamNumberPostParams,
   SignupRequest,
   UserMeResponse,
   UserResponse,
@@ -480,6 +482,118 @@ Returns:
 export const removeSuperuserUsersRemoveSuperuserUuidPost = async (uuid: string, options?: RequestInit): Promise<removeSuperuserUsersRemoveSuperuserUuidPostResponse> => {
 
   return customInstance<removeSuperuserUsersRemoveSuperuserUuidPostResponse>(getRemoveSuperuserUsersRemoveSuperuserUuidPostUrl(uuid),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+export type setDisplayNameUsersMeSetDisplayNamePostResponse200 = {
+  data: MessageResponse
+  status: 200
+}
+
+export type setDisplayNameUsersMeSetDisplayNamePostResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type setDisplayNameUsersMeSetDisplayNamePostResponseSuccess = (setDisplayNameUsersMeSetDisplayNamePostResponse200) & {
+  headers: Headers;
+};
+export type setDisplayNameUsersMeSetDisplayNamePostResponseError = (setDisplayNameUsersMeSetDisplayNamePostResponse422) & {
+  headers: Headers;
+};
+
+export type setDisplayNameUsersMeSetDisplayNamePostResponse = (setDisplayNameUsersMeSetDisplayNamePostResponseSuccess | setDisplayNameUsersMeSetDisplayNamePostResponseError)
+
+export const getSetDisplayNameUsersMeSetDisplayNamePostUrl = (params: SetDisplayNameUsersMeSetDisplayNamePostParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/users/me/set_display_name?${stringifiedParams}` : `/users/me/set_display_name`
+}
+
+/**
+ * Set the display name for the current user
+
+Parameters:
+    display_name (str): The display name to set
+
+Returns:
+    MessageResponse: A message indicating that the display name was set
+ * @summary Set Display Name
+ */
+export const setDisplayNameUsersMeSetDisplayNamePost = async (params: SetDisplayNameUsersMeSetDisplayNamePostParams, options?: RequestInit): Promise<setDisplayNameUsersMeSetDisplayNamePostResponse> => {
+
+  return customInstance<setDisplayNameUsersMeSetDisplayNamePostResponse>(getSetDisplayNameUsersMeSetDisplayNamePostUrl(params),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+export type setTeamNumberUsersMeSetTeamNumberPostResponse200 = {
+  data: MessageResponse
+  status: 200
+}
+
+export type setTeamNumberUsersMeSetTeamNumberPostResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type setTeamNumberUsersMeSetTeamNumberPostResponseSuccess = (setTeamNumberUsersMeSetTeamNumberPostResponse200) & {
+  headers: Headers;
+};
+export type setTeamNumberUsersMeSetTeamNumberPostResponseError = (setTeamNumberUsersMeSetTeamNumberPostResponse422) & {
+  headers: Headers;
+};
+
+export type setTeamNumberUsersMeSetTeamNumberPostResponse = (setTeamNumberUsersMeSetTeamNumberPostResponseSuccess | setTeamNumberUsersMeSetTeamNumberPostResponseError)
+
+export const getSetTeamNumberUsersMeSetTeamNumberPostUrl = (params: SetTeamNumberUsersMeSetTeamNumberPostParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/users/me/set_team_number?${stringifiedParams}` : `/users/me/set_team_number`
+}
+
+/**
+ * Set the team number for the current user
+
+Parameters:
+    team_number (int): The team number to set
+
+Returns:
+    MessageResponse: A message indicating that the team number was set
+ * @summary Set Team Number
+ */
+export const setTeamNumberUsersMeSetTeamNumberPost = async (params: SetTeamNumberUsersMeSetTeamNumberPostParams, options?: RequestInit): Promise<setTeamNumberUsersMeSetTeamNumberPostResponse> => {
+
+  return customInstance<setTeamNumberUsersMeSetTeamNumberPostResponse>(getSetTeamNumberUsersMeSetTeamNumberPostUrl(params),
   {
     ...options,
     method: 'POST'

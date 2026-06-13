@@ -59,6 +59,8 @@ export * from './reorderPitFieldsRequest';
 export * from './seasonCreate';
 export * from './seasonResponse';
 export * from './serverStatusResponse';
+export * from './setDisplayNameUsersMeSetDisplayNamePostParams';
+export * from './setTeamNumberUsersMeSetTeamNumberPostParams';
 export * from './signupRequest';
 export * from './submissionResponse';
 export * from './submitPitFieldAnswerRequest';

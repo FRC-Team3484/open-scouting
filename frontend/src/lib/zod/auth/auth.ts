@@ -198,3 +198,39 @@ export const RemoveSuperuserUsersRemoveSuperuserUuidPostResponse = zod.object({
   "message": zod.string()
 })
 
+/**
+ * Set the display name for the current user
+
+Parameters:
+    display_name (str): The display name to set
+
+Returns:
+    MessageResponse: A message indicating that the display name was set
+ * @summary Set Display Name
+ */
+export const SetDisplayNameUsersMeSetDisplayNamePostQueryParams = zod.object({
+  "display_name": zod.string()
+})
+
+export const SetDisplayNameUsersMeSetDisplayNamePostResponse = zod.object({
+  "message": zod.string()
+})
+
+/**
+ * Set the team number for the current user
+
+Parameters:
+    team_number (int): The team number to set
+
+Returns:
+    MessageResponse: A message indicating that the team number was set
+ * @summary Set Team Number
+ */
+export const SetTeamNumberUsersMeSetTeamNumberPostQueryParams = zod.object({
+  "team_number": zod.number()
+})
+
+export const SetTeamNumberUsersMeSetTeamNumberPostResponse = zod.object({
+  "message": zod.string()
+})
+
