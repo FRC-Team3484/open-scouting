@@ -11,7 +11,8 @@ import type {
   MessageResponse,
   SignupRequest,
   UserMeResponse,
-  UserResponse
+  UserResponse,
+  UserSetting
 } from '../model';
 
 import { customInstance } from '.././client';
@@ -298,7 +299,7 @@ export const deleteUserUsersDeleteUuidDelete = async (uuid: string, options?: Re
 
 
 export type getUserSettingsUsersMeGetSettingsGetResponse200 = {
-  data: BaseSettings
+  data: UserSetting[]
   status: 200
 }
 

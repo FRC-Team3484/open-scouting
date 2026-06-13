@@ -30,7 +30,9 @@ export const MeAuthMeGetResponse = zod.object({
   "key": zod.string(),
   "value": zod.union([zod.unknown(),zod.null()]),
   "name": zod.string(),
-  "description": zod.string(),
+  "description": zod.union([zod.string(),zod.null()]),
+  "section": zod.union([zod.string(),zod.null()]),
+  "visible": zod.boolean(),
   "type": zod.enum(['string', 'number', 'boolean', 'json'])
 })),zod.null()])
 })
@@ -127,9 +129,16 @@ Returns:
     BaseSettings: The settings for the current user
  * @summary Get User Settings
  */
-export const GetUserSettingsUsersMeGetSettingsGetResponse = zod.object({
-  "favorite_events": zod.array(zod.string())
+export const GetUserSettingsUsersMeGetSettingsGetResponseItem = zod.object({
+  "key": zod.string(),
+  "value": zod.union([zod.unknown(),zod.null()]),
+  "name": zod.string(),
+  "description": zod.union([zod.string(),zod.null()]),
+  "section": zod.union([zod.string(),zod.null()]),
+  "visible": zod.boolean(),
+  "type": zod.enum(['string', 'number', 'boolean', 'json'])
 })
+export const GetUserSettingsUsersMeGetSettingsGetResponse = zod.array(GetUserSettingsUsersMeGetSettingsGetResponseItem)
 
 /**
  * Update the settings for the current user

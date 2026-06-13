@@ -3,6 +3,7 @@ from sqlite3 import IntegrityError
 from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, status, Request, Response
 from fastapi.security import OAuth2PasswordRequestForm
+from tortoise.exceptions import FieldError
 
 from ..utils import IS_DEV
 
@@ -40,19 +41,6 @@ async def me(
     Returns:
         UserMeResponse: The current user details, and whether they are authenticated or not
     """
-
-    def field_type_to_string(type: str) -> Literal["string", "number", "boolean", "json"]:
-        if type == "CharField":
-            return "string"
-        elif type == "IntField":
-            return "number"
-        elif type == "BooleanField":
-            return "boolean"
-        elif type == "JSONField":
-            return "json"
-        else:
-            return "string"
-        
 
     if identity.user:
         user = UserResponse(
@@ -331,8 +319,8 @@ async def delete_user(uuid: UUID, identity: Identity = Depends(require_user)) ->
         else:
             raise HTTPException(status_code=403, detail="User not authorized to delete this user")
 
-@router.get("/users/me/get_settings", response_model=BaseSettings)
-async def get_user_settings(identity: Identity = Depends(require_user)) -> Settings:
+@router.get("/users/me/get_settings", response_model=list[UserSetting])
+async def get_user_settings(identity: Identity = Depends(require_user)) -> list[UserSetting]:
     """
     Get the settings for the current user
 
@@ -340,10 +328,31 @@ async def get_user_settings(identity: Identity = Depends(require_user)) -> Setti
         BaseSettings: The settings for the current user
     """
     settings: Settings | None = await Settings.get_or_none(user=identity.user)
+    settings_list: list[UserSetting] | None = []        
 
     if not settings:
         settings = await Settings.create(user=identity.user)
-    return settings
+
+    for key, field in Settings._meta.fields_map.items():
+        if key in {"user", "uuid"}:
+            continue
+
+        if key.endswith("_id"):
+            continue
+            
+        settings_list.append(
+            UserSetting(
+                key=key,
+                value=getattr(settings, key),
+                name=field.display_name,
+                description=field.setting_description,
+                section=field.section,
+                visible=field.visible,
+                type=field_type_to_string(field.__class__.__name__),
+            )
+        )
+
+    return settings_list
 
 @router.post("/users/me/update_settings", response_model=BaseSettings)
 async def update_user_settings(data: BaseSettings, identity: Identity = Depends(require_user)) -> Settings:
@@ -361,13 +370,19 @@ async def update_user_settings(data: BaseSettings, identity: Identity = Depends(
     if not settings:
         settings = await Settings.create(user=identity.user)
 
-    for key, value in data.model_dump().items():
-        if hasattr(settings, key):
-            setattr(settings, key, value)
-        else:
-            print(f"Warning: ignoring unknown setting key '{key}'")
+    updates = data.model_dump(exclude_unset=True)
 
-    await settings.save()
+    try:
+        for key, value in updates.items():
+            if hasattr(settings, key):
+                setattr(settings, key, value)
+            else:
+                print(f"Warning: ignoring unknown setting key '{key}'")
+
+        await settings.save()
+    except FieldError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
     return settings
 
 @router.post("/users/set_superuser/{uuid}", response_model=MessageResponse)

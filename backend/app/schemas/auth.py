@@ -1,9 +1,40 @@
 from datetime import datetime
-from typing import Any, Literal
+from typing import Any, Literal, Optional
 from uuid import UUID
 
-from pydantic import BaseModel, EmailStr, model_validator
+from pydantic import BaseModel, EmailStr, create_model, model_validator
+from tortoise import fields
+from ..models import Settings
 
+def build_settings_schema():
+    """
+    Build a Pydantic model from the Settings model fields
+    """
+    model_fields = {}
+
+    for name, field in Settings._meta.fields_map.items():
+        if name in {"uuid", "user"}:
+            continue
+
+        # Map Tortoise field -> Python type
+        if isinstance(field, fields.CharField):
+            field_type = str
+        elif isinstance(field, fields.IntField):
+            field_type = int
+        elif isinstance(field, fields.BooleanField):
+            field_type = bool
+        elif isinstance(field, fields.JSONField):
+            field_type = object  # or list[str], dict, Any, etc.
+        else:
+            field_type = object
+
+        model_fields[name] = (Optional[field_type], None)
+
+    return create_model(
+        "BaseSettings",
+        __base__=BaseModel,
+        **model_fields,
+    )
 
 class SignupRequest(BaseModel):
     username: str
@@ -33,9 +64,7 @@ class UserResponse(BaseModel):
     email_verified: bool
     created_at: datetime
 
-# TODO: Can this take an arbitrary number of settings with any name?
-class BaseSettings(BaseModel):
-    favorite_events: list[str]
+BaseSettings = build_settings_schema()
 
 # Used in /auth/me, to return the user's current settings
 class UserSetting(BaseModel):
