@@ -8,9 +8,9 @@ Props:
     - `children` (`children`) - The child components of the section
 -->
 <script lang="ts">
-	import { fade, scale, slide } from "svelte/transition";
+	import { slide } from "svelte/transition";
 	import type { Snippet } from "svelte";
-	import Separator from "../ui/separator/separator.svelte";
+	import Separator from "../../ui/separator/separator.svelte";
     
 
     interface Props {
@@ -21,7 +21,7 @@ Props:
     let { title, description = "", children }: Props = $props();
 </script>
 
-<div class="flex flex-col gap-2 w-full h-full" transition:slide>
+<div class="flex flex-col gap-2 w-full h-full overflow-y-scroll" transition:slide>
     <p class="text-lg font-bold">{title}</p>
     <p class="text-sm text-muted-foreground">{description}</p>
 
