@@ -95,7 +95,7 @@ async function getUserSetting(key) {
  * @param value The value of the setting
  */
 async function setUserSetting(key, value) {
-    let settings = await getUserSettings();
+    let settings = {};
     settings[key] = value;
     await setUserSettings(settings);
 }
