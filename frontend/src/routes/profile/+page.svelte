@@ -98,8 +98,8 @@ Allows for editing profile details, changing password, and updating settings
 
                         <Separator class="my-2" />
 
-                        <Button variant={section == "profile" ? "outline" : "default"} disabled={section == "profile"} onclick={() => section = "profile"}><UserIcon weight="bold" /> Profile</Button>
-                        <Button variant={section == "settings" ? "outline" : "default"} disabled={section == "settings"} onclick={() => section = "settings"}><GearIcon weight="bold" /> Settings</Button>
+                        <Button variant={section == "profile" ? "default" : "outline"} disabled={section == "profile"} onclick={() => section = "profile"}><UserIcon weight="bold" /> Profile</Button>
+                        <Button variant={section == "settings" ? "default" : "outline"} disabled={section == "settings"} onclick={() => section = "settings"}><GearIcon weight="bold" /> Settings</Button>
                     </div>
                 </Card.Content>
             </Card.Root>

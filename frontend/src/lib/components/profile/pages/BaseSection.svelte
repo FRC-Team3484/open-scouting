@@ -22,8 +22,8 @@ Props:
 </script>
 
 <div class="flex flex-col gap-2 w-full h-full overflow-y-scroll" transition:slide>
-    <p class="text-lg font-bold">{title}</p>
-    <p class="text-sm text-muted-foreground">{description}</p>
+    <p class="text-xl font-bold">{title}</p>
+    <p class="text-md text-muted-foreground">{description}</p>
 
     <Separator class="my-2" />
 

@@ -12,4 +12,4 @@ Props:
     let { name }: Props = $props();
 </script>
 
-<p class="font-bold">{name}</p>
+<p class="font-bold text-lg">{name}</p>

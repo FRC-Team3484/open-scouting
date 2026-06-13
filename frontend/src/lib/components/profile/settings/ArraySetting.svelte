@@ -23,7 +23,6 @@ Props:
     let newValue = $state<string[]>(
         Array.isArray(setting.value) ? [...setting.value] : []
     );
-    $inspect(newValue)
 </script>
 
 <BaseSetting {setting} {newValue} {getNewSettings}>
