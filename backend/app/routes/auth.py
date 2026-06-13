@@ -430,3 +430,45 @@ async def remove_superuser(uuid: UUID, identity: Identity = Depends(require_supe
         user_to_remove_superuser.is_superuser = False
         await user_to_remove_superuser.save()
         return MessageResponse(message="User removed as superuser")
+
+@router.post("/users/me/set_display_name", response_model=MessageResponse)
+async def set_display_name(display_name: str, identity: Identity = Depends(require_user)) -> MessageResponse:
+    """
+    Set the display name for the current user
+
+    Parameters:
+        display_name (str): The display name to set
+
+    Returns:
+        MessageResponse: A message indicating that the display name was set
+    """
+    profile: Profile | None = await Profile.get_or_none(user=identity.user)
+
+    if not profile:
+        profile = await Profile.create(user=identity.user)
+
+    profile.display_name = display_name
+    await profile.save()
+
+    return MessageResponse(message="Display name set")
+
+@router.post("/users/me/set_team_number", response_model=MessageResponse)
+async def set_team_number(team_number: int, identity: Identity = Depends(require_user)) -> MessageResponse:
+    """
+    Set the team number for the current user
+
+    Parameters:
+        team_number (int): The team number to set
+
+    Returns:
+        MessageResponse: A message indicating that the team number was set
+    """
+    profile: Profile | None = await Profile.get_or_none(user=identity.user)
+
+    if not profile:
+        profile = await Profile.create(user=identity.user)
+
+    profile.team_number = team_number
+    await profile.save()
+
+    return MessageResponse(message="Team number set")
