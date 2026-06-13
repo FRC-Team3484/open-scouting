@@ -14,6 +14,7 @@ Props:
 	import NumberSetting from "../settings/NumberSetting.svelte";
 	import BooleanSetting from "../settings/BooleanSetting.svelte";
 	import JSONSetting from "../settings/JSONSetting.svelte";
+	import ArraySetting from "../settings/ArraySetting.svelte";
 
 
     interface Props {
@@ -34,6 +35,8 @@ Props:
                     <NumberSetting {setting} {getNewSettings} />
                 {:else if setting.type == "boolean"}
                     <BooleanSetting {setting} {getNewSettings} />
+                {:else if setting.type == "array"}
+                    <ArraySetting {setting} {getNewSettings} />
                 {:else if setting.type == "json"}
                     <JSONSetting {setting} {getNewSettings} />
                 {:else}

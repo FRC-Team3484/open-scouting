@@ -2,15 +2,13 @@
 @component
 A component for rendering a JSON user setting on the profile page
 
-TODO: Support json and list mode
-
 Props:
     - `setting` (`UserSetting`) - The user setting to render
     - `getNewSettings` (`() => void`) - A function to get the new settings
 -->
 <script lang="ts">
 	import type { UserSetting } from "$lib/api/model";
-	import Input from "$lib/components/ui/input/input.svelte";
+	import { Textarea } from "$lib/components/ui/textarea";
 	import BaseSetting from "./BaseSetting.svelte";
 
 
@@ -20,9 +18,9 @@ Props:
     }
     let { setting, getNewSettings }: Props = $props();
     
-    let newValue = $derived(setting.value);
+    let newValue = $derived(setting.value ?? {});
 </script>
 
-<BaseSetting {setting} newValue={newValue} getNewSettings={getNewSettings}>
-    <Input type="text" name={setting.key} bind:value={newValue} />
+<BaseSetting {setting} newValue={JSON.stringify(newValue)} getNewSettings={getNewSettings}>
+    <Textarea name={setting.key} bind:value={newValue} />
 </BaseSetting>

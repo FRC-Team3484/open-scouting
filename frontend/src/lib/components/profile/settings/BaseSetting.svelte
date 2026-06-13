@@ -52,7 +52,11 @@ Props:
 
             {@render children()}
 
-            <Button class="w-fit" onclick={() => save()} disabled={newValue == setting.value}><CheckIcon weight="bold" /> Save</Button>
+            {#if setting.type == "array" || setting.type == "json"}
+                <Button class="w-fit" onclick={() => save()} disabled={JSON.stringify(newValue) == JSON.stringify(setting.value)}><CheckIcon weight="bold" /> Save</Button>
+            {:else}
+                <Button class="w-fit" onclick={() => save()} disabled={newValue == setting.value}><CheckIcon weight="bold" /> Save</Button>
+            {/if}
         </div>
     </Card.Content>
 </Card.Root>
