@@ -64,6 +64,23 @@ class BooleanSetting(fields.BooleanField[bool]):
 
         super().__init__(*args, **kwargs)
 
+class ArraySetting(fields.JSONField[Any]):
+    def __init__(
+        self, 
+        *args: Any, 
+        display_name: str, 
+        setting_description: str | None, 
+        section: str | None, 
+        visible: bool, 
+        **kwargs: Any
+    ):
+        self.display_name: str = display_name
+        self.setting_description: str | None = setting_description
+        self.section: str | None = section
+        self.visible: bool = visible
+
+        super().__init__(*args, **kwargs)
+
 class JSONSetting(fields.JSONField[Any]):
     def __init__(
         self, 

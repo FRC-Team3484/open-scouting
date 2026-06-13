@@ -19,17 +19,19 @@ router: APIRouter = APIRouter(
     include_in_schema=IS_DEV
 )
 
-def field_type_to_string(type: str) -> Literal["string", "number", "boolean", "json"]:
+def field_type_to_string(type: str) -> Literal["string", "number", "boolean", "array", "json"]:
     if type == "StringSetting":
         return "string"
     elif type == "NumberSetting":
         return "number"
     elif type == "BooleanSetting":
         return "boolean"
+    elif type == "ArraySetting":
+        return "array"
     elif type == "JSONSetting":
         return "json"
     else:
-        return "string"
+        return "json"
 
 @router.get("/auth/me", response_model=UserMeResponse)
 async def me(

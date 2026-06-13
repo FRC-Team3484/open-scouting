@@ -12,5 +12,6 @@ export const UserSettingType = {
   string: 'string',
   number: 'number',
   boolean: 'boolean',
+  array: 'array',
   json: 'json',
 } as const;

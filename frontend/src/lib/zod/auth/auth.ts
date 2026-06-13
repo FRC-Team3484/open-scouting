@@ -33,7 +33,7 @@ export const MeAuthMeGetResponse = zod.object({
   "description": zod.union([zod.string(),zod.null()]),
   "section": zod.union([zod.string(),zod.null()]),
   "visible": zod.boolean(),
-  "type": zod.enum(['string', 'number', 'boolean', 'json'])
+  "type": zod.enum(['string', 'number', 'boolean', 'array', 'json'])
 })),zod.null()])
 })
 
@@ -136,7 +136,7 @@ export const GetUserSettingsUsersMeGetSettingsGetResponseItem = zod.object({
   "description": zod.union([zod.string(),zod.null()]),
   "section": zod.union([zod.string(),zod.null()]),
   "visible": zod.boolean(),
-  "type": zod.enum(['string', 'number', 'boolean', 'json'])
+  "type": zod.enum(['string', 'number', 'boolean', 'array', 'json'])
 })
 export const GetUserSettingsUsersMeGetSettingsGetResponse = zod.array(GetUserSettingsUsersMeGetSettingsGetResponseItem)
 
@@ -151,11 +151,21 @@ Returns:
  * @summary Update User Settings
  */
 export const UpdateUserSettingsUsersMeUpdateSettingsPostBody = zod.object({
-  "favorite_events": zod.array(zod.string())
+  "favorite_events": zod.union([zod.unknown(),zod.null()]).optional(),
+  "test_string_setting": zod.union([zod.string(),zod.null()]).optional(),
+  "test_number_setting": zod.union([zod.number(),zod.null()]).optional(),
+  "test_boolean_setting": zod.union([zod.boolean(),zod.null()]).optional(),
+  "test_array_setting": zod.union([zod.array(zod.unknown()),zod.null()]).optional(),
+  "test_json_setting": zod.union([zod.unknown(),zod.null()]).optional()
 })
 
 export const UpdateUserSettingsUsersMeUpdateSettingsPostResponse = zod.object({
-  "favorite_events": zod.array(zod.string())
+  "favorite_events": zod.union([zod.unknown(),zod.null()]).optional(),
+  "test_string_setting": zod.union([zod.string(),zod.null()]).optional(),
+  "test_number_setting": zod.union([zod.number(),zod.null()]).optional(),
+  "test_boolean_setting": zod.union([zod.boolean(),zod.null()]).optional(),
+  "test_array_setting": zod.union([zod.array(zod.unknown()),zod.null()]).optional(),
+  "test_json_setting": zod.union([zod.unknown(),zod.null()]).optional()
 })
 
 /**

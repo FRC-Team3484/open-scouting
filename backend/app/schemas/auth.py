@@ -3,7 +3,8 @@ from typing import Any, Literal, Optional
 from uuid import UUID
 
 from pydantic import BaseModel, EmailStr, create_model, model_validator
-from tortoise import fields
+
+from ..setting_fields import ArraySetting, BooleanSetting, JSONSetting, NumberSetting, StringSetting
 from ..models import Settings
 
 def build_settings_schema():
@@ -17,13 +18,15 @@ def build_settings_schema():
             continue
 
         # Map Tortoise field -> Python type
-        if isinstance(field, fields.CharField):
+        if isinstance(field, StringSetting):
             field_type = str
-        elif isinstance(field, fields.IntField):
+        elif isinstance(field, NumberSetting):
             field_type = int
-        elif isinstance(field, fields.BooleanField):
+        elif isinstance(field, BooleanSetting):
             field_type = bool
-        elif isinstance(field, fields.JSONField):
+        elif isinstance(field, ArraySetting):
+            field_type = list
+        elif isinstance(field, JSONSetting):
             field_type = object  # or list[str], dict, Any, etc.
         else:
             field_type = object
@@ -74,7 +77,7 @@ class UserSetting(BaseModel):
     description: str | None
     section: str | None
     visible: bool
-    type: Literal["string", "number", "boolean", "json"]
+    type: Literal["string", "number", "boolean", "array", "json"]
 
 class UserMeResponse(BaseModel):
     authenticated: bool
