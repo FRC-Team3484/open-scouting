@@ -7,7 +7,7 @@ Allows for editing profile details, changing password, and updating settings
 	import { onMount } from "svelte";
 	import { goto } from "$app/navigation";
 	import { toast } from "svelte-sonner";
-	import { GearIcon, PencilIcon, SignOutIcon, UserIcon } from "phosphor-svelte";
+	import { GearIcon, SignOutIcon, UserIcon } from "phosphor-svelte";
     
     import * as Card from "$lib/components/ui/card/index.js";
     import Button from "$lib/components/ui/button/button.svelte";
@@ -15,17 +15,48 @@ Allows for editing profile details, changing password, and updating settings
     
     import PageContainer from "$lib/components/layout/PageContainer.svelte";
 	import Logo from "$lib/components/generic/Logo.svelte";
-	import Section from "$lib/components/profile/Section.svelte";
 
-	import { getAuthenticationStatus, getUser, signOut } from "$lib/utils/user";
-	import { type UserResponse } from "$lib/api/model";
-	import Badge from "$lib/components/ui/badge/badge.svelte";
+	import { getAuthenticationStatus, getSettings, getUser, signOut } from "$lib/utils/user";
+	import { type UserResponse, type UserSetting } from "$lib/api/model";
+	import { getUserSettingsUsersMeGetSettingsGet } from "$lib/api/auth/auth";
+	import ProfileSection from "$lib/components/profile/pages/ProfileSection.svelte";
+	import SettingsSection from "$lib/components/profile/pages/SettingsSection.svelte";
 
-    
+
     let section: "profile" | "settings" = $state("profile");
 
     let user: UserResponse | null = getUser();
     let authenticated: boolean = getAuthenticationStatus();
+    let settings: {[key: string]: UserSetting[]} = $state(parseSettings(getSettings()));
+
+    /**
+     * Parses the settings into sections
+     * 
+     * @param settings The settings to parse
+     */
+    function parseSettings(settings: UserSetting[]): Record<string, UserSetting[]> {
+        return settings.reduce((acc, setting) => {
+            const section = setting.section ?? "Uncategorized";
+
+            if (!acc[section]) {
+                acc[section] = [];
+            }
+
+            acc[section].push(setting);
+            return acc;
+        }, {} as Record<string, UserSetting[]>);
+    }
+
+    /**
+     * Gets the current settings from the server
+     */
+    async function getNewSettings() {
+        await getUserSettingsUsersMeGetSettingsGet().then((response) => {
+            if (response.status === 200) {
+                settings = parseSettings(response.data);
+            }
+        })
+    }
 
     onMount(() => {
         if (!authenticated) {
@@ -76,43 +107,11 @@ Allows for editing profile details, changing password, and updating settings
 
         <Card.Root class="flex-2 items-start">
             <Card.Content class="text-left w-full h-full">
-                {#if section == "profile"}
-                    <Section title="Profile" description="Your profile details">
-                        <div class="flex flex-col gap-2">
-                            <Card.Root>
-                                <Card.Content>
-                                    <div class="flex flex-row gap-2">
-                                        <div class="group w-16 h-16 bg-muted rounded-full flex items-center justify-center relative overflow-hidden active:scale-90 transition-transform">
-                                            <p class="text-2xl text-white select-none">{user?.username.charAt(0)}</p>
-                                            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity z-10"></div>
-                                            <PencilIcon weight="bold" class="absolute inset-0 m-auto text-white opacity-0 group-hover:opacity-100 transition-opacity z-20 text-3xl" />
-                                        </div>
-
-
-                                        <div class="flex flex-col gap-1 items-start">
-                                            <div class="flex flex-row gap-2">
-                                                <p class="font-bold text-lg">{user?.username}</p>
-
-                                                {#if user?.is_superuser}
-                                                    <Badge class="bg-green-400/50">Superuser</Badge>
-                                                {/if}
-                                            </div>
-                                            <p class="text-md text-muted-foreground">{user?.email}</p>
-                                            <p class="text-md text-muted-foreground">Team: {user?.team_number}</p>
-                                        </div>
-                                    </div>
-                                </Card.Content>
-                            </Card.Root>
-                        </div>
-                    </Section>
+                {#if section == "profile" && user}
+                    <ProfileSection user={user} />
 
                 {:else if section == "settings"}
-                    <Section title="Settings" description="Your settings">
-                        <div class="flex flex-col gap-2">
-                            <p>Theme</p>
-                            <p>Language</p>
-                        </div>
-                    </Section>
+                    <SettingsSection settings={settings} getNewSettings={getNewSettings} />
                 {/if}
             </Card.Content>
         </Card.Root>
