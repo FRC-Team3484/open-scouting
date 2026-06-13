@@ -7,11 +7,12 @@ Allows for editing profile details, changing password, and updating settings
 	import { onMount } from "svelte";
 	import { goto } from "$app/navigation";
 	import { toast } from "svelte-sonner";
-	import { GearIcon, SignOutIcon, UserIcon } from "phosphor-svelte";
+	import { GearIcon, HamburgerIcon, ListIcon, SignOutIcon, UserIcon } from "phosphor-svelte";
     
     import * as Card from "$lib/components/ui/card/index.js";
     import Button from "$lib/components/ui/button/button.svelte";
 	import Separator from "$lib/components/ui/separator/separator.svelte";
+    import * as Sheet from "$lib/components/ui/sheet/index.js";
     
     import PageContainer from "$lib/components/layout/PageContainer.svelte";
 	import Logo from "$lib/components/generic/Logo.svelte";
@@ -81,41 +82,55 @@ Allows for editing profile details, changing password, and updating settings
     })
 </script>
 
+{#snippet sidebarContents()}
+    <div class="flex flex-col gap-2">
+        <Card.Root class="p-2">
+            <Card.Content class="p-2">
+                <div class="flex flex-row gap-2 items-center">
+                    <div class="w-8 h-8 bg-muted rounded-full flex items-center justify-center">{user?.username.charAt(0)}</div>
+
+                    <div class="flex flex-col gap-1 items-start">
+                        <p class="font-bold">{user?.username}</p>
+                        <p class="text-sm text-muted-foreground">{user?.email}</p>
+                    </div>
+                </div>
+            </Card.Content>
+        </Card.Root>
+
+        <Button variant="outline" onclick={() => signOut()}><SignOutIcon weight="bold" /> Sign Out</Button>
+
+        <Separator class="my-2" />
+
+        <Button variant={section == "profile" ? "default" : "outline"} disabled={section == "profile"} onclick={() => section = "profile"}><UserIcon weight="bold" /> Profile</Button>
+        <Button variant={section == "settings" ? "default" : "outline"} disabled={section == "settings"} onclick={() => section = "settings"}><GearIcon weight="bold" /> Settings</Button>
+    </div>
+{/snippet}
+
 <PageContainer>
-    <div class="flex flex-row gap-4 h-[75vh] w-[75vw]">
+    <div class="flex flex-col lg:flex-row gap-4 h-auto lg:h-[75vh] w-[90vw] lg:w-[75vw]">
         <div class="flex flex-col gap-4">
             <Card.Root>
                 <Card.Content>
                     <div class="flex flex-row gap-4 items-center">
+                        <Sheet.Root>
+                            <Sheet.Trigger class="flex lg:hidden">
+                                <Button variant="outline" size="icon-sm"><ListIcon weight="bold" /></Button>
+                            </Sheet.Trigger>
+
+                            <Sheet.Content side="left" class="p-4 pt-12">
+                                {@render sidebarContents()}
+                            </Sheet.Content>
+                        </Sheet.Root>
+
                         <Logo text={false} style="tiny" href="/" />
-                        <p class="font-bold text-lg text-left">Profile <br>Management</p>
+                        <p class="font-bold text-md sm:text-lg text-left">Profile <br>Management</p>
                     </div>
                 </Card.Content>
             </Card.Root>
 
-            <Card.Root class="flex-2">
+            <Card.Root class="flex-2 hidden lg:flex">
                 <Card.Content>
-                    <div class="flex flex-col gap-2">
-                        <Card.Root class="p-2">
-                            <Card.Content class="p-2">
-                                <div class="flex flex-row gap-2 items-center">
-                                    <div class="w-8 h-8 bg-muted rounded-full flex items-center justify-center">{user?.username.charAt(0)}</div>
-
-                                    <div class="flex flex-col gap-1 items-start">
-                                        <p class="font-bold">{user?.username}</p>
-                                        <p class="text-sm text-muted-foreground">{user?.email}</p>
-                                    </div>
-                                </div>
-                            </Card.Content>
-                        </Card.Root>
-
-                        <Button variant="outline" onclick={() => signOut()}><SignOutIcon weight="bold" /> Sign Out</Button>
-
-                        <Separator class="my-2" />
-
-                        <Button variant={section == "profile" ? "default" : "outline"} disabled={section == "profile"} onclick={() => section = "profile"}><UserIcon weight="bold" /> Profile</Button>
-                        <Button variant={section == "settings" ? "default" : "outline"} disabled={section == "settings"} onclick={() => section = "settings"}><GearIcon weight="bold" /> Settings</Button>
-                    </div>
+                    {@render sidebarContents()}
                 </Card.Content>
             </Card.Root>
         </div>

@@ -59,16 +59,15 @@ Props:
     <div class="flex flex-col gap-2">
         <Card.Root>
             <Card.Content>
-                <div class="flex flex-row gap-2">
+                <div class="flex flex-col md:flex-row gap-2">
                     <div class="group w-16 h-16 bg-muted rounded-full flex items-center justify-center relative overflow-hidden active:scale-90 transition-transform">
                         <p class="text-2xl text-white select-none">{user?.username.charAt(0)}</p>
                         <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity z-10"></div>
                         <PencilIcon weight="bold" class="absolute inset-0 m-auto text-white opacity-0 group-hover:opacity-100 transition-opacity z-20 text-3xl" />
                     </div>
 
-
                     <div class="flex flex-col gap-1 items-start">
-                        <div class="flex flex-row gap-2">
+                        <div class="flex flex-row gap-2 flex-wrap break-words">
                             <p class="font-bold text-lg">{user?.display_name}</p>
 
                             {#if user?.display_name != user?.username}
@@ -121,7 +120,7 @@ Props:
                         </Alert.Description>
                     </Alert.Root>
 
-                    <div class="flex flex-row gap-2">
+                    <div class="flex flex-col md:flex-row gap-2">
                         <Input placeholder="Email" type="email" bind:value={email} />
                         <Button class="w-fit" disabled={email == user?.email}><CheckCircleIcon weight="bold" /> Save and Verify</Button>
                     </div>
@@ -134,7 +133,7 @@ Props:
                         </Alert.Description>
                     </Alert.Root>
 
-                    <div class="flex flex-row gap-2">
+                    <div class="flex flex-col md:flex-row gap-2">
                         <Input placeholder="Email" type="email" bind:value={email} />
                         <Button class="w-fit" disabled={email == user?.email}><CheckCircleIcon weight="bold" /> Save</Button>
                     </div>
@@ -146,7 +145,7 @@ Props:
             <Card.Content class="flex flex-col gap-2">
                 <p class="font-bold">Display Name</p>
 
-                <div class="flex flex-row gap-2">
+                <div class="flex flex-col md:flex-row gap-2">
                     <Input placeholder="Display Name" bind:value={displayName} />
                     <Button class="w-fit" disabled={displayName == user?.display_name} onclick={setDisplayName}><CheckCircleIcon weight="bold" /> Save</Button>
                 </div>
@@ -157,7 +156,7 @@ Props:
             <Card.Content class="flex flex-col gap-2">
                 <p class="font-bold">Team Number</p>
 
-                <div class="flex flex-row gap-2">
+                <div class="flex flex-col md:flex-row gap-2">
                     <Input placeholder="Team Number" bind:value={teamNumber} />
                     <Button class="w-fit" disabled={teamNumber == user?.team_number} onclick={setTeamNumber}><CheckCircleIcon weight="bold" /> Save</Button>
                 </div>
