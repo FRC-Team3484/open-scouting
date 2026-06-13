@@ -18,14 +18,14 @@ Allows for editing profile details, changing password, and updating settings
 
 	import { getAuthenticationStatus, getSettings, getUser, signOut } from "$lib/utils/user";
 	import { type UserResponse, type UserSetting } from "$lib/api/model";
-	import { getUserSettingsUsersMeGetSettingsGet } from "$lib/api/auth/auth";
+	import { getUserSettingsUsersMeGetSettingsGet, meAuthMeGet } from "$lib/api/auth/auth";
 	import ProfileSection from "$lib/components/profile/pages/ProfileSection.svelte";
 	import SettingsSection from "$lib/components/profile/pages/SettingsSection.svelte";
 
 
     let section: "profile" | "settings" = $state("profile");
 
-    let user: UserResponse | null = getUser();
+    let user: UserResponse | null = $state(getUser());
     let authenticated: boolean = getAuthenticationStatus();
     let settings: {[key: string]: UserSetting[]} = $state(parseSettings(getSettings()));
 
@@ -54,6 +54,21 @@ Allows for editing profile details, changing password, and updating settings
         await getUserSettingsUsersMeGetSettingsGet().then((response) => {
             if (response.status === 200) {
                 settings = parseSettings(response.data);
+            } else {
+                toast.error("Failed to get updated settings");
+            }
+        })
+    }
+
+    /**
+     * Gets the current user data from the server
+     */
+    async function getNewUserData() {
+        await meAuthMeGet().then((response) => {
+            if (response.status === 200) {
+                user = response.data.user;
+            } else {
+                toast.error("Failed to get updated user data");
             }
         })
     }
@@ -108,7 +123,7 @@ Allows for editing profile details, changing password, and updating settings
         <Card.Root class="flex-2 items-start">
             <Card.Content class="text-left w-full h-full">
                 {#if section == "profile" && user}
-                    <ProfileSection user={user} />
+                    <ProfileSection user={user} getNewUserData={getNewUserData} />
 
                 {:else if section == "settings"}
                     <SettingsSection settings={settings} getNewSettings={getNewSettings} />
