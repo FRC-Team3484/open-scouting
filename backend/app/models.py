@@ -99,7 +99,7 @@ class Settings(Model):
     user = fields.ForeignKeyField("models.User", related_name="settings")
 
     # Settings:
-    favorite_events = ArraySetting(null=True, default=list, display_name="Favorite Events", setting_description="A list of favorite events for the user", section="General", visible=True)
+    favorite_events = ArraySetting(null=True, default=list, display_name="Favorite Events", setting_description="Your favorite events, which appear at the top of the event list", section="General", visible=True)
 
 class Session(Model):
     """
