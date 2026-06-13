@@ -151,21 +151,11 @@ Returns:
  * @summary Update User Settings
  */
 export const UpdateUserSettingsUsersMeUpdateSettingsPostBody = zod.object({
-  "favorite_events": zod.union([zod.unknown(),zod.null()]).optional(),
-  "test_string_setting": zod.union([zod.string(),zod.null()]).optional(),
-  "test_number_setting": zod.union([zod.number(),zod.null()]).optional(),
-  "test_boolean_setting": zod.union([zod.boolean(),zod.null()]).optional(),
-  "test_array_setting": zod.union([zod.array(zod.unknown()),zod.null()]).optional(),
-  "test_json_setting": zod.union([zod.unknown(),zod.null()]).optional()
+  "favorite_events": zod.union([zod.array(zod.unknown()),zod.null()]).optional()
 })
 
 export const UpdateUserSettingsUsersMeUpdateSettingsPostResponse = zod.object({
-  "favorite_events": zod.union([zod.unknown(),zod.null()]).optional(),
-  "test_string_setting": zod.union([zod.string(),zod.null()]).optional(),
-  "test_number_setting": zod.union([zod.number(),zod.null()]).optional(),
-  "test_boolean_setting": zod.union([zod.boolean(),zod.null()]).optional(),
-  "test_array_setting": zod.union([zod.array(zod.unknown()),zod.null()]).optional(),
-  "test_json_setting": zod.union([zod.unknown(),zod.null()]).optional()
+  "favorite_events": zod.union([zod.array(zod.unknown()),zod.null()]).optional()
 })
 
 /**

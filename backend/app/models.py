@@ -3,7 +3,7 @@ from typing import Any, override
 from tortoise import fields
 from tortoise.models import Model
 
-from .setting_fields import BooleanSetting, JSONSetting, NumberSetting, StringSetting
+from .setting_fields import ArraySetting, BooleanSetting, JSONSetting, NumberSetting, StringSetting
 
 # Authentication
 class User(Model):
@@ -99,12 +99,7 @@ class Settings(Model):
     user = fields.ForeignKeyField("models.User", related_name="settings")
 
     # Settings:
-    favorite_events = JSONSetting(null=True, default=list, display_name="Favorite Events", setting_description="A list of favorite events for the user", section="General", visible=True)
-
-    test_string_setting = StringSetting(max_length=255, null=True, default="test", display_name="Test String Setting", setting_description="A test string setting", section="General", visible=True)
-    test_number_setting = NumberSetting(null=True, default=0, display_name="Test Number Setting", setting_description="A test number setting", section="General", visible=True)
-    test_boolean_setting = BooleanSetting(null=True, default=False, display_name="Test Boolean Setting", setting_description="A test boolean setting", section="General", visible=True)
-    test_json_setting = JSONSetting(null=True, default=["one", "two", "three"], display_name="Test JSON Setting", setting_description="A test JSON setting", section="General", visible=True)
+    favorite_events = ArraySetting(null=True, default=list, display_name="Favorite Events", setting_description="A list of favorite events for the user", section="General", visible=True)
 
 class Session(Model):
     """
