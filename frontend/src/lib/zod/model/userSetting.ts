@@ -10,6 +10,8 @@ export interface UserSetting {
   key: string;
   value: unknown | null;
   name: string;
-  description: string;
+  description: string | null;
+  section: string | null;
+  visible: boolean;
   type: UserSettingType;
 }

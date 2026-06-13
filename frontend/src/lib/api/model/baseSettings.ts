@@ -6,5 +6,9 @@
  */
 
 export interface BaseSettings {
-  favorite_events: string[];
+  favorite_events?: unknown | null;
+  test_string_setting?: string | null;
+  test_number_setting?: number | null;
+  test_boolean_setting?: boolean | null;
+  test_json_setting?: unknown | null;
 }

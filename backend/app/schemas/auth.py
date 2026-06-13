@@ -41,7 +41,10 @@ class BaseSettings(BaseModel):
 class UserSetting(BaseModel):
     key: str
     value: Any | None
-    description: str
+    name: str
+    description: str | None
+    section: str | None
+    visible: bool
     type: Literal["string", "number", "boolean", "json"]
 
 class UserMeResponse(BaseModel):

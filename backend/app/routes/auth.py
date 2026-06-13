@@ -18,6 +18,18 @@ router: APIRouter = APIRouter(
     include_in_schema=IS_DEV
 )
 
+def field_type_to_string(type: str) -> Literal["string", "number", "boolean", "json"]:
+    if type == "StringSetting":
+        return "string"
+    elif type == "NumberSetting":
+        return "number"
+    elif type == "BooleanSetting":
+        return "boolean"
+    elif type == "JSONSetting":
+        return "json"
+    else:
+        return "string"
+
 @router.get("/auth/me", response_model=UserMeResponse)
 async def me(
     identity: Identity = Depends(get_identity)
@@ -69,7 +81,10 @@ async def me(
                     UserSetting(
                         key=key,
                         value=getattr(settings, key),
-                        description=getattr(field, "description", None),
+                        name=field.display_name,
+                        description=field.setting_description,
+                        section=field.section,
+                        visible=field.visible,
                         type=field_type_to_string(field.__class__.__name__),
                     )
                 )
