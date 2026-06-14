@@ -9,7 +9,7 @@ Props:
 <script lang="ts">
 	import { PUBLIC_EMAIL_ENABLED } from "$env/static/public";
 	import { toast } from "svelte-sonner";
-	import { ArrowRightIcon, CheckCircleIcon, InfoIcon, PencilIcon, WarningIcon } from "phosphor-svelte";
+	import { ArrowRightIcon, CheckCircleIcon, CircleNotchIcon, InfoIcon, PencilIcon, UploadSimpleIcon, WarningIcon } from "phosphor-svelte";
 
     import * as Card from "$lib/components/ui/card/index.js";
 	import { Badge } from "$lib/components/ui/badge";
@@ -21,6 +21,8 @@ Props:
 	import Section from "./BaseSection.svelte";
 	import type { UserResponse } from "$lib/api/model";
 	import { setDisplayNameUsersMeSetDisplayNamePost, setTeamNumberUsersMeSetTeamNumberPost } from "$lib/api/auth/auth";
+	import BaseDialog from "$lib/components/generic/dialogs/BaseDialog.svelte";
+	import { uploadProfilePictureUploadProfilePictureMePost } from "$lib/api/uploads/uploads";
 
 
     interface Props {
@@ -32,6 +34,10 @@ Props:
     let email = $state(user?.email);
     let displayName = $state(user?.display_name);
     let teamNumber = $state(user?.team_number);
+
+    let uploadProfilePictureOpen = $state(false);
+    let files: FileList | undefined = $state(undefined);
+    let uploadProfilePictureState: "idle" | "uploading" = $state("idle");
 
     async function setDisplayName() {
         await setDisplayNameUsersMeSetDisplayNamePost({ display_name: displayName }).then((response) => {
@@ -54,20 +60,45 @@ Props:
             }
         });
     }
+
+    async function uploadProfilePicture() {
+        if (!files || files.length === 0) return;
+        if (!files[0]) return;
+
+        uploadProfilePictureState = "uploading";
+
+        await uploadProfilePictureUploadProfilePictureMePost({ file: files[0]}).then((response) => {
+            if (response.status === 200) {
+                toast.success("Profile picture updated");
+                uploadProfilePictureOpen = false;
+            } else {
+                toast.error("Failed to update profile picture");
+                uploadProfilePictureOpen = false;
+                uploadProfilePictureState = "idle";
+            }
+        }).catch((error) => {
+            console.error(error);
+            toast.error("Failed to update profile picture");
+            uploadProfilePictureOpen = false;
+            uploadProfilePictureState = "idle";
+        });
+
+        uploadProfilePictureState = "idle";
+    }
 </script>
 <Section title="Profile" description="Your profile details">
     <div class="flex flex-col gap-2">
         <Card.Root>
             <Card.Content>
                 <div class="flex flex-col md:flex-row gap-2">
-                    <div class="group w-16 h-16 bg-muted rounded-full flex items-center justify-center relative overflow-hidden active:scale-90 transition-transform">
+                    <button class="group w-16 h-16 bg-muted rounded-full flex items-center justify-center relative overflow-hidden active:scale-90 transition-transform" onclick={() => {uploadProfilePictureOpen = true}}>
                         <p class="text-2xl text-white select-none">{user?.username.charAt(0)}</p>
                         <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity z-10"></div>
                         <PencilIcon weight="bold" class="absolute inset-0 m-auto text-white opacity-0 group-hover:opacity-100 transition-opacity z-20 text-3xl" />
-                    </div>
+                    </button>
 
                     <div class="flex flex-col gap-1 items-start">
-                        <div class="flex flex-row gap-2 flex-wrap break-words">
+                        <div class="flex flex-row gap-2 flex-wrap">
                             <p class="font-bold text-lg">{user?.display_name}</p>
 
                             {#if user?.display_name != user?.username}
@@ -81,6 +112,8 @@ Props:
                         
                         <p class="text-md text-muted-foreground">{user?.email}</p>
                         <p class="text-md text-muted-foreground">Team: {user?.team_number}</p>
+
+                        <p class="hidden pointer-coarse:block text-xs text-muted-foreground mt-2 wrap-break-word">Tap the profile picture to edit</p>
                     </div>
                 </div>
             </Card.Content>
@@ -164,3 +197,22 @@ Props:
         </Card.Root>
     </div>
 </Section>
+
+<BaseDialog title="Upload Profile Picture" description="Add or change your profile picture." bind:open={uploadProfilePictureOpen}>
+    <div class="flex flex-row gap-2 items-center mt-4">
+        <Input type="file" accept="image/*" bind:files />
+        <Button onclick={uploadProfilePicture} disabled={files == null || uploadProfilePictureState == "uploading"}>
+            {#if uploadProfilePictureState == "idle"}
+                <UploadSimpleIcon weight="bold" />
+                Upload
+            {:else if uploadProfilePictureState == "uploading"}
+                <CircleNotchIcon class="animate-spin" weight="bold" />
+                Uploading...
+            {/if}
+        </Button>
+    </div>
+
+    <p class="text-sm mt-4">It may take a moment for the image to appear across the site after uploading</p>
+    <p class="text-sm text-muted-foreground">10MB max, will be downsized to 256x256. Square image recommended.</p>
+    <p class="text-sm text-muted-foreground mb-4">JPEG, PNG, WEBP, HEIC, or HEIF are supported</p>
+</BaseDialog>
