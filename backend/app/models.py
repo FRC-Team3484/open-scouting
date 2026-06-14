@@ -44,6 +44,7 @@ class Profile(Model):
     user = fields.ForeignKeyField("models.User", related_name="profiles")
     display_name = fields.CharField(max_length=255)
     team_number = fields.IntField(null=True)
+    profile_picture_url = fields.CharField(max_length=255, null=True, default=None)
     created_at = fields.DatetimeField(auto_now_add=True, null=True)
 
     @override
