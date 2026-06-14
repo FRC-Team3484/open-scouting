@@ -17,6 +17,7 @@ Props:
 	import Separator from "$lib/components/ui/separator/separator.svelte";
 	import Input from "$lib/components/ui/input/input.svelte";
 	import Button from "$lib/components/ui/button/button.svelte";
+    import * as Avatar from "$lib/components/ui/avatar/index.js";
 
 	import Section from "./BaseSection.svelte";
 	import type { UserResponse } from "$lib/api/model";
@@ -96,16 +97,18 @@ Props:
         uploadProfilePictureState = "idle";
     }
 </script>
+
 <Section title="Profile" description="Your profile details">
     <div class="flex flex-col gap-2">
         <Card.Root>
             <Card.Content>
                 <div class="flex flex-col md:flex-row gap-2">
-                    <button class="group w-16 h-16 bg-muted rounded-full flex items-center justify-center relative overflow-hidden active:scale-90 transition-transform" onclick={() => {uploadProfilePictureOpen = true}}>
-                        <p class="text-2xl text-white select-none">{user?.username.charAt(0)}</p>
+                    <Avatar.Root class="group w-16 h-16 bg-muted rounded-full flex items-center justify-center relative overflow-hidden active:scale-90 transition-transform" onclick={() => {uploadProfilePictureOpen = true}}>
+                        <Avatar.Image src={user?.profile_picture_url} alt={user?.username} />
+                        <Avatar.Fallback class="text-2xl text-white select-none">{user?.username.charAt(0)}</Avatar.Fallback>
                         <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity z-10"></div>
                         <PencilIcon weight="bold" class="absolute inset-0 m-auto text-white opacity-0 group-hover:opacity-100 transition-opacity z-20 text-3xl" />
-                    </button>
+                    </Avatar.Root>
 
                     <div class="flex flex-col gap-1 items-start">
                         <div class="flex flex-row gap-2 flex-wrap">
