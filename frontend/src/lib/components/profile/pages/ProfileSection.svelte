@@ -39,6 +39,9 @@ Props:
     let files: FileList | undefined = $state(undefined);
     let uploadProfilePictureState: "idle" | "uploading" = $state("idle");
 
+    /**
+     * Set the user's display name on the server
+     */
     async function setDisplayName() {
         await setDisplayNameUsersMeSetDisplayNamePost({ display_name: displayName }).then((response) => {
             if (response.status === 200) {
@@ -50,6 +53,9 @@ Props:
         });
     }
 
+    /**
+     * Set the user's team number on the server
+     */
     async function setTeamNumber() {
         await setTeamNumberUsersMeSetTeamNumberPost({ team_number: teamNumber }).then((response) => {
             if (response.status === 200) {
@@ -61,6 +67,9 @@ Props:
         });
     }
 
+    /**
+     * Upload the user's profile picture to the server
+     */
     async function uploadProfilePicture() {
         if (!files || files.length === 0) return;
         if (!files[0]) return;
@@ -71,6 +80,7 @@ Props:
             if (response.status === 200) {
                 toast.success("Profile picture updated");
                 uploadProfilePictureOpen = false;
+                getNewUserData();
             } else {
                 toast.error("Failed to update profile picture");
                 uploadProfilePictureOpen = false;

@@ -7,12 +7,13 @@ Allows for editing profile details, changing password, and updating settings
 	import { onMount } from "svelte";
 	import { goto } from "$app/navigation";
 	import { toast } from "svelte-sonner";
-	import { GearIcon, HamburgerIcon, ListIcon, SignOutIcon, UserIcon } from "phosphor-svelte";
+	import { GearIcon, ListIcon, SignOutIcon, UserIcon } from "phosphor-svelte";
     
     import * as Card from "$lib/components/ui/card/index.js";
     import Button from "$lib/components/ui/button/button.svelte";
 	import Separator from "$lib/components/ui/separator/separator.svelte";
     import * as Sheet from "$lib/components/ui/sheet/index.js";
+    import * as Avatar from "$lib/components/ui/avatar/index.js";
     
     import PageContainer from "$lib/components/layout/PageContainer.svelte";
 	import Logo from "$lib/components/generic/Logo.svelte";
@@ -87,7 +88,10 @@ Allows for editing profile details, changing password, and updating settings
         <Card.Root class="p-2">
             <Card.Content class="p-2">
                 <div class="flex flex-row gap-2 items-center">
-                    <div class="w-8 h-8 bg-muted rounded-full flex items-center justify-center">{user?.username.charAt(0)}</div>
+                    <Avatar.Root>
+                        <Avatar.Image src={user?.profile_picture_url} alt={user?.username} />
+                        <Avatar.Fallback>{user?.username.substring(0, 1)}</Avatar.Fallback>
+                    </Avatar.Root>
 
                     <div class="flex flex-col gap-1 items-start">
                         <p class="font-bold">{user?.username}</p>
