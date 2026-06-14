@@ -20,3 +20,17 @@ export const UploadImageUploadImagePostBody = zod.object({
 
 export const UploadImageUploadImagePostResponse = zod.unknown()
 
+/**
+ * Given the uploaded file, store it on the server
+
+Use the generated URL to assign the image to the user's profile
+
+Return the relevant image information
+ * @summary Upload Profile Picture
+ */
+export const UploadProfilePictureUploadProfilePictureMePostBody = zod.object({
+  "file": zod.instanceof(File)
+})
+
+export const UploadProfilePictureUploadProfilePictureMePostResponse = zod.unknown()
+

@@ -10,6 +10,7 @@ export * from './adminPitResponse';
 export * from './baseSettings';
 export * from './bodyLoginAuthLoginPost';
 export * from './bodyUploadImageUploadImagePost';
+export * from './bodyUploadProfilePictureUploadProfilePictureMePost';
 export * from './customEventRequest';
 export * from './dataCapabilityStatEntry';
 export * from './dataFiltersEvent';

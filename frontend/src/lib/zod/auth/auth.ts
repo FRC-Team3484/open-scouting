@@ -21,9 +21,10 @@ export const MeAuthMeGetResponse = zod.object({
   "username": zod.string(),
   "email": zod.string().email(),
   "is_superuser": zod.boolean(),
-  "display_name": zod.string(),
+  "display_name": zod.union([zod.string(),zod.null()]),
   "team_number": zod.number(),
   "email_verified": zod.boolean(),
+  "profile_picture_url": zod.union([zod.string(),zod.null()]),
   "created_at": zod.string().datetime({"offset":true})
 }),zod.null()]),
   "settings": zod.union([zod.array(zod.object({
@@ -95,9 +96,10 @@ export const GetUsersUsersGetResponseItem = zod.object({
   "username": zod.string(),
   "email": zod.string().email(),
   "is_superuser": zod.boolean(),
-  "display_name": zod.string(),
+  "display_name": zod.union([zod.string(),zod.null()]),
   "team_number": zod.number(),
   "email_verified": zod.boolean(),
+  "profile_picture_url": zod.union([zod.string(),zod.null()]),
   "created_at": zod.string().datetime({"offset":true})
 })
 export const GetUsersUsersGetResponse = zod.array(GetUsersUsersGetResponseItem)
