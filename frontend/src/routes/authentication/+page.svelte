@@ -15,6 +15,7 @@ Allows for the user to sign into their account, or create a new account.
 	import PageContainer from "$lib/components/layout/PageContainer.svelte";
 	import SignUpForm from "$lib/components/auth/SignUpForm.svelte";
 	import SignInForm from "$lib/components/auth/SignInForm.svelte";
+	import Authentication from "$lib/components/generic/authentication/Authentication.svelte";
 
 
     let page: "signin" | "signup" = "signin";
@@ -57,4 +58,6 @@ Allows for the user to sign into their account, or create a new account.
             </Card.Root>
         {/if}
     </div>
+
+    <Authentication mode="create_account" />
 </PageContainer>
