@@ -62,9 +62,10 @@ class UserResponse(BaseModel):
     username: str
     email: EmailStr
     is_superuser: bool
-    display_name: str
+    display_name: str | None
     team_number: int
     email_verified: bool
+    profile_picture_url: str | None
     created_at: datetime
 
 BaseSettings = build_settings_schema()

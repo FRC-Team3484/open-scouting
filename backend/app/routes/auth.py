@@ -53,6 +53,7 @@ async def me(
             display_name=identity.profile.display_name,
             team_number=identity.profile.team_number,
             email_verified=identity.user.email_verified,
+            profile_picture_url=identity.profile.profile_picture_url,
             created_at=identity.user.created_at
         )
 
@@ -276,6 +277,7 @@ async def get_users(identity: Identity = Depends(require_superuser)) -> list[Use
                     display_name=profile.display_name,
                     team_number=profile.team_number,
                     email_verified=user.email_verified,
+                    profile_picture_url=profile.profile_picture_url,
                     created_at=user.created_at
                 )
             )
@@ -287,9 +289,10 @@ async def get_users(identity: Identity = Depends(require_superuser)) -> list[Use
                     username=user.username,
                     email=user.email,
                     is_superuser=user.is_superuser,
-                    display_name="",
+                    display_name=None,
                     team_number=0,
                     email_verified=user.email_verified,
+                    profile_picture_url=None,
                     created_at=user.created_at
                 )
             )
