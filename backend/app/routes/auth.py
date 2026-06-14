@@ -4,6 +4,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, status, Request, Response
 from fastapi.security import OAuth2PasswordRequestForm
 from tortoise.exceptions import FieldError
+from tortoise.expressions import Q
 
 from ..utils import IS_DEV
 
@@ -103,7 +104,11 @@ async def login(
         MessageResponse: A message indicating that the user has been logged in
     """
     user = await User.get_or_none(
-        username=form_data.username
+        Q(
+            username=form_data.username,
+            email=form_data.username,
+            join_type=Q.OR
+        )
     )
 
     if not user:
