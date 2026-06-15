@@ -14,7 +14,7 @@ Then show the user the `SignInConfirmation` component.
 -->
 <script lang="ts">
 	import { slide } from "svelte/transition";
-	import { ArrowRightIcon, CircleNotchIcon, EnvelopeIcon, WarningIcon } from "phosphor-svelte";
+	import { ArrowRightIcon, CircleNotchIcon, EnvelopeIcon, KeyIcon, UserCircleIcon, WarningIcon } from "phosphor-svelte";
 
     import * as Alert from "$lib/components/ui/alert/index";
 	import Button from "$lib/components/ui/button/button.svelte";
@@ -22,6 +22,8 @@ Then show the user the `SignInConfirmation` component.
 
 	import EmailVerification from "./EmailVerification.svelte";
 	import { checkUniqueUsernameAuthCheckUniqueUsernameGet } from "$lib/api/auth/auth";
+	import Switch from "$lib/components/ui/switch/switch.svelte";
+	import Label from "$lib/components/ui/label/label.svelte";
 
 
     let page: "username" | "verify" | "password" | "profile" | "passkey" | "success" = $state("username");
@@ -31,6 +33,11 @@ Then show the user the `SignInConfirmation` component.
     let username: string = $state("");
     let email: string = $state("");
     let emailVerified: boolean = $state(false);
+    let password: string = $state("");
+    let confirmPassword: string = $state("");
+    let showPassword: boolean = $state(false);
+    let displayName: string = $state("");
+    let teamNumber: number = $state(0);
 
     let checkingUsername: boolean = $state(false);
     let message: string = $state("");
@@ -90,8 +97,61 @@ Then show the user the `SignInConfirmation` component.
     <EmailVerification email={email} bind:verified={emailVerified} />
 
 {:else if page == "password"}
+    <div class="flex flex-col gap-2 text-left" transition:slide>
+        <div class="flex flex-row gap-2 items-center">
+            <KeyIcon weight="bold" />
+            <p class="font-bold">Choose a password</p>
+        </div>
+
+        <p class="text-sm text-muted-foreground mb-2">
+            Strong passwords are 16+ characters long, and have a mix <br>
+            of uppercase and lowercase letters, numbers, and special <br>
+            characters. Consider using a passphrase, and don't use the <br>
+            same password for multiple websites.
+        </p>
+
+        <Input placeholder="Password" type={showPassword ? "text" : "password"} bind:value={password} autofocus />
+        <p class="text-sm text-muted-foreground">The password to use when logging into your account</p>
+
+        <Input placeholder="Confirm password" type={showPassword ? "text" : "password"} bind:value={confirmPassword} />
+        <p class="text-sm text-muted-foreground">Confirm your password</p>
+
+        <div class="flex flex-row gap-2 mb-4">
+            <Switch id="show-password" bind:checked={showPassword} />
+            <Label for="show-password">Show Password</Label>
+        </div>
+
+        {#if confirmPassword != password}
+            <div transition:slide>
+                <Alert.Root variant="destructive" class="mb-2 text-left">
+                    <WarningIcon weight="bold" />
+                    <Alert.Title>Passwords do not match</Alert.Title>
+                </Alert.Root>
+            </div>
+        {/if}
+
+        <Button onclick={() => {page = "profile"}} disabled={password.trim() == "" || confirmPassword.trim() == "" || password != confirmPassword}>
+            <ArrowRightIcon weight="bold" /> Next
+        </Button>
+    </div>
 
 {:else if page == "profile"}
+    <div class="flex flex-col gap-2 text-left" transition:slide>
+        <div class="flex flex-row gap-2 items-center">
+            <UserCircleIcon weight="bold" />
+            <p class="font-bold">Profile Details</p>
+        </div>
+
+        <Input placeholder="Display name" type="text" bind:value={displayName} defaultValue={username} />
+        <p class="text-sm text-muted-foreground">This is the name that will be displayed in place of your username.</p>
+
+        <Input placeholder="Team Number" type="text" bind:value={teamNumber} />
+        <p class="text-sm text-muted-foreground">The team number for the team you are a part of.</p>
+
+        <Button onclick={() => {}} disabled={displayName.trim() == "" || teamNumber == 0}>
+                <ArrowRightIcon weight="bold" /> Create Account
+        </Button>
+    </div>
 
 {:else if page == "passkey"}
 
