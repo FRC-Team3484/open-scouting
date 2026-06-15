@@ -1,15 +1,36 @@
+<!-- 
+@component
+Used by the universal authentication component, for creating a user account
+
+First, the user provides a username and email. These are verified to be unique on the server.
+Then, the user is asked to verify their email (if enabled). This component listens to 
+    the `verified` prop of the `EmailVerification` component, and if it is true, the 
+    user can proceed to the next step.
+Then, the user will be asked to create a password, and the password strength will be shown.Alert
+Finally, the user will be asked to provide a display name and a team number.
+Then, the account will be created on the server, and the user will be authenticated.Alert
+Finally, ask the user to create a passkey.
+Then show the user the `SignInConfirmation` component.
+-->
 <script lang="ts">
-	import { checkUniqueUsernameAuthCheckUniqueUsernameGet } from "$lib/api/auth/auth";
+	import { slide } from "svelte/transition";
+	import { ArrowRightIcon, CircleNotchIcon, EnvelopeIcon, WarningIcon } from "phosphor-svelte";
+
     import * as Alert from "$lib/components/ui/alert/index";
 	import Button from "$lib/components/ui/button/button.svelte";
 	import Input from "$lib/components/ui/input/input.svelte";
-	import { ArrowRightIcon, CircleNotchIcon, EnvelopeIcon, WarningIcon } from "phosphor-svelte";
-	import { slide } from "svelte/transition";
+
+	import EmailVerification from "./EmailVerification.svelte";
+	import { checkUniqueUsernameAuthCheckUniqueUsernameGet } from "$lib/api/auth/auth";
+
 
     let page: "username" | "verify" | "password" | "profile" | "passkey" | "success" = $state("username");
 
+    const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
     let username: string = $state("");
     let email: string = $state("");
+    let emailVerified: boolean = $state(false);
 
     let checkingUsername: boolean = $state(false);
     let message: string = $state("");
@@ -17,7 +38,6 @@
     async function checkUsername() {
         checkingUsername = true;
         await checkUniqueUsernameAuthCheckUniqueUsernameGet({ username: username, email: email }).then((response) => {
-            console.log(response);
             if (response.status == 200) {
                 page = "verify";
                 message = "";
@@ -27,6 +47,12 @@
         })
         checkingUsername = false;
     }
+
+    $effect(() => {
+        if (emailVerified) {
+            page = "password";
+        }
+    })
 </script>
 
 {#if message}
@@ -52,7 +78,7 @@
         <Input placeholder="Email" type="email" bind:value={email} />
         <p class="text-sm text-muted-foreground">You can also use your email to sign in. <br>We will use this email to send you verification emails (if supported).</p>
 
-        <Button onclick={() => {checkUsername()}} disabled={username.trim() == "" || email.trim() == "" || checkingUsername}>
+        <Button onclick={() => {checkUsername()}} disabled={username.trim() == "" || !EMAIL_REGEX.test(email) || checkingUsername}>
             {#if checkingUsername}
                 <CircleNotchIcon class="animate-spin" size={16} /> Checking...
             {:else}
@@ -61,6 +87,7 @@
         </Button>
     </div>
 {:else if page == "verify"}
+    <EmailVerification email={email} bind:verified={emailVerified} />
 
 {:else if page == "password"}
 
