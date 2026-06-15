@@ -7,6 +7,7 @@
 import type {
   BaseSettings,
   BodyLoginAuthLoginPost,
+  CheckUniqueUsernameAuthCheckUniqueUsernameGetParams,
   HTTPValidationError,
   MessageResponse,
   SetDisplayNameUsersMeSetDisplayNamePostParams,
@@ -597,6 +598,63 @@ export const setTeamNumberUsersMeSetTeamNumberPost = async (params: SetTeamNumbe
   {
     ...options,
     method: 'POST'
+
+
+  }
+);}
+
+
+export type checkUniqueUsernameAuthCheckUniqueUsernameGetResponse200 = {
+  data: unknown
+  status: 200
+}
+
+export type checkUniqueUsernameAuthCheckUniqueUsernameGetResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type checkUniqueUsernameAuthCheckUniqueUsernameGetResponseSuccess = (checkUniqueUsernameAuthCheckUniqueUsernameGetResponse200) & {
+  headers: Headers;
+};
+export type checkUniqueUsernameAuthCheckUniqueUsernameGetResponseError = (checkUniqueUsernameAuthCheckUniqueUsernameGetResponse422) & {
+  headers: Headers;
+};
+
+export type checkUniqueUsernameAuthCheckUniqueUsernameGetResponse = (checkUniqueUsernameAuthCheckUniqueUsernameGetResponseSuccess | checkUniqueUsernameAuthCheckUniqueUsernameGetResponseError)
+
+export const getCheckUniqueUsernameAuthCheckUniqueUsernameGetUrl = (params: CheckUniqueUsernameAuthCheckUniqueUsernameGetParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/auth/check_unique_username?${stringifiedParams}` : `/auth/check_unique_username`
+}
+
+/**
+ * Check if a username and email is unique
+
+Parameters:
+    username (str): The username to check
+    email (str): The email to check
+
+Returns:
+    MessageResponse: A message indicating whether the username is unique
+ * @summary Check Unique Username
+ */
+export const checkUniqueUsernameAuthCheckUniqueUsernameGet = async (params: CheckUniqueUsernameAuthCheckUniqueUsernameGetParams, options?: RequestInit): Promise<checkUniqueUsernameAuthCheckUniqueUsernameGetResponse> => {
+
+  return customInstance<checkUniqueUsernameAuthCheckUniqueUsernameGetResponse>(getCheckUniqueUsernameAuthCheckUniqueUsernameGetUrl(params),
+  {
+    ...options,
+    method: 'GET'
 
 
   }

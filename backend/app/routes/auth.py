@@ -2,6 +2,7 @@ from typing import Literal
 from sqlite3 import IntegrityError
 from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, status, Request, Response
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.security import OAuth2PasswordRequestForm
 from tortoise.exceptions import FieldError
 from tortoise.expressions import Q
@@ -480,3 +481,25 @@ async def set_team_number(team_number: int, identity: Identity = Depends(require
     await profile.save()
 
     return MessageResponse(message="Team number set")
+
+@router.get("/auth/check_unique_username")
+async def check_unique_username(username: str, email: str) -> JSONResponse:
+    """
+    Check if a username and email is unique
+
+    Parameters:
+        username (str): The username to check
+        email (str): The email to check
+
+    Returns:
+        MessageResponse: A message indicating whether the username is unique
+    """
+    username_check = await User.get_or_none(username=username)
+    email_check = await User.get_or_none(email=email)
+
+    if username_check:
+        return JSONResponse(content={"message": "There is already a user associated with this username"}, status_code=409)
+    elif email_check:
+        return JSONResponse(content={"message": "There is already a user associated with this email"}, status_code=409)
+    else:
+        return JSONResponse(content={"message": "Username and email are unique"}, status_code=200)
