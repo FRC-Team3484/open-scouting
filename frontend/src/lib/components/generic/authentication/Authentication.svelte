@@ -23,6 +23,7 @@ Props:
 	import AuthenticationModeHeader from "./AuthenticationModeHeader.svelte";
 	import { EnvelopeIcon, FingerprintIcon, KeyIcon, UserCircleIcon, UserCirclePlusIcon } from "phosphor-svelte";
 	import SignIn from "./SignIn.svelte";
+	import CreateAccount from "./CreateAccount.svelte";
 
 
     interface Props {
@@ -39,6 +40,8 @@ Props:
             <AuthenticationModeHeader title="Create Account" description="Create a new Open Scouting account">
                 <UserCirclePlusIcon weight="bold" size={32} />
             </AuthenticationModeHeader>
+
+            <CreateAccount />
 
         {:else if mode === "sign_in"}
             <AuthenticationModeHeader title="Sign In" description="Sign in to your Open Scouting account">

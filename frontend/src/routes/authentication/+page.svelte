@@ -59,5 +59,5 @@ Allows for the user to sign into their account, or create a new account.
         {/if}
     </div>
 
-    <Authentication mode="sign_in" />
+    <Authentication mode="create_account" />
 </PageContainer>
