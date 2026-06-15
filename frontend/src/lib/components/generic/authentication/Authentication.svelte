@@ -22,6 +22,7 @@ Props:
 	import { getUser } from "$lib/utils/user";
 	import AuthenticationModeHeader from "./AuthenticationModeHeader.svelte";
 	import { EnvelopeIcon, FingerprintIcon, KeyIcon, UserCircleIcon, UserCirclePlusIcon } from "phosphor-svelte";
+	import SignIn from "./SignIn.svelte";
 
 
     interface Props {
@@ -43,6 +44,8 @@ Props:
             <AuthenticationModeHeader title="Sign In" description="Sign in to your Open Scouting account">
                 <UserCircleIcon weight="bold" size={32} />
             </AuthenticationModeHeader>
+
+            <SignIn />
 
         {:else if mode === "change_password"}
             <AuthenticationModeHeader title="Change Password" description="Change your password">
