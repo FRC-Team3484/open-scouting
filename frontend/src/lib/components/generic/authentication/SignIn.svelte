@@ -17,12 +17,15 @@ TODO: Support passkeys
 	import { loginAuthLoginPost, meAuthMeGet } from "$lib/api/auth/auth";
 	import type { UserResponse } from "$lib/api/model";
 	import SignInConfirmation from "./SignInConfirmation.svelte";
+	import Switch from "$lib/components/ui/switch/switch.svelte";
+	import Label from "$lib/components/ui/label/label.svelte";
 
 
     let page: "username" | "passkey" | "password" | "success" = $state("username"); 
 
     let username: string = $state("");
     let password: string = $state("");
+    let showPassword: boolean = $state(false);
 
     let loading: boolean = $state(false);
     let message: string = $state("");
@@ -107,7 +110,12 @@ TODO: Support passkeys
             <KeyIcon weight="bold" />
             <p class="font-bold">Password</p>
         </div>
-        <Input placeholder="Password" type="password" bind:value={password} autofocus />
+        <Input placeholder="Password" type={showPassword ? "text" : "password"} bind:value={password} autofocus />
+        <div class="flex flex-row gap-2 mb-4">
+            <Switch id="show-password" bind:checked={showPassword} />
+            <Label for="show-password">Show Password</Label>
+        </div>
+
         <Button onclick={() => {signIn()}} disabled={password.trim() == "" || loading} onkeydown={(e) => {if (e.key == "Enter") {signIn();}}}>
             {#if loading}
                 <CircleNotchIcon class="animate-spin" size={16} /> Loading...
