@@ -7,18 +7,18 @@ Allows for the user to sign into their account, or create a new account.
 	import { onMount } from "svelte";
 	import { toast } from "svelte-sonner";
 	import { goto } from "$app/navigation";
+	import { slide } from "svelte/transition";
+	import { ArrowRightIcon } from "phosphor-svelte";
 
-    import * as Card from "$lib/components/ui/card/index.js";
-
+	import Button from "$lib/components/ui/button/button.svelte";
+    
 	import { getAuthenticationStatus } from "$lib/utils/user";
     import Logo from "$lib/components/generic/Logo.svelte";
 	import PageContainer from "$lib/components/layout/PageContainer.svelte";
-	import SignUpForm from "$lib/components/auth/SignUpForm.svelte";
-	import SignInForm from "$lib/components/auth/SignInForm.svelte";
 	import Authentication from "$lib/components/generic/authentication/Authentication.svelte";
 
 
-    let page: "signin" | "signup" = "signin";
+    let page: "signin" | "signup" = $state("signin");
     let authenticated: boolean = getAuthenticationStatus();
 
     /**
@@ -38,26 +38,17 @@ Allows for the user to sign into their account, or create a new account.
         <p class="text-2xl font-bold">Authentication</p>
 
         {#if page === "signin"}
-            <Card.Root class="w-full">
-                <Card.Header>
-                    <Card.Title>Sign In</Card.Title>
-                    <Card.Description>Sign in to your Open Scouting account</Card.Description>
-                </Card.Header>
-
-                <SignInForm bind:page={page} />
-            </Card.Root>
+            <div class="flex flex-col gap-4 items-center" transition:slide>
+                <Authentication mode="sign_in" />
+                <Button variant="outline" onclick={() => {page = "signup"}}><ArrowRightIcon weight="bold" /> Sign Up</Button>
+            </div>
 
         {:else if page === "signup"}
-            <Card.Root class="w-full">
-                <Card.Header>
-                    <Card.Title>Create Account</Card.Title>
-                    <Card.Description>Create a new Open Scouting account</Card.Description>
-                </Card.Header>
-
-                <SignUpForm bind:page={page} />
-            </Card.Root>
+            <div class="flex flex-col gap-4 items-center" transition:slide>
+                <Authentication mode="create_account" />
+                <Button variant="outline" onclick={() => {page = "signin"}}><ArrowRightIcon weight="bold" /> Sign In</Button>
+            </div>
         {/if}
     </div>
 
-    <Authentication mode="create_account" />
 </PageContainer>
