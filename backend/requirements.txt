@@ -1,3 +1,4 @@
+aiosmtplib==5.1.1
 aiosqlite==0.22.1
 annotated-doc==0.0.4
 annotated-types==0.7.0
@@ -5,16 +6,18 @@ anyio==4.13.0
 argon2-cffi==25.1.0
 argon2-cffi-bindings==25.1.0
 asyncpg==0.31.0
+blinker==1.9.0
 certifi==2026.2.25
 cffi==2.0.0
 click==8.3.2
 colorama==0.4.6
-cryptography==46.0.7
+cryptography==47.0.0
 dnspython==2.8.0
 email-validator==2.3.0
 fastapi==0.135.3
 fastapi-cli==0.0.24
 fastapi-cloud-cli==0.16.1
+fastapi-mail==1.6.4
 fastar==0.11.0
 h11==0.16.0
 httpcore==1.0.9
@@ -43,6 +46,7 @@ pypika-tortoise==0.6.5
 python-dotenv==1.2.2
 python-multipart==0.0.26
 PyYAML==6.0.3
+regex==2026.5.9
 rich==15.0.0
 rich-toolkit==0.19.7
 rignore==0.7.6
