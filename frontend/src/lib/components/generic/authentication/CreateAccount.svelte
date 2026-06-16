@@ -11,6 +11,9 @@ Finally, the user will be asked to provide a display name and a team number.
 Then, the account will be created on the server, and the user will be authenticated.Alert
 Finally, ask the user to create a passkey.
 Then show the user the `SignInConfirmation` component.
+
+TODO: Handle keydowns
+TODO: Back buttons
 -->
 <script lang="ts">
 	import { slide } from "svelte/transition";
@@ -19,11 +22,13 @@ Then show the user the `SignInConfirmation` component.
     import * as Alert from "$lib/components/ui/alert/index";
 	import Button from "$lib/components/ui/button/button.svelte";
 	import Input from "$lib/components/ui/input/input.svelte";
-
-	import EmailVerification from "./EmailVerification.svelte";
-	import { checkUniqueUsernameAuthCheckUniqueUsernameGet } from "$lib/api/auth/auth";
 	import Switch from "$lib/components/ui/switch/switch.svelte";
 	import Label from "$lib/components/ui/label/label.svelte";
+
+	import EmailVerification from "./EmailVerification.svelte";
+	import SignInConfirmation from "./SignInConfirmation.svelte";
+	import { checkUniqueUsernameAuthCheckUniqueUsernameGet, meAuthMeGet, signupAuthSignupPost } from "$lib/api/auth/auth";
+	import type { SignupRequest, UserResponse } from "$lib/api/model";
 
 
     let page: "username" | "verify" | "password" | "profile" | "passkey" | "success" = $state("username");
@@ -40,8 +45,14 @@ Then show the user the `SignInConfirmation` component.
     let teamNumber: number = $state(0);
 
     let checkingUsername: boolean = $state(false);
+    let creatingAccount: boolean = $state(false);
     let message: string = $state("");
 
+    let successUser: UserResponse | null = $state(null);
+
+    /**
+     * Check the user's username and email on the server to ensure they're unique
+     */
     async function checkUsername() {
         checkingUsername = true;
         await checkUniqueUsernameAuthCheckUniqueUsernameGet({ username: username, email: email }).then((response) => {
@@ -55,6 +66,41 @@ Then show the user the `SignInConfirmation` component.
         checkingUsername = false;
     }
 
+    /**
+     * Create the user account on the server, and log them in
+     * 
+     * Get the user's information from the server, and pass it into the `SignInConfirmation` component
+     */
+    async function createAccount() {
+        creatingAccount = true;
+        const data: SignupRequest = {
+            username: username,
+            email: email,
+            password: password,
+            confirm_password: confirmPassword,
+            team_number: teamNumber,
+            display_name: displayName
+        }
+        
+        await signupAuthSignupPost(data).then(async (response) => {
+            if (response.status == 200) {
+
+                await meAuthMeGet().then((response) => {
+                    if (response.status == 200) {
+                        successUser = response.data.user;
+                    }
+                });
+                page = "success";
+            } else {
+                message = response.data.message;
+            }
+        })
+        creatingAccount = false;
+    }
+
+    /**
+     * Listen to the `verified` prop of the `EmailVerification` component. If it is true, the user can proceed
+     */
     $effect(() => {
         if (emailVerified) {
             page = "password";
@@ -148,13 +194,20 @@ Then show the user the `SignInConfirmation` component.
         <Input placeholder="Team Number" type="text" bind:value={teamNumber} />
         <p class="text-sm text-muted-foreground">The team number for the team you are a part of.</p>
 
-        <Button onclick={() => {}} disabled={displayName.trim() == "" || teamNumber == 0}>
+        <Button onclick={() => {createAccount()}} disabled={displayName.trim() == "" || teamNumber == 0 || creatingAccount}>
+            {#if creatingAccount}
+                <CircleNotchIcon class="animate-spin" size={16} /> Creating Account...
+            {:else}
                 <ArrowRightIcon weight="bold" /> Create Account
+            {/if}
         </Button>
     </div>
 
 {:else if page == "passkey"}
-
+    <div class="flex flex-col gap-2 text-left" transition:slide>
+        <p>Passkeys are not yet supported</p>
+        <Button onclick={() => {page = "success"}}><ArrowRightIcon weight="bold" /> Continue</Button>
+    </div>
 {:else if page == "success"}
-
+    <SignInConfirmation user={successUser} redirect={5} />
 {/if}
