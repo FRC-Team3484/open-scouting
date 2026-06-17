@@ -254,3 +254,40 @@ export const CheckUniqueUsernameAuthCheckUniqueUsernameGetQueryParams = zod.obje
 
 export const CheckUniqueUsernameAuthCheckUniqueUsernameGetResponse = zod.unknown()
 
+/**
+ * Given an email, create a verification code and send it to the user
+
+If an identity is found, attach the user to the verification code
+
+Parameters:
+    email (str): The email to create a verification code for
+ * @summary Create Verification Code
+ */
+export const CreateVerificationCodeAuthCreateVerificationCodePostQueryParams = zod.object({
+  "email": zod.string()
+})
+
+export const CreateVerificationCodeAuthCreateVerificationCodePostResponse = zod.unknown()
+
+/**
+ * Verify a verification code for a user
+
+Given an email and a verification code, verify the verification code
+
+If an identity is found, the verification code must be attached to the user to be validated.
+    This would occour when verifying an email from the profile page when their email was not yet verified
+
+The code's created_at should be less than VERIFICATION_CODE_EXPIRE_MINUTES to be validated.
+
+Parameters:
+    email (str): The email to verify the verification code for
+    code (int): The verification code to verify
+ * @summary Verify Verification Code
+ */
+export const VerifyVerificationCodeAuthVerifyVerificationCodePostQueryParams = zod.object({
+  "email": zod.string(),
+  "code": zod.number()
+})
+
+export const VerifyVerificationCodeAuthVerifyVerificationCodePostResponse = zod.unknown()
+

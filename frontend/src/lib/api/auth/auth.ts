@@ -8,6 +8,7 @@ import type {
   BaseSettings,
   BodyLoginAuthLoginPost,
   CheckUniqueUsernameAuthCheckUniqueUsernameGetParams,
+  CreateVerificationCodeAuthCreateVerificationCodePostParams,
   HTTPValidationError,
   MessageResponse,
   SetDisplayNameUsersMeSetDisplayNamePostParams,
@@ -15,7 +16,8 @@ import type {
   SignupRequest,
   UserMeResponse,
   UserResponse,
-  UserSetting
+  UserSetting,
+  VerifyVerificationCodeAuthVerifyVerificationCodePostParams
 } from '../model';
 
 import { customInstance } from '.././client';
@@ -655,6 +657,122 @@ export const checkUniqueUsernameAuthCheckUniqueUsernameGet = async (params: Chec
   {
     ...options,
     method: 'GET'
+
+
+  }
+);}
+
+
+export type createVerificationCodeAuthCreateVerificationCodePostResponse200 = {
+  data: unknown
+  status: 200
+}
+
+export type createVerificationCodeAuthCreateVerificationCodePostResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type createVerificationCodeAuthCreateVerificationCodePostResponseSuccess = (createVerificationCodeAuthCreateVerificationCodePostResponse200) & {
+  headers: Headers;
+};
+export type createVerificationCodeAuthCreateVerificationCodePostResponseError = (createVerificationCodeAuthCreateVerificationCodePostResponse422) & {
+  headers: Headers;
+};
+
+export type createVerificationCodeAuthCreateVerificationCodePostResponse = (createVerificationCodeAuthCreateVerificationCodePostResponseSuccess | createVerificationCodeAuthCreateVerificationCodePostResponseError)
+
+export const getCreateVerificationCodeAuthCreateVerificationCodePostUrl = (params: CreateVerificationCodeAuthCreateVerificationCodePostParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/auth/create_verification_code?${stringifiedParams}` : `/auth/create_verification_code`
+}
+
+/**
+ * Given an email, create a verification code and send it to the user
+
+If an identity is found, attach the user to the verification code
+
+Parameters:
+    email (str): The email to create a verification code for
+ * @summary Create Verification Code
+ */
+export const createVerificationCodeAuthCreateVerificationCodePost = async (params: CreateVerificationCodeAuthCreateVerificationCodePostParams, options?: RequestInit): Promise<createVerificationCodeAuthCreateVerificationCodePostResponse> => {
+
+  return customInstance<createVerificationCodeAuthCreateVerificationCodePostResponse>(getCreateVerificationCodeAuthCreateVerificationCodePostUrl(params),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+export type verifyVerificationCodeAuthVerifyVerificationCodePostResponse200 = {
+  data: unknown
+  status: 200
+}
+
+export type verifyVerificationCodeAuthVerifyVerificationCodePostResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type verifyVerificationCodeAuthVerifyVerificationCodePostResponseSuccess = (verifyVerificationCodeAuthVerifyVerificationCodePostResponse200) & {
+  headers: Headers;
+};
+export type verifyVerificationCodeAuthVerifyVerificationCodePostResponseError = (verifyVerificationCodeAuthVerifyVerificationCodePostResponse422) & {
+  headers: Headers;
+};
+
+export type verifyVerificationCodeAuthVerifyVerificationCodePostResponse = (verifyVerificationCodeAuthVerifyVerificationCodePostResponseSuccess | verifyVerificationCodeAuthVerifyVerificationCodePostResponseError)
+
+export const getVerifyVerificationCodeAuthVerifyVerificationCodePostUrl = (params: VerifyVerificationCodeAuthVerifyVerificationCodePostParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/auth/verify_verification_code?${stringifiedParams}` : `/auth/verify_verification_code`
+}
+
+/**
+ * Verify a verification code for a user
+
+Given an email and a verification code, verify the verification code
+
+If an identity is found, the verification code must be attached to the user to be validated.
+    This would occour when verifying an email from the profile page when their email was not yet verified
+
+The code's created_at should be less than VERIFICATION_CODE_EXPIRE_MINUTES to be validated.
+
+Parameters:
+    email (str): The email to verify the verification code for
+    code (int): The verification code to verify
+ * @summary Verify Verification Code
+ */
+export const verifyVerificationCodeAuthVerifyVerificationCodePost = async (params: VerifyVerificationCodeAuthVerifyVerificationCodePostParams, options?: RequestInit): Promise<verifyVerificationCodeAuthVerifyVerificationCodePostResponse> => {
+
+  return customInstance<verifyVerificationCodeAuthVerifyVerificationCodePostResponse>(getVerifyVerificationCodeAuthVerifyVerificationCodePostUrl(params),
+  {
+    ...options,
+    method: 'POST'
 
 
   }
