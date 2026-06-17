@@ -126,6 +126,25 @@ class Session(Model):
         related_name="sessions"
     )
 
+class VerificationCode(Model):
+    """
+    Defines a verification code for a user, used to verify their email or change their password
+
+    Attributes:
+        uuid (UUID): The unique identifier for the verification code
+        user (User): The user the verification code is associated with
+        code (str): The verification code
+        email (str): The email the verification code is associated with
+        verified (bool): Whether the verification code has been verified
+        created_at (datetime): The date and time the verification code was created
+    """
+    uuid = fields.UUIDField(pk=True)
+    user = fields.ForeignKeyField("models.User", related_name="verification_codes", null=True)
+    code = fields.CharField(max_length=6)
+    email = fields.CharField(max_length=255)
+    verified = fields.BooleanField(default=False)
+    created_at = fields.DatetimeField(auto_now_add=True)
+
 # Main
 class Season(Model):
     """
