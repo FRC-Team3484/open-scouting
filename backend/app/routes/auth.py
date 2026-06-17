@@ -1,20 +1,28 @@
+import os
+import secrets
+from datetime import datetime, timedelta
 from typing import Literal
-from sqlite3 import IntegrityError
 from uuid import UUID
+
+from sqlite3 import IntegrityError
 from fastapi import APIRouter, Depends, HTTPException, status, Request, Response
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordRequestForm
 from tortoise.exceptions import FieldError
 from tortoise.expressions import Q
 
 from ..utils import IS_DEV
-
 from ..auth import create_access_token, get_password_hash, verify_password
 from ..dependencies import Identity, get_identity, require_user, require_superuser
-from ..models import User, Profile, Settings, Session
-from ..schemas.generic import MessageResponse
-from ..schemas.auth import BaseSettings, SignupRequest, UserMeResponse, UserMeResponse, UserResponse, UserSetting
 
+from ..models import User, Profile, Settings, Session, VerificationCode
+from .emails import send_verification_code
+from ..schemas.generic import MessageResponse
+from ..schemas.auth import BaseSettings, SignupRequest, UserMeResponse, UserResponse, UserSetting
+
+
+VERIFICATION_CODE_LENGTH = 6
+VERIFICATION_CODE_EXPIRE_MINUTES = 15
 
 router: APIRouter = APIRouter(
     tags=["Auth"],
@@ -503,3 +511,70 @@ async def check_unique_username(username: str, email: str) -> JSONResponse:
         return JSONResponse(content={"message": "There is already a user associated with this email"}, status_code=409)
     else:
         return JSONResponse(content={"message": "Username and email are unique"}, status_code=200)
+
+@router.post("/auth/create_verification_code")
+async def create_verification_code(email: str, identity: Identity = Depends(get_identity)) -> JSONResponse:
+    """
+    Given an email, create a verification code and send it to the user
+
+    If an identity is found, attach the user to the verification code
+
+    Parameters:
+        email (str): The email to create a verification code for
+    """
+
+    def create_verification_code(length: int = 6) -> str:
+        """
+        Returns a random digit number of length
+
+        Since randbelow returns an int under the specified length, 
+            :06d is the format for length digits, adding a 
+            zero in front if the number is less than the length
+        """
+        return f"{secrets.randbelow(10**length):0{length}d}"
+
+    if os.getenv("PUBLIC_EMAIL_ENABLED", "false") == "true":
+        code = VerificationCode(
+            user=identity.user,
+            code=create_verification_code(VERIFICATION_CODE_LENGTH),
+            email=email,
+            verified=False
+        )
+
+        await code.save()
+
+        return await send_verification_code(email, code.code)
+    else:
+        return JSONResponse(content={"message": "emails are disabled"}, status_code=403)
+    
+
+@router.post("/auth/verify_verification_code")
+async def verify_verification_code(email: str, code: int, identity: Identity = Depends(get_identity)):
+    """
+    Verify a verification code for a user
+
+    Given an email and a verification code, verify the verification code
+
+    If an identity is found, the verification code must be attached to the user to be validated.
+        This would occour when verifying an email from the profile page when their email was not yet verified
+
+    The code's created_at should be less than VERIFICATION_CODE_EXPIRE_MINUTES to be validated.
+
+    Parameters:
+        email (str): The email to verify the verification code for
+        code (int): The verification code to verify
+    """
+
+    if (identity.user):
+        verification_code = await VerificationCode.get_or_none(user=identity.user, code=code, email=email, verified=False)
+    else:
+        verification_code = await VerificationCode.get_or_none(code=code, email=email, verified=False)
+
+    if not verification_code:
+        return JSONResponse(content={"message": "Invalid verification code"}, status_code=400)
+    elif verification_code.created_at < datetime.now() - timedelta(minutes=VERIFICATION_CODE_EXPIRE_MINUTES):
+        return JSONResponse(content={"message": "Verification code has expired"}, status_code=400)
+    else:
+        verification_code.verified = True
+        await verification_code.save()
+        return JSONResponse(content={"message": "Verification code verified"}, status_code=200)

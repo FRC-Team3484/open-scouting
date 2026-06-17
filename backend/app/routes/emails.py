@@ -17,7 +17,7 @@ router = APIRouter(
 
 # Validate for missing env values
 missing_envs: list[str] = []
-env_values: list[str] = ["MAIL_USERNAME", "MAIL_PASSWORD", "MAIL_FROM", "MAIL_PORT", "MAIL_SERVER", "MAIL_STARTTLS", "MAIL_SSL_TLS", "USE_CREDENTIALS", "VALIDATE_CERTS"]
+env_values: list[str] = ["PUBLIC_EMAIL_ENABLED", "MAIL_USERNAME", "MAIL_PASSWORD", "MAIL_FROM", "MAIL_PORT", "MAIL_SERVER", "MAIL_STARTTLS", "MAIL_SSL_TLS", "USE_CREDENTIALS", "VALIDATE_CERTS"]
 
 for env_value in env_values:
     if os.getenv(env_value) is None:
@@ -64,5 +64,9 @@ async def send_verification_code(email: NameEmail, code: int) -> JSONResponse:
     )
 
     fm = FastMail(conf)
-    await fm.send_message(message, template_name="verification_code.html")
-    return JSONResponse(status_code=200, content={"message": "email has been sent"})     
+
+    if os.getenv("PUBLIC_EMAIL_ENABLED", "false") == "false":
+        return JSONResponse(status_code=403, content={"message": "emails are disabled"})
+    else:
+        await fm.send_message(message, template_name="verification_code.html")
+        return JSONResponse(status_code=200, content={"message": "email has been sent"})     
