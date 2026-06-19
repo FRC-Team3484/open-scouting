@@ -192,6 +192,8 @@ async def signup(
 
     If this is the first user on the server, make them a superuser
 
+    TODO: email_verified status probably shouldn't come from the client, and should instead be verified by the server to prevent verified spoofing
+
     Paramaters:
         data (SignupRequest): The data to create the user
 
@@ -207,7 +209,8 @@ async def signup(
         user: User = await User.create(
             username=data.username,
             email=data.email,
-            hashed_password=hashed_password
+            hashed_password=hashed_password,
+            email_verified=data.email_verified
         )
         await Profile.create(user=user, display_name=data.display_name, team_number=int(data.team_number))
 

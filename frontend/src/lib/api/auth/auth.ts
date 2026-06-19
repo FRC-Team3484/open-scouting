@@ -155,6 +155,8 @@ export const getSignupAuthSignupPostUrl = () => {
 
 If this is the first user on the server, make them a superuser
 
+TODO: email_verified status probably shouldn't come from the client, and should instead be verified by the server to prevent verified spoofing
+
 Paramaters:
     data (SignupRequest): The data to create the user
 
