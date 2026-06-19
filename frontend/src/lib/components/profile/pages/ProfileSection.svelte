@@ -24,6 +24,8 @@ Props:
 	import { setDisplayNameUsersMeSetDisplayNamePost, setTeamNumberUsersMeSetTeamNumberPost } from "$lib/api/auth/auth";
 	import BaseDialog from "$lib/components/generic/dialogs/BaseDialog.svelte";
 	import { uploadProfilePictureUploadProfilePictureMePost } from "$lib/api/uploads/uploads";
+	import Authentication from "$lib/components/generic/authentication/Authentication.svelte";
+	import type { EmailVerificationStatus } from "$lib/components/generic/authentication/EmailVerification.svelte";
 
 
     interface Props {
@@ -39,6 +41,9 @@ Props:
     let uploadProfilePictureOpen = $state(false);
     let files: FileList | undefined = $state(undefined);
     let uploadProfilePictureState: "idle" | "uploading" = $state("idle");
+
+    let verifyEmailOpen = $state(false);
+    let emailVerificationStatus: EmailVerificationStatus = $state("idle");
 
     /**
      * Set the user's display name on the server
@@ -96,6 +101,17 @@ Props:
 
         uploadProfilePictureState = "idle";
     }
+
+    $effect(() => {
+        if (emailVerificationStatus == "success") {
+            verifyEmailOpen = false;
+            getNewUserData();
+        } else if (emailVerificationStatus == "cancel") {
+            verifyEmailOpen = false;
+        } else if (emailVerificationStatus == "skipped") {
+            verifyEmailOpen = false;
+        }
+    })
 </script>
 
 <Section title="Profile" description="Your profile details">
@@ -152,7 +168,7 @@ Props:
                         <Alert.Title>Verify your email</Alert.Title>
                         <Alert.Description>
                             You have not verified your email. Please do so, otherwise you will not be able to change your password.
-                            <Button><ArrowRightIcon weight="bold" /> Verify Email</Button>
+                            <Button onclick={() => {verifyEmailOpen = true}}><ArrowRightIcon weight="bold" /> Verify Email</Button>
                         </Alert.Description>
                     </Alert.Root>
                 {/if}
@@ -228,4 +244,8 @@ Props:
     <p class="text-sm mt-4">It may take a moment for the image to appear across the site after uploading</p>
     <p class="text-sm text-muted-foreground">10MB max, will be downsized to 256x256. Square image recommended.</p>
     <p class="text-sm text-muted-foreground mb-4">JPEG, PNG, WEBP, HEIC, or HEIF are supported</p>
+</BaseDialog>
+
+<BaseDialog title="" description="" bind:open={verifyEmailOpen}>
+    <Authentication mode="verify_email" email={user?.email} bind:emailVerificationStatus />
 </BaseDialog>

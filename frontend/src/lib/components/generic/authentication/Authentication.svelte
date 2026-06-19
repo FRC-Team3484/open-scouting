@@ -14,6 +14,7 @@ Additional props optionally take data depending on the mode
 
 Props:
     - `mode` (`create_account | sign_in | change_password | forgot_password | verify_email | change_email | create_passkey`) - The current authentication mode
+    - `email` (`string`) - The email to verify (if `mode` is `verify_email`)
 -->
 <script lang="ts">
     import * as Card from "$lib/components/ui/card/index.js";
@@ -24,12 +25,20 @@ Props:
 	import { EnvelopeIcon, FingerprintIcon, KeyIcon, UserCircleIcon, UserCirclePlusIcon } from "phosphor-svelte";
 	import SignIn from "./SignIn.svelte";
 	import CreateAccount from "./CreateAccount.svelte";
+	import EmailVerification, { type EmailVerificationStatus } from "./EmailVerification.svelte";
 
 
-    interface Props {
+    interface BaseProps {
         mode: "create_account" | "sign_in" | "change_password" | "forgot_password" | "verify_email" | "change_email" | "create_passkey"
+        email?: never
+        emailVerificationStatus?: never
     }
-    let { mode }: Props = $props();
+    interface VerifyEmailProps {
+        mode: "verify_email"
+        email: string
+        emailVerificationStatus: EmailVerificationStatus
+    }
+    let { mode, email, emailVerificationStatus = $bindable() }: BaseProps | VerifyEmailProps = $props();
 
     let user: UserResponse | null = getUser();
 </script>
@@ -64,6 +73,10 @@ Props:
             <AuthenticationModeHeader title="Verify Email" description="Verify your email">
                 <EnvelopeIcon weight="bold" size={32} />
             </AuthenticationModeHeader>
+
+            {#if email}
+                <EmailVerification email={email} bind:status={emailVerificationStatus} />
+            {/if}
 
         {:else if mode === "change_email"}
             <AuthenticationModeHeader title="Change Email" description="Change your email">
