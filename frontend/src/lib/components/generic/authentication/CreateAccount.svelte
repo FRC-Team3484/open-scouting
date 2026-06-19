@@ -12,7 +12,7 @@ Then, the account will be created on the server, and the user will be authentica
 Finally, ask the user to create a passkey.
 Then show the user the `SignInConfirmation` component.
 
-TODO: Handle keydowns
+TODO: Support passkeys
 -->
 <script lang="ts">
 	import { slide } from "svelte/transition";
@@ -100,6 +100,26 @@ TODO: Handle keydowns
     }
 
     /**
+     * Handle the enter key on this page
+     * 
+     * @param e
+     */
+    function handleKeyDown(e: KeyboardEvent) {
+        if (e.key == "Enter") {
+            if (page == "username" && username.trim() != "" && !EMAIL_REGEX.test(username) && !checkingUsername) {
+                checkUsername();
+            } else if (page == "password" && password.trim() != "" && confirmPassword.trim() != "" && password == confirmPassword) {
+                page = "profile";
+            } else if (page == "profile" && displayName.trim() != "" && teamNumber != 0 && !creatingAccount) {
+                createAccount();
+            } else if (page == "passkey") {
+                // TODO: Handle passkey when implemented
+                page = "success";
+            }
+        }
+    }
+
+    /**
      * Listen to the `verified` prop of the `EmailVerification` component. If it is true, the user can proceed
      */
     $effect(() => {
@@ -115,6 +135,8 @@ TODO: Handle keydowns
         }
     })
 </script>
+
+<svelte:window on:keydown={handleKeyDown} />
 
 {#if message}
     <div transition:slide>

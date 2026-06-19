@@ -2,8 +2,6 @@
 @component
 Universal email verification component
 
-TODO: back buttons
-
 Props:
     - `email` (`string`) - The email to verify
     - `status` (`EmailVerificationStatus`) - The state of the component. 
@@ -104,6 +102,23 @@ Props:
         checkingCode = false;
     }
 
+    /**
+     * Handle the enter key on this component
+     * 
+     * @param e
+     */
+    function handleKeydown(e: KeyboardEvent) {
+        if (e.key == "Enter") {
+            if (page == "confirm_email" && !sendingCode) {
+                sendVerificationCode();
+            } else if (page == "enter_code" && code.length == 6 && !checkingCode) {
+                checkVerificationCode();
+            } else if (page == "success") {
+                status = "success";
+            }
+        }
+    }
+
     onMount(() => {
         status = "idle";
 
@@ -112,6 +127,8 @@ Props:
         }
     });
 </script>
+
+<svelte:window on:keydown={handleKeydown} />
 
 <div class="flex flex-col gap-2 text-left lg:max-w-[50vw]" transition:slide>
     {#if message}
