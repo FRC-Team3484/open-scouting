@@ -286,7 +286,7 @@ Parameters:
  */
 export const VerifyVerificationCodeAuthVerifyVerificationCodePostQueryParams = zod.object({
   "email": zod.string(),
-  "code": zod.number()
+  "code": zod.string()
 })
 
 export const VerifyVerificationCodeAuthVerifyVerificationCodePostResponse = zod.unknown()

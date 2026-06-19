@@ -7,5 +7,5 @@
 
 export type VerifyVerificationCodeAuthVerifyVerificationCodePostParams = {
 email: string;
-code: number;
+code: string;
 };

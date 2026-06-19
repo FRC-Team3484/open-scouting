@@ -1,6 +1,6 @@
 import os
 import secrets
-from datetime import datetime, timedelta
+from datetime import timedelta
 from typing import Literal
 from uuid import UUID
 
@@ -10,6 +10,7 @@ from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordRequestForm
 from tortoise.exceptions import FieldError
 from tortoise.expressions import Q
+from tortoise.timezone import now
 
 from ..utils import IS_DEV
 from ..auth import create_access_token, get_password_hash, verify_password
@@ -549,7 +550,7 @@ async def create_verification_code(email: str, identity: Identity = Depends(get_
     
 
 @router.post("/auth/verify_verification_code")
-async def verify_verification_code(email: str, code: int, identity: Identity = Depends(get_identity)):
+async def verify_verification_code(email: str, code: str, identity: Identity = Depends(get_identity)):
     """
     Verify a verification code for a user
 
@@ -572,7 +573,7 @@ async def verify_verification_code(email: str, code: int, identity: Identity = D
 
     if not verification_code:
         return JSONResponse(content={"message": "Invalid verification code"}, status_code=400)
-    elif verification_code.created_at < datetime.now() - timedelta(minutes=VERIFICATION_CODE_EXPIRE_MINUTES):
+    elif verification_code.created_at < now() - timedelta(minutes=VERIFICATION_CODE_EXPIRE_MINUTES):
         return JSONResponse(content={"message": "Verification code has expired"}, status_code=400)
     else:
         verification_code.verified = True
