@@ -79,7 +79,8 @@ TODO: Handle keydowns
             password: password,
             confirm_password: confirmPassword,
             team_number: teamNumber,
-            display_name: displayName
+            display_name: displayName,
+            email_verified: emailVerified
         }
         
         await signupAuthSignupPost(data).then(async (response) => {
