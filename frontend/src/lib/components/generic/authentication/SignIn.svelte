@@ -8,11 +8,12 @@ TODO: Support passkeys
 <script lang="ts">
 	import { goto } from "$app/navigation";
 	import { slide } from "svelte/transition";
-	import { ArrowLeftIcon, ArrowRightIcon, CircleNotchIcon, EnvelopeIcon, KeyIcon, WarningIcon } from "phosphor-svelte";
+	import { ArrowLeftIcon, ArrowRightIcon, CircleNotchIcon, EnvelopeIcon, KeyIcon, KeyReturnIcon, WarningIcon } from "phosphor-svelte";
 
 	import Button from "$lib/components/ui/button/button.svelte";
 	import Input from "$lib/components/ui/input/input.svelte";
     import * as Alert from "$lib/components/ui/alert/index";
+    import * as Kbd from "$lib/components/ui/kbd/index";
 
 	import { loginAuthLoginPost, meAuthMeGet } from "$lib/api/auth/auth";
 	import type { UserResponse } from "$lib/api/model";
@@ -93,7 +94,7 @@ TODO: Support passkeys
             <p class="font-bold">Username or email</p>
         </div>
         <Input placeholder="Username or email" type="text" bind:value={username} autofocus />
-        <Button onclick={() => {page = "password"}} disabled={username.trim() == ""}><ArrowRightIcon weight="bold" /> Next</Button>
+        <Button onclick={() => {page = "password"}} disabled={username.trim() == ""}><ArrowRightIcon weight="bold" /> Next <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root></Button>
     </div>
 {:else if page == "passkey"}
     <div class="flex flex-col gap-2 text-left" transition:slide>
@@ -120,7 +121,7 @@ TODO: Support passkeys
             {#if loading}
                 <CircleNotchIcon class="animate-spin" size={16} /> Loading...
             {:else}
-                <ArrowRightIcon weight="bold" /> Sign In
+                <ArrowRightIcon weight="bold" /> Sign In <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
             {/if}
         </Button>
     </div>

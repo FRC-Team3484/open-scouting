@@ -15,13 +15,14 @@ Props:
 	import { onMount } from "svelte";
 	import { slide } from "svelte/transition";
 	import { PUBLIC_EMAIL_ENABLED } from "$env/static/public";
-	import { ArrowRightIcon, CheckCircleIcon, CircleNotchIcon, ClockIcon, EnvelopeIcon, FastForwardCircleIcon, FastForwardIcon, QuestionIcon, TrashIcon, WarningIcon, XCircleIcon } from "phosphor-svelte";
+	import { ArrowRightIcon, CheckCircleIcon, CircleNotchIcon, ClockIcon, EnvelopeIcon, FastForwardCircleIcon, FastForwardIcon, KeyReturnIcon, QuestionIcon, TrashIcon, WarningIcon, XCircleIcon } from "phosphor-svelte";
 	import { toast } from "svelte-sonner";
 
 	import Button from "$lib/components/ui/button/button.svelte";
     import * as AlertDialog from "$lib/components/ui/alert-dialog/index.js";
     import * as Alert from "$lib/components/ui/alert/index.js";
     import * as InputOTP from "$lib/components/ui/input-otp/index.js";
+    import * as Kbd from "$lib/components/ui/kbd/index.js";
 	import { REGEXP_ONLY_DIGITS } from "bits-ui";
 
 	import { createVerificationCodeAuthCreateVerificationCodePost, verifyVerificationCodeAuthVerifyVerificationCodePost } from "$lib/api/auth/auth";
@@ -155,7 +156,7 @@ Props:
                     {#if sendingCode}
                         <CircleNotchIcon class="animate-spin" size={16} /> Sending...
                     {:else}
-                        <ArrowRightIcon weight="bold" /> Send Code
+                        <ArrowRightIcon weight="bold" /> Send Code <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
                     {/if}
                 </Button>
                 <AlertDialog.Root>
@@ -203,7 +204,7 @@ Props:
                     {#if checkingCode}
                         <CircleNotchIcon class="animate-spin" size={16} /> Checking...
                     {:else}
-                        <ArrowRightIcon weight="bold" /> Verify
+                        <ArrowRightIcon weight="bold" /> Verify <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
                     {/if}
                 </Button>
                 <Button onclick={() => {sendVerificationCode(true)}} variant="outline" disabled={checkingCode || resendCountdown > 0}>
@@ -213,7 +214,7 @@ Props:
                         {#if resendCountdown > 0}
                             <ClockIcon weight="bold" /> Resend Code ({resendCountdown}s)
                         {:else}
-                            <EnvelopeIcon weight="bold" /> Resend Code
+                            <EnvelopeIcon weight="bold" /> Resend Code <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
                         {/if}
                     {/if}
                 </Button>
@@ -226,7 +227,7 @@ Props:
                     <p class="font-bold">Email Verified</p>
                 </div>
                 <p class="text-muted-foreground">You have successfully verified your email: <span class="font-bold">{email}</span></p>
-                <Button onclick={() => {status = "success"}}>Continue</Button>
+                <Button onclick={() => {status = "success"}}><CheckCircleIcon weight="bold" /> Continue <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root></Button>
             </div>
         {/if}
     {:else}

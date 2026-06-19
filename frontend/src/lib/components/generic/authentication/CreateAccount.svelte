@@ -16,13 +16,14 @@ TODO: Support passkeys
 -->
 <script lang="ts">
 	import { slide } from "svelte/transition";
-	import { ArrowLeftIcon, ArrowRightIcon, CircleNotchIcon, EnvelopeIcon, KeyIcon, UserCircleIcon, WarningIcon } from "phosphor-svelte";
+	import { ArrowLeftIcon, ArrowRightIcon, CircleNotchIcon, EnvelopeIcon, KeyIcon, KeyReturnIcon, UserCircleIcon, WarningIcon } from "phosphor-svelte";
 
     import * as Alert from "$lib/components/ui/alert/index";
 	import Button from "$lib/components/ui/button/button.svelte";
 	import Input from "$lib/components/ui/input/input.svelte";
 	import Switch from "$lib/components/ui/switch/switch.svelte";
 	import Label from "$lib/components/ui/label/label.svelte";
+    import * as Kbd from "$lib/components/ui/kbd/index";
 
 	import EmailVerification, { type EmailVerificationStatus } from "./EmailVerification.svelte";
 	import SignInConfirmation from "./SignInConfirmation.svelte";
@@ -165,7 +166,7 @@ TODO: Support passkeys
             {#if checkingUsername}
                 <CircleNotchIcon class="animate-spin" size={16} /> Checking...
             {:else}
-                <ArrowRightIcon weight="bold" /> Next
+                <ArrowRightIcon weight="bold" /> Next <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
             {/if}
         </Button>
     </div>
@@ -208,7 +209,7 @@ TODO: Support passkeys
         {/if}
 
         <Button onclick={() => {page = "profile"}} disabled={password.trim() == "" || confirmPassword.trim() == "" || password != confirmPassword}>
-            <ArrowRightIcon weight="bold" /> Next
+            <ArrowRightIcon weight="bold" /> Next <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
         </Button>
     </div>
 
@@ -230,7 +231,7 @@ TODO: Support passkeys
             {#if creatingAccount}
                 <CircleNotchIcon class="animate-spin" size={16} /> Creating Account...
             {:else}
-                <ArrowRightIcon weight="bold" /> Create Account
+                <ArrowRightIcon weight="bold" /> Create Account <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
             {/if}
         </Button>
     </div>
@@ -239,7 +240,7 @@ TODO: Support passkeys
     <div class="flex flex-col gap-2 text-left" transition:slide>
         <Button variant="outline" size="sm" onclick={() => {page = "profile"}} class="w-fit"><ArrowLeftIcon weight="bold" /> Back</Button>
         <p>Passkeys are not yet supported</p>
-        <Button onclick={() => {page = "success"}}><ArrowRightIcon weight="bold" /> Continue</Button>
+        <Button onclick={() => {page = "success"}}><ArrowRightIcon weight="bold" /> Continue <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root></Button>
     </div>
 {:else if page == "success"}
     <SignInConfirmation user={successUser} redirect={5} />
