@@ -25,7 +25,7 @@ TODO: Back buttons
 	import Switch from "$lib/components/ui/switch/switch.svelte";
 	import Label from "$lib/components/ui/label/label.svelte";
 
-	import EmailVerification from "./EmailVerification.svelte";
+	import EmailVerification, { type EmailVerificationStatus } from "./EmailVerification.svelte";
 	import SignInConfirmation from "./SignInConfirmation.svelte";
 	import { checkUniqueUsernameAuthCheckUniqueUsernameGet, meAuthMeGet, signupAuthSignupPost } from "$lib/api/auth/auth";
 	import type { SignupRequest, UserResponse } from "$lib/api/model";
@@ -37,7 +37,8 @@ TODO: Back buttons
 
     let username: string = $state("");
     let email: string = $state("");
-    let emailVerified: boolean = $state(false);
+    let emailVerificationStatus: EmailVerificationStatus = $state("idle");
+    let emailVerified = $state(false);
     let password: string = $state("");
     let confirmPassword: string = $state("");
     let showPassword: boolean = $state(false);
@@ -102,8 +103,12 @@ TODO: Back buttons
      * Listen to the `verified` prop of the `EmailVerification` component. If it is true, the user can proceed
      */
     $effect(() => {
-        if (emailVerified) {
+        if (emailVerificationStatus == "success") {
             page = "password";
+            emailVerified = true;
+        } else if (emailVerificationStatus == "skipped") {
+            page = "password";
+            emailVerified = false;
         }
     })
 </script>
@@ -140,7 +145,7 @@ TODO: Back buttons
         </Button>
     </div>
 {:else if page == "verify"}
-    <EmailVerification email={email} bind:verified={emailVerified} />
+    <EmailVerification email={email} bind:status={emailVerificationStatus} />
 
 {:else if page == "password"}
     <div class="flex flex-col gap-2 text-left" transition:slide>
