@@ -13,11 +13,10 @@ Finally, ask the user to create a passkey.
 Then show the user the `SignInConfirmation` component.
 
 TODO: Handle keydowns
-TODO: Back buttons
 -->
 <script lang="ts">
 	import { slide } from "svelte/transition";
-	import { ArrowRightIcon, CircleNotchIcon, EnvelopeIcon, KeyIcon, UserCircleIcon, WarningIcon } from "phosphor-svelte";
+	import { ArrowLeftIcon, ArrowRightIcon, CircleNotchIcon, EnvelopeIcon, KeyIcon, UserCircleIcon, WarningIcon } from "phosphor-svelte";
 
     import * as Alert from "$lib/components/ui/alert/index";
 	import Button from "$lib/components/ui/button/button.svelte";
@@ -109,6 +108,9 @@ TODO: Back buttons
         } else if (emailVerificationStatus == "skipped") {
             page = "password";
             emailVerified = false;
+        } else if (emailVerificationStatus == "cancel") {
+            page = "username";
+            emailVerified = false;
         }
     })
 </script>
@@ -149,6 +151,7 @@ TODO: Back buttons
 
 {:else if page == "password"}
     <div class="flex flex-col gap-2 text-left" transition:slide>
+        <Button variant="outline" size="sm" onclick={() => {page = "username"}} class="w-fit"><ArrowLeftIcon weight="bold" /> Back</Button>
         <div class="flex flex-row gap-2 items-center">
             <KeyIcon weight="bold" />
             <p class="font-bold">Choose a password</p>
@@ -188,6 +191,7 @@ TODO: Back buttons
 
 {:else if page == "profile"}
     <div class="flex flex-col gap-2 text-left" transition:slide>
+        <Button variant="outline" size="sm" onclick={() => {page = "password"}} class="w-fit"><ArrowLeftIcon weight="bold" /> Back</Button>
         <div class="flex flex-row gap-2 items-center">
             <UserCircleIcon weight="bold" />
             <p class="font-bold">Profile Details</p>
@@ -210,6 +214,7 @@ TODO: Back buttons
 
 {:else if page == "passkey"}
     <div class="flex flex-col gap-2 text-left" transition:slide>
+        <Button variant="outline" size="sm" onclick={() => {page = "profile"}} class="w-fit"><ArrowLeftIcon weight="bold" /> Back</Button>
         <p>Passkeys are not yet supported</p>
         <Button onclick={() => {page = "success"}}><ArrowRightIcon weight="bold" /> Continue</Button>
     </div>
