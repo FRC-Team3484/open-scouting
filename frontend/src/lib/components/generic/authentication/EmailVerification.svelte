@@ -3,7 +3,6 @@
 Universal email verification component
 
 TODO: back buttons
-TODO: Resend cooldown
 
 Props:
     - `email` (`string`) - The email to verify
@@ -18,7 +17,7 @@ Props:
 	import { onMount } from "svelte";
 	import { slide } from "svelte/transition";
 	import { PUBLIC_EMAIL_ENABLED } from "$env/static/public";
-	import { ArrowRightIcon, CheckCircleIcon, CircleNotchIcon, EnvelopeIcon, FastForwardCircleIcon, FastForwardIcon, QuestionIcon, TrashIcon, WarningIcon, XCircleIcon } from "phosphor-svelte";
+	import { ArrowRightIcon, CheckCircleIcon, CircleNotchIcon, ClockIcon, EnvelopeIcon, FastForwardCircleIcon, FastForwardIcon, QuestionIcon, TrashIcon, WarningIcon, XCircleIcon } from "phosphor-svelte";
 	import { toast } from "svelte-sonner";
 
 	import Button from "$lib/components/ui/button/button.svelte";
@@ -37,12 +36,21 @@ Props:
     let { email, status = $bindable("idle") }: Props = $props();
 
     let page: "confirm_email" | "enter_code" | "success" = $state("confirm_email");
+    let resendCountdown: number = $state(30);
+    let resendInterval: any = null;
     let message: string = $state("");
 
     let sendingCode: boolean = $state(false);
     let code: string = $state("");
     let checkingCode: boolean = $state(false);
 
+    /**
+     * Send a verification code to the user
+     * 
+     * Creates a resend interval, for when the user can send another code
+     * 
+     * @param resend If true, show a message that the code has been resent
+     */
     async function sendVerificationCode(resend = false) {
         sendingCode = true;
         await createVerificationCodeAuthCreateVerificationCodePost({email}).then((response) => {
@@ -54,6 +62,17 @@ Props:
                     page = "enter_code";
                     message = "";
                 }
+
+                if (resendInterval) {
+                    clearInterval(resendInterval);
+                    resendCountdown = 30;
+                }
+                resendInterval = setInterval(() => {
+                    resendCountdown = resendCountdown - 1;
+                    if (resendCountdown == 0) {
+                        clearInterval(resendInterval);
+                    }
+                }, 1000);
             } else {
                 message = response.data.message
                 console.error(response.data.message);
@@ -65,6 +84,9 @@ Props:
         sendingCode = false;
     }
 
+    /**
+     * Check if the verification code is correct on the server
+     */
     async function checkVerificationCode() {
         checkingCode = true;
         await verifyVerificationCodeAuthVerifyVerificationCodePost({email, code}).then((response) => {
@@ -84,7 +106,11 @@ Props:
 
     onMount(() => {
         status = "idle";
-    })
+
+        return () => {
+            clearInterval(resendInterval);
+        }
+    });
 </script>
 
 <div class="flex flex-col gap-2 text-left lg:max-w-[50vw]" transition:slide>
@@ -96,7 +122,7 @@ Props:
         </Alert.Root>
     {/if}
 
-    {#if !PUBLIC_EMAIL_ENABLED}
+    {#if PUBLIC_EMAIL_ENABLED}
         {#if page == "confirm_email"}
             <div class="flex flex-col gap-2 text-left" transition:slide>
                 <Button variant="outline" size="sm" onclick={() => {status = "cancel"}} disabled={sendingCode} class="w-fit"><XCircleIcon weight="bold" /> Cancel</Button>
@@ -163,11 +189,15 @@ Props:
                         <ArrowRightIcon weight="bold" /> Verify
                     {/if}
                 </Button>
-                <Button onclick={() => {sendVerificationCode(true)}} variant="outline" disabled={checkingCode}>
+                <Button onclick={() => {sendVerificationCode(true)}} variant="outline" disabled={checkingCode || resendCountdown > 0}>
                     {#if sendingCode}
                         <CircleNotchIcon class="animate-spin" size={16} /> Sending...
                     {:else}
-                        <EnvelopeIcon weight="bold" /> Resend Code
+                        {#if resendCountdown > 0}
+                            <ClockIcon weight="bold" /> Resend Code ({resendCountdown}s)
+                        {:else}
+                            <EnvelopeIcon weight="bold" /> Resend Code
+                        {/if}
                     {/if}
                 </Button>
             </div>
