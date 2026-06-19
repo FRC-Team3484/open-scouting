@@ -560,7 +560,8 @@ async def verify_verification_code(email: str, code: str, identity: Identity = D
     Given an email and a verification code, verify the verification code
 
     If an identity is found, the verification code must be attached to the user to be validated.
-        This would occour when verifying an email from the profile page when their email was not yet verified
+        This would occour when verifying an email from the profile page when their email was not yet verified.
+        When doing this, also set that user's email_verified to be true if it is not already.
 
     The code's created_at should be less than VERIFICATION_CODE_EXPIRE_MINUTES to be validated.
 
@@ -580,5 +581,9 @@ async def verify_verification_code(email: str, code: str, identity: Identity = D
         return JSONResponse(content={"message": "Verification code has expired"}, status_code=400)
     else:
         verification_code.verified = True
+
+        if (identity.user):
+            identity.user.email_verified = True
+            await identity.user.save()
         await verification_code.save()
         return JSONResponse(content={"message": "Verification code verified"}, status_code=200)

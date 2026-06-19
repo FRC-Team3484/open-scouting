@@ -278,7 +278,8 @@ export const CreateVerificationCodeAuthCreateVerificationCodePostResponse = zod.
 Given an email and a verification code, verify the verification code
 
 If an identity is found, the verification code must be attached to the user to be validated.
-    This would occour when verifying an email from the profile page when their email was not yet verified
+    This would occour when verifying an email from the profile page when their email was not yet verified.
+    When doing this, also set that user's email_verified to be true if it is not already.
 
 The code's created_at should be less than VERIFICATION_CODE_EXPIRE_MINUTES to be validated.
 
