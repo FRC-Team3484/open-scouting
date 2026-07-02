@@ -26,6 +26,7 @@ Props:
 	import { REGEXP_ONLY_DIGITS } from "bits-ui";
 
 	import { createVerificationCodeAuthCreateVerificationCodePost, verifyVerificationCodeAuthVerifyVerificationCodePost } from "$lib/api/auth/auth";
+	import WhyAreEmailsDisabledDialog from "./WhyAreEmailsDisabledDialog.svelte";
 
 
     interface Props {
@@ -240,24 +241,7 @@ Props:
         <p class="text-muted-foreground font-bold">Consider creating a passkey in the next steps.</p>
 
         <div class="flex flex-row gap-2 w-full">
-            <AlertDialog.Root>
-                <AlertDialog.Trigger>
-                    <Button variant="outline"><QuestionIcon weight="bold" /> Why am I seeing this?</Button>
-                </AlertDialog.Trigger>
-                <AlertDialog.Content>
-                    <AlertDialog.Title>Why am I seeing this?</AlertDialog.Title>
-            
-                    <AlertDialog.Description>
-                        <p>Having a reliable way to send emails to users, and getting them to deliver without being marked as spam costs money.</p>
-                        <p>There are some free tier options, but they are not always reliable, and will stop working after enough emails are sent in a month.</p>
-                        <p>Due to budget constraints, we are keeping Open Scouting's hosting costs as low as possible.</p>
-                        <p>You may also be seeing this in the offseason, when we are not paying for emails due to low usage.</p>
-                    </AlertDialog.Description>
-                    <AlertDialog.Footer>
-                        <AlertDialog.Cancel type="button">Close</AlertDialog.Cancel>
-                    </AlertDialog.Footer>
-                </AlertDialog.Content>
-            </AlertDialog.Root>
+            <WhyAreEmailsDisabledDialog />
             <Button class="flex-2" onclick={() => {status = "skipped"}}><ArrowRightIcon weight="bold" /> Continue</Button>
         </div>
     {/if}
