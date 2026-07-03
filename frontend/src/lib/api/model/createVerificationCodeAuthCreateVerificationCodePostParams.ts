@@ -4,7 +4,9 @@
  * FastAPI
  * OpenAPI spec version: v2.2.0
  */
+import type { CreateVerificationCodeAuthCreateVerificationCodePostStyle } from './createVerificationCodeAuthCreateVerificationCodePostStyle';
 
 export type CreateVerificationCodeAuthCreateVerificationCodePostParams = {
 email: string;
+style?: CreateVerificationCodeAuthCreateVerificationCodePostStyle;
 };

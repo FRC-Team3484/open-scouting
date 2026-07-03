@@ -4,8 +4,10 @@
  * FastAPI
  * OpenAPI spec version: v2.2.0
  */
+import type { SendVerificationCodeEmailPostStyle } from './sendVerificationCodeEmailPostStyle';
 
 export type SendVerificationCodeEmailPostParams = {
 email: string;
 code: number;
+style?: SendVerificationCodeEmailPostStyle;
 };

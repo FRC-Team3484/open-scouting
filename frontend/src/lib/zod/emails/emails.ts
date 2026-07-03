@@ -18,9 +18,12 @@ Returns:
     JSONResponse: A message indicating that the email has been sent
  * @summary Send Verification Code
  */
+export const sendVerificationCodeEmailPostQueryStyleDefault = `verification_code`;
+
 export const SendVerificationCodeEmailPostQueryParams = zod.object({
   "email": zod.string(),
-  "code": zod.number()
+  "code": zod.number(),
+  "style": zod.enum(['verification_code', 'forgot_password']).default(sendVerificationCodeEmailPostQueryStyleDefault)
 })
 
 export const SendVerificationCodeEmailPostResponse = zod.unknown()

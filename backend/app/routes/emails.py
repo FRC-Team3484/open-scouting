@@ -1,6 +1,7 @@
 
 from pathlib import Path
 import os
+from typing import Literal
 
 from fastapi import APIRouter
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType, NameEmail
@@ -40,7 +41,7 @@ conf = ConnectionConfig(
 )
 
 @router.post("/email")
-async def send_verification_code(email: NameEmail, code: int) -> JSONResponse:
+async def send_verification_code(email: NameEmail, code: int, style: Literal["verification_code", "forgot_password"] = "verification_code") -> JSONResponse:
     """
     Send a verification code to an email, using an email template
 
@@ -68,5 +69,5 @@ async def send_verification_code(email: NameEmail, code: int) -> JSONResponse:
     if os.getenv("PUBLIC_EMAIL_ENABLED", "false") == "false":
         return JSONResponse(status_code=403, content={"message": "emails are disabled"})
     else:
-        await fm.send_message(message, template_name="verification_code.html")
-        return JSONResponse(status_code=200, content={"message": "email has been sent"})     
+        await fm.send_message(message, template_name="verification_code.html" if style == "verification_code" else "forgot_password.html")
+        return JSONResponse(status_code=200, content={"message": "email has been sent"})

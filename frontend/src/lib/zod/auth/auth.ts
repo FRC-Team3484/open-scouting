@@ -266,8 +266,11 @@ Parameters:
     email (str): The email to create a verification code for
  * @summary Create Verification Code
  */
+export const createVerificationCodeAuthCreateVerificationCodePostQueryStyleDefault = `verification_code`;
+
 export const CreateVerificationCodeAuthCreateVerificationCodePostQueryParams = zod.object({
-  "email": zod.string()
+  "email": zod.string(),
+  "style": zod.enum(['verification_code', 'forgot_password']).default(createVerificationCodeAuthCreateVerificationCodePostQueryStyleDefault)
 })
 
 export const CreateVerificationCodeAuthCreateVerificationCodePostResponse = zod.unknown()

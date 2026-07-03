@@ -517,7 +517,7 @@ async def check_unique_username(username: str, email: str) -> JSONResponse:
         return JSONResponse(content={"message": "Username and email are unique"}, status_code=200)
 
 @router.post("/auth/create_verification_code")
-async def create_verification_code(email: str, identity: Identity = Depends(get_identity)) -> JSONResponse:
+async def create_verification_code(email: str, style: Literal["verification_code", "forgot_password"] = "verification_code", identity: Identity = Depends(get_identity)) -> JSONResponse:
     """
     Given an email, create a verification code and send it to the user
 
@@ -547,7 +547,7 @@ async def create_verification_code(email: str, identity: Identity = Depends(get_
 
         await code.save()
 
-        return await send_verification_code(email, code.code)
+        return await send_verification_code(email, code.code, style)
     else:
         return JSONResponse(content={"message": "emails are disabled"}, status_code=403)
     

@@ -62,6 +62,7 @@ export * from './reorderPitFieldsRequest';
 export * from './seasonCreate';
 export * from './seasonResponse';
 export * from './sendVerificationCodeEmailPostParams';
+export * from './sendVerificationCodeEmailPostStyle';
 export * from './serverStatusResponse';
 export * from './setDisplayNameUsersMeSetDisplayNamePostParams';
 export * from './setTeamNumberUsersMeSetTeamNumberPostParams';
