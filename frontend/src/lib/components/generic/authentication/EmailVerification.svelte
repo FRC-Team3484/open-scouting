@@ -7,6 +7,7 @@ Props:
     - `status` (`EmailVerificationStatus`) - The state of the component. 
         Other components can bind to this status to know when this component can be hidden again
     - `verificationCodeUuid` (`string | null`) - The uuid of the verified verification code
+    - `skippable` (`boolean`) - Whether to show the skip button
 -->
 <script lang="ts" module>
     export type EmailVerificationStatus = "idle" | "success" | "cancel" | "skipped";
@@ -34,8 +35,9 @@ Props:
         email: string
         status?: EmailVerificationStatus
         verificationCodeUuid?: string | null
+        skippable? : boolean
     }
-    let { email, status = $bindable("idle"), verificationCodeUuid = $bindable(null) }: Props = $props();
+    let { email, status = $bindable("idle"), verificationCodeUuid = $bindable(null), skippable = true }: Props = $props();
 
     let page: "confirm_email" | "enter_code" | "success" = $state("confirm_email");
     let resendCountdown: number = $state(30);
@@ -163,23 +165,25 @@ Props:
                         <ArrowRightIcon weight="bold" /> Send Code <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
                     {/if}
                 </Button>
-                <AlertDialog.Root>
-                    <AlertDialog.Trigger>
-                        <Button onclick={() => {}} variant="outline" disabled={sendingCode} class="w-full"><FastForwardCircleIcon weight="bold" /> Skip</Button>
-                    </AlertDialog.Trigger>
-                    <AlertDialog.Content>
-                        <AlertDialog.Title>Skip Email Verification</AlertDialog.Title>
-                        <AlertDialog.Description>
-                            <p>Are you sure you want to skip email verification?</p>
-                            <p>Without a verified email, you will not be able to use the "Forgot Password" feature to recover your account.</p>
-                            <p>You will still be able to change your password by accessing your account using a passkey.</p>
-                        </AlertDialog.Description>
-                        <AlertDialog.Footer>
-                            <AlertDialog.Cancel type="button">Cancel</AlertDialog.Cancel>
-                            <AlertDialog.Action type="button" onclick={() => {status = "skipped"}}>Skip</AlertDialog.Action>
-                        </AlertDialog.Footer>
-                    </AlertDialog.Content>
-                </AlertDialog.Root>
+                {#if skippable}
+                    <AlertDialog.Root>
+                        <AlertDialog.Trigger>
+                            <Button onclick={() => {}} variant="outline" disabled={sendingCode} class="w-full"><FastForwardCircleIcon weight="bold" /> Skip</Button>
+                        </AlertDialog.Trigger>
+                        <AlertDialog.Content>
+                            <AlertDialog.Title>Skip Email Verification</AlertDialog.Title>
+                            <AlertDialog.Description>
+                                <p>Are you sure you want to skip email verification?</p>
+                                <p>Without a verified email, you will not be able to use the "Forgot Password" feature to recover your account.</p>
+                                <p>You will still be able to change your password by accessing your account using a passkey.</p>
+                            </AlertDialog.Description>
+                            <AlertDialog.Footer>
+                                <AlertDialog.Cancel type="button">Cancel</AlertDialog.Cancel>
+                                <AlertDialog.Action type="button" onclick={() => {status = "skipped"}}>Skip</AlertDialog.Action>
+                            </AlertDialog.Footer>
+                        </AlertDialog.Content>
+                    </AlertDialog.Root>
+                {/if}
             </div>
 
         {:else if page == "enter_code"}
