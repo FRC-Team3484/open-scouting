@@ -200,6 +200,15 @@ async def signup(
     Returns:
         MessageResponse: A message indicating that the user has been created
     """
+    # Ensure that the verification code has been verified
+    email_verified = False
+    if data.email and data.verification_code_uuid:
+        verification_code = await VerificationCode.get_or_none(uuid=data.verification_code_uuid, email=data.email, verified=True)
+        if verification_code:
+            email_verified = True
+        else:
+            email_verified = False
+
     if data.password != data.confirm_password:
         raise HTTPException(status_code=400, detail="Passwords do not match")
 
@@ -210,7 +219,7 @@ async def signup(
             username=data.username,
             email=data.email,
             hashed_password=hashed_password,
-            email_verified=data.email_verified
+            email_verified=email_verified
         )
         await Profile.create(user=user, display_name=data.display_name, team_number=int(data.team_number))
 

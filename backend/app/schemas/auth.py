@@ -46,7 +46,7 @@ class SignupRequest(BaseModel):
     confirm_password: str
     team_number: int
     display_name: str
-    email_verified: bool
+    verification_code_uuid: UUID | None
 
     @model_validator(mode="after")
     def passwords_match(self):
