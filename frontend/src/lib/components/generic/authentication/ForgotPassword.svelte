@@ -6,7 +6,6 @@ Users are asked to enter their email before being sent a verification code to th
 If emails are disabled on the server, instead prompt them to log in with a passkey. 
 
 TODO: Support keyboard navigation
-TODO: Can this use the EmailVerification component instead?
 
 Props:
     - `status` (`ForgotPasswordStatus`) - The state of the component. 
@@ -32,6 +31,7 @@ Props:
 	import Label from "$lib/components/ui/label/label.svelte";
 	import { createVerificationCodeAuthCreateVerificationCodePost, forgotPasswordAuthForgotPasswordPost, verifyVerificationCodeAuthVerifyVerificationCodePost } from "$lib/api/auth/auth";
 	import { toast } from "svelte-sonner";
+	import EmailVerification, { type EmailVerificationStatus } from "./EmailVerification.svelte";
     
 
     const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -41,81 +41,19 @@ Props:
     }
     let { status = $bindable("idle") }: Props = $props();
 
-    let page: "enter_email" | "enter_code" | "enter_new_password" | "success" = $state("enter_email");
-    let resendCountdown: number = $state(30);
-    let resendInterval: any = null;
+    let page: "enter_email" | "verify" | "enter_new_password" | "success" = $state("enter_email");
+
     let message: string = $state("");
 
     let email = $state("");
     let sendingVerificationCode = $state(false);
-    let code = $state("");
-    let checkingCode = $state(false);
     let password = $state("");
     let confirmPassword = $state("");
     let showPassword = $state(false);
     let changingPassword = $state(false);
+
+    let emailVerificationStatus: EmailVerificationStatus = $state("idle");
     let verificationCodeUuid = $state(null);
-
-    /**
-     * Send a verification code to the user
-     * 
-     * Creates a resend interval, for when the user can send another code
-     * 
-     * @param resend If true, show a message that the code has been resent
-     */
-    async function sendVerificationCode(resend = false) {
-        sendingVerificationCode = true;
-        await createVerificationCodeAuthCreateVerificationCodePost({email, style: "forgot_password"}).then((response) => {
-            if (response.status == 200) {
-                if (resend) {
-                    toast.success("Code resent");
-                    message = "";
-                } else {
-                    page = "enter_code";
-                    message = "";
-                }
-
-                if (resendInterval) {
-                    clearInterval(resendInterval);
-                    resendCountdown = 30;
-                }
-                resendInterval = setInterval(() => {
-                    resendCountdown = resendCountdown - 1;
-                    if (resendCountdown == 0) {
-                        clearInterval(resendInterval);
-                    }
-                }, 1000);
-            } else {
-                message = response.data.message
-                console.error(response.data.message);
-            }
-        }).catch((error) => {
-            message = error.message
-            console.error(error);
-        });
-        sendingVerificationCode = false;
-    }
-
-    /**
-     * Check if the verification code is correct on the server
-     */
-    async function checkVerificationCode() {
-        checkingCode = true;
-        await verifyVerificationCodeAuthVerifyVerificationCodePost({email, code}).then((response) => {
-            if (response.status == 200) {
-                page = "enter_new_password";
-                message = "";
-                verificationCodeUuid = response.data.verification_code_uuid;
-            } else {
-                message = response.data.message
-                console.error(response.data.message);
-            }
-        }).catch((error) => {
-            message = error.message
-            console.error(error);
-        });
-        checkingCode = false;
-    }
 
     /**
      * Change the user's password on the server
@@ -144,11 +82,15 @@ Props:
 
     onMount(() => {
         status = "idle";
+    });
 
-        return () => {
-            clearInterval(resendInterval);
+    $effect(() => {
+        if (emailVerificationStatus == "success") {
+            page = "enter_new_password";
+        } else if (emailVerificationStatus == "cancel" || emailVerificationStatus == "skipped") {
+            page = "enter_email";
         }
-    })
+    });
 </script>
 
 <div class="flex flex-col gap-2 text-left lg:max-w-[50vw]" transition:slide>
@@ -173,56 +115,14 @@ Props:
                 <Input type="email" placeholder="Email" bind:value={email} autofocus />
                 <p class="text-sm text-muted-foreground">A verification code will be sent to this email</p>
 
-                <Button onclick={() => sendVerificationCode()} disabled={sendingVerificationCode || email.trim() == "" || !EMAIL_REGEX.test(email)}>
-                    {#if sendingVerificationCode}
-                        <CircleNotchIcon class="animate-spin" size={16} /> Sending...
-                    {:else}
-                        <ArrowRightIcon weight="bold" /> Send Verification Code
-                    {/if}
+                <Button onclick={() => page = "verify"} disabled={email.trim() == "" || !EMAIL_REGEX.test(email)}>
+                    <ArrowRightIcon weight="bold" /> Send Verification Code
                 </Button>
 
             </div>
-        {:else if page == "enter_code"}
-            <div class="flex flex-col gap-2 text-left" transition:slide>
-                <Button variant="outline" size="sm" onclick={() => {page = "enter_email"}} class="w-fit"><ArrowLeftIcon weight="bold" /> Back</Button>
-                <div class="flex flex-row gap-2 items-center">
-                    <EnvelopeOpenIcon weight="bold" />
-                    <p class="font-bold">Verification code sent</p>
-                </div>
-                <p class="text-muted-foreground">A verification code has been sent to <span class="font-bold">{email}</span></p>
-                <p class="text-muted-foreground">Enter the code below to verify your email</p>
+        {:else if page == "verify"}
+            <EmailVerification email={email} bind:status={emailVerificationStatus} bind:verificationCodeUuid={verificationCodeUuid} skippable={false} />
 
-                <div class="flex flex-row items-center w-full justify-center gap-2">
-                    <InputOTP.Root maxlength={6} pattern={REGEXP_ONLY_DIGITS} class="my-4" bind:value={code}>
-                        {#snippet children({ cells })}
-                            <InputOTP.Group>
-                            {#each cells as cell (cell)}
-                                <InputOTP.Slot {cell} />
-                            {/each}
-                            </InputOTP.Group>
-                        {/snippet}
-                    </InputOTP.Root>
-                    <Button variant="outline" size="icon" onclick={() => code = ""} disabled={!code.length}><TrashIcon weight="bold" /></Button>
-                </div>
-                <Button onclick={() => {checkVerificationCode()}} disabled={code.length != 6 || checkingCode}>
-                    {#if checkingCode}
-                        <CircleNotchIcon class="animate-spin" size={16} /> Checking...
-                    {:else}
-                        <ArrowRightIcon weight="bold" /> Verify
-                    {/if}
-                </Button>
-                <Button onclick={() => {sendVerificationCode(true)}} variant="outline" disabled={checkingCode || resendCountdown > 0}>
-                    {#if sendingVerificationCode}
-                        <CircleNotchIcon class="animate-spin" size={16} /> Sending...
-                    {:else}
-                        {#if resendCountdown > 0}
-                            <ClockIcon weight="bold" /> Resend Code ({resendCountdown}s)
-                        {:else}
-                            <EnvelopeIcon weight="bold" /> Resend Code
-                        {/if}
-                    {/if}
-                </Button>
-            </div>
         {:else if page == "enter_new_password"}
             <div class="flex flex-col gap-2 text-left" transition:slide>
                 <Button variant="outline" size="sm" onclick={() => {page = "enter_email"}} class="w-fit"><ArrowLeftIcon weight="bold" /> Back</Button>
