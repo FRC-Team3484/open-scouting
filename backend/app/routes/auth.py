@@ -586,4 +586,4 @@ async def verify_verification_code(email: str, code: str, identity: Identity = D
             identity.user.email_verified = True
             await identity.user.save()
         await verification_code.save()
-        return JSONResponse(content={"message": "Verification code verified"}, status_code=200)
+        return JSONResponse(content={"message": "Verification code verified", "verification_code_uuid": str(verification_code.uuid)}, status_code=200)
