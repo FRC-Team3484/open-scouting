@@ -19,18 +19,18 @@ Props:
 	import { PUBLIC_EMAIL_ENABLED } from "$env/static/public";
 	import { onMount } from "svelte";
 	import { slide } from "svelte/transition";
-	import { ArrowLeftIcon, ArrowRightIcon, CheckCircleIcon, CircleNotchIcon, ClockIcon, EnvelopeIcon, EnvelopeOpenIcon, PasswordIcon, TrashIcon, WarningIcon, XCircleIcon } from "phosphor-svelte";
+	import { toast } from "svelte-sonner";
+	import { ArrowLeftIcon, ArrowRightIcon, CheckCircleIcon, CircleNotchIcon, EnvelopeIcon, KeyReturnIcon, PasswordIcon, WarningIcon, XCircleIcon } from "phosphor-svelte";
 
     import * as Alert from "$lib/components/ui/alert";
 	import Button from "$lib/components/ui/button/button.svelte";
-	import WhyAreEmailsDisabledDialog from "./WhyAreEmailsDisabledDialog.svelte";
 	import Input from "$lib/components/ui/input/input.svelte";
-    import * as InputOTP from "$lib/components/ui/input-otp/index.js";
-	import { REGEXP_ONLY_DIGITS } from "bits-ui";
 	import Switch from "$lib/components/ui/switch/switch.svelte";
 	import Label from "$lib/components/ui/label/label.svelte";
-	import { createVerificationCodeAuthCreateVerificationCodePost, forgotPasswordAuthForgotPasswordPost, verifyVerificationCodeAuthVerifyVerificationCodePost } from "$lib/api/auth/auth";
-	import { toast } from "svelte-sonner";
+    import * as Kbd from "$lib/components/ui/kbd/index";
+
+	import WhyAreEmailsDisabledDialog from "./WhyAreEmailsDisabledDialog.svelte";
+	import { forgotPasswordAuthForgotPasswordPost } from "$lib/api/auth/auth";
 	import EmailVerification, { type EmailVerificationStatus } from "./EmailVerification.svelte";
     
 
@@ -46,7 +46,6 @@ Props:
     let message: string = $state("");
 
     let email = $state("");
-    let sendingVerificationCode = $state(false);
     let password = $state("");
     let confirmPassword = $state("");
     let showPassword = $state(false);
@@ -80,10 +79,30 @@ Props:
         changingPassword = false;
     }
 
+    /**
+     * Handle the enter key on this component
+     * 
+     * @param e
+     */
+    function handleKeydown(e: KeyboardEvent) {
+        if (e.key == "Enter") {
+            if (page == "enter_email" && email.trim() != "" && EMAIL_REGEX.test(email)) {
+                page = "verify";
+            } else if (page == "enter_new_password" && password.trim() != "" && confirmPassword.trim() != "" && password == confirmPassword && !changingPassword) {
+                changePassword();
+            } else if (page == "success") {
+                status = "success";
+            }
+        }
+    }
+    
     onMount(() => {
         status = "idle";
     });
 
+    /**
+     * Update the page when the email verification status changes
+     */
     $effect(() => {
         if (emailVerificationStatus == "success") {
             page = "enter_new_password";
@@ -92,6 +111,8 @@ Props:
         }
     });
 </script>
+
+<svelte:window on:keydown={handleKeydown} />
 
 <div class="flex flex-col gap-2 text-left lg:max-w-[50vw]" transition:slide>
     {#if message}
@@ -105,7 +126,7 @@ Props:
     {#if PUBLIC_EMAIL_ENABLED}
         {#if page == "enter_email"}
             <div class="flex flex-col gap-2 text-left" transition:slide>
-                <Button variant="outline" size="sm" onclick={() => {status = "cancel"}} class="w-fit" disabled={sendingVerificationCode}><XCircleIcon weight="bold" /> Cancel</Button>
+                <Button variant="outline" size="sm" onclick={() => {status = "cancel"}} class="w-fit"><XCircleIcon weight="bold" /> Cancel</Button>
                 <div class="flex flex-row gap-2 items-center">
                     <EnvelopeIcon weight="bold" />
                     <p class="font-bold">Enter your email</p>
@@ -116,7 +137,7 @@ Props:
                 <p class="text-sm text-muted-foreground">A verification code will be sent to this email</p>
 
                 <Button onclick={() => page = "verify"} disabled={email.trim() == "" || !EMAIL_REGEX.test(email)}>
-                    <ArrowRightIcon weight="bold" /> Send Verification Code
+                    <ArrowRightIcon weight="bold" /> Send Verification Code <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
                 </Button>
 
             </div>
@@ -163,7 +184,7 @@ Props:
                     {#if changingPassword}
                         <CircleNotchIcon class="animate-spin" size={16} /> Changing...
                     {:else}
-                        <ArrowRightIcon weight="bold" /> Change Password
+                        <ArrowRightIcon weight="bold" /> Change Password <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
                     {/if}
                 </Button>
 
@@ -176,7 +197,9 @@ Props:
                 </div>
                 <p class="text-muted-foreground">Your password has been changed. Continue to the sign in page to log in with your new password.</p>
 
-                <Button onclick={() => {status = "success"}}><ArrowRightIcon weight="bold" /> Continue</Button>
+                <Button onclick={() => {status = "success"}}>
+                    <ArrowRightIcon weight="bold" /> Continue <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
+                </Button>
             </div>
         {/if}
     {:else}
