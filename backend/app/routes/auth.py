@@ -17,7 +17,7 @@ from ..auth import create_access_token, get_password_hash, verify_password
 from ..dependencies import Identity, get_identity, require_user, require_superuser
 
 from ..models import User, Profile, Settings, Session, VerificationCode
-from .emails import send_verification_code
+from .emails import send_password_change_notification, send_verification_code
 from ..schemas.generic import MessageResponse
 from ..schemas.auth import BaseSettings, ForgotPasswordRequest, SignupRequest, UserMeResponse, UserResponse, UserSetting, VerifyVerificationCodeRequest, VerifyVerificationCodeResponse
 
@@ -626,6 +626,8 @@ async def forgot_password(data: ForgotPasswordRequest, response: Response):
 
     user.hashed_password = get_password_hash(data.password)
     await user.save()
+
+    _ = await send_password_change_notification(data.email, user.username)
 
     response.status_code = 200
     return MessageResponse(message="Password changed")

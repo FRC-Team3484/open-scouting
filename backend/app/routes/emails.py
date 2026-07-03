@@ -40,7 +40,7 @@ conf = ConnectionConfig(
     TEMPLATE_FOLDER = Path(__file__).parent.parent / "email_templates"
 )
 
-@router.post("/email")
+@router.post("/email/verification_code")
 async def send_verification_code(email: NameEmail, code: int, style: Literal["verification_code", "forgot_password"] = "verification_code") -> JSONResponse:
     """
     Send a verification code to an email, using an email template
@@ -48,6 +48,7 @@ async def send_verification_code(email: NameEmail, code: int, style: Literal["ve
     Parameters:
         email (NameEmail): The email to send the verification code to
         code (int): The verification code to send
+        style (Literal["verification_code", "forgot_password"]): The style of the email
 
     Returns:
         JSONResponse: A message indicating that the email has been sent
@@ -70,4 +71,35 @@ async def send_verification_code(email: NameEmail, code: int, style: Literal["ve
         return JSONResponse(status_code=403, content={"message": "emails are disabled"})
     else:
         await fm.send_message(message, template_name="verification_code.html" if style == "verification_code" else "forgot_password.html")
+        return JSONResponse(status_code=200, content={"message": "email has been sent"})
+
+@router.post("/email/password_change_notification")
+async def send_password_change_notification(email: NameEmail, username: str) -> JSONResponse:
+    """
+    Send a password change notification to an email
+
+    Parameters:
+        email (NameEmail): The email to send the verification code to
+        code (int): The verification code to send
+
+    Returns:
+        JSONResponse: A message indicating that the email has been sent
+    """
+    template_data = {
+        "username": username
+    }
+
+    message = MessageSchema(
+        subject=f"Open Scouting Password Change Notification",
+        recipients=[email],
+        template_body=template_data,
+        subtype=MessageType.html
+    )
+
+    fm = FastMail(conf)
+
+    if os.getenv("PUBLIC_EMAIL_ENABLED", "false") == "false":
+        return JSONResponse(status_code=403, content={"message": "emails are disabled"})
+    else:
+        await fm.send_message(message, template_name="password_changed.html")
         return JSONResponse(status_code=200, content={"message": "email has been sent"})
