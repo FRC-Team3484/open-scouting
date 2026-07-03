@@ -12,5 +12,5 @@ export interface SignupRequest {
   confirm_password: string;
   team_number: number;
   display_name: string;
-  email_verified: boolean;
+  verification_code_uuid: string | null;
 }

@@ -70,7 +70,7 @@ export const SignupAuthSignupPostBody = zod.object({
   "confirm_password": zod.string(),
   "team_number": zod.number(),
   "display_name": zod.string(),
-  "email_verified": zod.boolean()
+  "verification_code_uuid": zod.union([zod.string().uuid(),zod.null()])
 })
 
 export const SignupAuthSignupPostResponse = zod.object({
@@ -297,4 +297,23 @@ export const VerifyVerificationCodeAuthVerifyVerificationCodePostQueryParams = z
 })
 
 export const VerifyVerificationCodeAuthVerifyVerificationCodePostResponse = zod.unknown()
+
+/**
+ * Given an email, password, and verification code UUID, change the password for a user
+
+First, confirm that the verification code is valid. If so, change the password for the user.
+
+Parameters:
+    email (str): The email to change the password for
+    password (str): The new password
+    verification_code_uuid (str): The UUID of the verification code
+ * @summary Forgot Password
+ */
+export const ForgotPasswordAuthForgotPasswordPostQueryParams = zod.object({
+  "email": zod.string(),
+  "password": zod.string(),
+  "verification_code_uuid": zod.string()
+})
+
+export const ForgotPasswordAuthForgotPasswordPostResponse = zod.unknown()
 

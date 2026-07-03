@@ -9,6 +9,7 @@ import type {
   BodyLoginAuthLoginPost,
   CheckUniqueUsernameAuthCheckUniqueUsernameGetParams,
   CreateVerificationCodeAuthCreateVerificationCodePostParams,
+  ForgotPasswordAuthForgotPasswordPostParams,
   HTTPValidationError,
   MessageResponse,
   SetDisplayNameUsersMeSetDisplayNamePostParams,
@@ -773,6 +774,63 @@ Parameters:
 export const verifyVerificationCodeAuthVerifyVerificationCodePost = async (params: VerifyVerificationCodeAuthVerifyVerificationCodePostParams, options?: RequestInit): Promise<verifyVerificationCodeAuthVerifyVerificationCodePostResponse> => {
 
   return customInstance<verifyVerificationCodeAuthVerifyVerificationCodePostResponse>(getVerifyVerificationCodeAuthVerifyVerificationCodePostUrl(params),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+export type forgotPasswordAuthForgotPasswordPostResponse200 = {
+  data: unknown
+  status: 200
+}
+
+export type forgotPasswordAuthForgotPasswordPostResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type forgotPasswordAuthForgotPasswordPostResponseSuccess = (forgotPasswordAuthForgotPasswordPostResponse200) & {
+  headers: Headers;
+};
+export type forgotPasswordAuthForgotPasswordPostResponseError = (forgotPasswordAuthForgotPasswordPostResponse422) & {
+  headers: Headers;
+};
+
+export type forgotPasswordAuthForgotPasswordPostResponse = (forgotPasswordAuthForgotPasswordPostResponseSuccess | forgotPasswordAuthForgotPasswordPostResponseError)
+
+export const getForgotPasswordAuthForgotPasswordPostUrl = (params: ForgotPasswordAuthForgotPasswordPostParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/auth/forgot_password?${stringifiedParams}` : `/auth/forgot_password`
+}
+
+/**
+ * Given an email, password, and verification code UUID, change the password for a user
+
+First, confirm that the verification code is valid. If so, change the password for the user.
+
+Parameters:
+    email (str): The email to change the password for
+    password (str): The new password
+    verification_code_uuid (str): The UUID of the verification code
+ * @summary Forgot Password
+ */
+export const forgotPasswordAuthForgotPasswordPost = async (params: ForgotPasswordAuthForgotPasswordPostParams, options?: RequestInit): Promise<forgotPasswordAuthForgotPasswordPostResponse> => {
+
+  return customInstance<forgotPasswordAuthForgotPasswordPostResponse>(getForgotPasswordAuthForgotPasswordPostUrl(params),
   {
     ...options,
     method: 'POST'
