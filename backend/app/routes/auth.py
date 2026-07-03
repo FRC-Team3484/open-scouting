@@ -596,3 +596,28 @@ async def verify_verification_code(email: str, code: str, identity: Identity = D
             await identity.user.save()
         await verification_code.save()
         return JSONResponse(content={"message": "Verification code verified", "verification_code_uuid": str(verification_code.uuid)}, status_code=200)
+
+@router.post("/auth/forgot_password")
+async def forgot_password(email: str, password: str, verification_code_uuid: str):
+    """
+    Given an email, password, and verification code UUID, change the password for a user
+
+    First, confirm that the verification code is valid. If so, change the password for the user.
+
+    Parameters:
+        email (str): The email to change the password for
+        password (str): The new password
+        verification_code_uuid (str): The UUID of the verification code
+    """
+    verification_code = VerificationCode.get_or_none(uuid=verification_code_uuid, email=email, verified=True)
+    if not verification_code:
+        return JSONResponse(content={"message": "Invalid verification code"}, status_code=400)
+
+    user = await User.get_or_none(email=email)
+    if not user:
+        return JSONResponse(content={"message": "User not found"}, status_code=404)
+
+    user.hashed_password = get_password_hash(password)
+    await user.save()
+
+    return JSONResponse(content={"message": "Password changed"}, status_code=200)
