@@ -44,6 +44,7 @@ TODO: Support passkeys
     let showPassword: boolean = $state(false);
     let displayName: string = $state("");
     let teamNumber: number = $state(0);
+    let verificationCodeUuid: string | null = $state(null);
 
     let checkingUsername: boolean = $state(false);
     let creatingAccount: boolean = $state(false);
@@ -81,7 +82,7 @@ TODO: Support passkeys
             confirm_password: confirmPassword,
             team_number: teamNumber,
             display_name: displayName,
-            email_verified: emailVerified
+            verification_code_uuid: verificationCodeUuid
         }
         
         await signupAuthSignupPost(data).then(async (response) => {
@@ -171,7 +172,7 @@ TODO: Support passkeys
         </Button>
     </div>
 {:else if page == "verify"}
-    <EmailVerification email={email} bind:status={emailVerificationStatus} />
+    <EmailVerification email={email} bind:status={emailVerificationStatus} bind:verificationCodeUuid={verificationCodeUuid} />
 
 {:else if page == "password"}
     <div class="flex flex-col gap-2 text-left" transition:slide>
