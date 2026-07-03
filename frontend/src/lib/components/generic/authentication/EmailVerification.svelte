@@ -6,6 +6,7 @@ Props:
     - `email` (`string`) - The email to verify
     - `status` (`EmailVerificationStatus`) - The state of the component. 
         Other components can bind to this status to know when this component can be hidden again
+    - `verificationCodeUuid` (`string | null`) - The uuid of the verified verification code
 -->
 <script lang="ts" module>
     export type EmailVerificationStatus = "idle" | "success" | "cancel" | "skipped";
@@ -32,8 +33,9 @@ Props:
     interface Props {
         email: string
         status?: EmailVerificationStatus
+        verificationCodeUuid?: string | null
     }
-    let { email, status = $bindable("idle") }: Props = $props();
+    let { email, status = $bindable("idle"), verificationCodeUuid = $bindable(null) }: Props = $props();
 
     let page: "confirm_email" | "enter_code" | "success" = $state("confirm_email");
     let resendCountdown: number = $state(30);
@@ -93,6 +95,7 @@ Props:
             if (response.status == 200) {
                 page = "success";
                 message = "";
+                verificationCodeUuid = response.data.verification_code_uuid;
             } else {
                 message = response.data.message
                 console.error(response.data.message);
