@@ -15,6 +15,8 @@ Additional props optionally take data depending on the mode
 Props:
     - `mode` (`create_account | sign_in | change_password | forgot_password | verify_email | change_email | create_passkey`) - The current authentication mode
     - `email` (`string`) - The email to verify (if `mode` is `verify_email`)
+    - `emailVerificationStatus` (`EmailVerificationStatus`) - The state of the `EmailVerification` component (if `mode` is `verify_email`)
+    - `forgotPasswordStatus` (`ForgotPasswordStatus`) - The state of the `ForgotPassword` component (if `mode` is `forgot_password`)
 -->
 <script lang="ts">
     import * as Card from "$lib/components/ui/card/index.js";
@@ -26,19 +28,28 @@ Props:
 	import SignIn from "./SignIn.svelte";
 	import CreateAccount from "./CreateAccount.svelte";
 	import EmailVerification, { type EmailVerificationStatus } from "./EmailVerification.svelte";
+	import ForgotPassword, { type ForgotPasswordStatus } from "./ForgotPassword.svelte";
 
 
     interface BaseProps {
         mode: "create_account" | "sign_in" | "change_password" | "forgot_password" | "verify_email" | "change_email" | "create_passkey"
         email?: never
         emailVerificationStatus?: never
+        forgotPasswordStatus?: never
     }
     interface VerifyEmailProps {
         mode: "verify_email"
         email: string
         emailVerificationStatus: EmailVerificationStatus
+        forgotPasswordStatus?: never
     }
-    let { mode, email, emailVerificationStatus = $bindable() }: BaseProps | VerifyEmailProps = $props();
+    interface ForgotPasswordProps {
+        mode: "forgot_password"
+        email?: never
+        emailVerificationStatus?: never
+        forgotPasswordStatus: ForgotPasswordStatus
+    }
+    let { mode, email, emailVerificationStatus = $bindable(), forgotPasswordStatus = $bindable() }: BaseProps | VerifyEmailProps | ForgotPasswordProps = $props();
 
     let user: UserResponse | null = getUser();
 </script>
@@ -68,6 +79,8 @@ Props:
             <AuthenticationModeHeader title="Forgot Password" description="Reset your password">
                 <KeyIcon weight="bold" size={32} />
             </AuthenticationModeHeader>
+
+            <ForgotPassword bind:status={forgotPasswordStatus} />
 
         {:else if mode === "verify_email"}
             <AuthenticationModeHeader title="Verify Email" description="Verify your email">

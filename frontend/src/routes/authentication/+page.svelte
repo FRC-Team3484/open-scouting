@@ -8,7 +8,7 @@ Allows for the user to sign into their account, or create a new account.
 	import { toast } from "svelte-sonner";
 	import { goto } from "$app/navigation";
 	import { slide } from "svelte/transition";
-	import { ArrowRightIcon, CircleNotchIcon } from "phosphor-svelte";
+	import { ArrowRightIcon, CircleNotchIcon, QuestionMarkIcon } from "phosphor-svelte";
 
 	import Button from "$lib/components/ui/button/button.svelte";
     
@@ -16,10 +16,12 @@ Allows for the user to sign into their account, or create a new account.
     import Logo from "$lib/components/generic/Logo.svelte";
 	import PageContainer from "$lib/components/layout/PageContainer.svelte";
 	import Authentication from "$lib/components/generic/authentication/Authentication.svelte";
+	import type { ForgotPasswordStatus } from "$lib/components/generic/authentication/ForgotPassword.svelte";
 
 
-    let page: "signin" | "signup" = $state("signin");
+    let page: "signin" | "signup" | "forgot_password" = $state("signin");
     let authenticated: boolean = getAuthenticationStatus();
+    let forgotPasswordStatus: ForgotPasswordStatus = $state("idle");
 
     /**
      * If the user is already signed in, redirect them to the index page
@@ -27,6 +29,12 @@ Allows for the user to sign into their account, or create a new account.
     onMount(async () => {
         if (authenticated) {
             await goto("/");
+        }
+    });
+
+    $effect(() => {
+        if (forgotPasswordStatus === "success" || forgotPasswordStatus === "cancel") {
+            page = "signin";
         }
     })
 </script>
@@ -40,6 +48,7 @@ Allows for the user to sign into their account, or create a new account.
             {#if page === "signin"}
                 <div class="flex flex-col gap-4 items-center" transition:slide>
                     <Authentication mode="sign_in" />
+                    <Button variant="outline" onclick={() => {page = "forgot_password"}}><QuestionMarkIcon weight="bold" /> Forgot Password</Button>
                     <Button variant="outline" onclick={() => {page = "signup"}}><ArrowRightIcon weight="bold" /> Sign Up</Button>
                 </div>
 
@@ -47,6 +56,11 @@ Allows for the user to sign into their account, or create a new account.
                 <div class="flex flex-col gap-4 items-center" transition:slide>
                     <Authentication mode="create_account" />
                     <Button variant="outline" onclick={() => {page = "signin"}}><ArrowRightIcon weight="bold" /> Sign In</Button>
+                </div>
+
+            {:else if page === "forgot_password"}
+                <div class="flex flex-col gap-4 items-center" transition:slide>
+                    <Authentication mode="forgot_password" bind:forgotPasswordStatus={forgotPasswordStatus} />
                 </div>
             {/if}
         </div>
