@@ -291,12 +291,16 @@ Parameters:
     code (int): The verification code to verify
  * @summary Verify Verification Code
  */
-export const VerifyVerificationCodeAuthVerifyVerificationCodePostQueryParams = zod.object({
-  "email": zod.string(),
+export const VerifyVerificationCodeAuthVerifyVerificationCodePostBody = zod.object({
+  "email": zod.string().email(),
   "code": zod.string()
 })
 
-export const VerifyVerificationCodeAuthVerifyVerificationCodePostResponse = zod.unknown()
+export const VerifyVerificationCodeAuthVerifyVerificationCodePostResponse = zod.object({
+  "verified": zod.boolean(),
+  "message": zod.string(),
+  "verification_code_uuid": zod.union([zod.string().uuid(),zod.null()]).optional()
+})
 
 /**
  * Given an email, password, and verification code UUID, change the password for a user
@@ -309,11 +313,13 @@ Parameters:
     verification_code_uuid (str): The UUID of the verification code
  * @summary Forgot Password
  */
-export const ForgotPasswordAuthForgotPasswordPostQueryParams = zod.object({
-  "email": zod.string(),
+export const ForgotPasswordAuthForgotPasswordPostBody = zod.object({
+  "email": zod.string().email(),
   "password": zod.string(),
-  "verification_code_uuid": zod.string()
+  "verification_code_uuid": zod.string().uuid()
 })
 
-export const ForgotPasswordAuthForgotPasswordPostResponse = zod.unknown()
+export const ForgotPasswordAuthForgotPasswordPostResponse = zod.object({
+  "message": zod.string()
+})
 

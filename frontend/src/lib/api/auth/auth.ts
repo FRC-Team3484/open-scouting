@@ -9,7 +9,7 @@ import type {
   BodyLoginAuthLoginPost,
   CheckUniqueUsernameAuthCheckUniqueUsernameGetParams,
   CreateVerificationCodeAuthCreateVerificationCodePostParams,
-  ForgotPasswordAuthForgotPasswordPostParams,
+  ForgotPasswordRequest,
   HTTPValidationError,
   MessageResponse,
   SetDisplayNameUsersMeSetDisplayNamePostParams,
@@ -18,7 +18,8 @@ import type {
   UserMeResponse,
   UserResponse,
   UserSetting,
-  VerifyVerificationCodeAuthVerifyVerificationCodePostParams
+  VerifyVerificationCodeRequest,
+  VerifyVerificationCodeResponse
 } from '../model';
 
 import { customInstance } from '.././client';
@@ -722,7 +723,7 @@ export const createVerificationCodeAuthCreateVerificationCodePost = async (param
 
 
 export type verifyVerificationCodeAuthVerifyVerificationCodePostResponse200 = {
-  data: unknown
+  data: VerifyVerificationCodeResponse
   status: 200
 }
 
@@ -740,19 +741,12 @@ export type verifyVerificationCodeAuthVerifyVerificationCodePostResponseError = 
 
 export type verifyVerificationCodeAuthVerifyVerificationCodePostResponse = (verifyVerificationCodeAuthVerifyVerificationCodePostResponseSuccess | verifyVerificationCodeAuthVerifyVerificationCodePostResponseError)
 
-export const getVerifyVerificationCodeAuthVerifyVerificationCodePostUrl = (params: VerifyVerificationCodeAuthVerifyVerificationCodePostParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getVerifyVerificationCodeAuthVerifyVerificationCodePostUrl = () => {
 
-  Object.entries(params || {}).forEach(([key, value]) => {
 
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
-    }
-  });
 
-  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/auth/verify_verification_code?${stringifiedParams}` : `/auth/verify_verification_code`
+  return `/auth/verify_verification_code`
 }
 
 /**
@@ -771,20 +765,21 @@ Parameters:
     code (int): The verification code to verify
  * @summary Verify Verification Code
  */
-export const verifyVerificationCodeAuthVerifyVerificationCodePost = async (params: VerifyVerificationCodeAuthVerifyVerificationCodePostParams, options?: RequestInit): Promise<verifyVerificationCodeAuthVerifyVerificationCodePostResponse> => {
+export const verifyVerificationCodeAuthVerifyVerificationCodePost = async (verifyVerificationCodeRequest: VerifyVerificationCodeRequest, options?: RequestInit): Promise<verifyVerificationCodeAuthVerifyVerificationCodePostResponse> => {
 
-  return customInstance<verifyVerificationCodeAuthVerifyVerificationCodePostResponse>(getVerifyVerificationCodeAuthVerifyVerificationCodePostUrl(params),
+  return customInstance<verifyVerificationCodeAuthVerifyVerificationCodePostResponse>(getVerifyVerificationCodeAuthVerifyVerificationCodePostUrl(),
   {
     ...options,
-    method: 'POST'
-
-
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      verifyVerificationCodeRequest,)
   }
 );}
 
 
 export type forgotPasswordAuthForgotPasswordPostResponse200 = {
-  data: unknown
+  data: MessageResponse
   status: 200
 }
 
@@ -802,19 +797,12 @@ export type forgotPasswordAuthForgotPasswordPostResponseError = (forgotPasswordA
 
 export type forgotPasswordAuthForgotPasswordPostResponse = (forgotPasswordAuthForgotPasswordPostResponseSuccess | forgotPasswordAuthForgotPasswordPostResponseError)
 
-export const getForgotPasswordAuthForgotPasswordPostUrl = (params: ForgotPasswordAuthForgotPasswordPostParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getForgotPasswordAuthForgotPasswordPostUrl = () => {
 
-  Object.entries(params || {}).forEach(([key, value]) => {
 
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
-    }
-  });
 
-  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/auth/forgot_password?${stringifiedParams}` : `/auth/forgot_password`
+  return `/auth/forgot_password`
 }
 
 /**
@@ -828,14 +816,15 @@ Parameters:
     verification_code_uuid (str): The UUID of the verification code
  * @summary Forgot Password
  */
-export const forgotPasswordAuthForgotPasswordPost = async (params: ForgotPasswordAuthForgotPasswordPostParams, options?: RequestInit): Promise<forgotPasswordAuthForgotPasswordPostResponse> => {
+export const forgotPasswordAuthForgotPasswordPost = async (forgotPasswordRequest: ForgotPasswordRequest, options?: RequestInit): Promise<forgotPasswordAuthForgotPasswordPostResponse> => {
 
-  return customInstance<forgotPasswordAuthForgotPasswordPostResponse>(getForgotPasswordAuthForgotPasswordPostUrl(params),
+  return customInstance<forgotPasswordAuthForgotPasswordPostResponse>(getForgotPasswordAuthForgotPasswordPostUrl(),
   {
     ...options,
-    method: 'POST'
-
-
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      forgotPasswordRequest,)
   }
 );}
 

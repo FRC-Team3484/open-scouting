@@ -97,7 +97,7 @@ Props:
             if (response.status == 200) {
                 page = "success";
                 message = "";
-                verificationCodeUuid = response.data.verification_code_uuid;
+                verificationCodeUuid = response.data.verification_code_uuid ?? null;
             } else {
                 message = response.data.message
                 console.error(response.data.message);

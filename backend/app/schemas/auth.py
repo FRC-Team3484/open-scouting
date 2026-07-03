@@ -85,3 +85,17 @@ class UserMeResponse(BaseModel):
     authenticated: bool
     user: UserResponse | None
     settings: list[UserSetting] | None
+
+class VerifyVerificationCodeRequest(BaseModel):
+    email: EmailStr
+    code: str
+
+class VerifyVerificationCodeResponse(BaseModel):
+    verified: bool
+    message: str
+    verification_code_uuid: UUID | None = None
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+    password: str
+    verification_code_uuid: UUID

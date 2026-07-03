@@ -19,7 +19,7 @@ from ..dependencies import Identity, get_identity, require_user, require_superus
 from ..models import User, Profile, Settings, Session, VerificationCode
 from .emails import send_verification_code
 from ..schemas.generic import MessageResponse
-from ..schemas.auth import BaseSettings, SignupRequest, UserMeResponse, UserResponse, UserSetting
+from ..schemas.auth import BaseSettings, ForgotPasswordRequest, SignupRequest, UserMeResponse, UserResponse, UserSetting, VerifyVerificationCodeRequest, VerifyVerificationCodeResponse
 
 
 VERIFICATION_CODE_LENGTH = 6
@@ -561,8 +561,8 @@ async def create_verification_code(email: str, style: Literal["verification_code
         return JSONResponse(content={"message": "emails are disabled"}, status_code=403)
     
 
-@router.post("/auth/verify_verification_code")
-async def verify_verification_code(email: str, code: str, identity: Identity = Depends(get_identity)):
+@router.post("/auth/verify_verification_code", response_model=VerifyVerificationCodeResponse)
+async def verify_verification_code(data: VerifyVerificationCodeRequest, response: Response, identity: Identity = Depends(get_identity)):
     """
     Verify a verification code for a user
 
@@ -580,14 +580,18 @@ async def verify_verification_code(email: str, code: str, identity: Identity = D
     """
 
     if (identity.user):
-        verification_code = await VerificationCode.get_or_none(user=identity.user, code=code, email=email, verified=False)
+        verification_code = await VerificationCode.get_or_none(user=identity.user, code=data.code, email=data.email, verified=False)
     else:
-        verification_code = await VerificationCode.get_or_none(code=code, email=email, verified=False)
+        verification_code = await VerificationCode.get_or_none(code=data.code, email=data.email, verified=False)
 
     if not verification_code:
-        return JSONResponse(content={"message": "Invalid verification code"}, status_code=400)
+        response.status_code = 400
+        return VerifyVerificationCodeResponse(verified=False, message="Verification code not found")
+
     elif verification_code.created_at < now() - timedelta(minutes=VERIFICATION_CODE_EXPIRE_MINUTES):
-        return JSONResponse(content={"message": "Verification code has expired"}, status_code=400)
+        response.status_code = 400
+        return VerifyVerificationCodeResponse(verified=False, message="Verification code expired")
+
     else:
         verification_code.verified = True
 
@@ -595,10 +599,12 @@ async def verify_verification_code(email: str, code: str, identity: Identity = D
             identity.user.email_verified = True
             await identity.user.save()
         await verification_code.save()
-        return JSONResponse(content={"message": "Verification code verified", "verification_code_uuid": str(verification_code.uuid)}, status_code=200)
 
-@router.post("/auth/forgot_password")
-async def forgot_password(email: str, password: str, verification_code_uuid: str):
+        response.status_code = 200
+        return VerifyVerificationCodeResponse(verified=False, message="Verification code verified", verification_code_uuid=verification_code.uuid)
+
+@router.post("/auth/forgot_password", response_model=MessageResponse)
+async def forgot_password(data: ForgotPasswordRequest, response: Response):
     """
     Given an email, password, and verification code UUID, change the password for a user
 
@@ -609,15 +615,17 @@ async def forgot_password(email: str, password: str, verification_code_uuid: str
         password (str): The new password
         verification_code_uuid (str): The UUID of the verification code
     """
-    verification_code = VerificationCode.get_or_none(uuid=verification_code_uuid, email=email, verified=True)
+    verification_code = VerificationCode.get_or_none(uuid=data.verification_code_uuid, email=data.email, verified=True)
     if not verification_code:
-        return JSONResponse(content={"message": "Invalid verification code"}, status_code=400)
+        response.status_code = 400
+        return MessageResponse(message="Invalid verification code")
 
-    user = await User.get_or_none(email=email)
+    user = await User.get_or_none(email=data.email)
     if not user:
         return JSONResponse(content={"message": "User not found"}, status_code=404)
 
-    user.hashed_password = get_password_hash(password)
+    user.hashed_password = get_password_hash(data.password)
     await user.save()
 
-    return JSONResponse(content={"message": "Password changed"}, status_code=200)
+    response.status_code = 200
+    return MessageResponse(message="Password changed")
