@@ -15,6 +15,7 @@ import type {
   ForgotPasswordRequest,
   HTTPValidationError,
   MessageResponse,
+  PasskeyResponse,
   SetDisplayNameUsersMeSetDisplayNamePostParams,
   SetTeamNumberUsersMeSetTeamNumberPostParams,
   SignupRequest,
@@ -1112,6 +1113,42 @@ export const verifyVerificationPasskeyAuthPasskeysVerificationVerifyPost = async
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(
       verifyVerificationPasskeyAuthPasskeysVerificationVerifyPostBody,)
+  }
+);}
+
+
+export type getPasskeysAuthPasskeysGetGetResponse200 = {
+  data: PasskeyResponse[]
+  status: 200
+}
+
+export type getPasskeysAuthPasskeysGetGetResponseSuccess = (getPasskeysAuthPasskeysGetGetResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getPasskeysAuthPasskeysGetGetResponse = (getPasskeysAuthPasskeysGetGetResponseSuccess)
+
+export const getGetPasskeysAuthPasskeysGetGetUrl = () => {
+
+
+
+
+  return `/auth/passkeys/get`
+}
+
+/**
+ * Get the passkeys for the current user
+ * @summary Get Passkeys
+ */
+export const getPasskeysAuthPasskeysGetGet = async ( options?: RequestInit): Promise<getPasskeysAuthPasskeysGetGetResponse> => {
+
+  return customInstance<getPasskeysAuthPasskeysGetGetResponse>(getGetPasskeysAuthPasskeysGetGetUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
   }
 );}
 

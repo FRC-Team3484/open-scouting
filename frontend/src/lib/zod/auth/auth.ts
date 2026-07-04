@@ -389,6 +389,17 @@ export const VerifyVerificationPasskeyAuthPasskeysVerificationVerifyPostResponse
 })
 
 /**
+ * Get the passkeys for the current user
+ * @summary Get Passkeys
+ */
+export const GetPasskeysAuthPasskeysGetGetResponseItem = zod.object({
+  "uuid": zod.string().uuid(),
+  "transports": zod.record(zod.string(), zod.unknown()),
+  "created_at": zod.string().datetime({"offset":true})
+})
+export const GetPasskeysAuthPasskeysGetGetResponse = zod.array(GetPasskeysAuthPasskeysGetGetResponseItem)
+
+/**
  * Change the password for the current user
 
 Requires either verification_code_uuid or passkey_uuid to change a password

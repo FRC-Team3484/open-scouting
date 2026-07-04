@@ -109,3 +109,8 @@ class ChangeEmailRequest(BaseModel):
     email: str
     verification_code_uuid: UUID | None = None
     passkey_uuid: UUID | None = None
+
+class PasskeyResponse(BaseModel):
+    uuid: UUID
+    label: str | None
+    created_at: datetime

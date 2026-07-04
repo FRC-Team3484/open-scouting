@@ -54,6 +54,8 @@ export * from './messageResponse';
 export * from './organizationMemberResponse';
 export * from './organizationRequest';
 export * from './organizationResponse';
+export * from './passkeyResponse';
+export * from './passkeyResponseTransports';
 export * from './pitAnswerResponse';
 export * from './pitFieldOptions';
 export * from './pitFieldRequest';

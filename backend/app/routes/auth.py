@@ -27,7 +27,7 @@ from ..dependencies import Identity, get_identity, require_user, require_superus
 from ..models import Passkey, User, Profile, Settings, Session, VerificationCode, WebAuthnChallenge
 from .emails import send_password_change_notification, send_verification_code
 from ..schemas.generic import MessageResponse
-from ..schemas.auth import BaseSettings, ChangeEmailRequest, ChangePasswordRequest, ForgotPasswordRequest, SignupRequest, UserMeResponse, UserResponse, UserSetting, VerifyVerificationCodeRequest, VerifyVerificationCodeResponse
+from ..schemas.auth import BaseSettings, ChangeEmailRequest, ChangePasswordRequest, ForgotPasswordRequest, PasskeyResponse, SignupRequest, UserMeResponse, UserResponse, UserSetting, VerifyVerificationCodeRequest, VerifyVerificationCodeResponse
 
 
 VERIFICATION_CODE_LENGTH = 6
@@ -896,6 +896,21 @@ async def verify_verification_passkey(challenge_uuid: UUID, email: str, request:
     except InvalidAuthenticationResponse:
         response.status_code = 400
         return MessageResponse(message="Invalid authentication response")
+
+@router.get("/auth/passkeys/get", response_model=list[PasskeyResponse])
+async def get_passkeys(identity: Identity = Depends(require_user)):
+    """
+    Get the passkeys for the current user
+    """
+    passkeys = await Passkey.filter(user=identity.user)
+
+    return [
+        PasskeyResponse(
+            uuid=passkey.uuid,
+            label=passkey.label,
+            created_at=passkey.created_at
+        ) for passkey in await Passkey.filter(user=identity.user)
+    ]
 
 @router.post("/auth/change_password", response_model=MessageResponse)
 async def change_password(data: ChangePasswordRequest, identity: Identity = Depends(require_user)):
