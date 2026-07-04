@@ -9,7 +9,7 @@ Props:
 <script lang="ts">
 	import { PUBLIC_EMAIL_ENABLED } from "$env/static/public";
 	import { toast } from "svelte-sonner";
-	import { ArrowRightIcon, CheckCircleIcon, CircleNotchIcon, InfoIcon, PencilIcon, UploadSimpleIcon, WarningIcon } from "phosphor-svelte";
+	import { ArrowRightIcon, CheckCircleIcon, CircleNotchIcon, EnvelopeIcon, InfoIcon, PasswordIcon, PencilIcon, UploadSimpleIcon, WarningIcon } from "phosphor-svelte";
 
     import * as Card from "$lib/components/ui/card/index.js";
 	import { Badge } from "$lib/components/ui/badge";
@@ -27,6 +27,7 @@ Props:
 	import Authentication from "$lib/components/generic/authentication/Authentication.svelte";
 	import type { EmailVerificationStatus } from "$lib/components/generic/authentication/EmailVerification.svelte";
 	import type { ChangePasswordStatus } from "$lib/components/generic/authentication/ChangePassword.svelte";
+	import type { ChangeEmailStatus } from "$lib/components/generic/authentication/ChangeEmail.svelte";
 
 
     interface Props {
@@ -34,8 +35,6 @@ Props:
         getNewUserData: () => void
     }
     let { user, getNewUserData }: Props = $props();
-
-    let email = $state(user?.email);
     let displayName = $state(user?.display_name);
     let teamNumber = $state(user?.team_number);
 
@@ -48,6 +47,9 @@ Props:
 
     let changePasswordOpen = $state(false);
     let changePasswordStatus: ChangePasswordStatus = $state("idle");
+
+    let changeEmailOpen = $state(false);
+    let changeEmailStatus: ChangeEmailStatus = $state("idle");
 
     /**
      * Set the user's display name on the server
@@ -110,10 +112,31 @@ Props:
         if (emailVerificationStatus == "success") {
             verifyEmailOpen = false;
             getNewUserData();
+            emailVerificationStatus = "idle";
         } else if (emailVerificationStatus == "cancel") {
             verifyEmailOpen = false;
+            emailVerificationStatus = "idle";
         } else if (emailVerificationStatus == "skipped") {
             verifyEmailOpen = false;
+            emailVerificationStatus = "idle";
+        }
+
+        if (changePasswordStatus == "success") {
+            changePasswordOpen = false;
+            getNewUserData();
+            changePasswordStatus = "idle";
+        } else if (changePasswordStatus == "cancel") {
+            changePasswordOpen = false;
+            changePasswordStatus = "idle";
+        }
+
+        if (changeEmailStatus == "success") {
+            changeEmailOpen = false;
+            getNewUserData();
+            changeEmailStatus = "idle";
+        } else if (changeEmailStatus == "cancel") {
+            changeEmailOpen = false;
+            changeEmailStatus = "idle";
         }
     })
 </script>
@@ -207,11 +230,6 @@ Props:
                             If you change your email, you will need to verify it. Without a verified email, you will only be able to change your password by accessing your account using a passkey.
                         </Alert.Description>
                     </Alert.Root>
-
-                    <div class="flex flex-col md:flex-row gap-2">
-                        <Input placeholder="Email" type="email" bind:value={email} />
-                        <Button class="w-fit" disabled={email == user?.email}><CheckCircleIcon weight="bold" /> Save and Verify</Button>
-                    </div>
                 {:else}
                     <Alert.Root variant="destructive">
                         <WarningIcon weight="bold" />
@@ -220,12 +238,9 @@ Props:
                             This server does not support sending emails. You will not be able to verify your email, or use it for changing your password. If you loose your password, a passkey will be the only way to recover your account.
                         </Alert.Description>
                     </Alert.Root>
-
-                    <div class="flex flex-col md:flex-row gap-2">
-                        <Input placeholder="Email" type="email" bind:value={email} />
-                        <Button class="w-fit" disabled={email == user?.email}><CheckCircleIcon weight="bold" /> Save</Button>
-                    </div>
                 {/if}
+
+                <Button onclick={() => changeEmailOpen = true}><EnvelopeIcon weight="bold" /> Change Email</Button>
             </Card.Content>
         </Card.Root>
 
@@ -239,7 +254,7 @@ Props:
                         If you change your password, you will need to first verify your identity. This requires emails to be enabled on this server, or for you to have created a passkey for this account.
                     </Alert.Description>
                 </Alert.Root>
-                <Button onclick={() => changePasswordOpen = true}>Change Password</Button>
+                <Button onclick={() => changePasswordOpen = true}><PasswordIcon weight="bold" /> Change Password</Button>
             </Card.Content>
         </Card.Root>
     </div>
@@ -270,4 +285,8 @@ Props:
 
 <BaseDialog title="" description="" bind:open={changePasswordOpen}>
     <Authentication mode="change_password" email={user?.email} bind:changePasswordStatus />
+</BaseDialog>
+
+<BaseDialog title="" description="" bind:open={changeEmailOpen}>
+    <Authentication mode="change_email" email={user?.email} bind:changeEmailStatus />
 </BaseDialog>

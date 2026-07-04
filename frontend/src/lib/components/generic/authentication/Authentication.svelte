@@ -20,12 +20,11 @@ Props:
     - `changePasswordStatus` (`ChangePasswordStatus`) - The state of the `ChangePassword` component (if `mode` is `change_password`)
 -->
 <script lang="ts">
+	import { EnvelopeIcon, FingerprintIcon, KeyIcon, UserCircleIcon, UserCirclePlusIcon } from "phosphor-svelte";
+
     import * as Card from "$lib/components/ui/card/index.js";
 
-	import type { UserResponse } from "$lib/api/model";
-	import { getUser } from "$lib/utils/user";
 	import AuthenticationModeHeader from "./AuthenticationModeHeader.svelte";
-	import { EnvelopeIcon, FingerprintIcon, KeyIcon, UserCircleIcon, UserCirclePlusIcon } from "phosphor-svelte";
 	import SignIn from "./SignIn.svelte";
 	import CreateAccount from "./CreateAccount.svelte";
 	import EmailVerification, { type EmailVerificationStatus } from "./EmailVerification.svelte";
@@ -33,6 +32,8 @@ Props:
 	import CreatePasskey from "./CreatePasskey.svelte";
 	import type { ChangePasswordStatus } from "./ChangePassword.svelte";
 	import ChangePassword from "./ChangePassword.svelte";
+	import type { ChangeEmailStatus } from "./ChangeEmail.svelte";
+	import ChangeEmail from "./ChangeEmail.svelte";
 
 
     interface BaseProps {
@@ -41,13 +42,15 @@ Props:
         emailVerificationStatus?: never
         forgotPasswordStatus?: never
         changePasswordStatus?: never
+        changeEmailStatus?: never
     }
     interface VerifyEmailProps {
         mode: "verify_email"
         email: string
-        emailVerificationStatus: EmailVerificationStatus
+        emailVerificationStatus?: EmailVerificationStatus
         forgotPasswordStatus?: never
         changePasswordStatus?: never
+        changeEmailStatus?: never
     }
     interface ForgotPasswordProps {
         mode: "forgot_password"
@@ -55,6 +58,7 @@ Props:
         emailVerificationStatus?: never
         forgotPasswordStatus?: ForgotPasswordStatus
         changePasswordStatus?: never
+        changeEmailStatus?: never
     }
     interface ChangePasswordProps {
         mode: "change_password"
@@ -62,10 +66,17 @@ Props:
         emailVerificationStatus?: never
         forgotPasswordStatus?: never
         changePasswordStatus?: ChangePasswordStatus
+        changeEmailStatus?: never
     }
-    let { mode, email, emailVerificationStatus = $bindable(), forgotPasswordStatus = $bindable(), changePasswordStatus = $bindable() }: BaseProps | VerifyEmailProps | ForgotPasswordProps | ChangePasswordProps = $props();
-
-    let user: UserResponse | null = getUser();
+    interface ChangeEmailProps {
+        mode: "change_email"
+        email: string
+        emailVerificationStatus?: never
+        forgotPasswordStatus?: never
+        changePasswordStatus?: never
+        changeEmailStatus?: ChangeEmailStatus
+    }
+    let { mode, email, emailVerificationStatus = $bindable(), forgotPasswordStatus = $bindable(), changePasswordStatus = $bindable(), changeEmailStatus = $bindable() }: BaseProps | VerifyEmailProps | ForgotPasswordProps | ChangePasswordProps | ChangeEmailProps = $props();
 </script>
 
 <Card.Root>
@@ -89,7 +100,9 @@ Props:
                 <KeyIcon weight="bold" size={32} />
             </AuthenticationModeHeader>
 
-            <ChangePassword email={email} bind:status={changePasswordStatus} />
+            {#if email}
+                <ChangePassword email={email} bind:status={changePasswordStatus} />
+            {/if}
 
         {:else if mode === "forgot_password"}
             <AuthenticationModeHeader title="Forgot Password" description="Reset your password">
@@ -111,6 +124,10 @@ Props:
             <AuthenticationModeHeader title="Change Email" description="Change your email">
                 <EnvelopeIcon weight="bold" size={32} />
             </AuthenticationModeHeader>
+
+            {#if email}
+                <ChangeEmail email={email} bind:status={changeEmailStatus} />
+            {/if}
 
         {:else if mode === "create_passkey"}
             <AuthenticationModeHeader title="Create Passkey" description="Create a new passkey">
