@@ -17,6 +17,7 @@ Props:
     - `email` (`string`) - The email to verify (if `mode` is `verify_email`)
     - `emailVerificationStatus` (`EmailVerificationStatus`) - The state of the `EmailVerification` component (if `mode` is `verify_email`)
     - `forgotPasswordStatus` (`ForgotPasswordStatus`) - The state of the `ForgotPassword` component (if `mode` is `forgot_password`)
+    - `changePasswordStatus` (`ChangePasswordStatus`) - The state of the `ChangePassword` component (if `mode` is `change_password`)
 -->
 <script lang="ts">
     import * as Card from "$lib/components/ui/card/index.js";
@@ -30,6 +31,8 @@ Props:
 	import EmailVerification, { type EmailVerificationStatus } from "./EmailVerification.svelte";
 	import ForgotPassword, { type ForgotPasswordStatus } from "./ForgotPassword.svelte";
 	import CreatePasskey from "./CreatePasskey.svelte";
+	import type { ChangePasswordStatus } from "./ChangePassword.svelte";
+	import ChangePassword from "./ChangePassword.svelte";
 
 
     interface BaseProps {
@@ -37,20 +40,30 @@ Props:
         email?: never
         emailVerificationStatus?: never
         forgotPasswordStatus?: never
+        changePasswordStatus?: never
     }
     interface VerifyEmailProps {
         mode: "verify_email"
         email: string
         emailVerificationStatus: EmailVerificationStatus
         forgotPasswordStatus?: never
+        changePasswordStatus?: never
     }
     interface ForgotPasswordProps {
         mode: "forgot_password"
         email?: never
         emailVerificationStatus?: never
-        forgotPasswordStatus: ForgotPasswordStatus
+        forgotPasswordStatus?: ForgotPasswordStatus
+        changePasswordStatus?: never
     }
-    let { mode, email, emailVerificationStatus = $bindable(), forgotPasswordStatus = $bindable() }: BaseProps | VerifyEmailProps | ForgotPasswordProps = $props();
+    interface ChangePasswordProps {
+        mode: "change_password"
+        email: string
+        emailVerificationStatus?: never
+        forgotPasswordStatus?: never
+        changePasswordStatus?: ChangePasswordStatus
+    }
+    let { mode, email, emailVerificationStatus = $bindable(), forgotPasswordStatus = $bindable(), changePasswordStatus = $bindable() }: BaseProps | VerifyEmailProps | ForgotPasswordProps | ChangePasswordProps = $props();
 
     let user: UserResponse | null = getUser();
 </script>
@@ -75,6 +88,8 @@ Props:
             <AuthenticationModeHeader title="Change Password" description="Change your password">
                 <KeyIcon weight="bold" size={32} />
             </AuthenticationModeHeader>
+
+            <ChangePassword email={email} bind:status={changePasswordStatus} />
 
         {:else if mode === "forgot_password"}
             <AuthenticationModeHeader title="Forgot Password" description="Reset your password">

@@ -25,6 +25,7 @@ Props:
 
 	import EmailVerification, { type EmailVerificationStatus } from "./EmailVerification.svelte";
 	import { createVerificationPasskeyAuthPasskeysVerificationCreatePost, verifyVerificationPasskeyAuthPasskeysVerificationVerifyPost } from "$lib/api/auth/auth";
+	import { PUBLIC_EMAIL_ENABLED } from "$env/static/public";
 
 
     interface Props {
@@ -57,7 +58,7 @@ Props:
 
             await verifyVerificationPasskeyAuthPasskeysVerificationVerifyPost(authenticationResponse, {challenge_uuid: options.data.challenge_uuid, email: email}).then(async (response) => {
                 if (response.status == 200) {
-                    passkeyUuid = response.data.uuid;
+                    passkeyUuid = response.data.passkey_uuid;
                     page = "success";
                 } else {
                     message = "Failed to verify with passkey";
@@ -122,11 +123,10 @@ Props:
             {#if verifyingWithPasskey}
                 <CircleNotchIcon class="animate-spin" size={16} /> Verifying...
             {:else}
-                <KeyIcon weight="bold" /> Verify with Passkey
+                <KeyIcon weight="bold" /> Verify with Passkey <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
             {/if}
-            <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
         </Button>
-        <Button onclick={() => {page = "email"}} disabled={verifyingWithPasskey}><EnvelopeIcon weight="bold" /> Send Verification Email</Button>
+        <Button onclick={() => {page = "email"}} disabled={verifyingWithPasskey || !PUBLIC_EMAIL_ENABLED}><EnvelopeIcon weight="bold" /> Send Verification Email</Button>
     </div>
 
 {:else if page == "email"}
