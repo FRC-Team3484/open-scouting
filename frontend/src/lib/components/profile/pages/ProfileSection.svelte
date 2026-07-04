@@ -26,6 +26,7 @@ Props:
 	import { uploadProfilePictureUploadProfilePictureMePost } from "$lib/api/uploads/uploads";
 	import Authentication from "$lib/components/generic/authentication/Authentication.svelte";
 	import type { EmailVerificationStatus } from "$lib/components/generic/authentication/EmailVerification.svelte";
+	import type { ChangePasswordStatus } from "$lib/components/generic/authentication/ChangePassword.svelte";
 
 
     interface Props {
@@ -44,6 +45,9 @@ Props:
 
     let verifyEmailOpen = $state(false);
     let emailVerificationStatus: EmailVerificationStatus = $state("idle");
+
+    let changePasswordOpen = $state(false);
+    let changePasswordStatus: ChangePasswordStatus = $state("idle");
 
     /**
      * Set the user's display name on the server
@@ -152,6 +156,28 @@ Props:
 
         <Card.Root>
             <Card.Content class="flex flex-col gap-2">
+                <p class="font-bold">Display Name</p>
+
+                <div class="flex flex-col md:flex-row gap-2">
+                    <Input placeholder="Display Name" bind:value={displayName} />
+                    <Button class="w-fit" disabled={displayName == user?.display_name} onclick={setDisplayName}><CheckCircleIcon weight="bold" /> Save</Button>
+                </div>
+            </Card.Content>
+        </Card.Root>
+
+        <Card.Root>
+            <Card.Content class="flex flex-col gap-2">
+                <p class="font-bold">Team Number</p>
+
+                <div class="flex flex-col md:flex-row gap-2">
+                    <Input placeholder="Team Number" bind:value={teamNumber} />
+                    <Button class="w-fit" disabled={teamNumber == user?.team_number} onclick={setTeamNumber}><CheckCircleIcon weight="bold" /> Save</Button>
+                </div>
+            </Card.Content>
+        </Card.Root>
+
+        <Card.Root>
+            <Card.Content class="flex flex-col gap-2">
                 <div class="flex flex-row gap-2 items-center">
                     <p class="font-bold">Email</p>
 
@@ -205,23 +231,15 @@ Props:
 
         <Card.Root>
             <Card.Content class="flex flex-col gap-2">
-                <p class="font-bold">Display Name</p>
-
-                <div class="flex flex-col md:flex-row gap-2">
-                    <Input placeholder="Display Name" bind:value={displayName} />
-                    <Button class="w-fit" disabled={displayName == user?.display_name} onclick={setDisplayName}><CheckCircleIcon weight="bold" /> Save</Button>
-                </div>
-            </Card.Content>
-        </Card.Root>
-
-        <Card.Root>
-            <Card.Content class="flex flex-col gap-2">
-                <p class="font-bold">Team Number</p>
-
-                <div class="flex flex-col md:flex-row gap-2">
-                    <Input placeholder="Team Number" bind:value={teamNumber} />
-                    <Button class="w-fit" disabled={teamNumber == user?.team_number} onclick={setTeamNumber}><CheckCircleIcon weight="bold" /> Save</Button>
-                </div>
+                <p class="font-bold">Password</p>
+                <Alert.Root>
+                    <InfoIcon weight="bold" />
+                    <Alert.Title>Changing your password</Alert.Title>
+                    <Alert.Description>
+                        If you change your password, you will need to first verify your identity. This requires emails to be enabled on this server, or for you to have created a passkey for this account.
+                    </Alert.Description>
+                </Alert.Root>
+                <Button onclick={() => changePasswordOpen = true}>Change Password</Button>
             </Card.Content>
         </Card.Root>
     </div>
@@ -248,4 +266,8 @@ Props:
 
 <BaseDialog title="" description="" bind:open={verifyEmailOpen}>
     <Authentication mode="verify_email" email={user?.email} bind:emailVerificationStatus />
+</BaseDialog>
+
+<BaseDialog title="" description="" bind:open={changePasswordOpen}>
+    <Authentication mode="change_password" email={user?.email} bind:changePasswordStatus />
 </BaseDialog>

@@ -23,6 +23,7 @@ Allows for editing profile details, changing password, and updating settings
 	import { getUserSettingsUsersMeGetSettingsGet, meAuthMeGet } from "$lib/api/auth/auth";
 	import ProfileSection from "$lib/components/profile/pages/ProfileSection.svelte";
 	import SettingsSection from "$lib/components/profile/pages/SettingsSection.svelte";
+	import Authentication from "$lib/components/generic/authentication/Authentication.svelte";
 
 
     let section: "profile" | "settings" = $state("profile");
