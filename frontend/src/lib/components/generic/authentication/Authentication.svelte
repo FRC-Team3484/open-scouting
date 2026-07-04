@@ -29,7 +29,7 @@ Props:
 	import CreateAccount from "./CreateAccount.svelte";
 	import EmailVerification, { type EmailVerificationStatus } from "./EmailVerification.svelte";
 	import ForgotPassword, { type ForgotPasswordStatus } from "./ForgotPassword.svelte";
-	import CreatePasskey from "./CreatePasskey.svelte";
+	import CreatePasskey, { type CreatePasskeyStatus } from "./CreatePasskey.svelte";
 	import type { ChangePasswordStatus } from "./ChangePassword.svelte";
 	import ChangePassword from "./ChangePassword.svelte";
 	import type { ChangeEmailStatus } from "./ChangeEmail.svelte";
@@ -43,6 +43,7 @@ Props:
         forgotPasswordStatus?: never
         changePasswordStatus?: never
         changeEmailStatus?: never
+        createPasskeyStatus?: never
     }
     interface VerifyEmailProps {
         mode: "verify_email"
@@ -51,6 +52,7 @@ Props:
         forgotPasswordStatus?: never
         changePasswordStatus?: never
         changeEmailStatus?: never
+        createPasskeyStatus?: never
     }
     interface ForgotPasswordProps {
         mode: "forgot_password"
@@ -59,6 +61,7 @@ Props:
         forgotPasswordStatus?: ForgotPasswordStatus
         changePasswordStatus?: never
         changeEmailStatus?: never
+        createPasskeyStatus?: never
     }
     interface ChangePasswordProps {
         mode: "change_password"
@@ -67,6 +70,7 @@ Props:
         forgotPasswordStatus?: never
         changePasswordStatus?: ChangePasswordStatus
         changeEmailStatus?: never
+        createPasskeyStatus?: never
     }
     interface ChangeEmailProps {
         mode: "change_email"
@@ -75,8 +79,18 @@ Props:
         forgotPasswordStatus?: never
         changePasswordStatus?: never
         changeEmailStatus?: ChangeEmailStatus
+        createPasskeyStatus?: never
     }
-    let { mode, email, emailVerificationStatus = $bindable(), forgotPasswordStatus = $bindable(), changePasswordStatus = $bindable(), changeEmailStatus = $bindable() }: BaseProps | VerifyEmailProps | ForgotPasswordProps | ChangePasswordProps | ChangeEmailProps = $props();
+    interface CreatePasskeyProps {
+        mode: "create_passkey"
+        email?: never
+        emailVerificationStatus?: never
+        forgotPasswordStatus?: never
+        changePasswordStatus?: never
+        changeEmailStatus?: never
+        createPasskeyStatus?: CreatePasskeyStatus
+    }
+    let { mode, email, emailVerificationStatus = $bindable(), forgotPasswordStatus = $bindable(), changePasswordStatus = $bindable(), changeEmailStatus = $bindable(), createPasskeyStatus = $bindable() }: BaseProps | VerifyEmailProps | ForgotPasswordProps | ChangePasswordProps | ChangeEmailProps | CreatePasskeyProps = $props();
 </script>
 
 <Card.Root>
@@ -134,7 +148,7 @@ Props:
                 <FingerprintIcon weight="bold" size={32} />
             </AuthenticationModeHeader>
 
-            <CreatePasskey />
+            <CreatePasskey bind:status={createPasskeyStatus} />
         {/if}
     </Card.Content>
 </Card.Root>

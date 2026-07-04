@@ -18,10 +18,11 @@ Props:
     import * as Alert from "$lib/components/ui/alert/index";
     import * as Kbd from "$lib/components/ui/kbd/index";
 
-    import { createLoginPasskeyAuthPasskeysLoginCreatePost, createPasskeyAuthPasskeysRegisterCreatePost, verifyLoginPasskeyAuthPasskeysLoginVerifyPost, verifyPasskeyAuthPasskeysRegisterVerifyPost } from "$lib/api/auth/auth";
+    import { createPasskeyAuthPasskeysRegisterCreatePost, verifyPasskeyAuthPasskeysRegisterVerifyPost } from "$lib/api/auth/auth";
 	import { slide } from "svelte/transition";
 	import { ArrowRightIcon, CheckCircleIcon, CircleNotchIcon, KeyIcon, KeyReturnIcon, WarningIcon, XCircleIcon } from "phosphor-svelte";
 	import { PUBLIC_EMAIL_ENABLED } from "$env/static/public";
+	import Input from "$lib/components/ui/input/input.svelte";
 
 
     interface Props {
@@ -33,6 +34,7 @@ Props:
 
     let message: string = $state("");
     let creatingPasskey: boolean = $state(false);
+    let label: string = $state("");
 
     /**
      * Create a passkey
@@ -67,7 +69,7 @@ Props:
      * Handle keydown events
      */
     function handleKeyDown(event: KeyboardEvent) {
-        if (event.key === "Enter" && page == "create") {
+        if (event.key === "Enter" && page == "create" && !creatingPasskey && label.trim() != "") {
             createPasskey();
         } else if (event.key === "Enter" && page == "success") {
             status = "success";
@@ -96,6 +98,9 @@ Props:
 
         <p class="text-sm text-muted-foreground">Creating a passkey makes it quick and easy to log into your account.</p>
 
+        <Input bind:value={label} placeholder="Label" />
+        <p class="text-sm text-muted-foreground">The label of this passkey, to help identify it later</p>
+
         {#if !PUBLIC_EMAIL_ENABLED}
             <Alert.Root variant="destructive" class="mb-2 text-left">
                 <WarningIcon weight="bold" />
@@ -104,8 +109,7 @@ Props:
             </Alert.Root>
         {/if}
 
-
-        <Button onclick={() => {createPasskey()}} disabled={creatingPasskey}>
+        <Button onclick={() => {createPasskey()}} disabled={creatingPasskey || label.trim() == ""}>
             {#if creatingPasskey}
                 <CircleNotchIcon class="animate-spin" size={16} /> Creating Passkey...
             {:else}
