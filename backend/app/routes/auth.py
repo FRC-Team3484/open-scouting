@@ -27,7 +27,7 @@ from ..dependencies import Identity, get_identity, require_user, require_superus
 from ..models import Passkey, User, Profile, Settings, Session, VerificationCode, WebAuthnChallenge
 from .emails import send_password_change_notification, send_verification_code
 from ..schemas.generic import MessageResponse
-from ..schemas.auth import BaseSettings, ChangePasswordRequest, ForgotPasswordRequest, SignupRequest, UserMeResponse, UserResponse, UserSetting, VerifyVerificationCodeRequest, VerifyVerificationCodeResponse
+from ..schemas.auth import BaseSettings, ChangeEmailRequest, ChangePasswordRequest, ForgotPasswordRequest, SignupRequest, UserMeResponse, UserResponse, UserSetting, VerifyVerificationCodeRequest, VerifyVerificationCodeResponse
 
 
 VERIFICATION_CODE_LENGTH = 6
@@ -924,3 +924,33 @@ async def change_password(data: ChangePasswordRequest, identity: Identity = Depe
     await user.save()
 
     return MessageResponse(message="Password changed")
+
+@router.post("/auth/change_email", response_model=MessageResponse)
+async def change_email(data: ChangeEmailRequest, identity: Identity = Depends(require_user)):
+    """
+    Change the email for the current user
+
+    Requires either verification_code_uuid or passkey_uuid to change an email
+    """
+    if not data.verification_code_uuid and not data.passkey_uuid:
+        raise HTTPException(status_code=400, detail="Either verification_code_uuid or passkey_uuid is required")
+
+    if data.verification_code_uuid:
+        verification_code = await VerificationCode.get_or_none(uuid=data.verification_code_uuid, user=identity.user, verified=True)
+        if not verification_code:
+            raise HTTPException(status_code=400, detail="Invalid verification code")
+
+    if data.passkey_uuid:
+        passkey = await Passkey.get_or_none(uuid=data.passkey_uuid, user=identity.user)
+        if not passkey:
+            raise HTTPException(status_code=400, detail="Invalid passkey")
+
+    if not identity.user:
+        raise HTTPException(status_code=400, detail="User not found")
+    user = identity.user
+
+    user.email = data.email
+    user.email_verified = False
+    await user.save()
+
+    return MessageResponse(message="Email changed")

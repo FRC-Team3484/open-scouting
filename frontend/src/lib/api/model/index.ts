@@ -11,6 +11,7 @@ export * from './baseSettings';
 export * from './bodyLoginAuthLoginPost';
 export * from './bodyUploadImageUploadImagePost';
 export * from './bodyUploadProfilePictureUploadProfilePictureMePost';
+export * from './changeEmailRequest';
 export * from './changePasswordRequest';
 export * from './checkUniqueUsernameAuthCheckUniqueUsernameGetParams';
 export * from './createVerificationCodeAuthCreateVerificationCodePostParams';

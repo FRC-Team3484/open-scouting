@@ -7,6 +7,7 @@
 import type {
   BaseSettings,
   BodyLoginAuthLoginPost,
+  ChangeEmailRequest,
   ChangePasswordRequest,
   CheckUniqueUsernameAuthCheckUniqueUsernameGetParams,
   CreateVerificationCodeAuthCreateVerificationCodePostParams,
@@ -1157,6 +1158,52 @@ export const changePasswordAuthChangePasswordPost = async (changePasswordRequest
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(
       changePasswordRequest,)
+  }
+);}
+
+
+export type changeEmailAuthChangeEmailPostResponse200 = {
+  data: MessageResponse
+  status: 200
+}
+
+export type changeEmailAuthChangeEmailPostResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type changeEmailAuthChangeEmailPostResponseSuccess = (changeEmailAuthChangeEmailPostResponse200) & {
+  headers: Headers;
+};
+export type changeEmailAuthChangeEmailPostResponseError = (changeEmailAuthChangeEmailPostResponse422) & {
+  headers: Headers;
+};
+
+export type changeEmailAuthChangeEmailPostResponse = (changeEmailAuthChangeEmailPostResponseSuccess | changeEmailAuthChangeEmailPostResponseError)
+
+export const getChangeEmailAuthChangeEmailPostUrl = () => {
+
+
+
+
+  return `/auth/change_email`
+}
+
+/**
+ * Change the email for the current user
+
+Requires either verification_code_uuid or passkey_uuid to change an email
+ * @summary Change Email
+ */
+export const changeEmailAuthChangeEmailPost = async (changeEmailRequest: ChangeEmailRequest, options?: RequestInit): Promise<changeEmailAuthChangeEmailPostResponse> => {
+
+  return customInstance<changeEmailAuthChangeEmailPostResponse>(getChangeEmailAuthChangeEmailPostUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      changeEmailRequest,)
   }
 );}
 

@@ -404,3 +404,19 @@ export const ChangePasswordAuthChangePasswordPostResponse = zod.object({
   "message": zod.string()
 })
 
+/**
+ * Change the email for the current user
+
+Requires either verification_code_uuid or passkey_uuid to change an email
+ * @summary Change Email
+ */
+export const ChangeEmailAuthChangeEmailPostBody = zod.object({
+  "email": zod.string(),
+  "verification_code_uuid": zod.union([zod.string().uuid(),zod.null()]).optional(),
+  "passkey_uuid": zod.union([zod.string().uuid(),zod.null()]).optional()
+})
+
+export const ChangeEmailAuthChangeEmailPostResponse = zod.object({
+  "message": zod.string()
+})
+
