@@ -323,3 +323,43 @@ export const ForgotPasswordAuthForgotPasswordPostResponse = zod.object({
   "message": zod.string()
 })
 
+/**
+ * Begin the passkey registration process
+ * @summary Create Passkey
+ */
+export const CreatePasskeyAuthPasskeysRegisterCreatePostResponse = zod.unknown()
+
+/**
+ * Verify the passkey registration
+ * @summary Verify Passkey
+ */
+export const VerifyPasskeyAuthPasskeysRegisterVerifyPostQueryParams = zod.object({
+  "challenge_uuid": zod.string().uuid()
+})
+
+export const VerifyPasskeyAuthPasskeysRegisterVerifyPostBody = zod.record(zod.string(), zod.unknown())
+
+export const VerifyPasskeyAuthPasskeysRegisterVerifyPostResponse = zod.object({
+  "message": zod.string()
+})
+
+/**
+ * Begin the passkey login process
+ * @summary Create Login Passkey
+ */
+export const CreateLoginPasskeyAuthPasskeysLoginCreatePostResponse = zod.unknown()
+
+/**
+ * Verify the passkey login
+ * @summary Verify Login Passkey
+ */
+export const VerifyLoginPasskeyAuthPasskeysLoginVerifyPostQueryParams = zod.object({
+  "challenge_uuid": zod.string().uuid()
+})
+
+export const VerifyLoginPasskeyAuthPasskeysLoginVerifyPostBody = zod.record(zod.string(), zod.unknown())
+
+export const VerifyLoginPasskeyAuthPasskeysLoginVerifyPostResponse = zod.object({
+  "message": zod.string()
+})
+

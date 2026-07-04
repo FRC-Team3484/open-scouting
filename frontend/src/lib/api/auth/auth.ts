@@ -18,6 +18,10 @@ import type {
   UserMeResponse,
   UserResponse,
   UserSetting,
+  VerifyLoginPasskeyAuthPasskeysLoginVerifyPostBody,
+  VerifyLoginPasskeyAuthPasskeysLoginVerifyPostParams,
+  VerifyPasskeyAuthPasskeysRegisterVerifyPostBody,
+  VerifyPasskeyAuthPasskeysRegisterVerifyPostParams,
   VerifyVerificationCodeRequest,
   VerifyVerificationCodeResponse
 } from '../model';
@@ -825,6 +829,182 @@ export const forgotPasswordAuthForgotPasswordPost = async (forgotPasswordRequest
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(
       forgotPasswordRequest,)
+  }
+);}
+
+
+export type createPasskeyAuthPasskeysRegisterCreatePostResponse200 = {
+  data: unknown
+  status: 200
+}
+
+export type createPasskeyAuthPasskeysRegisterCreatePostResponseSuccess = (createPasskeyAuthPasskeysRegisterCreatePostResponse200) & {
+  headers: Headers;
+};
+;
+
+export type createPasskeyAuthPasskeysRegisterCreatePostResponse = (createPasskeyAuthPasskeysRegisterCreatePostResponseSuccess)
+
+export const getCreatePasskeyAuthPasskeysRegisterCreatePostUrl = () => {
+
+
+
+
+  return `/auth/passkeys/register/create`
+}
+
+/**
+ * Begin the passkey registration process
+ * @summary Create Passkey
+ */
+export const createPasskeyAuthPasskeysRegisterCreatePost = async ( options?: RequestInit): Promise<createPasskeyAuthPasskeysRegisterCreatePostResponse> => {
+
+  return customInstance<createPasskeyAuthPasskeysRegisterCreatePostResponse>(getCreatePasskeyAuthPasskeysRegisterCreatePostUrl(),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+export type verifyPasskeyAuthPasskeysRegisterVerifyPostResponse200 = {
+  data: MessageResponse
+  status: 200
+}
+
+export type verifyPasskeyAuthPasskeysRegisterVerifyPostResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type verifyPasskeyAuthPasskeysRegisterVerifyPostResponseSuccess = (verifyPasskeyAuthPasskeysRegisterVerifyPostResponse200) & {
+  headers: Headers;
+};
+export type verifyPasskeyAuthPasskeysRegisterVerifyPostResponseError = (verifyPasskeyAuthPasskeysRegisterVerifyPostResponse422) & {
+  headers: Headers;
+};
+
+export type verifyPasskeyAuthPasskeysRegisterVerifyPostResponse = (verifyPasskeyAuthPasskeysRegisterVerifyPostResponseSuccess | verifyPasskeyAuthPasskeysRegisterVerifyPostResponseError)
+
+export const getVerifyPasskeyAuthPasskeysRegisterVerifyPostUrl = (params: VerifyPasskeyAuthPasskeysRegisterVerifyPostParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/auth/passkeys/register/verify?${stringifiedParams}` : `/auth/passkeys/register/verify`
+}
+
+/**
+ * Verify the passkey registration
+ * @summary Verify Passkey
+ */
+export const verifyPasskeyAuthPasskeysRegisterVerifyPost = async (verifyPasskeyAuthPasskeysRegisterVerifyPostBody: VerifyPasskeyAuthPasskeysRegisterVerifyPostBody,
+    params: VerifyPasskeyAuthPasskeysRegisterVerifyPostParams, options?: RequestInit): Promise<verifyPasskeyAuthPasskeysRegisterVerifyPostResponse> => {
+
+  return customInstance<verifyPasskeyAuthPasskeysRegisterVerifyPostResponse>(getVerifyPasskeyAuthPasskeysRegisterVerifyPostUrl(params),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      verifyPasskeyAuthPasskeysRegisterVerifyPostBody,)
+  }
+);}
+
+
+export type createLoginPasskeyAuthPasskeysLoginCreatePostResponse200 = {
+  data: unknown
+  status: 200
+}
+
+export type createLoginPasskeyAuthPasskeysLoginCreatePostResponseSuccess = (createLoginPasskeyAuthPasskeysLoginCreatePostResponse200) & {
+  headers: Headers;
+};
+;
+
+export type createLoginPasskeyAuthPasskeysLoginCreatePostResponse = (createLoginPasskeyAuthPasskeysLoginCreatePostResponseSuccess)
+
+export const getCreateLoginPasskeyAuthPasskeysLoginCreatePostUrl = () => {
+
+
+
+
+  return `/auth/passkeys/login/create`
+}
+
+/**
+ * Begin the passkey login process
+ * @summary Create Login Passkey
+ */
+export const createLoginPasskeyAuthPasskeysLoginCreatePost = async ( options?: RequestInit): Promise<createLoginPasskeyAuthPasskeysLoginCreatePostResponse> => {
+
+  return customInstance<createLoginPasskeyAuthPasskeysLoginCreatePostResponse>(getCreateLoginPasskeyAuthPasskeysLoginCreatePostUrl(),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+export type verifyLoginPasskeyAuthPasskeysLoginVerifyPostResponse200 = {
+  data: MessageResponse
+  status: 200
+}
+
+export type verifyLoginPasskeyAuthPasskeysLoginVerifyPostResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type verifyLoginPasskeyAuthPasskeysLoginVerifyPostResponseSuccess = (verifyLoginPasskeyAuthPasskeysLoginVerifyPostResponse200) & {
+  headers: Headers;
+};
+export type verifyLoginPasskeyAuthPasskeysLoginVerifyPostResponseError = (verifyLoginPasskeyAuthPasskeysLoginVerifyPostResponse422) & {
+  headers: Headers;
+};
+
+export type verifyLoginPasskeyAuthPasskeysLoginVerifyPostResponse = (verifyLoginPasskeyAuthPasskeysLoginVerifyPostResponseSuccess | verifyLoginPasskeyAuthPasskeysLoginVerifyPostResponseError)
+
+export const getVerifyLoginPasskeyAuthPasskeysLoginVerifyPostUrl = (params: VerifyLoginPasskeyAuthPasskeysLoginVerifyPostParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/auth/passkeys/login/verify?${stringifiedParams}` : `/auth/passkeys/login/verify`
+}
+
+/**
+ * Verify the passkey login
+ * @summary Verify Login Passkey
+ */
+export const verifyLoginPasskeyAuthPasskeysLoginVerifyPost = async (verifyLoginPasskeyAuthPasskeysLoginVerifyPostBody: VerifyLoginPasskeyAuthPasskeysLoginVerifyPostBody,
+    params: VerifyLoginPasskeyAuthPasskeysLoginVerifyPostParams, options?: RequestInit): Promise<verifyLoginPasskeyAuthPasskeysLoginVerifyPostResponse> => {
+
+  return customInstance<verifyLoginPasskeyAuthPasskeysLoginVerifyPostResponse>(getVerifyLoginPasskeyAuthPasskeysLoginVerifyPostUrl(params),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      verifyLoginPasskeyAuthPasskeysLoginVerifyPostBody,)
   }
 );}
 

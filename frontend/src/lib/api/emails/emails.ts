@@ -6,31 +6,32 @@
  */
 import type {
   HTTPValidationError,
-  SendVerificationCodeEmailPostParams
+  SendPasswordChangeNotificationEmailPasswordChangeNotificationPostParams,
+  SendVerificationCodeEmailVerificationCodePostParams
 } from '../model';
 
 import { customInstance } from '.././client';
 
-export type sendVerificationCodeEmailPostResponse200 = {
+export type sendVerificationCodeEmailVerificationCodePostResponse200 = {
   data: unknown
   status: 200
 }
 
-export type sendVerificationCodeEmailPostResponse422 = {
+export type sendVerificationCodeEmailVerificationCodePostResponse422 = {
   data: HTTPValidationError
   status: 422
 }
 
-export type sendVerificationCodeEmailPostResponseSuccess = (sendVerificationCodeEmailPostResponse200) & {
+export type sendVerificationCodeEmailVerificationCodePostResponseSuccess = (sendVerificationCodeEmailVerificationCodePostResponse200) & {
   headers: Headers;
 };
-export type sendVerificationCodeEmailPostResponseError = (sendVerificationCodeEmailPostResponse422) & {
+export type sendVerificationCodeEmailVerificationCodePostResponseError = (sendVerificationCodeEmailVerificationCodePostResponse422) & {
   headers: Headers;
 };
 
-export type sendVerificationCodeEmailPostResponse = (sendVerificationCodeEmailPostResponseSuccess | sendVerificationCodeEmailPostResponseError)
+export type sendVerificationCodeEmailVerificationCodePostResponse = (sendVerificationCodeEmailVerificationCodePostResponseSuccess | sendVerificationCodeEmailVerificationCodePostResponseError)
 
-export const getSendVerificationCodeEmailPostUrl = (params: SendVerificationCodeEmailPostParams,) => {
+export const getSendVerificationCodeEmailVerificationCodePostUrl = (params: SendVerificationCodeEmailVerificationCodePostParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -42,7 +43,7 @@ export const getSendVerificationCodeEmailPostUrl = (params: SendVerificationCode
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/email?${stringifiedParams}` : `/email`
+  return stringifiedParams.length > 0 ? `/email/verification_code?${stringifiedParams}` : `/email/verification_code`
 }
 
 /**
@@ -51,14 +52,72 @@ export const getSendVerificationCodeEmailPostUrl = (params: SendVerificationCode
 Parameters:
     email (NameEmail): The email to send the verification code to
     code (int): The verification code to send
+    style (Literal["verification_code", "forgot_password"]): The style of the email
 
 Returns:
     JSONResponse: A message indicating that the email has been sent
  * @summary Send Verification Code
  */
-export const sendVerificationCodeEmailPost = async (params: SendVerificationCodeEmailPostParams, options?: RequestInit): Promise<sendVerificationCodeEmailPostResponse> => {
+export const sendVerificationCodeEmailVerificationCodePost = async (params: SendVerificationCodeEmailVerificationCodePostParams, options?: RequestInit): Promise<sendVerificationCodeEmailVerificationCodePostResponse> => {
 
-  return customInstance<sendVerificationCodeEmailPostResponse>(getSendVerificationCodeEmailPostUrl(params),
+  return customInstance<sendVerificationCodeEmailVerificationCodePostResponse>(getSendVerificationCodeEmailVerificationCodePostUrl(params),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+export type sendPasswordChangeNotificationEmailPasswordChangeNotificationPostResponse200 = {
+  data: unknown
+  status: 200
+}
+
+export type sendPasswordChangeNotificationEmailPasswordChangeNotificationPostResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type sendPasswordChangeNotificationEmailPasswordChangeNotificationPostResponseSuccess = (sendPasswordChangeNotificationEmailPasswordChangeNotificationPostResponse200) & {
+  headers: Headers;
+};
+export type sendPasswordChangeNotificationEmailPasswordChangeNotificationPostResponseError = (sendPasswordChangeNotificationEmailPasswordChangeNotificationPostResponse422) & {
+  headers: Headers;
+};
+
+export type sendPasswordChangeNotificationEmailPasswordChangeNotificationPostResponse = (sendPasswordChangeNotificationEmailPasswordChangeNotificationPostResponseSuccess | sendPasswordChangeNotificationEmailPasswordChangeNotificationPostResponseError)
+
+export const getSendPasswordChangeNotificationEmailPasswordChangeNotificationPostUrl = (params: SendPasswordChangeNotificationEmailPasswordChangeNotificationPostParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/email/password_change_notification?${stringifiedParams}` : `/email/password_change_notification`
+}
+
+/**
+ * Send a password change notification to an email
+
+Parameters:
+    email (NameEmail): The email to send the verification code to
+    code (int): The verification code to send
+
+Returns:
+    JSONResponse: A message indicating that the email has been sent
+ * @summary Send Password Change Notification
+ */
+export const sendPasswordChangeNotificationEmailPasswordChangeNotificationPost = async (params: SendPasswordChangeNotificationEmailPasswordChangeNotificationPostParams, options?: RequestInit): Promise<sendPasswordChangeNotificationEmailPasswordChangeNotificationPostResponse> => {
+
+  return customInstance<sendPasswordChangeNotificationEmailPasswordChangeNotificationPostResponse>(getSendPasswordChangeNotificationEmailPasswordChangeNotificationPostUrl(params),
   {
     ...options,
     method: 'POST'

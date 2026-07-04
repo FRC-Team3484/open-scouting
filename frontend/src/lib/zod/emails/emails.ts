@@ -13,18 +13,37 @@ import * as zod from 'zod';
 Parameters:
     email (NameEmail): The email to send the verification code to
     code (int): The verification code to send
+    style (Literal["verification_code", "forgot_password"]): The style of the email
 
 Returns:
     JSONResponse: A message indicating that the email has been sent
  * @summary Send Verification Code
  */
-export const sendVerificationCodeEmailPostQueryStyleDefault = `verification_code`;
+export const sendVerificationCodeEmailVerificationCodePostQueryStyleDefault = `verification_code`;
 
-export const SendVerificationCodeEmailPostQueryParams = zod.object({
+export const SendVerificationCodeEmailVerificationCodePostQueryParams = zod.object({
   "email": zod.string(),
   "code": zod.number(),
-  "style": zod.enum(['verification_code', 'forgot_password']).default(sendVerificationCodeEmailPostQueryStyleDefault)
+  "style": zod.enum(['verification_code', 'forgot_password']).default(sendVerificationCodeEmailVerificationCodePostQueryStyleDefault)
 })
 
-export const SendVerificationCodeEmailPostResponse = zod.unknown()
+export const SendVerificationCodeEmailVerificationCodePostResponse = zod.unknown()
+
+/**
+ * Send a password change notification to an email
+
+Parameters:
+    email (NameEmail): The email to send the verification code to
+    code (int): The verification code to send
+
+Returns:
+    JSONResponse: A message indicating that the email has been sent
+ * @summary Send Password Change Notification
+ */
+export const SendPasswordChangeNotificationEmailPasswordChangeNotificationPostQueryParams = zod.object({
+  "email": zod.string(),
+  "username": zod.string()
+})
+
+export const SendPasswordChangeNotificationEmailPasswordChangeNotificationPostResponse = zod.unknown()
 
