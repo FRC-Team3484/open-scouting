@@ -803,3 +803,85 @@ async def verify_login_passkey(challenge_uuid: UUID, request: Request, response:
     except InvalidAuthenticationResponse:
         response.status_code = 400
         return MessageResponse(message="Invalid authentication response")
+
+@router.post("/auth/passkeys/verification/create")
+async def create_verification_passkey(email: str, response: Response):
+    """
+    Begin the passkey verification process
+    """
+    user = await User.get_or_none(email=email)
+    if not user:
+        response.status_code = 404
+        return MessageResponse(message="User not found")
+
+    options = generate_authentication_options(
+        rp_id=PASSKEY_RP_ID,
+    )
+
+    options_json =  options_to_json_dict(options)
+
+    challenge = await WebAuthnChallenge.create(
+        challenge=options.challenge,
+        expires_at=datetime.now(UTC) + timedelta(minutes=5),
+        user=user
+    )
+
+    options_json["challenge_uuid"] = str(challenge.uuid)
+
+    return JSONResponse(content=options_json)
+
+@router.post("/auth/passkeys/verification/verify", response_model=MessageResponse)
+async def verify_verification_passkey(challenge_uuid: UUID, email: str, request: Request, response: Response, data: dict = Body()):
+    """
+    Verify the passkey verification
+    """
+    try:
+        user = await User.get_or_none(email=email)
+        if not user:
+            response.status_code = 404
+            return MessageResponse(message="User not found")
+
+        challenge: WebAuthnChallenge | None = await WebAuthnChallenge.get_or_none(
+            uuid=challenge_uuid,
+            user=user
+        )
+
+        if challenge is None:
+            response.status_code = 400
+            return MessageResponse(message="No challenge found")
+
+        if challenge.expires_at < datetime.now(UTC):
+            response.status_code = 400
+            return MessageResponse(message="Challenge expired")
+
+        credential_id = base64url_to_bytes(data["rawId"])
+
+        passkey = await Passkey.get_or_none(
+            credential_id=credential_id,
+            user=user
+        ).prefetch_related("user")
+
+        if passkey is None:
+            response.status_code = 400
+            return MessageResponse(message="Passkey not found")
+
+        verification: VerifiedAuthentication = verify_authentication_response(
+            credential=data,
+            expected_challenge=challenge.challenge,
+            expected_rp_id=PASSKEY_RP_ID,
+            expected_origin=os.getenv("PUBLIC_FRONTEND_URL", "http://localhost:5173"),
+            credential_public_key=passkey.public_key,
+            credential_current_sign_count=passkey.sign_count
+        )
+
+        await challenge.delete()
+
+        if verification.user_verified:
+            return JSONResponse(content={"message": "User verified", "passkey_uuid": str(passkey.uuid)})
+
+        else:
+            response.status_code = 400
+            return MessageResponse(message="User not verified")
+    except InvalidAuthenticationResponse:
+        response.status_code = 400
+        return MessageResponse(message="Invalid authentication response")

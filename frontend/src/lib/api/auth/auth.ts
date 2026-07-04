@@ -9,6 +9,7 @@ import type {
   BodyLoginAuthLoginPost,
   CheckUniqueUsernameAuthCheckUniqueUsernameGetParams,
   CreateVerificationCodeAuthCreateVerificationCodePostParams,
+  CreateVerificationPasskeyAuthPasskeysVerificationCreatePostParams,
   ForgotPasswordRequest,
   HTTPValidationError,
   MessageResponse,
@@ -23,7 +24,9 @@ import type {
   VerifyPasskeyAuthPasskeysRegisterVerifyPostBody,
   VerifyPasskeyAuthPasskeysRegisterVerifyPostParams,
   VerifyVerificationCodeRequest,
-  VerifyVerificationCodeResponse
+  VerifyVerificationCodeResponse,
+  VerifyVerificationPasskeyAuthPasskeysVerificationVerifyPostBody,
+  VerifyVerificationPasskeyAuthPasskeysVerificationVerifyPostParams
 } from '../model';
 
 import { customInstance } from '.././client';
@@ -1005,6 +1008,108 @@ export const verifyLoginPasskeyAuthPasskeysLoginVerifyPost = async (verifyLoginP
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(
       verifyLoginPasskeyAuthPasskeysLoginVerifyPostBody,)
+  }
+);}
+
+
+export type createVerificationPasskeyAuthPasskeysVerificationCreatePostResponse200 = {
+  data: unknown
+  status: 200
+}
+
+export type createVerificationPasskeyAuthPasskeysVerificationCreatePostResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type createVerificationPasskeyAuthPasskeysVerificationCreatePostResponseSuccess = (createVerificationPasskeyAuthPasskeysVerificationCreatePostResponse200) & {
+  headers: Headers;
+};
+export type createVerificationPasskeyAuthPasskeysVerificationCreatePostResponseError = (createVerificationPasskeyAuthPasskeysVerificationCreatePostResponse422) & {
+  headers: Headers;
+};
+
+export type createVerificationPasskeyAuthPasskeysVerificationCreatePostResponse = (createVerificationPasskeyAuthPasskeysVerificationCreatePostResponseSuccess | createVerificationPasskeyAuthPasskeysVerificationCreatePostResponseError)
+
+export const getCreateVerificationPasskeyAuthPasskeysVerificationCreatePostUrl = (params: CreateVerificationPasskeyAuthPasskeysVerificationCreatePostParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/auth/passkeys/verification/create?${stringifiedParams}` : `/auth/passkeys/verification/create`
+}
+
+/**
+ * Begin the passkey verification process
+ * @summary Create Verification Passkey
+ */
+export const createVerificationPasskeyAuthPasskeysVerificationCreatePost = async (params: CreateVerificationPasskeyAuthPasskeysVerificationCreatePostParams, options?: RequestInit): Promise<createVerificationPasskeyAuthPasskeysVerificationCreatePostResponse> => {
+
+  return customInstance<createVerificationPasskeyAuthPasskeysVerificationCreatePostResponse>(getCreateVerificationPasskeyAuthPasskeysVerificationCreatePostUrl(params),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+export type verifyVerificationPasskeyAuthPasskeysVerificationVerifyPostResponse200 = {
+  data: MessageResponse
+  status: 200
+}
+
+export type verifyVerificationPasskeyAuthPasskeysVerificationVerifyPostResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type verifyVerificationPasskeyAuthPasskeysVerificationVerifyPostResponseSuccess = (verifyVerificationPasskeyAuthPasskeysVerificationVerifyPostResponse200) & {
+  headers: Headers;
+};
+export type verifyVerificationPasskeyAuthPasskeysVerificationVerifyPostResponseError = (verifyVerificationPasskeyAuthPasskeysVerificationVerifyPostResponse422) & {
+  headers: Headers;
+};
+
+export type verifyVerificationPasskeyAuthPasskeysVerificationVerifyPostResponse = (verifyVerificationPasskeyAuthPasskeysVerificationVerifyPostResponseSuccess | verifyVerificationPasskeyAuthPasskeysVerificationVerifyPostResponseError)
+
+export const getVerifyVerificationPasskeyAuthPasskeysVerificationVerifyPostUrl = (params: VerifyVerificationPasskeyAuthPasskeysVerificationVerifyPostParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/auth/passkeys/verification/verify?${stringifiedParams}` : `/auth/passkeys/verification/verify`
+}
+
+/**
+ * Verify the passkey verification
+ * @summary Verify Verification Passkey
+ */
+export const verifyVerificationPasskeyAuthPasskeysVerificationVerifyPost = async (verifyVerificationPasskeyAuthPasskeysVerificationVerifyPostBody: VerifyVerificationPasskeyAuthPasskeysVerificationVerifyPostBody,
+    params: VerifyVerificationPasskeyAuthPasskeysVerificationVerifyPostParams, options?: RequestInit): Promise<verifyVerificationPasskeyAuthPasskeysVerificationVerifyPostResponse> => {
+
+  return customInstance<verifyVerificationPasskeyAuthPasskeysVerificationVerifyPostResponse>(getVerifyVerificationPasskeyAuthPasskeysVerificationVerifyPostUrl(params),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      verifyVerificationPasskeyAuthPasskeysVerificationVerifyPostBody,)
   }
 );}
 

@@ -363,3 +363,28 @@ export const VerifyLoginPasskeyAuthPasskeysLoginVerifyPostResponse = zod.object(
   "message": zod.string()
 })
 
+/**
+ * Begin the passkey verification process
+ * @summary Create Verification Passkey
+ */
+export const CreateVerificationPasskeyAuthPasskeysVerificationCreatePostQueryParams = zod.object({
+  "email": zod.string()
+})
+
+export const CreateVerificationPasskeyAuthPasskeysVerificationCreatePostResponse = zod.unknown()
+
+/**
+ * Verify the passkey verification
+ * @summary Verify Verification Passkey
+ */
+export const VerifyVerificationPasskeyAuthPasskeysVerificationVerifyPostQueryParams = zod.object({
+  "challenge_uuid": zod.string().uuid(),
+  "email": zod.string()
+})
+
+export const VerifyVerificationPasskeyAuthPasskeysVerificationVerifyPostBody = zod.record(zod.string(), zod.unknown())
+
+export const VerifyVerificationPasskeyAuthPasskeysVerificationVerifyPostResponse = zod.object({
+  "message": zod.string()
+})
+
