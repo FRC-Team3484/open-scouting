@@ -527,19 +527,29 @@ async def set_team_number(team_number: int, identity: Identity = Depends(require
     return MessageResponse(message="Team number set")
 
 @router.get("/auth/check_unique_username")
-async def check_unique_username(username: str, email: str) -> JSONResponse:
+async def check_unique_username(username: str | None = None, email: str | None = None) -> JSONResponse:
     """
     Check if a username and email is unique
 
     Parameters:
-        username (str): The username to check
-        email (str): The email to check
+        username (str | None): The username to check
+        email (str | None): The email to check
 
     Returns:
         MessageResponse: A message indicating whether the username is unique
     """
-    username_check = await User.get_or_none(username=username)
-    email_check = await User.get_or_none(email=email)
+    if not username and not email:
+        return JSONResponse(content={"message": "No username or email provided"}, status_code=409)
+
+    if username:
+        username_check = await User.get_or_none(username=username)
+    else:
+        username_check = None
+
+    if email:
+        email_check = await User.get_or_none(email=email)
+    else:
+        email_check = None
 
     if username_check:
         return JSONResponse(content={"message": "There is already a user associated with this username"}, status_code=409)

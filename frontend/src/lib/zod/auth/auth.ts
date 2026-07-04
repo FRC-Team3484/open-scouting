@@ -243,16 +243,16 @@ export const SetTeamNumberUsersMeSetTeamNumberPostResponse = zod.object({
  * Check if a username and email is unique
 
 Parameters:
-    username (str): The username to check
-    email (str): The email to check
+    username (str | None): The username to check
+    email (str | None): The email to check
 
 Returns:
     MessageResponse: A message indicating whether the username is unique
  * @summary Check Unique Username
  */
 export const CheckUniqueUsernameAuthCheckUniqueUsernameGetQueryParams = zod.object({
-  "username": zod.string(),
-  "email": zod.string()
+  "username": zod.union([zod.string(),zod.null()]).optional(),
+  "email": zod.union([zod.string(),zod.null()]).optional()
 })
 
 export const CheckUniqueUsernameAuthCheckUniqueUsernameGetResponse = zod.unknown()

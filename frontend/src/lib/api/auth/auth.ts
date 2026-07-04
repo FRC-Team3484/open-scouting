@@ -637,7 +637,7 @@ export type checkUniqueUsernameAuthCheckUniqueUsernameGetResponseError = (checkU
 
 export type checkUniqueUsernameAuthCheckUniqueUsernameGetResponse = (checkUniqueUsernameAuthCheckUniqueUsernameGetResponseSuccess | checkUniqueUsernameAuthCheckUniqueUsernameGetResponseError)
 
-export const getCheckUniqueUsernameAuthCheckUniqueUsernameGetUrl = (params: CheckUniqueUsernameAuthCheckUniqueUsernameGetParams,) => {
+export const getCheckUniqueUsernameAuthCheckUniqueUsernameGetUrl = (params?: CheckUniqueUsernameAuthCheckUniqueUsernameGetParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -656,14 +656,14 @@ export const getCheckUniqueUsernameAuthCheckUniqueUsernameGetUrl = (params: Chec
  * Check if a username and email is unique
 
 Parameters:
-    username (str): The username to check
-    email (str): The email to check
+    username (str | None): The username to check
+    email (str | None): The email to check
 
 Returns:
     MessageResponse: A message indicating whether the username is unique
  * @summary Check Unique Username
  */
-export const checkUniqueUsernameAuthCheckUniqueUsernameGet = async (params: CheckUniqueUsernameAuthCheckUniqueUsernameGetParams, options?: RequestInit): Promise<checkUniqueUsernameAuthCheckUniqueUsernameGetResponse> => {
+export const checkUniqueUsernameAuthCheckUniqueUsernameGet = async (params?: CheckUniqueUsernameAuthCheckUniqueUsernameGetParams, options?: RequestInit): Promise<checkUniqueUsernameAuthCheckUniqueUsernameGetResponse> => {
 
   return customInstance<checkUniqueUsernameAuthCheckUniqueUsernameGetResponse>(getCheckUniqueUsernameAuthCheckUniqueUsernameGetUrl(params),
   {
