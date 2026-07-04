@@ -49,6 +49,7 @@
 		"workbox-window": "^7.4.1"
 	},
 	"dependencies": {
+		"@simplewebauthn/browser": "^13.3.0",
 		"@thisux/sveltednd": "^0.4.1",
 		"dexie": "^4.4.2",
 		"mode-watcher": "^1.1.0",
