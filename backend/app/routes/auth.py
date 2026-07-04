@@ -706,7 +706,7 @@ async def create_passkey(response: Response, identity: Identity = Depends(requir
     return JSONResponse(content=options_json)
 
 @router.post("/auth/passkeys/register/verify", response_model=MessageResponse)
-async def verify_passkey(challenge_uuid: UUID, response: Response, data: dict = Body(), identity: Identity = Depends(require_user)):
+async def verify_passkey(challenge_uuid: UUID, label: str, response: Response, data: dict = Body(), identity: Identity = Depends(require_user)):
     """
     Verify the passkey registration
     """
@@ -735,6 +735,7 @@ async def verify_passkey(challenge_uuid: UUID, response: Response, data: dict = 
 
     _ = await Passkey.create(
         user=identity.user,
+        label=label,
         credential_id=verification.credential_id,
         public_key=verification.credential_public_key,
         sign_count=verification.sign_count,

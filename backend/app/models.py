@@ -164,6 +164,7 @@ class Passkey(Model):
         "models.User",
         related_name="passkeys"
     )
+    label = fields.CharField(max_length=255, null=True)
 
     credential_id = fields.BinaryField()
     public_key = fields.BinaryField()
