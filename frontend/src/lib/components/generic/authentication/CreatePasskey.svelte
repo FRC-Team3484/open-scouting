@@ -50,7 +50,7 @@ Props:
             
             registrationResponse.challenge_uuid = options.data.challenge_uuid;
             
-            await verifyPasskeyAuthPasskeysRegisterVerifyPost(registrationResponse, {challenge_uuid: registrationResponse.challenge_uuid}).then((response) => {
+            await verifyPasskeyAuthPasskeysRegisterVerifyPost(registrationResponse, {challenge_uuid: registrationResponse.challenge_uuid, label}).then((response) => {
                 if (response.status == 200) {
                     page = "success";
                 } else {

@@ -8,8 +8,9 @@ Props:
 -->
 <script lang="ts">
 	import { PUBLIC_EMAIL_ENABLED } from "$env/static/public";
+    import { onMount } from "svelte";
 	import { toast } from "svelte-sonner";
-	import { ArrowRightIcon, CheckCircleIcon, CircleNotchIcon, EnvelopeIcon, InfoIcon, PasswordIcon, PencilIcon, UploadSimpleIcon, WarningIcon } from "phosphor-svelte";
+	import { ArrowRightIcon, CheckCircleIcon, CircleNotchIcon, EnvelopeIcon, InfoIcon, KeyIcon, PasswordIcon, PencilIcon, TrashIcon, UploadSimpleIcon, WarningIcon } from "phosphor-svelte";
 
     import * as Card from "$lib/components/ui/card/index.js";
 	import { Badge } from "$lib/components/ui/badge";
@@ -18,16 +19,18 @@ Props:
 	import Input from "$lib/components/ui/input/input.svelte";
 	import Button from "$lib/components/ui/button/button.svelte";
     import * as Avatar from "$lib/components/ui/avatar/index.js";
+    import * as AlertDialog from "$lib/components/ui/alert-dialog";
 
 	import Section from "./BaseSection.svelte";
-	import type { UserResponse } from "$lib/api/model";
-	import { setDisplayNameUsersMeSetDisplayNamePost, setTeamNumberUsersMeSetTeamNumberPost } from "$lib/api/auth/auth";
+	import type { PasskeyResponse, UserResponse } from "$lib/api/model";
+	import { deletePasskeyAuthPasskeysDeleteUuidDelete, getPasskeysAuthPasskeysGetGet, setDisplayNameUsersMeSetDisplayNamePost, setTeamNumberUsersMeSetTeamNumberPost } from "$lib/api/auth/auth";
 	import BaseDialog from "$lib/components/generic/dialogs/BaseDialog.svelte";
 	import { uploadProfilePictureUploadProfilePictureMePost } from "$lib/api/uploads/uploads";
 	import Authentication from "$lib/components/generic/authentication/Authentication.svelte";
 	import type { EmailVerificationStatus } from "$lib/components/generic/authentication/EmailVerification.svelte";
 	import type { ChangePasswordStatus } from "$lib/components/generic/authentication/ChangePassword.svelte";
 	import type { ChangeEmailStatus } from "$lib/components/generic/authentication/ChangeEmail.svelte";
+	import type { CreatePasskeyStatus } from "$lib/components/generic/authentication/CreatePasskey.svelte";
 
 
     interface Props {
@@ -37,6 +40,7 @@ Props:
     let { user, getNewUserData }: Props = $props();
     let displayName = $state(user?.display_name);
     let teamNumber = $state(user?.team_number);
+    let passkeys: PasskeyResponse[] = $state([]);
 
     let uploadProfilePictureOpen = $state(false);
     let files: FileList | undefined = $state(undefined);
@@ -50,6 +54,9 @@ Props:
 
     let changeEmailOpen = $state(false);
     let changeEmailStatus: ChangeEmailStatus = $state("idle");
+
+    let createPasskeyOpen = $state(false);
+    let createPasskeyStatus: CreatePasskeyStatus = $state("idle");
 
     /**
      * Set the user's display name on the server
@@ -108,6 +115,32 @@ Props:
         uploadProfilePictureState = "idle";
     }
 
+    /**
+     * Get the user's passkeys
+     */
+    async function getPasskeys() {
+        await getPasskeysAuthPasskeysGetGet().then((response) => {
+            if (response.status === 200) {
+                passkeys = response.data;
+            }
+        })
+    }
+
+    /**
+     * Delete a passkey
+     * @param uuid The uuid of the passkey to delete
+     */
+    async function deletePasskey(uuid: string) {
+        await deletePasskeyAuthPasskeysDeleteUuidDelete(uuid).then((response) => {
+            if (response.status === 200) {
+                getPasskeys();
+                toast.success("Passkey deleted");
+            } else {
+                toast.error("Failed to delete passkey");
+            }
+        })
+    }
+
     $effect(() => {
         if (emailVerificationStatus == "success") {
             verifyEmailOpen = false;
@@ -138,6 +171,19 @@ Props:
             changeEmailOpen = false;
             changeEmailStatus = "idle";
         }
+
+        if (createPasskeyStatus == "success") {
+            createPasskeyOpen = false;
+            getPasskeys();
+            createPasskeyStatus = "idle";
+        } else if (createPasskeyStatus == "cancel") {
+            createPasskeyOpen = false;
+            createPasskeyStatus = "idle";
+        }
+    });
+
+    onMount(() => {
+        getPasskeys();
     })
 </script>
 
@@ -257,6 +303,45 @@ Props:
                 <Button onclick={() => changePasswordOpen = true}><PasswordIcon weight="bold" /> Change Password</Button>
             </Card.Content>
         </Card.Root>
+
+        <Card.Root>
+            <Card.Content class="flex flex-col gap-2">
+                <p class="font-bold">Passkeys</p>
+
+                <p>You have created {passkeys.length} passkey{passkeys.length == 1 ? "" : "s"}</p>
+
+                {#each passkeys as passkey}
+                    <Card.Root>
+                        <Card.Content>
+                            <div class="flex flex-row gap-2 items-center justify-between">
+                                <div class="flex flex-row gap-2 items-center flex-wrap">
+                                    <KeyIcon weight="bold" />
+                                    <p class="font-bold">{passkey.label || "No Label"}</p>
+                                    <p>{new Intl.DateTimeFormat("en-US", {dateStyle: "medium", timeStyle: "short"}).format(new Date(passkey.created_at))}</p>
+                                </div>
+                                <AlertDialog.Root>
+                                    <AlertDialog.Trigger>
+                                        <Button variant="destructive" size="icon-sm"><TrashIcon weight="bold" /></Button>
+                                    </AlertDialog.Trigger>
+
+                                    <AlertDialog.Content>
+                                        <AlertDialog.Title>Delete Passkey?</AlertDialog.Title>
+                                        <AlertDialog.Description>Are you sure you want to delete this passkey? This action cannot be undone, and you will no longer be able to sign in with it.</AlertDialog.Description>
+                                        
+                                        <AlertDialog.Footer>
+                                            <AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
+                                            <AlertDialog.Action onclick={() => deletePasskey(passkey.uuid)}>Delete</AlertDialog.Action>
+                                        </AlertDialog.Footer>
+                                    </AlertDialog.Content>
+                                </AlertDialog.Root>
+                            </div>
+                        </Card.Content>
+                    </Card.Root>
+                {/each}
+                
+                <Button onclick={() => createPasskeyOpen = true}><KeyIcon weight="bold" /> Create Passkey</Button>
+            </Card.Content>
+        </Card.Root>
     </div>
 </Section>
 
@@ -289,4 +374,8 @@ Props:
 
 <BaseDialog title="" description="" bind:open={changeEmailOpen}>
     <Authentication mode="change_email" email={user?.email} bind:changeEmailStatus />
+</BaseDialog>
+
+<BaseDialog title="" description="" bind:open={createPasskeyOpen}>
+    <Authentication mode="create_passkey" bind:createPasskeyStatus />
 </BaseDialog>
