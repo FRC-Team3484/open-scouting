@@ -99,3 +99,8 @@ class ForgotPasswordRequest(BaseModel):
     email: EmailStr
     password: str
     verification_code_uuid: UUID
+
+class ChangePasswordRequest(BaseModel):
+    password: str
+    verification_code_uuid: UUID | None = None
+    passkey_uuid: UUID | None = None

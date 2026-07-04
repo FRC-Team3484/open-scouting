@@ -27,7 +27,7 @@ from ..dependencies import Identity, get_identity, require_user, require_superus
 from ..models import Passkey, User, Profile, Settings, Session, VerificationCode, WebAuthnChallenge
 from .emails import send_password_change_notification, send_verification_code
 from ..schemas.generic import MessageResponse
-from ..schemas.auth import BaseSettings, ForgotPasswordRequest, SignupRequest, UserMeResponse, UserResponse, UserSetting, VerifyVerificationCodeRequest, VerifyVerificationCodeResponse
+from ..schemas.auth import BaseSettings, ChangePasswordRequest, ForgotPasswordRequest, SignupRequest, UserMeResponse, UserResponse, UserSetting, VerifyVerificationCodeRequest, VerifyVerificationCodeResponse
 
 
 VERIFICATION_CODE_LENGTH = 6
@@ -885,3 +885,32 @@ async def verify_verification_passkey(challenge_uuid: UUID, email: str, request:
     except InvalidAuthenticationResponse:
         response.status_code = 400
         return MessageResponse(message="Invalid authentication response")
+
+@router.post("/auth/change_password", response_model=MessageResponse)
+async def change_password(data: ChangePasswordRequest, identity: Identity = Depends(require_user)):
+    """
+    Change the password for the current user
+
+    Requires either verification_code_uuid or passkey_uuid to change a password
+    """
+    if not data.verification_code_uuid and not data.passkey_uuid:
+        raise HTTPException(status_code=400, detail="Either verification_code_uuid or passkey_uuid is required")
+
+    if data.verification_code_uuid:
+        verification_code = await VerificationCode.get_or_none(uuid=data.verification_code_uuid, user=identity.user, verified=True)
+        if not verification_code:
+            raise HTTPException(status_code=400, detail="Invalid verification code")
+
+    if data.passkey_uuid:
+        passkey = await Passkey.get_or_none(uuid=data.passkey_uuid, user=identity.user)
+        if not passkey:
+            raise HTTPException(status_code=400, detail="Invalid passkey")
+
+    if not identity.user:
+        raise HTTPException(status_code=400, detail="User not found")
+    user = identity.user
+
+    user.hashed_password = get_password_hash(data.password)
+    await user.save()
+
+    return MessageResponse(message="Password changed")

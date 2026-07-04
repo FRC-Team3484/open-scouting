@@ -388,3 +388,19 @@ export const VerifyVerificationPasskeyAuthPasskeysVerificationVerifyPostResponse
   "message": zod.string()
 })
 
+/**
+ * Change the password for the current user
+
+Requires either verification_code_uuid or passkey_uuid to change a password
+ * @summary Change Password
+ */
+export const ChangePasswordAuthChangePasswordPostBody = zod.object({
+  "password": zod.string(),
+  "verification_code_uuid": zod.union([zod.string().uuid(),zod.null()]).optional(),
+  "passkey_uuid": zod.union([zod.string().uuid(),zod.null()]).optional()
+})
+
+export const ChangePasswordAuthChangePasswordPostResponse = zod.object({
+  "message": zod.string()
+})
+

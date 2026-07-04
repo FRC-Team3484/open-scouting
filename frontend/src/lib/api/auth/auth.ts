@@ -7,6 +7,7 @@
 import type {
   BaseSettings,
   BodyLoginAuthLoginPost,
+  ChangePasswordRequest,
   CheckUniqueUsernameAuthCheckUniqueUsernameGetParams,
   CreateVerificationCodeAuthCreateVerificationCodePostParams,
   CreateVerificationPasskeyAuthPasskeysVerificationCreatePostParams,
@@ -1110,6 +1111,52 @@ export const verifyVerificationPasskeyAuthPasskeysVerificationVerifyPost = async
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(
       verifyVerificationPasskeyAuthPasskeysVerificationVerifyPostBody,)
+  }
+);}
+
+
+export type changePasswordAuthChangePasswordPostResponse200 = {
+  data: MessageResponse
+  status: 200
+}
+
+export type changePasswordAuthChangePasswordPostResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type changePasswordAuthChangePasswordPostResponseSuccess = (changePasswordAuthChangePasswordPostResponse200) & {
+  headers: Headers;
+};
+export type changePasswordAuthChangePasswordPostResponseError = (changePasswordAuthChangePasswordPostResponse422) & {
+  headers: Headers;
+};
+
+export type changePasswordAuthChangePasswordPostResponse = (changePasswordAuthChangePasswordPostResponseSuccess | changePasswordAuthChangePasswordPostResponseError)
+
+export const getChangePasswordAuthChangePasswordPostUrl = () => {
+
+
+
+
+  return `/auth/change_password`
+}
+
+/**
+ * Change the password for the current user
+
+Requires either verification_code_uuid or passkey_uuid to change a password
+ * @summary Change Password
+ */
+export const changePasswordAuthChangePasswordPost = async (changePasswordRequest: ChangePasswordRequest, options?: RequestInit): Promise<changePasswordAuthChangePasswordPostResponse> => {
+
+  return customInstance<changePasswordAuthChangePasswordPostResponse>(getChangePasswordAuthChangePasswordPostUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      changePasswordRequest,)
   }
 );}
 
