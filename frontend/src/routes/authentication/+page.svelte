@@ -5,7 +5,6 @@ Allows for the user to sign into their account, or create a new account.
 -->
 <script lang="ts">
 	import { onMount } from "svelte";
-	import { toast } from "svelte-sonner";
 	import { goto } from "$app/navigation";
 	import { slide } from "svelte/transition";
 	import { ArrowRightIcon, CircleNotchIcon, QuestionMarkIcon } from "phosphor-svelte";

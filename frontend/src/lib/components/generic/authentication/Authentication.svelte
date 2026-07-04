@@ -29,6 +29,7 @@ Props:
 	import CreateAccount from "./CreateAccount.svelte";
 	import EmailVerification, { type EmailVerificationStatus } from "./EmailVerification.svelte";
 	import ForgotPassword, { type ForgotPasswordStatus } from "./ForgotPassword.svelte";
+	import CreatePasskey from "./CreatePasskey.svelte";
 
 
     interface BaseProps {
@@ -100,6 +101,8 @@ Props:
             <AuthenticationModeHeader title="Create Passkey" description="Create a new passkey">
                 <FingerprintIcon weight="bold" size={32} />
             </AuthenticationModeHeader>
+
+            <CreatePasskey />
         {/if}
     </Card.Content>
 </Card.Root>

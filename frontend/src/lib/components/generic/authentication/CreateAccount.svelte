@@ -29,6 +29,7 @@ TODO: Support passkeys
 	import SignInConfirmation from "./SignInConfirmation.svelte";
 	import { checkUniqueUsernameAuthCheckUniqueUsernameGet, meAuthMeGet, signupAuthSignupPost } from "$lib/api/auth/auth";
 	import type { SignupRequest, UserResponse } from "$lib/api/model";
+	import CreatePasskey, { type CreatePasskeyStatus } from "./CreatePasskey.svelte";
 
 
     let page: "username" | "verify" | "password" | "profile" | "passkey" | "success" = $state("username");
@@ -51,6 +52,7 @@ TODO: Support passkeys
     let message: string = $state("");
 
     let successUser: UserResponse | null = $state(null);
+    let createPasskeyStatus: CreatePasskeyStatus = $state("idle");
 
     /**
      * Check the user's username and email on the server to ensure they're unique
@@ -93,7 +95,7 @@ TODO: Support passkeys
                         successUser = response.data.user;
                     }
                 });
-                page = "success";
+                page = "passkey";
             } else {
                 message = response.data.message;
             }
@@ -114,9 +116,6 @@ TODO: Support passkeys
                 page = "profile";
             } else if (page == "profile" && displayName.trim() != "" && teamNumber != 0 && !creatingAccount) {
                 createAccount();
-            } else if (page == "passkey") {
-                // TODO: Handle passkey when implemented
-                page = "success";
             }
         }
     }
@@ -134,6 +133,10 @@ TODO: Support passkeys
         } else if (emailVerificationStatus == "cancel") {
             page = "username";
             emailVerified = false;
+        }
+
+        if (createPasskeyStatus == "success" || createPasskeyStatus == "cancel") {
+            page = "success";
         }
     })
 </script>
@@ -238,11 +241,7 @@ TODO: Support passkeys
     </div>
 
 {:else if page == "passkey"}
-    <div class="flex flex-col gap-2 text-left" transition:slide>
-        <Button variant="outline" size="sm" onclick={() => {page = "profile"}} class="w-fit"><ArrowLeftIcon weight="bold" /> Back</Button>
-        <p>Passkeys are not yet supported</p>
-        <Button onclick={() => {page = "success"}}><ArrowRightIcon weight="bold" /> Continue <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root></Button>
-    </div>
+    <CreatePasskey bind:status={createPasskeyStatus} />
 {:else if page == "success"}
     <SignInConfirmation user={successUser} redirect={5} />
 {/if}

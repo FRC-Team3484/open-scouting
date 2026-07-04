@@ -15,11 +15,12 @@ TODO: Support passkeys
     import * as Alert from "$lib/components/ui/alert/index";
     import * as Kbd from "$lib/components/ui/kbd/index";
 
-	import { loginAuthLoginPost, meAuthMeGet } from "$lib/api/auth/auth";
+	import { createLoginPasskeyAuthPasskeysLoginCreatePost, loginAuthLoginPost, meAuthMeGet, verifyLoginPasskeyAuthPasskeysLoginVerifyPost } from "$lib/api/auth/auth";
 	import type { UserResponse } from "$lib/api/model";
 	import SignInConfirmation from "./SignInConfirmation.svelte";
 	import Switch from "$lib/components/ui/switch/switch.svelte";
 	import Label from "$lib/components/ui/label/label.svelte";
+	import { startAuthentication } from "@simplewebauthn/browser";
 
 
     let page: "username" | "passkey" | "password" | "success" = $state("username"); 
@@ -53,6 +54,33 @@ TODO: Support passkeys
             }
         });
         loading = false;
+    }
+
+    /**
+     * Login with a passkey
+     */
+    async function loginWithPasskey() {
+        try {
+            const options = await createLoginPasskeyAuthPasskeysLoginCreatePost();
+
+            const authenticationResponse = await startAuthentication({
+                optionsJSON: options.data,
+            });
+
+            await verifyLoginPasskeyAuthPasskeysLoginVerifyPost(authenticationResponse, {challenge_uuid: options.data.challenge_uuid}).then(async (response) => {
+                if (response.status == 200) {
+                    await meAuthMeGet().then((response) => {
+                        if (response.status == 200) {
+                            successUser = response.data.user;
+                        }
+                    });
+                    page = "success";
+                }
+            });
+        } catch (error) {
+            console.error(error);
+            message = error.message
+        }
     }
 
     /**
@@ -95,6 +123,7 @@ TODO: Support passkeys
         </div>
         <Input placeholder="Username or email" type="text" bind:value={username} autofocus />
         <Button onclick={() => {page = "password"}} disabled={username.trim() == ""}><ArrowRightIcon weight="bold" /> Next <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root></Button>
+        <Button variant="outline" size="sm" onclick={() => {loginWithPasskey()}}><KeyIcon weight="bold" /> Sign In with Passkey</Button>
     </div>
 {:else if page == "passkey"}
     <div class="flex flex-col gap-2 text-left" transition:slide>
