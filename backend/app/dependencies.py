@@ -108,7 +108,6 @@ async def require_superuser(identity: Identity = Depends(get_identity)) -> Ident
     Returns:
         Identity: The current user
     """
-    print(identity)
     if identity.user is None:
         raise HTTPException(status_code=401, detail="User not authenticated")
         

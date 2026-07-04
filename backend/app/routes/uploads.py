@@ -139,7 +139,6 @@ async def upload_profile_picture(file: UploadFile = File(...), identity: Identit
     img.save(path, format="PNG", optimize=True)
 
     print("Created profile picture:", path)
-    print(os.getcwd())
 
     # Get user profile
     profile: Profile | None = await Profile.get_or_none(user=identity.user)

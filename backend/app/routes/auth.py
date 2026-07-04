@@ -1,29 +1,24 @@
-import base64
-import json
-import re
-
-from webauthn.authentication.verify_authentication_response import VerifiedAuthentication
-from webauthn.helpers import base64url_to_bytes, options_to_json_dict
 
 import os
+import re
 import secrets
 from datetime import UTC, timedelta, datetime
-from starlette.responses import JSONResponse
-from time import timezone
-from typing import Any, Literal
+from typing import Literal
 from uuid import UUID
 
 from sqlite3 import IntegrityError
 from webauthn.helpers.exceptions import InvalidAuthenticationResponse, InvalidRegistrationResponse
 from webauthn.registration.verify_registration_response import VerifiedRegistration
+from webauthn.authentication.verify_authentication_response import VerifiedAuthentication
+from webauthn.helpers import base64url_to_bytes, options_to_json_dict
+from webauthn import generate_authentication_options, generate_registration_options, verify_authentication_response, verify_registration_response
+from webauthn.helpers.structs import AuthenticatorSelectionCriteria, PublicKeyCredentialDescriptor, ResidentKeyRequirement
 from fastapi import APIRouter, Body, Depends, HTTPException, status, Request, Response
-from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordRequestForm
+from starlette.responses import JSONResponse
 from tortoise.exceptions import FieldError
 from tortoise.expressions import Q
 from tortoise.timezone import now
-from webauthn import generate_authentication_options, generate_registration_options, options_to_json, verify_authentication_response, verify_registration_response
-from webauthn.helpers.structs import AuthenticatorSelectionCriteria, PublicKeyCredentialDescriptor, ResidentKeyRequirement, UserVerificationRequirement
 
 from ..utils import IS_DEV
 from ..auth import create_access_token, get_password_hash, verify_password
@@ -664,6 +659,9 @@ async def forgot_password(data: ForgotPasswordRequest, response: Response):
 # Passkeys
 @router.post("/auth/passkeys/register/create")
 async def create_passkey(response: Response, identity: Identity = Depends(require_user)):
+    """
+    Begin the passkey registration process
+    """
     if not identity.user:
         response.status_code = 404
         return MessageResponse(message="User not found")
@@ -699,6 +697,9 @@ async def create_passkey(response: Response, identity: Identity = Depends(requir
 
 @router.post("/auth/passkeys/register/verify", response_model=MessageResponse)
 async def verify_passkey(challenge_uuid: UUID, response: Response, data: dict = Body(), identity: Identity = Depends(require_user)):
+    """
+    Verify the passkey registration
+    """
     try:
         challenge: WebAuthnChallenge | None = await WebAuthnChallenge.get_or_none(
             uuid=challenge_uuid
@@ -736,6 +737,9 @@ async def verify_passkey(challenge_uuid: UUID, response: Response, data: dict = 
 
 @router.post("/auth/passkeys/login/create")
 async def create_login_passkey(response: Response):
+    """
+    Begin the passkey login process
+    """
     options = generate_authentication_options(
         rp_id=PASSKEY_RP_ID
     )
@@ -753,6 +757,9 @@ async def create_login_passkey(response: Response):
 
 @router.post("/auth/passkeys/login/verify", response_model=MessageResponse)
 async def verify_login_passkey(challenge_uuid: UUID, request: Request, response: Response, data: dict = Body()):
+    """
+    Verify the passkey login
+    """
     try:
         challenge: WebAuthnChallenge | None = await WebAuthnChallenge.get_or_none(
             uuid=challenge_uuid
