@@ -7,4 +7,5 @@
 
 export type VerifyPasskeyAuthPasskeysRegisterVerifyPostParams = {
 challenge_uuid: string;
+label: string;
 };

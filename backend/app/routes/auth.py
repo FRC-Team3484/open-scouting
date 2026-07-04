@@ -912,6 +912,25 @@ async def get_passkeys(identity: Identity = Depends(require_user)):
         ) for passkey in await Passkey.filter(user=identity.user)
     ]
 
+@router.delete("/auth/passkeys/delete/{uuid}", response_model=MessageResponse)
+async def delete_passkey(uuid: UUID, identity: Identity = Depends(require_user)):
+    """
+    Delete a passkey on the server
+
+    Parameters:
+        uuid (uuid): The uuid of the passkey to delete
+
+    Returns:
+        MessageResponse: A message indicating that the passkey was deleted
+    """
+    passkey_to_delete: Passkey | None = await Passkey.get_or_none(uuid=uuid, user=identity.user)
+
+    if not passkey_to_delete:
+        raise HTTPException(status_code=404, detail="Passkey not found")
+    else:       
+        await passkey_to_delete.delete()
+        return MessageResponse(message="Passkey deleted")
+
 @router.post("/auth/change_password", response_model=MessageResponse)
 async def change_password(data: ChangePasswordRequest, identity: Identity = Depends(require_user)):
     """

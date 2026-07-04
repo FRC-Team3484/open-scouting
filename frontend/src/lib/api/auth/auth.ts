@@ -1153,6 +1153,55 @@ export const getPasskeysAuthPasskeysGetGet = async ( options?: RequestInit): Pro
 );}
 
 
+export type deletePasskeyAuthPasskeysDeleteUuidDeleteResponse200 = {
+  data: MessageResponse
+  status: 200
+}
+
+export type deletePasskeyAuthPasskeysDeleteUuidDeleteResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type deletePasskeyAuthPasskeysDeleteUuidDeleteResponseSuccess = (deletePasskeyAuthPasskeysDeleteUuidDeleteResponse200) & {
+  headers: Headers;
+};
+export type deletePasskeyAuthPasskeysDeleteUuidDeleteResponseError = (deletePasskeyAuthPasskeysDeleteUuidDeleteResponse422) & {
+  headers: Headers;
+};
+
+export type deletePasskeyAuthPasskeysDeleteUuidDeleteResponse = (deletePasskeyAuthPasskeysDeleteUuidDeleteResponseSuccess | deletePasskeyAuthPasskeysDeleteUuidDeleteResponseError)
+
+export const getDeletePasskeyAuthPasskeysDeleteUuidDeleteUrl = (uuid: string,) => {
+
+
+
+
+  return `/auth/passkeys/delete/${uuid}`
+}
+
+/**
+ * Delete a passkey on the server
+
+Parameters:
+    uuid (uuid): The uuid of the passkey to delete
+
+Returns:
+    MessageResponse: A message indicating that the passkey was deleted
+ * @summary Delete Passkey
+ */
+export const deletePasskeyAuthPasskeysDeleteUuidDelete = async (uuid: string, options?: RequestInit): Promise<deletePasskeyAuthPasskeysDeleteUuidDeleteResponse> => {
+
+  return customInstance<deletePasskeyAuthPasskeysDeleteUuidDeleteResponse>(getDeletePasskeyAuthPasskeysDeleteUuidDeleteUrl(uuid),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
 export type changePasswordAuthChangePasswordPostResponse200 = {
   data: MessageResponse
   status: 200

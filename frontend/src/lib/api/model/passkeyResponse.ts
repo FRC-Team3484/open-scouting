@@ -4,10 +4,9 @@
  * FastAPI
  * OpenAPI spec version: v2.2.0
  */
-import type { PasskeyResponseTransports } from './passkeyResponseTransports';
 
 export interface PasskeyResponse {
   uuid: string;
-  transports: PasskeyResponseTransports;
+  label: string | null;
   created_at: string;
 }

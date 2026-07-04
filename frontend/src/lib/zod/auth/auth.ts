@@ -334,7 +334,8 @@ export const CreatePasskeyAuthPasskeysRegisterCreatePostResponse = zod.unknown()
  * @summary Verify Passkey
  */
 export const VerifyPasskeyAuthPasskeysRegisterVerifyPostQueryParams = zod.object({
-  "challenge_uuid": zod.string().uuid()
+  "challenge_uuid": zod.string().uuid(),
+  "label": zod.string()
 })
 
 export const VerifyPasskeyAuthPasskeysRegisterVerifyPostBody = zod.record(zod.string(), zod.unknown())
@@ -394,10 +395,28 @@ export const VerifyVerificationPasskeyAuthPasskeysVerificationVerifyPostResponse
  */
 export const GetPasskeysAuthPasskeysGetGetResponseItem = zod.object({
   "uuid": zod.string().uuid(),
-  "transports": zod.record(zod.string(), zod.unknown()),
+  "label": zod.union([zod.string(),zod.null()]),
   "created_at": zod.string().datetime({"offset":true})
 })
 export const GetPasskeysAuthPasskeysGetGetResponse = zod.array(GetPasskeysAuthPasskeysGetGetResponseItem)
+
+/**
+ * Delete a passkey on the server
+
+Parameters:
+    uuid (uuid): The uuid of the passkey to delete
+
+Returns:
+    MessageResponse: A message indicating that the passkey was deleted
+ * @summary Delete Passkey
+ */
+export const DeletePasskeyAuthPasskeysDeleteUuidDeleteParams = zod.object({
+  "uuid": zod.string().uuid()
+})
+
+export const DeletePasskeyAuthPasskeysDeleteUuidDeleteResponse = zod.object({
+  "message": zod.string()
+})
 
 /**
  * Change the password for the current user
