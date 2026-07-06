@@ -136,8 +136,7 @@ Props:
                     </Button>
                     <Button onclick={() => {setUser(user.username, user.team_number, user.uuid); handleNavigate("year")}}>
                         <Avatar.Root>
-                            <!-- TODO: Actually load avatar from user account -->
-                            <!-- <Avatar.Image src={`https://github.com/${user.username}.png`} alt={user.username} /> -->
+                            <Avatar.Image src={user.profile_picture_url} alt={user.username} />
                             <Avatar.Fallback>{user.username.substring(0, 1)}</Avatar.Fallback>
                         </Avatar.Root>
                         

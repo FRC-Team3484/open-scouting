@@ -5,8 +5,10 @@
  * OpenAPI spec version: v2.2.0
  */
 import type { UserResponse } from './userResponse';
+import type { UserSetting } from './userSetting';
 
 export interface UserMeResponse {
   authenticated: boolean;
   user: UserResponse | null;
+  settings: UserSetting[] | null;
 }

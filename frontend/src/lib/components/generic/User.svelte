@@ -35,15 +35,14 @@ Props:
         <DropdownMenu.Root>
             <DropdownMenu.Trigger>
                 <Avatar.Root>
-                    <!-- TODO: Actually load avatar from user account -->
-                    <!-- <Avatar.Image src={`https://github.com/${user.username}.png`} alt={user.username} /> -->
+                    <Avatar.Image src={user.profile_picture_url} alt={user.username} />
                     <Avatar.Fallback>{user.username.substring(0, 1)}</Avatar.Fallback>
                 </Avatar.Root>
             </DropdownMenu.Trigger>
             <DropdownMenu.Content class="w-56" align="start">
                 <DropdownMenu.Label>{user.username}</DropdownMenu.Label>
                 <DropdownMenu.Group>
-                    <DropdownMenu.Item>
+                    <DropdownMenu.Item onclick={async () => await goto("/profile")}>
                         <UserCircleIcon weight="bold" /> Profile
                     </DropdownMenu.Item>
                     {#if user.is_superuser}

@@ -6,5 +6,5 @@
  */
 
 export interface BaseSettings {
-  favorite_events: string[];
+  favorite_events?: unknown[] | null;
 }

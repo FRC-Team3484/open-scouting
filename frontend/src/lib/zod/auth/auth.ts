@@ -21,8 +21,21 @@ export const MeAuthMeGetResponse = zod.object({
   "username": zod.string(),
   "email": zod.string().email(),
   "is_superuser": zod.boolean(),
+  "display_name": zod.union([zod.string(),zod.null()]),
+  "team_number": zod.number(),
+  "email_verified": zod.boolean(),
+  "profile_picture_url": zod.union([zod.string(),zod.null()]),
   "created_at": zod.string().datetime({"offset":true})
-}),zod.null()])
+}),zod.null()]),
+  "settings": zod.union([zod.array(zod.object({
+  "key": zod.string(),
+  "value": zod.union([zod.unknown(),zod.null()]),
+  "name": zod.string(),
+  "description": zod.union([zod.string(),zod.null()]),
+  "section": zod.union([zod.string(),zod.null()]),
+  "visible": zod.boolean(),
+  "type": zod.enum(['string', 'number', 'boolean', 'array', 'json'])
+})),zod.null()])
 })
 
 /**
@@ -41,6 +54,8 @@ export const LoginAuthLoginPostResponse = zod.object({
 
 If this is the first user on the server, make them a superuser
 
+TODO: email_verified status probably shouldn't come from the client, and should instead be verified by the server to prevent verified spoofing
+
 Paramaters:
     data (SignupRequest): The data to create the user
 
@@ -54,7 +69,8 @@ export const SignupAuthSignupPostBody = zod.object({
   "password": zod.string(),
   "confirm_password": zod.string(),
   "team_number": zod.number(),
-  "display_name": zod.string()
+  "display_name": zod.string(),
+  "verification_code_uuid": zod.union([zod.string().uuid(),zod.null()])
 })
 
 export const SignupAuthSignupPostResponse = zod.object({
@@ -83,6 +99,10 @@ export const GetUsersUsersGetResponseItem = zod.object({
   "username": zod.string(),
   "email": zod.string().email(),
   "is_superuser": zod.boolean(),
+  "display_name": zod.union([zod.string(),zod.null()]),
+  "team_number": zod.number(),
+  "email_verified": zod.boolean(),
+  "profile_picture_url": zod.union([zod.string(),zod.null()]),
   "created_at": zod.string().datetime({"offset":true})
 })
 export const GetUsersUsersGetResponse = zod.array(GetUsersUsersGetResponseItem)
@@ -114,9 +134,16 @@ Returns:
     BaseSettings: The settings for the current user
  * @summary Get User Settings
  */
-export const GetUserSettingsUsersMeGetSettingsGetResponse = zod.object({
-  "favorite_events": zod.array(zod.string())
+export const GetUserSettingsUsersMeGetSettingsGetResponseItem = zod.object({
+  "key": zod.string(),
+  "value": zod.union([zod.unknown(),zod.null()]),
+  "name": zod.string(),
+  "description": zod.union([zod.string(),zod.null()]),
+  "section": zod.union([zod.string(),zod.null()]),
+  "visible": zod.boolean(),
+  "type": zod.enum(['string', 'number', 'boolean', 'array', 'json'])
 })
+export const GetUserSettingsUsersMeGetSettingsGetResponse = zod.array(GetUserSettingsUsersMeGetSettingsGetResponseItem)
 
 /**
  * Update the settings for the current user
@@ -129,11 +156,11 @@ Returns:
  * @summary Update User Settings
  */
 export const UpdateUserSettingsUsersMeUpdateSettingsPostBody = zod.object({
-  "favorite_events": zod.array(zod.string())
+  "favorite_events": zod.union([zod.array(zod.unknown()),zod.null()]).optional()
 })
 
 export const UpdateUserSettingsUsersMeUpdateSettingsPostResponse = zod.object({
-  "favorite_events": zod.array(zod.string())
+  "favorite_events": zod.union([zod.array(zod.unknown()),zod.null()]).optional()
 })
 
 /**
@@ -153,11 +180,7 @@ export const SetSuperuserUsersSetSuperuserUuidPostParams = zod.object({
 })
 
 export const SetSuperuserUsersSetSuperuserUuidPostResponse = zod.object({
-  "uuid": zod.string().uuid(),
-  "username": zod.string(),
-  "email": zod.string().email(),
-  "is_superuser": zod.boolean(),
-  "created_at": zod.string().datetime({"offset":true})
+  "message": zod.string()
 })
 
 /**
@@ -177,10 +200,276 @@ export const RemoveSuperuserUsersRemoveSuperuserUuidPostParams = zod.object({
 })
 
 export const RemoveSuperuserUsersRemoveSuperuserUuidPostResponse = zod.object({
-  "uuid": zod.string().uuid(),
-  "username": zod.string(),
+  "message": zod.string()
+})
+
+/**
+ * Set the display name for the current user
+
+Parameters:
+    display_name (str): The display name to set
+
+Returns:
+    MessageResponse: A message indicating that the display name was set
+ * @summary Set Display Name
+ */
+export const SetDisplayNameUsersMeSetDisplayNamePostQueryParams = zod.object({
+  "display_name": zod.string()
+})
+
+export const SetDisplayNameUsersMeSetDisplayNamePostResponse = zod.object({
+  "message": zod.string()
+})
+
+/**
+ * Set the team number for the current user
+
+Parameters:
+    team_number (int): The team number to set
+
+Returns:
+    MessageResponse: A message indicating that the team number was set
+ * @summary Set Team Number
+ */
+export const SetTeamNumberUsersMeSetTeamNumberPostQueryParams = zod.object({
+  "team_number": zod.number()
+})
+
+export const SetTeamNumberUsersMeSetTeamNumberPostResponse = zod.object({
+  "message": zod.string()
+})
+
+/**
+ * Check if a username and email is unique
+
+Parameters:
+    username (str | None): The username to check
+    email (str | None): The email to check
+
+Returns:
+    MessageResponse: A message indicating whether the username is unique
+ * @summary Check Unique Username
+ */
+export const CheckUniqueUsernameAuthCheckUniqueUsernameGetQueryParams = zod.object({
+  "username": zod.union([zod.string(),zod.null()]).optional(),
+  "email": zod.union([zod.string(),zod.null()]).optional()
+})
+
+export const CheckUniqueUsernameAuthCheckUniqueUsernameGetResponse = zod.unknown()
+
+/**
+ * Given an email, create a verification code and send it to the user
+
+If an identity is found, attach the user to the verification code
+
+Parameters:
+    email (str): The email to create a verification code for
+ * @summary Create Verification Code
+ */
+export const createVerificationCodeAuthCreateVerificationCodePostQueryStyleDefault = `verification_code`;
+
+export const CreateVerificationCodeAuthCreateVerificationCodePostQueryParams = zod.object({
+  "email": zod.string(),
+  "style": zod.enum(['verification_code', 'forgot_password']).default(createVerificationCodeAuthCreateVerificationCodePostQueryStyleDefault)
+})
+
+export const CreateVerificationCodeAuthCreateVerificationCodePostResponse = zod.unknown()
+
+/**
+ * Verify a verification code for a user
+
+Given an email and a verification code, verify the verification code
+
+If an identity is found, the verification code must be attached to the user to be validated.
+    This would occour when verifying an email from the profile page when their email was not yet verified.
+    When doing this, also set that user's email_verified to be true if it is not already.
+
+The code's created_at should be less than VERIFICATION_CODE_EXPIRE_MINUTES to be validated.
+
+Parameters:
+    email (str): The email to verify the verification code for
+    code (int): The verification code to verify
+ * @summary Verify Verification Code
+ */
+export const VerifyVerificationCodeAuthVerifyVerificationCodePostBody = zod.object({
   "email": zod.string().email(),
-  "is_superuser": zod.boolean(),
+  "code": zod.string()
+})
+
+export const VerifyVerificationCodeAuthVerifyVerificationCodePostResponse = zod.object({
+  "verified": zod.boolean(),
+  "message": zod.string(),
+  "verification_code_uuid": zod.union([zod.string().uuid(),zod.null()]).optional()
+})
+
+/**
+ * Given an email, password, and verification code UUID, change the password for a user
+
+First, confirm that the verification code is valid. If so, change the password for the user.
+
+Parameters:
+    email (str): The email to change the password for
+    password (str): The new password
+    verification_code_uuid (str): The UUID of the verification code
+ * @summary Forgot Password
+ */
+export const ForgotPasswordAuthForgotPasswordPostBody = zod.object({
+  "email": zod.string().email(),
+  "password": zod.string(),
+  "verification_code_uuid": zod.string().uuid()
+})
+
+export const ForgotPasswordAuthForgotPasswordPostResponse = zod.object({
+  "message": zod.string()
+})
+
+/**
+ * Begin the passkey registration process
+
+Requires either verification_code_uuid or passkey_uuid to verify the user's identity, unless the account is less than PASSKEY_NO_VERIFICATION_MINUTES minutes old
+ * @summary Create Passkey
+ */
+export const CreatePasskeyAuthPasskeysRegisterCreatePostQueryParams = zod.object({
+  "verification_code_uuid": zod.union([zod.string().uuid(),zod.null()]).optional(),
+  "passkey_uuid": zod.union([zod.string().uuid(),zod.null()]).optional()
+})
+
+export const CreatePasskeyAuthPasskeysRegisterCreatePostResponse = zod.unknown()
+
+/**
+ * Verify the passkey registration
+ * @summary Verify Passkey
+ */
+export const VerifyPasskeyAuthPasskeysRegisterVerifyPostQueryParams = zod.object({
+  "challenge_uuid": zod.string().uuid(),
+  "label": zod.string()
+})
+
+export const VerifyPasskeyAuthPasskeysRegisterVerifyPostBody = zod.record(zod.string(), zod.unknown())
+
+export const VerifyPasskeyAuthPasskeysRegisterVerifyPostResponse = zod.object({
+  "message": zod.string()
+})
+
+/**
+ * Begin the passkey login process
+ * @summary Create Login Passkey
+ */
+export const CreateLoginPasskeyAuthPasskeysLoginCreatePostResponse = zod.unknown()
+
+/**
+ * Verify the passkey login
+ * @summary Verify Login Passkey
+ */
+export const VerifyLoginPasskeyAuthPasskeysLoginVerifyPostQueryParams = zod.object({
+  "challenge_uuid": zod.string().uuid()
+})
+
+export const VerifyLoginPasskeyAuthPasskeysLoginVerifyPostBody = zod.record(zod.string(), zod.unknown())
+
+export const VerifyLoginPasskeyAuthPasskeysLoginVerifyPostResponse = zod.object({
+  "message": zod.string()
+})
+
+/**
+ * Begin the passkey verification process
+ * @summary Create Verification Passkey
+ */
+export const CreateVerificationPasskeyAuthPasskeysVerificationCreatePostQueryParams = zod.object({
+  "email": zod.string()
+})
+
+export const CreateVerificationPasskeyAuthPasskeysVerificationCreatePostResponse = zod.unknown()
+
+/**
+ * Verify the passkey verification
+ * @summary Verify Verification Passkey
+ */
+export const VerifyVerificationPasskeyAuthPasskeysVerificationVerifyPostQueryParams = zod.object({
+  "challenge_uuid": zod.string().uuid(),
+  "email": zod.string()
+})
+
+export const VerifyVerificationPasskeyAuthPasskeysVerificationVerifyPostBody = zod.record(zod.string(), zod.unknown())
+
+export const VerifyVerificationPasskeyAuthPasskeysVerificationVerifyPostResponse = zod.object({
+  "message": zod.string()
+})
+
+/**
+ * Get the passkeys for the current user
+ * @summary Get Passkeys
+ */
+export const GetPasskeysAuthPasskeysGetGetResponseItem = zod.object({
+  "uuid": zod.string().uuid(),
+  "label": zod.union([zod.string(),zod.null()]),
   "created_at": zod.string().datetime({"offset":true})
+})
+export const GetPasskeysAuthPasskeysGetGetResponse = zod.array(GetPasskeysAuthPasskeysGetGetResponseItem)
+
+/**
+ * Delete a passkey on the server
+
+Parameters:
+    uuid (uuid): The uuid of the passkey to delete
+
+Returns:
+    MessageResponse: A message indicating that the passkey was deleted
+ * @summary Delete Passkey
+ */
+export const DeletePasskeyAuthPasskeysDeleteUuidDeleteParams = zod.object({
+  "uuid": zod.string().uuid()
+})
+
+export const DeletePasskeyAuthPasskeysDeleteUuidDeleteResponse = zod.object({
+  "message": zod.string()
+})
+
+/**
+ * Change the password for the current user
+
+Requires either verification_code_uuid or passkey_uuid to change a password
+ * @summary Change Password
+ */
+export const ChangePasswordAuthChangePasswordPostBody = zod.object({
+  "password": zod.string(),
+  "verification_code_uuid": zod.union([zod.string().uuid(),zod.null()]).optional(),
+  "passkey_uuid": zod.union([zod.string().uuid(),zod.null()]).optional()
+})
+
+export const ChangePasswordAuthChangePasswordPostResponse = zod.object({
+  "message": zod.string()
+})
+
+/**
+ * Change the email for the current user
+
+Requires either verification_code_uuid or passkey_uuid to change an email
+ * @summary Change Email
+ */
+export const ChangeEmailAuthChangeEmailPostBody = zod.object({
+  "email": zod.string(),
+  "verification_code_uuid": zod.union([zod.string().uuid(),zod.null()]).optional(),
+  "passkey_uuid": zod.union([zod.string().uuid(),zod.null()]).optional()
+})
+
+export const ChangeEmailAuthChangeEmailPostResponse = zod.object({
+  "message": zod.string()
+})
+
+/**
+ * Delete the current user's account
+
+Requires either verification_code_uuid or passkey_uuid to delete the account
+ * @summary Delete Account
+ */
+export const DeleteAccountAuthMeDeleteAccountDeleteBody = zod.object({
+  "delete_data": zod.boolean(),
+  "verification_code_uuid": zod.union([zod.string().uuid(),zod.null()]).optional(),
+  "passkey_uuid": zod.union([zod.string().uuid(),zod.null()]).optional()
+})
+
+export const DeleteAccountAuthMeDeleteAccountDeleteResponse = zod.object({
+  "message": zod.string()
 })
 

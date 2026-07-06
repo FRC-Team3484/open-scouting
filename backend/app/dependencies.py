@@ -4,13 +4,14 @@ from fastapi import Depends, HTTPException, Request, Response
 
 from .utils import IS_DEV
 
-from .models import Session, User
+from .models import Profile, Session, User
 from .auth import decode_access_token
 
 @dataclass
 class Identity:
     user: User | None
     session: Session | None
+    profile: Profile | None
 
 async def get_identity(request: Request, response: Response) -> Identity:
     """
@@ -24,13 +25,13 @@ async def get_identity(request: Request, response: Response) -> Identity:
 
     session: Session | None = None
     user: User | None = None
+    profile: Profile | None = None
 
     # Load session
     session_id = request.cookies.get("session_id")
 
     if session_id:
         session = await Session.get_or_none(uuid=session_id)
-
 
     # Load auth token
     token = request.cookies.get("access_token")
@@ -48,6 +49,8 @@ async def get_identity(request: Request, response: Response) -> Identity:
                 # but don't error the request
                 if not user:
                     user = None
+                else:
+                    profile = await Profile.get_or_none(user=user)
 
     # Create session if missing
     if session is None:
@@ -78,7 +81,8 @@ async def get_identity(request: Request, response: Response) -> Identity:
     # Return identity
     return Identity(
         user=user,
-        session=session
+        session=session,
+        profile=profile
     )
 
 async def require_user(identity: Identity = Depends(get_identity)) -> Identity:
@@ -104,7 +108,6 @@ async def require_superuser(identity: Identity = Depends(get_identity)) -> Ident
     Returns:
         Identity: The current user
     """
-    print(identity)
     if identity.user is None:
         raise HTTPException(status_code=401, detail="User not authenticated")
         

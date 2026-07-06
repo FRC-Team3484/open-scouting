@@ -1,0 +1,49 @@
+
+<body>
+    <div id="logo">
+        <img src="https://open-scouting.shortcircuitfirst.org/_app/immutable/assets/icon_rounded.rjnW3SKC.png" alt="Logo" />
+        <div id="logo-text">
+            <p class="mono text-lg">Open Scouting</p>
+        </div>
+    </div>
+
+    <h2>Email Verification</h2>
+    <p>Hello, {{ email }}</p>
+    <p>Your Open Scouting verification code is: <strong>{{ verification_code }}</strong></p>
+    <p>Enter this code on the website to verify your email.</p>
+    <p>Thanks for using Open Scouting!</p>
+
+    {% include "footer.html" %}
+</body>
+
+<style>
+    body {
+        font-family: Open Sans, ui-sans-serif, sans-serif, system-ui;
+        background-color: oklch(0.1300 0.0280 261.6920);
+        margin: 0;
+        padding: 20px;
+        color: white;
+    }
+
+    #logo {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 0;
+    }
+
+    #logo img {
+        width: 50px;
+        height: 50px;
+        margin-right: 10px;
+    }
+
+    .mono {
+        font-family: IBM Plex Mono, monospace;
+        font-weight: bold;
+    }
+
+    .text-lg {
+        font-size: 2rem;
+    }
+</style>

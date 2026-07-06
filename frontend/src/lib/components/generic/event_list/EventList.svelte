@@ -251,7 +251,7 @@ Props:
      * 
      * @param event The event to favorite
      */
-    async function favoriteEvent(event: EventType): Promise<void> {
+    async function favoriteEvent(e, event: EventType): Promise<void> {
         const key = `${event.year}_${event.event_code}`;
 
         if (favoriteEvents.includes(key)) {

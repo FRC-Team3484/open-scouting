@@ -30,6 +30,15 @@ function getAuthenticationStatus(): boolean {
 }
 
 /**
+ * Get the user's settings
+ * 
+ * @returns The user's settings
+ */
+function getSettings() {
+    return page.data.user.settings;
+}
+
+/**
  * Sign the user out
  */
 async function signOut() {
@@ -86,9 +95,9 @@ async function getUserSetting(key) {
  * @param value The value of the setting
  */
 async function setUserSetting(key, value) {
-    let settings = await getUserSettings();
+    let settings = {};
     settings[key] = value;
     await setUserSettings(settings);
 }
 
-export { getUser, getAuthenticationStatus, signOut, getUserSettings, setUserSettings, getUserSetting, setUserSetting };
+export { getUser, getAuthenticationStatus, getSettings, signOut, getUserSettings, setUserSettings, getUserSetting, setUserSetting };

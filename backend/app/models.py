@@ -1,7 +1,11 @@
-from typing import override
+from typing import Any, override
+from uuid import uuid5
 
 from tortoise import fields
 from tortoise.models import Model
+
+from .setting_fields import ArraySetting, BooleanSetting, JSONSetting, NumberSetting, StringSetting
+
 # Authentication
 class User(Model):
     """
@@ -20,6 +24,7 @@ class User(Model):
     email = fields.CharField(max_length=255, unique=True)
     hashed_password = fields.CharField(max_length=255)
     is_superuser = fields.BooleanField(default=False)
+    email_verified = fields.BooleanField(default=False, db_default=False)
     created_at = fields.DatetimeField(auto_now_add=True)
 
     @override
@@ -40,6 +45,8 @@ class Profile(Model):
     user = fields.ForeignKeyField("models.User", related_name="profiles")
     display_name = fields.CharField(max_length=255)
     team_number = fields.IntField(null=True)
+    profile_picture_url = fields.CharField(max_length=255, null=True, default=None)
+    created_at = fields.DatetimeField(auto_now_add=True, null=True)
 
     @override
     def __str__(self) -> str:
@@ -92,7 +99,9 @@ class Settings(Model):
     """
     uuid = fields.UUIDField(pk=True)
     user = fields.ForeignKeyField("models.User", related_name="settings")
-    favorite_events = fields.JSONField(null=True, default=list)
+
+    # Settings:
+    favorite_events = ArraySetting(null=True, default=list, display_name="Favorite Events", setting_description="Your favorite events, which appear at the top of the event list", section="General", visible=True)
 
 class Session(Model):
     """
@@ -117,6 +126,65 @@ class Session(Model):
         null=True, 
         related_name="sessions"
     )
+
+class VerificationCode(Model):
+    """
+    Defines a verification code for a user, used to verify their email or change their password
+
+    Attributes:
+        uuid (UUID): The unique identifier for the verification code
+        user (User): The user the verification code is associated with
+        code (str): The verification code
+        email (str): The email the verification code is associated with
+        verified (bool): Whether the verification code has been verified
+        created_at (datetime): The date and time the verification code was created
+    """
+    uuid = fields.UUIDField(pk=True)
+    user = fields.ForeignKeyField("models.User", related_name="verification_codes", null=True)
+    code = fields.CharField(max_length=6)
+    email = fields.CharField(max_length=255)
+    verified = fields.BooleanField(default=False)
+    created_at = fields.DatetimeField(auto_now_add=True)
+
+class Passkey(Model):
+    """
+    Defines a passkey for a user, used to log them in
+
+    Attributes:
+        uuid (UUID): The unique identifier for the passkey
+        user (User): The user the passkey is associated with
+        credential_id (bytes): The credential id of the passkey
+        public_key (bytes): The public key of the passkey
+        sign_count (int): The sign count of the passkey
+        transports (list): The transports of the passkey
+        created_at (datetime): The date and time the passkey was created
+    """
+    uuid = fields.UUIDField(pk=True)
+    user = fields.ForeignKeyField(
+        "models.User",
+        related_name="passkeys"
+    )
+    label = fields.CharField(max_length=255, null=True)
+
+    credential_id = fields.BinaryField()
+    public_key = fields.BinaryField()
+    sign_count = fields.BigIntField(default=0)
+    transports = fields.JSONField(null=True)
+
+    created_at = fields.DatetimeField(auto_now_add=True)
+
+class WebAuthnChallenge(Model):
+    uuid = fields.UUIDField(pk=True)
+
+    challenge = fields.BinaryField(null=True)
+
+    user = fields.ForeignKeyField(
+        "models.User",
+        related_name="webauthn_challenges",
+        null=True,
+    )
+
+    expires_at = fields.DatetimeField()
 
 # Main
 class Season(Model):

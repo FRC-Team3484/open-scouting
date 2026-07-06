@@ -10,5 +10,9 @@ export interface UserResponse {
   username: string;
   email: string;
   is_superuser: boolean;
+  display_name: string | null;
+  team_number: number;
+  email_verified: boolean;
+  profile_picture_url: string | null;
   created_at: string;
 }

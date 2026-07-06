@@ -7,11 +7,31 @@
 import type {
   BaseSettings,
   BodyLoginAuthLoginPost,
+  ChangeEmailRequest,
+  ChangePasswordRequest,
+  CheckUniqueUsernameAuthCheckUniqueUsernameGetParams,
+  CreatePasskeyAuthPasskeysRegisterCreatePostParams,
+  CreateVerificationCodeAuthCreateVerificationCodePostParams,
+  CreateVerificationPasskeyAuthPasskeysVerificationCreatePostParams,
+  DeleteAccountRequest,
+  ForgotPasswordRequest,
   HTTPValidationError,
   MessageResponse,
+  PasskeyResponse,
+  SetDisplayNameUsersMeSetDisplayNamePostParams,
+  SetTeamNumberUsersMeSetTeamNumberPostParams,
   SignupRequest,
   UserMeResponse,
-  UserResponse
+  UserResponse,
+  UserSetting,
+  VerifyLoginPasskeyAuthPasskeysLoginVerifyPostBody,
+  VerifyLoginPasskeyAuthPasskeysLoginVerifyPostParams,
+  VerifyPasskeyAuthPasskeysRegisterVerifyPostBody,
+  VerifyPasskeyAuthPasskeysRegisterVerifyPostParams,
+  VerifyVerificationCodeRequest,
+  VerifyVerificationCodeResponse,
+  VerifyVerificationPasskeyAuthPasskeysVerificationVerifyPostBody,
+  VerifyVerificationPasskeyAuthPasskeysVerificationVerifyPostParams
 } from '../model';
 
 import { customInstance } from '.././client';
@@ -148,6 +168,8 @@ export const getSignupAuthSignupPostUrl = () => {
  * Create a new user
 
 If this is the first user on the server, make them a superuser
+
+TODO: email_verified status probably shouldn't come from the client, and should instead be verified by the server to prevent verified spoofing
 
 Paramaters:
     data (SignupRequest): The data to create the user
@@ -298,7 +320,7 @@ export const deleteUserUsersDeleteUuidDelete = async (uuid: string, options?: Re
 
 
 export type getUserSettingsUsersMeGetSettingsGetResponse200 = {
-  data: BaseSettings
+  data: UserSetting[]
   status: 200
 }
 
@@ -387,7 +409,7 @@ export const updateUserSettingsUsersMeUpdateSettingsPost = async (baseSettings: 
 
 
 export type setSuperuserUsersSetSuperuserUuidPostResponse200 = {
-  data: UserResponse
+  data: MessageResponse
   status: 200
 }
 
@@ -438,7 +460,7 @@ export const setSuperuserUsersSetSuperuserUuidPost = async (uuid: string, option
 
 
 export type removeSuperuserUsersRemoveSuperuserUuidPostResponse200 = {
-  data: UserResponse
+  data: MessageResponse
   status: 200
 }
 
@@ -484,6 +506,854 @@ export const removeSuperuserUsersRemoveSuperuserUuidPost = async (uuid: string, 
     method: 'POST'
 
 
+  }
+);}
+
+
+export type setDisplayNameUsersMeSetDisplayNamePostResponse200 = {
+  data: MessageResponse
+  status: 200
+}
+
+export type setDisplayNameUsersMeSetDisplayNamePostResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type setDisplayNameUsersMeSetDisplayNamePostResponseSuccess = (setDisplayNameUsersMeSetDisplayNamePostResponse200) & {
+  headers: Headers;
+};
+export type setDisplayNameUsersMeSetDisplayNamePostResponseError = (setDisplayNameUsersMeSetDisplayNamePostResponse422) & {
+  headers: Headers;
+};
+
+export type setDisplayNameUsersMeSetDisplayNamePostResponse = (setDisplayNameUsersMeSetDisplayNamePostResponseSuccess | setDisplayNameUsersMeSetDisplayNamePostResponseError)
+
+export const getSetDisplayNameUsersMeSetDisplayNamePostUrl = (params: SetDisplayNameUsersMeSetDisplayNamePostParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/users/me/set_display_name?${stringifiedParams}` : `/users/me/set_display_name`
+}
+
+/**
+ * Set the display name for the current user
+
+Parameters:
+    display_name (str): The display name to set
+
+Returns:
+    MessageResponse: A message indicating that the display name was set
+ * @summary Set Display Name
+ */
+export const setDisplayNameUsersMeSetDisplayNamePost = async (params: SetDisplayNameUsersMeSetDisplayNamePostParams, options?: RequestInit): Promise<setDisplayNameUsersMeSetDisplayNamePostResponse> => {
+
+  return customInstance<setDisplayNameUsersMeSetDisplayNamePostResponse>(getSetDisplayNameUsersMeSetDisplayNamePostUrl(params),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+export type setTeamNumberUsersMeSetTeamNumberPostResponse200 = {
+  data: MessageResponse
+  status: 200
+}
+
+export type setTeamNumberUsersMeSetTeamNumberPostResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type setTeamNumberUsersMeSetTeamNumberPostResponseSuccess = (setTeamNumberUsersMeSetTeamNumberPostResponse200) & {
+  headers: Headers;
+};
+export type setTeamNumberUsersMeSetTeamNumberPostResponseError = (setTeamNumberUsersMeSetTeamNumberPostResponse422) & {
+  headers: Headers;
+};
+
+export type setTeamNumberUsersMeSetTeamNumberPostResponse = (setTeamNumberUsersMeSetTeamNumberPostResponseSuccess | setTeamNumberUsersMeSetTeamNumberPostResponseError)
+
+export const getSetTeamNumberUsersMeSetTeamNumberPostUrl = (params: SetTeamNumberUsersMeSetTeamNumberPostParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/users/me/set_team_number?${stringifiedParams}` : `/users/me/set_team_number`
+}
+
+/**
+ * Set the team number for the current user
+
+Parameters:
+    team_number (int): The team number to set
+
+Returns:
+    MessageResponse: A message indicating that the team number was set
+ * @summary Set Team Number
+ */
+export const setTeamNumberUsersMeSetTeamNumberPost = async (params: SetTeamNumberUsersMeSetTeamNumberPostParams, options?: RequestInit): Promise<setTeamNumberUsersMeSetTeamNumberPostResponse> => {
+
+  return customInstance<setTeamNumberUsersMeSetTeamNumberPostResponse>(getSetTeamNumberUsersMeSetTeamNumberPostUrl(params),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+export type checkUniqueUsernameAuthCheckUniqueUsernameGetResponse200 = {
+  data: unknown
+  status: 200
+}
+
+export type checkUniqueUsernameAuthCheckUniqueUsernameGetResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type checkUniqueUsernameAuthCheckUniqueUsernameGetResponseSuccess = (checkUniqueUsernameAuthCheckUniqueUsernameGetResponse200) & {
+  headers: Headers;
+};
+export type checkUniqueUsernameAuthCheckUniqueUsernameGetResponseError = (checkUniqueUsernameAuthCheckUniqueUsernameGetResponse422) & {
+  headers: Headers;
+};
+
+export type checkUniqueUsernameAuthCheckUniqueUsernameGetResponse = (checkUniqueUsernameAuthCheckUniqueUsernameGetResponseSuccess | checkUniqueUsernameAuthCheckUniqueUsernameGetResponseError)
+
+export const getCheckUniqueUsernameAuthCheckUniqueUsernameGetUrl = (params?: CheckUniqueUsernameAuthCheckUniqueUsernameGetParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/auth/check_unique_username?${stringifiedParams}` : `/auth/check_unique_username`
+}
+
+/**
+ * Check if a username and email is unique
+
+Parameters:
+    username (str | None): The username to check
+    email (str | None): The email to check
+
+Returns:
+    MessageResponse: A message indicating whether the username is unique
+ * @summary Check Unique Username
+ */
+export const checkUniqueUsernameAuthCheckUniqueUsernameGet = async (params?: CheckUniqueUsernameAuthCheckUniqueUsernameGetParams, options?: RequestInit): Promise<checkUniqueUsernameAuthCheckUniqueUsernameGetResponse> => {
+
+  return customInstance<checkUniqueUsernameAuthCheckUniqueUsernameGetResponse>(getCheckUniqueUsernameAuthCheckUniqueUsernameGetUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+export type createVerificationCodeAuthCreateVerificationCodePostResponse200 = {
+  data: unknown
+  status: 200
+}
+
+export type createVerificationCodeAuthCreateVerificationCodePostResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type createVerificationCodeAuthCreateVerificationCodePostResponseSuccess = (createVerificationCodeAuthCreateVerificationCodePostResponse200) & {
+  headers: Headers;
+};
+export type createVerificationCodeAuthCreateVerificationCodePostResponseError = (createVerificationCodeAuthCreateVerificationCodePostResponse422) & {
+  headers: Headers;
+};
+
+export type createVerificationCodeAuthCreateVerificationCodePostResponse = (createVerificationCodeAuthCreateVerificationCodePostResponseSuccess | createVerificationCodeAuthCreateVerificationCodePostResponseError)
+
+export const getCreateVerificationCodeAuthCreateVerificationCodePostUrl = (params: CreateVerificationCodeAuthCreateVerificationCodePostParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/auth/create_verification_code?${stringifiedParams}` : `/auth/create_verification_code`
+}
+
+/**
+ * Given an email, create a verification code and send it to the user
+
+If an identity is found, attach the user to the verification code
+
+Parameters:
+    email (str): The email to create a verification code for
+ * @summary Create Verification Code
+ */
+export const createVerificationCodeAuthCreateVerificationCodePost = async (params: CreateVerificationCodeAuthCreateVerificationCodePostParams, options?: RequestInit): Promise<createVerificationCodeAuthCreateVerificationCodePostResponse> => {
+
+  return customInstance<createVerificationCodeAuthCreateVerificationCodePostResponse>(getCreateVerificationCodeAuthCreateVerificationCodePostUrl(params),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+export type verifyVerificationCodeAuthVerifyVerificationCodePostResponse200 = {
+  data: VerifyVerificationCodeResponse
+  status: 200
+}
+
+export type verifyVerificationCodeAuthVerifyVerificationCodePostResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type verifyVerificationCodeAuthVerifyVerificationCodePostResponseSuccess = (verifyVerificationCodeAuthVerifyVerificationCodePostResponse200) & {
+  headers: Headers;
+};
+export type verifyVerificationCodeAuthVerifyVerificationCodePostResponseError = (verifyVerificationCodeAuthVerifyVerificationCodePostResponse422) & {
+  headers: Headers;
+};
+
+export type verifyVerificationCodeAuthVerifyVerificationCodePostResponse = (verifyVerificationCodeAuthVerifyVerificationCodePostResponseSuccess | verifyVerificationCodeAuthVerifyVerificationCodePostResponseError)
+
+export const getVerifyVerificationCodeAuthVerifyVerificationCodePostUrl = () => {
+
+
+
+
+  return `/auth/verify_verification_code`
+}
+
+/**
+ * Verify a verification code for a user
+
+Given an email and a verification code, verify the verification code
+
+If an identity is found, the verification code must be attached to the user to be validated.
+    This would occour when verifying an email from the profile page when their email was not yet verified.
+    When doing this, also set that user's email_verified to be true if it is not already.
+
+The code's created_at should be less than VERIFICATION_CODE_EXPIRE_MINUTES to be validated.
+
+Parameters:
+    email (str): The email to verify the verification code for
+    code (int): The verification code to verify
+ * @summary Verify Verification Code
+ */
+export const verifyVerificationCodeAuthVerifyVerificationCodePost = async (verifyVerificationCodeRequest: VerifyVerificationCodeRequest, options?: RequestInit): Promise<verifyVerificationCodeAuthVerifyVerificationCodePostResponse> => {
+
+  return customInstance<verifyVerificationCodeAuthVerifyVerificationCodePostResponse>(getVerifyVerificationCodeAuthVerifyVerificationCodePostUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      verifyVerificationCodeRequest,)
+  }
+);}
+
+
+export type forgotPasswordAuthForgotPasswordPostResponse200 = {
+  data: MessageResponse
+  status: 200
+}
+
+export type forgotPasswordAuthForgotPasswordPostResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type forgotPasswordAuthForgotPasswordPostResponseSuccess = (forgotPasswordAuthForgotPasswordPostResponse200) & {
+  headers: Headers;
+};
+export type forgotPasswordAuthForgotPasswordPostResponseError = (forgotPasswordAuthForgotPasswordPostResponse422) & {
+  headers: Headers;
+};
+
+export type forgotPasswordAuthForgotPasswordPostResponse = (forgotPasswordAuthForgotPasswordPostResponseSuccess | forgotPasswordAuthForgotPasswordPostResponseError)
+
+export const getForgotPasswordAuthForgotPasswordPostUrl = () => {
+
+
+
+
+  return `/auth/forgot_password`
+}
+
+/**
+ * Given an email, password, and verification code UUID, change the password for a user
+
+First, confirm that the verification code is valid. If so, change the password for the user.
+
+Parameters:
+    email (str): The email to change the password for
+    password (str): The new password
+    verification_code_uuid (str): The UUID of the verification code
+ * @summary Forgot Password
+ */
+export const forgotPasswordAuthForgotPasswordPost = async (forgotPasswordRequest: ForgotPasswordRequest, options?: RequestInit): Promise<forgotPasswordAuthForgotPasswordPostResponse> => {
+
+  return customInstance<forgotPasswordAuthForgotPasswordPostResponse>(getForgotPasswordAuthForgotPasswordPostUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      forgotPasswordRequest,)
+  }
+);}
+
+
+export type createPasskeyAuthPasskeysRegisterCreatePostResponse200 = {
+  data: unknown
+  status: 200
+}
+
+export type createPasskeyAuthPasskeysRegisterCreatePostResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type createPasskeyAuthPasskeysRegisterCreatePostResponseSuccess = (createPasskeyAuthPasskeysRegisterCreatePostResponse200) & {
+  headers: Headers;
+};
+export type createPasskeyAuthPasskeysRegisterCreatePostResponseError = (createPasskeyAuthPasskeysRegisterCreatePostResponse422) & {
+  headers: Headers;
+};
+
+export type createPasskeyAuthPasskeysRegisterCreatePostResponse = (createPasskeyAuthPasskeysRegisterCreatePostResponseSuccess | createPasskeyAuthPasskeysRegisterCreatePostResponseError)
+
+export const getCreatePasskeyAuthPasskeysRegisterCreatePostUrl = (params?: CreatePasskeyAuthPasskeysRegisterCreatePostParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/auth/passkeys/register/create?${stringifiedParams}` : `/auth/passkeys/register/create`
+}
+
+/**
+ * Begin the passkey registration process
+
+Requires either verification_code_uuid or passkey_uuid to verify the user's identity, unless the account is less than PASSKEY_NO_VERIFICATION_MINUTES minutes old
+ * @summary Create Passkey
+ */
+export const createPasskeyAuthPasskeysRegisterCreatePost = async (params?: CreatePasskeyAuthPasskeysRegisterCreatePostParams, options?: RequestInit): Promise<createPasskeyAuthPasskeysRegisterCreatePostResponse> => {
+
+  return customInstance<createPasskeyAuthPasskeysRegisterCreatePostResponse>(getCreatePasskeyAuthPasskeysRegisterCreatePostUrl(params),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+export type verifyPasskeyAuthPasskeysRegisterVerifyPostResponse200 = {
+  data: MessageResponse
+  status: 200
+}
+
+export type verifyPasskeyAuthPasskeysRegisterVerifyPostResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type verifyPasskeyAuthPasskeysRegisterVerifyPostResponseSuccess = (verifyPasskeyAuthPasskeysRegisterVerifyPostResponse200) & {
+  headers: Headers;
+};
+export type verifyPasskeyAuthPasskeysRegisterVerifyPostResponseError = (verifyPasskeyAuthPasskeysRegisterVerifyPostResponse422) & {
+  headers: Headers;
+};
+
+export type verifyPasskeyAuthPasskeysRegisterVerifyPostResponse = (verifyPasskeyAuthPasskeysRegisterVerifyPostResponseSuccess | verifyPasskeyAuthPasskeysRegisterVerifyPostResponseError)
+
+export const getVerifyPasskeyAuthPasskeysRegisterVerifyPostUrl = (params: VerifyPasskeyAuthPasskeysRegisterVerifyPostParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/auth/passkeys/register/verify?${stringifiedParams}` : `/auth/passkeys/register/verify`
+}
+
+/**
+ * Verify the passkey registration
+ * @summary Verify Passkey
+ */
+export const verifyPasskeyAuthPasskeysRegisterVerifyPost = async (verifyPasskeyAuthPasskeysRegisterVerifyPostBody: VerifyPasskeyAuthPasskeysRegisterVerifyPostBody,
+    params: VerifyPasskeyAuthPasskeysRegisterVerifyPostParams, options?: RequestInit): Promise<verifyPasskeyAuthPasskeysRegisterVerifyPostResponse> => {
+
+  return customInstance<verifyPasskeyAuthPasskeysRegisterVerifyPostResponse>(getVerifyPasskeyAuthPasskeysRegisterVerifyPostUrl(params),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      verifyPasskeyAuthPasskeysRegisterVerifyPostBody,)
+  }
+);}
+
+
+export type createLoginPasskeyAuthPasskeysLoginCreatePostResponse200 = {
+  data: unknown
+  status: 200
+}
+
+export type createLoginPasskeyAuthPasskeysLoginCreatePostResponseSuccess = (createLoginPasskeyAuthPasskeysLoginCreatePostResponse200) & {
+  headers: Headers;
+};
+;
+
+export type createLoginPasskeyAuthPasskeysLoginCreatePostResponse = (createLoginPasskeyAuthPasskeysLoginCreatePostResponseSuccess)
+
+export const getCreateLoginPasskeyAuthPasskeysLoginCreatePostUrl = () => {
+
+
+
+
+  return `/auth/passkeys/login/create`
+}
+
+/**
+ * Begin the passkey login process
+ * @summary Create Login Passkey
+ */
+export const createLoginPasskeyAuthPasskeysLoginCreatePost = async ( options?: RequestInit): Promise<createLoginPasskeyAuthPasskeysLoginCreatePostResponse> => {
+
+  return customInstance<createLoginPasskeyAuthPasskeysLoginCreatePostResponse>(getCreateLoginPasskeyAuthPasskeysLoginCreatePostUrl(),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+export type verifyLoginPasskeyAuthPasskeysLoginVerifyPostResponse200 = {
+  data: MessageResponse
+  status: 200
+}
+
+export type verifyLoginPasskeyAuthPasskeysLoginVerifyPostResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type verifyLoginPasskeyAuthPasskeysLoginVerifyPostResponseSuccess = (verifyLoginPasskeyAuthPasskeysLoginVerifyPostResponse200) & {
+  headers: Headers;
+};
+export type verifyLoginPasskeyAuthPasskeysLoginVerifyPostResponseError = (verifyLoginPasskeyAuthPasskeysLoginVerifyPostResponse422) & {
+  headers: Headers;
+};
+
+export type verifyLoginPasskeyAuthPasskeysLoginVerifyPostResponse = (verifyLoginPasskeyAuthPasskeysLoginVerifyPostResponseSuccess | verifyLoginPasskeyAuthPasskeysLoginVerifyPostResponseError)
+
+export const getVerifyLoginPasskeyAuthPasskeysLoginVerifyPostUrl = (params: VerifyLoginPasskeyAuthPasskeysLoginVerifyPostParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/auth/passkeys/login/verify?${stringifiedParams}` : `/auth/passkeys/login/verify`
+}
+
+/**
+ * Verify the passkey login
+ * @summary Verify Login Passkey
+ */
+export const verifyLoginPasskeyAuthPasskeysLoginVerifyPost = async (verifyLoginPasskeyAuthPasskeysLoginVerifyPostBody: VerifyLoginPasskeyAuthPasskeysLoginVerifyPostBody,
+    params: VerifyLoginPasskeyAuthPasskeysLoginVerifyPostParams, options?: RequestInit): Promise<verifyLoginPasskeyAuthPasskeysLoginVerifyPostResponse> => {
+
+  return customInstance<verifyLoginPasskeyAuthPasskeysLoginVerifyPostResponse>(getVerifyLoginPasskeyAuthPasskeysLoginVerifyPostUrl(params),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      verifyLoginPasskeyAuthPasskeysLoginVerifyPostBody,)
+  }
+);}
+
+
+export type createVerificationPasskeyAuthPasskeysVerificationCreatePostResponse200 = {
+  data: unknown
+  status: 200
+}
+
+export type createVerificationPasskeyAuthPasskeysVerificationCreatePostResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type createVerificationPasskeyAuthPasskeysVerificationCreatePostResponseSuccess = (createVerificationPasskeyAuthPasskeysVerificationCreatePostResponse200) & {
+  headers: Headers;
+};
+export type createVerificationPasskeyAuthPasskeysVerificationCreatePostResponseError = (createVerificationPasskeyAuthPasskeysVerificationCreatePostResponse422) & {
+  headers: Headers;
+};
+
+export type createVerificationPasskeyAuthPasskeysVerificationCreatePostResponse = (createVerificationPasskeyAuthPasskeysVerificationCreatePostResponseSuccess | createVerificationPasskeyAuthPasskeysVerificationCreatePostResponseError)
+
+export const getCreateVerificationPasskeyAuthPasskeysVerificationCreatePostUrl = (params: CreateVerificationPasskeyAuthPasskeysVerificationCreatePostParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/auth/passkeys/verification/create?${stringifiedParams}` : `/auth/passkeys/verification/create`
+}
+
+/**
+ * Begin the passkey verification process
+ * @summary Create Verification Passkey
+ */
+export const createVerificationPasskeyAuthPasskeysVerificationCreatePost = async (params: CreateVerificationPasskeyAuthPasskeysVerificationCreatePostParams, options?: RequestInit): Promise<createVerificationPasskeyAuthPasskeysVerificationCreatePostResponse> => {
+
+  return customInstance<createVerificationPasskeyAuthPasskeysVerificationCreatePostResponse>(getCreateVerificationPasskeyAuthPasskeysVerificationCreatePostUrl(params),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+export type verifyVerificationPasskeyAuthPasskeysVerificationVerifyPostResponse200 = {
+  data: MessageResponse
+  status: 200
+}
+
+export type verifyVerificationPasskeyAuthPasskeysVerificationVerifyPostResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type verifyVerificationPasskeyAuthPasskeysVerificationVerifyPostResponseSuccess = (verifyVerificationPasskeyAuthPasskeysVerificationVerifyPostResponse200) & {
+  headers: Headers;
+};
+export type verifyVerificationPasskeyAuthPasskeysVerificationVerifyPostResponseError = (verifyVerificationPasskeyAuthPasskeysVerificationVerifyPostResponse422) & {
+  headers: Headers;
+};
+
+export type verifyVerificationPasskeyAuthPasskeysVerificationVerifyPostResponse = (verifyVerificationPasskeyAuthPasskeysVerificationVerifyPostResponseSuccess | verifyVerificationPasskeyAuthPasskeysVerificationVerifyPostResponseError)
+
+export const getVerifyVerificationPasskeyAuthPasskeysVerificationVerifyPostUrl = (params: VerifyVerificationPasskeyAuthPasskeysVerificationVerifyPostParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/auth/passkeys/verification/verify?${stringifiedParams}` : `/auth/passkeys/verification/verify`
+}
+
+/**
+ * Verify the passkey verification
+ * @summary Verify Verification Passkey
+ */
+export const verifyVerificationPasskeyAuthPasskeysVerificationVerifyPost = async (verifyVerificationPasskeyAuthPasskeysVerificationVerifyPostBody: VerifyVerificationPasskeyAuthPasskeysVerificationVerifyPostBody,
+    params: VerifyVerificationPasskeyAuthPasskeysVerificationVerifyPostParams, options?: RequestInit): Promise<verifyVerificationPasskeyAuthPasskeysVerificationVerifyPostResponse> => {
+
+  return customInstance<verifyVerificationPasskeyAuthPasskeysVerificationVerifyPostResponse>(getVerifyVerificationPasskeyAuthPasskeysVerificationVerifyPostUrl(params),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      verifyVerificationPasskeyAuthPasskeysVerificationVerifyPostBody,)
+  }
+);}
+
+
+export type getPasskeysAuthPasskeysGetGetResponse200 = {
+  data: PasskeyResponse[]
+  status: 200
+}
+
+export type getPasskeysAuthPasskeysGetGetResponseSuccess = (getPasskeysAuthPasskeysGetGetResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getPasskeysAuthPasskeysGetGetResponse = (getPasskeysAuthPasskeysGetGetResponseSuccess)
+
+export const getGetPasskeysAuthPasskeysGetGetUrl = () => {
+
+
+
+
+  return `/auth/passkeys/get`
+}
+
+/**
+ * Get the passkeys for the current user
+ * @summary Get Passkeys
+ */
+export const getPasskeysAuthPasskeysGetGet = async ( options?: RequestInit): Promise<getPasskeysAuthPasskeysGetGetResponse> => {
+
+  return customInstance<getPasskeysAuthPasskeysGetGetResponse>(getGetPasskeysAuthPasskeysGetGetUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+export type deletePasskeyAuthPasskeysDeleteUuidDeleteResponse200 = {
+  data: MessageResponse
+  status: 200
+}
+
+export type deletePasskeyAuthPasskeysDeleteUuidDeleteResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type deletePasskeyAuthPasskeysDeleteUuidDeleteResponseSuccess = (deletePasskeyAuthPasskeysDeleteUuidDeleteResponse200) & {
+  headers: Headers;
+};
+export type deletePasskeyAuthPasskeysDeleteUuidDeleteResponseError = (deletePasskeyAuthPasskeysDeleteUuidDeleteResponse422) & {
+  headers: Headers;
+};
+
+export type deletePasskeyAuthPasskeysDeleteUuidDeleteResponse = (deletePasskeyAuthPasskeysDeleteUuidDeleteResponseSuccess | deletePasskeyAuthPasskeysDeleteUuidDeleteResponseError)
+
+export const getDeletePasskeyAuthPasskeysDeleteUuidDeleteUrl = (uuid: string,) => {
+
+
+
+
+  return `/auth/passkeys/delete/${uuid}`
+}
+
+/**
+ * Delete a passkey on the server
+
+Parameters:
+    uuid (uuid): The uuid of the passkey to delete
+
+Returns:
+    MessageResponse: A message indicating that the passkey was deleted
+ * @summary Delete Passkey
+ */
+export const deletePasskeyAuthPasskeysDeleteUuidDelete = async (uuid: string, options?: RequestInit): Promise<deletePasskeyAuthPasskeysDeleteUuidDeleteResponse> => {
+
+  return customInstance<deletePasskeyAuthPasskeysDeleteUuidDeleteResponse>(getDeletePasskeyAuthPasskeysDeleteUuidDeleteUrl(uuid),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+export type changePasswordAuthChangePasswordPostResponse200 = {
+  data: MessageResponse
+  status: 200
+}
+
+export type changePasswordAuthChangePasswordPostResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type changePasswordAuthChangePasswordPostResponseSuccess = (changePasswordAuthChangePasswordPostResponse200) & {
+  headers: Headers;
+};
+export type changePasswordAuthChangePasswordPostResponseError = (changePasswordAuthChangePasswordPostResponse422) & {
+  headers: Headers;
+};
+
+export type changePasswordAuthChangePasswordPostResponse = (changePasswordAuthChangePasswordPostResponseSuccess | changePasswordAuthChangePasswordPostResponseError)
+
+export const getChangePasswordAuthChangePasswordPostUrl = () => {
+
+
+
+
+  return `/auth/change_password`
+}
+
+/**
+ * Change the password for the current user
+
+Requires either verification_code_uuid or passkey_uuid to change a password
+ * @summary Change Password
+ */
+export const changePasswordAuthChangePasswordPost = async (changePasswordRequest: ChangePasswordRequest, options?: RequestInit): Promise<changePasswordAuthChangePasswordPostResponse> => {
+
+  return customInstance<changePasswordAuthChangePasswordPostResponse>(getChangePasswordAuthChangePasswordPostUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      changePasswordRequest,)
+  }
+);}
+
+
+export type changeEmailAuthChangeEmailPostResponse200 = {
+  data: MessageResponse
+  status: 200
+}
+
+export type changeEmailAuthChangeEmailPostResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type changeEmailAuthChangeEmailPostResponseSuccess = (changeEmailAuthChangeEmailPostResponse200) & {
+  headers: Headers;
+};
+export type changeEmailAuthChangeEmailPostResponseError = (changeEmailAuthChangeEmailPostResponse422) & {
+  headers: Headers;
+};
+
+export type changeEmailAuthChangeEmailPostResponse = (changeEmailAuthChangeEmailPostResponseSuccess | changeEmailAuthChangeEmailPostResponseError)
+
+export const getChangeEmailAuthChangeEmailPostUrl = () => {
+
+
+
+
+  return `/auth/change_email`
+}
+
+/**
+ * Change the email for the current user
+
+Requires either verification_code_uuid or passkey_uuid to change an email
+ * @summary Change Email
+ */
+export const changeEmailAuthChangeEmailPost = async (changeEmailRequest: ChangeEmailRequest, options?: RequestInit): Promise<changeEmailAuthChangeEmailPostResponse> => {
+
+  return customInstance<changeEmailAuthChangeEmailPostResponse>(getChangeEmailAuthChangeEmailPostUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      changeEmailRequest,)
+  }
+);}
+
+
+export type deleteAccountAuthMeDeleteAccountDeleteResponse200 = {
+  data: MessageResponse
+  status: 200
+}
+
+export type deleteAccountAuthMeDeleteAccountDeleteResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type deleteAccountAuthMeDeleteAccountDeleteResponseSuccess = (deleteAccountAuthMeDeleteAccountDeleteResponse200) & {
+  headers: Headers;
+};
+export type deleteAccountAuthMeDeleteAccountDeleteResponseError = (deleteAccountAuthMeDeleteAccountDeleteResponse422) & {
+  headers: Headers;
+};
+
+export type deleteAccountAuthMeDeleteAccountDeleteResponse = (deleteAccountAuthMeDeleteAccountDeleteResponseSuccess | deleteAccountAuthMeDeleteAccountDeleteResponseError)
+
+export const getDeleteAccountAuthMeDeleteAccountDeleteUrl = () => {
+
+
+
+
+  return `/auth/me/delete_account`
+}
+
+/**
+ * Delete the current user's account
+
+Requires either verification_code_uuid or passkey_uuid to delete the account
+ * @summary Delete Account
+ */
+export const deleteAccountAuthMeDeleteAccountDelete = async (deleteAccountRequest: DeleteAccountRequest, options?: RequestInit): Promise<deleteAccountAuthMeDeleteAccountDeleteResponse> => {
+
+  return customInstance<deleteAccountAuthMeDeleteAccountDeleteResponse>(getDeleteAccountAuthMeDeleteAccountDeleteUrl(),
+  {
+    ...options,
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      deleteAccountRequest,)
   }
 );}
 

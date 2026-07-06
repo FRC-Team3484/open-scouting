@@ -6,6 +6,7 @@
  */
 import type {
   BodyUploadImageUploadImagePost,
+  BodyUploadProfilePictureUploadProfilePictureMePost,
   HTTPValidationError,
   UploadImageUploadImagePostParams
 } from '../model';
@@ -55,6 +56,56 @@ export const uploadImageUploadImagePost = async (bodyUploadImageUploadImagePost:
 formData.append(`file`, bodyUploadImageUploadImagePost.file);
 
   return customInstance<uploadImageUploadImagePostResponse>(getUploadImageUploadImagePostUrl(params),
+  {
+    ...options,
+    method: 'POST'
+    ,
+    body:
+      formData,
+  }
+);}
+
+
+export type uploadProfilePictureUploadProfilePictureMePostResponse200 = {
+  data: unknown
+  status: 200
+}
+
+export type uploadProfilePictureUploadProfilePictureMePostResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type uploadProfilePictureUploadProfilePictureMePostResponseSuccess = (uploadProfilePictureUploadProfilePictureMePostResponse200) & {
+  headers: Headers;
+};
+export type uploadProfilePictureUploadProfilePictureMePostResponseError = (uploadProfilePictureUploadProfilePictureMePostResponse422) & {
+  headers: Headers;
+};
+
+export type uploadProfilePictureUploadProfilePictureMePostResponse = (uploadProfilePictureUploadProfilePictureMePostResponseSuccess | uploadProfilePictureUploadProfilePictureMePostResponseError)
+
+export const getUploadProfilePictureUploadProfilePictureMePostUrl = () => {
+
+
+
+
+  return `/upload/profile_picture/me`
+}
+
+/**
+ * Given the uploaded file, store it on the server
+
+Use the generated URL to assign the image to the user's profile
+
+Return the relevant image information
+ * @summary Upload Profile Picture
+ */
+export const uploadProfilePictureUploadProfilePictureMePost = async (bodyUploadProfilePictureUploadProfilePictureMePost: BodyUploadProfilePictureUploadProfilePictureMePost, options?: RequestInit): Promise<uploadProfilePictureUploadProfilePictureMePostResponse> => {
+    const formData = new FormData();
+formData.append(`file`, bodyUploadProfilePictureUploadProfilePictureMePost.file);
+
+  return customInstance<uploadProfilePictureUploadProfilePictureMePostResponse>(getUploadProfilePictureUploadProfilePictureMePostUrl(),
   {
     ...options,
     method: 'POST'

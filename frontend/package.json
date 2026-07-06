@@ -15,7 +15,7 @@
 	},
 	"devDependencies": {
 		"@internationalized/date": "^3.12.1",
-		"@lucide/svelte": "^1.14.0",
+		"@lucide/svelte": "^1.20.0",
 		"@sveltejs/adapter-auto": "^7.0.1",
 		"@sveltejs/adapter-node": "^5.5.4",
 		"@sveltejs/kit": "^2.59.1",
@@ -49,6 +49,7 @@
 		"workbox-window": "^7.4.1"
 	},
 	"dependencies": {
+		"@simplewebauthn/browser": "^13.3.0",
 		"@thisux/sveltednd": "^0.4.1",
 		"dexie": "^4.4.2",
 		"mode-watcher": "^1.1.0",

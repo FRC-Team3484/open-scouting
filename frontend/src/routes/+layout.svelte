@@ -2,6 +2,7 @@
 	import "../app.css";
 	import { onMount } from 'svelte';
 	import { pwaInfo } from 'virtual:pwa-info'; // gives you the manifest link tag
+	import { PUBLIC_MODE } from "$env/static/public";
 
 	import { main } from "$lib/utils/main"
 	import favicon from '$lib/assets/favicon.svg';
@@ -25,7 +26,7 @@
 	onMount(async () => {
 		main();
 
-		if (!pwaInfo) return; // plugin not active, skip
+		if (!pwaInfo || PUBLIC_MODE == "dev") return; // plugin not active, skip
 			try {
 			// dynamic import so this only runs in the browser (no SSR trouble)
 			const { registerSW } = await import('virtual:pwa-register');
