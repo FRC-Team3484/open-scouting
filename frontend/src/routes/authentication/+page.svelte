@@ -41,7 +41,7 @@ Allows for the user to sign into their account, or create a new account.
 <PageContainer>
     {#if !authenticated}
         <div class="flex flex-col w-full md:w-1/2 items-center gap-4">
-            <Logo text={false} />
+            <Logo text={false} href="/" />
             <p class="text-2xl font-bold">Authentication</p>
 
             {#if page === "signin"}
