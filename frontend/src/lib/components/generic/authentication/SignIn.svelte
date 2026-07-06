@@ -118,7 +118,7 @@ Sign in mode for the universal authentication component
     </AuthenticationPage>
 
 {:else if page == "password"}
-    <AuthenticationPage title="Enter Password" onBackButtonClick={() => {page = "username"}}>
+    <AuthenticationPage title="Enter Password" onBackButtonClick={() => {page = "username"; message = ""; password = ""; loading = false}}>
         {#snippet icon()}
             <KeyIcon weight="bold" />
         {/snippet}
