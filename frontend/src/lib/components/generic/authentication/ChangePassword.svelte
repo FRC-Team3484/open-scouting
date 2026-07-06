@@ -11,13 +11,8 @@ Props:
     export type ChangePasswordStatus = "idle" | "success" | "cancel";
 </script>
 <script lang="ts">
-	import { slide } from "svelte/transition";
-	import { ArrowRightIcon, CheckCircleIcon, CircleNotchIcon, KeyReturnIcon, PasswordIcon, WarningIcon } from "phosphor-svelte";
+	import { ArrowRightIcon, CheckCircleIcon, CircleNotchIcon, KeyReturnIcon, PasswordIcon } from "phosphor-svelte";
 
-	import Input from "$lib/components/ui/input/input.svelte";
-	import Switch from "$lib/components/ui/switch/switch.svelte";
-	import Label from "$lib/components/ui/label/label.svelte";
-    import * as Alert from "$lib/components/ui/alert/index";
 	import Button from "$lib/components/ui/button/button.svelte";
     import * as Kbd from "$lib/components/ui/kbd/index";
 
@@ -25,6 +20,7 @@ Props:
 	import { changePasswordAuthChangePasswordPost } from "$lib/api/auth/auth";
 	import AuthenticationMessage from "./AuthenticationMessage.svelte";
 	import AuthenticationPage from "./AuthenticationPage.svelte";
+	import PasswordInput from "./PasswordInput.svelte";
 
 
     interface Props {
@@ -42,7 +38,6 @@ Props:
 
     let password: string = $state("");
     let confirmPassword: string = $state("");
-    let showPassword: boolean = $state(false);
     let changingPassword: boolean = $state(false);
 
     /**
@@ -50,8 +45,6 @@ Props:
      */
     async function changePassword() {
         changingPassword = true;
-
-        console.log(verifyEmailVerficationCodeUuid, verifyPasskeyUuid);
 
         await changePasswordAuthChangePasswordPost({
             password: password,
@@ -96,47 +89,13 @@ Props:
 {#if page == "verify"}
     <VerifyUser email={email} bind:status={verifyUserStatus} bind:emailVerificationCodeUuid={verifyEmailVerficationCodeUuid} bind:passkeyUuid={verifyPasskeyUuid}/>
 {:else if page == "change"}
-    <div class="flex flex-col gap-2 text-left" transition:slide>
-        <div class="flex flex-row gap-2 items-center">
-            <PasswordIcon weight="bold" />
-            <p class="font-bold">Enter your new password</p>
-        </div>
-        
-        
-    </div>
-
     <AuthenticationPage title="Enter your new password">
         {#snippet icon()}
             <PasswordIcon weight="bold" />
         {/snippet}
 
         {#snippet content()}
-            <p class="text-sm text-muted-foreground mb-2">
-                Strong passwords are 16+ characters long, and have a mix <br>
-                of uppercase and lowercase letters, numbers, and special <br>
-                characters. Consider using a passphrase, and don't use the <br>
-                same password for multiple websites.
-            </p>
-
-            <Input placeholder="Password" type={showPassword ? "text" : "password"} bind:value={password} autofocus />
-            <p class="text-sm text-muted-foreground">The password to use when logging into your account</p>
-
-            <Input placeholder="Confirm password" type={showPassword ? "text" : "password"} bind:value={confirmPassword} />
-            <p class="text-sm text-muted-foreground">Confirm your password</p>
-
-            <div class="flex flex-row gap-2 mb-4">
-                <Switch id="show-password" bind:checked={showPassword} />
-                <Label for="show-password">Show Password</Label>
-            </div>
-
-            {#if confirmPassword != password}
-                <div transition:slide>
-                    <Alert.Root variant="destructive" class="mb-2 text-left">
-                        <WarningIcon weight="bold" />
-                        <Alert.Title>Passwords do not match</Alert.Title>
-                    </Alert.Root>
-                </div>
-            {/if}
+            <PasswordInput bind:password bind:confirmPassword />
 
             <Button onclick={() => {changePassword()}} disabled={password.trim() == "" || confirmPassword.trim() == "" || password != confirmPassword}>
                 {#if changingPassword}

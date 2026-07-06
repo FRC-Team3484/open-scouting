@@ -18,13 +18,10 @@ Props:
 	import { onMount } from "svelte";
 	import { slide } from "svelte/transition";
 	import { toast } from "svelte-sonner";
-	import { ArrowLeftIcon, ArrowRightIcon, CheckCircleIcon, CircleNotchIcon, EnvelopeIcon, KeyReturnIcon, PasswordIcon, WarningIcon, XCircleIcon } from "phosphor-svelte";
+	import { ArrowLeftIcon, ArrowRightIcon, CheckCircleIcon, CircleNotchIcon, EnvelopeIcon, KeyReturnIcon, PasswordIcon } from "phosphor-svelte";
 
-    import * as Alert from "$lib/components/ui/alert";
 	import Button from "$lib/components/ui/button/button.svelte";
 	import Input from "$lib/components/ui/input/input.svelte";
-	import Switch from "$lib/components/ui/switch/switch.svelte";
-	import Label from "$lib/components/ui/label/label.svelte";
     import * as Kbd from "$lib/components/ui/kbd/index";
 
 	import WhyAreEmailsDisabledDialog from "./WhyAreEmailsDisabledDialog.svelte";
@@ -32,6 +29,7 @@ Props:
 	import EmailVerification, { type EmailVerificationStatus } from "./EmailVerification.svelte";
 	import AuthenticationMessage from "./AuthenticationMessage.svelte";
 	import AuthenticationPage from "./AuthenticationPage.svelte";
+	import PasswordInput from "./PasswordInput.svelte";
     
 
     const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -48,7 +46,6 @@ Props:
     let email = $state("");
     let password = $state("");
     let confirmPassword = $state("");
-    let showPassword = $state(false);
     let changingPassword = $state(false);
 
     let emailVerificationStatus: EmailVerificationStatus = $state("idle");
@@ -148,32 +145,7 @@ Props:
                 {#snippet content()}
                     <p class="text-muted-foreground">Enter your new password</p>
 
-                    <p class="text-sm text-muted-foreground mb-2">
-                        Strong passwords are 16+ characters long, and have a mix <br>
-                        of uppercase and lowercase letters, numbers, and special <br>
-                        characters. Consider using a passphrase, and don't use the <br>
-                        same password for multiple websites.
-                    </p>
-
-                    <Input placeholder="Password" type={showPassword ? "text" : "password"} bind:value={password} autofocus />
-                    <p class="text-sm text-muted-foreground">The password to use when logging into your account</p>
-
-                    <Input placeholder="Confirm password" type={showPassword ? "text" : "password"} bind:value={confirmPassword} />
-                    <p class="text-sm text-muted-foreground">Confirm your password</p>
-
-                    <div class="flex flex-row gap-2 mb-4">
-                        <Switch id="show-password" bind:checked={showPassword} />
-                        <Label for="show-password">Show Password</Label>
-                    </div>
-
-                    {#if confirmPassword != password}
-                        <div transition:slide>
-                            <Alert.Root variant="destructive" class="mb-2 text-left">
-                                <WarningIcon weight="bold" />
-                                <Alert.Title>Passwords do not match</Alert.Title>
-                            </Alert.Root>
-                        </div>
-                    {/if}
+                    <PasswordInput bind:password bind:confirmPassword />
 
                     <Button onclick={() => {changePassword()}} disabled={password.trim() == "" || confirmPassword.trim() == "" || password != confirmPassword}>
                         {#if changingPassword}
