@@ -10,6 +10,7 @@ import type {
   ChangeEmailRequest,
   ChangePasswordRequest,
   CheckUniqueUsernameAuthCheckUniqueUsernameGetParams,
+  CreatePasskeyAuthPasskeysRegisterCreatePostParams,
   CreateVerificationCodeAuthCreateVerificationCodePostParams,
   CreateVerificationPasskeyAuthPasskeysVerificationCreatePostParams,
   ForgotPasswordRequest,
@@ -844,28 +845,44 @@ export type createPasskeyAuthPasskeysRegisterCreatePostResponse200 = {
   status: 200
 }
 
+export type createPasskeyAuthPasskeysRegisterCreatePostResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
 export type createPasskeyAuthPasskeysRegisterCreatePostResponseSuccess = (createPasskeyAuthPasskeysRegisterCreatePostResponse200) & {
   headers: Headers;
 };
-;
+export type createPasskeyAuthPasskeysRegisterCreatePostResponseError = (createPasskeyAuthPasskeysRegisterCreatePostResponse422) & {
+  headers: Headers;
+};
 
-export type createPasskeyAuthPasskeysRegisterCreatePostResponse = (createPasskeyAuthPasskeysRegisterCreatePostResponseSuccess)
+export type createPasskeyAuthPasskeysRegisterCreatePostResponse = (createPasskeyAuthPasskeysRegisterCreatePostResponseSuccess | createPasskeyAuthPasskeysRegisterCreatePostResponseError)
 
-export const getCreatePasskeyAuthPasskeysRegisterCreatePostUrl = () => {
+export const getCreatePasskeyAuthPasskeysRegisterCreatePostUrl = (params?: CreatePasskeyAuthPasskeysRegisterCreatePostParams,) => {
+  const normalizedParams = new URLSearchParams();
 
+  Object.entries(params || {}).forEach(([key, value]) => {
 
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
 
+  const stringifiedParams = normalizedParams.toString();
 
-  return `/auth/passkeys/register/create`
+  return stringifiedParams.length > 0 ? `/auth/passkeys/register/create?${stringifiedParams}` : `/auth/passkeys/register/create`
 }
 
 /**
  * Begin the passkey registration process
+
+Requires either verification_code_uuid or passkey_uuid to verify the user's identity, unless the account is less than PASSKEY_NO_VERIFICATION_MINUTES minutes old
  * @summary Create Passkey
  */
-export const createPasskeyAuthPasskeysRegisterCreatePost = async ( options?: RequestInit): Promise<createPasskeyAuthPasskeysRegisterCreatePostResponse> => {
+export const createPasskeyAuthPasskeysRegisterCreatePost = async (params?: CreatePasskeyAuthPasskeysRegisterCreatePostParams, options?: RequestInit): Promise<createPasskeyAuthPasskeysRegisterCreatePostResponse> => {
 
-  return customInstance<createPasskeyAuthPasskeysRegisterCreatePostResponse>(getCreatePasskeyAuthPasskeysRegisterCreatePostUrl(),
+  return customInstance<createPasskeyAuthPasskeysRegisterCreatePostResponse>(getCreatePasskeyAuthPasskeysRegisterCreatePostUrl(params),
   {
     ...options,
     method: 'POST'

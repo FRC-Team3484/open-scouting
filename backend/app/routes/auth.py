@@ -668,13 +668,29 @@ async def forgot_password(data: ForgotPasswordRequest, response: Response):
 
 # Passkeys
 @router.post("/auth/passkeys/register/create")
-async def create_passkey(response: Response, identity: Identity = Depends(require_user)):
+async def create_passkey(response: Response, verification_code_uuid: UUID | None = None, passkey_uuid: UUID | None = None,identity: Identity = Depends(require_user)):
     """
     Begin the passkey registration process
+
+    Requires either verification_code_uuid or passkey_uuid to verify the user's identity, unless the account is less than PASSKEY_NO_VERIFICATION_MINUTES minutes old
     """
     if not identity.user:
         response.status_code = 404
         return MessageResponse(message="User not found")
+
+    if not verification_code_uuid and not passkey_uuid and identity.user.created_at < now() - timedelta(minutes=int(os.getenv("PUBLIC_PASSKEY_NO_VERIFICATION_MINUTES", 15))):
+        if not int(os.getenv("PUBLIC_PASSKEY_NO_VERIFICATION_MINUTES", 15)) == -1:
+            raise HTTPException(status_code=400, detail="Either verification_code_uuid or passkey_uuid is required")
+
+    if verification_code_uuid:
+        verification_code = await VerificationCode.get_or_none(uuid=verification_code_uuid, user=identity.user, verified=True)
+        if not verification_code:
+            raise HTTPException(status_code=400, detail="Invalid verification code")
+
+    if passkey_uuid:
+        passkey = await Passkey.get_or_none(uuid=passkey_uuid, user=identity.user)
+        if not passkey:
+            raise HTTPException(status_code=400, detail="Invalid passkey")
 
     options = generate_registration_options(
         rp_id=PASSKEY_RP_ID,

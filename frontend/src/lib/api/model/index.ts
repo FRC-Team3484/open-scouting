@@ -14,6 +14,7 @@ export * from './bodyUploadProfilePictureUploadProfilePictureMePost';
 export * from './changeEmailRequest';
 export * from './changePasswordRequest';
 export * from './checkUniqueUsernameAuthCheckUniqueUsernameGetParams';
+export * from './createPasskeyAuthPasskeysRegisterCreatePostParams';
 export * from './createVerificationCodeAuthCreateVerificationCodePostParams';
 export * from './createVerificationCodeAuthCreateVerificationCodePostStyle';
 export * from './createVerificationPasskeyAuthPasskeysVerificationCreatePostParams';

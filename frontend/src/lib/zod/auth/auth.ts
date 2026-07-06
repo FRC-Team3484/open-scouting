@@ -325,8 +325,15 @@ export const ForgotPasswordAuthForgotPasswordPostResponse = zod.object({
 
 /**
  * Begin the passkey registration process
+
+Requires either verification_code_uuid or passkey_uuid to verify the user's identity, unless the account is less than PASSKEY_NO_VERIFICATION_MINUTES minutes old
  * @summary Create Passkey
  */
+export const CreatePasskeyAuthPasskeysRegisterCreatePostQueryParams = zod.object({
+  "verification_code_uuid": zod.union([zod.string().uuid(),zod.null()]).optional(),
+  "passkey_uuid": zod.union([zod.string().uuid(),zod.null()]).optional()
+})
+
 export const CreatePasskeyAuthPasskeysRegisterCreatePostResponse = zod.unknown()
 
 /**
