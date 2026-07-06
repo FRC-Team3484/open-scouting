@@ -457,3 +457,19 @@ export const ChangeEmailAuthChangeEmailPostResponse = zod.object({
   "message": zod.string()
 })
 
+/**
+ * Delete the current user's account
+
+Requires either verification_code_uuid or passkey_uuid to delete the account
+ * @summary Delete Account
+ */
+export const DeleteAccountAuthMeDeleteAccountDeleteBody = zod.object({
+  "delete_data": zod.boolean(),
+  "verification_code_uuid": zod.union([zod.string().uuid(),zod.null()]).optional(),
+  "passkey_uuid": zod.union([zod.string().uuid(),zod.null()]).optional()
+})
+
+export const DeleteAccountAuthMeDeleteAccountDeleteResponse = zod.object({
+  "message": zod.string()
+})
+

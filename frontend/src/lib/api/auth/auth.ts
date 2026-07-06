@@ -13,6 +13,7 @@ import type {
   CreatePasskeyAuthPasskeysRegisterCreatePostParams,
   CreateVerificationCodeAuthCreateVerificationCodePostParams,
   CreateVerificationPasskeyAuthPasskeysVerificationCreatePostParams,
+  DeleteAccountRequest,
   ForgotPasswordRequest,
   HTTPValidationError,
   MessageResponse,
@@ -1307,6 +1308,52 @@ export const changeEmailAuthChangeEmailPost = async (changeEmailRequest: ChangeE
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(
       changeEmailRequest,)
+  }
+);}
+
+
+export type deleteAccountAuthMeDeleteAccountDeleteResponse200 = {
+  data: MessageResponse
+  status: 200
+}
+
+export type deleteAccountAuthMeDeleteAccountDeleteResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type deleteAccountAuthMeDeleteAccountDeleteResponseSuccess = (deleteAccountAuthMeDeleteAccountDeleteResponse200) & {
+  headers: Headers;
+};
+export type deleteAccountAuthMeDeleteAccountDeleteResponseError = (deleteAccountAuthMeDeleteAccountDeleteResponse422) & {
+  headers: Headers;
+};
+
+export type deleteAccountAuthMeDeleteAccountDeleteResponse = (deleteAccountAuthMeDeleteAccountDeleteResponseSuccess | deleteAccountAuthMeDeleteAccountDeleteResponseError)
+
+export const getDeleteAccountAuthMeDeleteAccountDeleteUrl = () => {
+
+
+
+
+  return `/auth/me/delete_account`
+}
+
+/**
+ * Delete the current user's account
+
+Requires either verification_code_uuid or passkey_uuid to delete the account
+ * @summary Delete Account
+ */
+export const deleteAccountAuthMeDeleteAccountDelete = async (deleteAccountRequest: DeleteAccountRequest, options?: RequestInit): Promise<deleteAccountAuthMeDeleteAccountDeleteResponse> => {
+
+  return customInstance<deleteAccountAuthMeDeleteAccountDeleteResponse>(getDeleteAccountAuthMeDeleteAccountDeleteUrl(),
+  {
+    ...options,
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      deleteAccountRequest,)
   }
 );}
 

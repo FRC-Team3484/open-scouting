@@ -32,6 +32,7 @@ export * from './dataSummaryEntryValues';
 export * from './dataTeamResponse';
 export * from './dataTeamResponseAuton';
 export * from './dataTeamResponseTeleop';
+export * from './deleteAccountRequest';
 export * from './eventInfoResponse';
 export * from './eventResponse';
 export * from './forgotPasswordRequest';
