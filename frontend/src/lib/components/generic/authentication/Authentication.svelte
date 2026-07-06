@@ -13,14 +13,14 @@ This plugin takes a mode prop, which defines it's operation where the component 
 Additional props optionally take data depending on the mode
 
 Props:
-    - `mode` (`create_account | sign_in | change_password | forgot_password | verify_email | change_email | create_passkey`) - The current authentication mode
+    - `mode` (`create_account | sign_in | change_password | forgot_password | verify_email | change_email | create_passkey | delete_account`) - The current authentication mode
     - `email` (`string`) - The email to verify (if `mode` is `verify_email`)
     - `emailVerificationStatus` (`EmailVerificationStatus`) - The state of the `EmailVerification` component (if `mode` is `verify_email`)
     - `forgotPasswordStatus` (`ForgotPasswordStatus`) - The state of the `ForgotPassword` component (if `mode` is `forgot_password`)
     - `changePasswordStatus` (`ChangePasswordStatus`) - The state of the `ChangePassword` component (if `mode` is `change_password`)
 -->
 <script lang="ts">
-	import { EnvelopeIcon, FingerprintIcon, KeyIcon, UserCircleIcon, UserCirclePlusIcon } from "phosphor-svelte";
+	import { EnvelopeIcon, FingerprintIcon, KeyIcon, TrashIcon, UserCircleIcon, UserCirclePlusIcon } from "phosphor-svelte";
 
     import * as Card from "$lib/components/ui/card/index.js";
 
@@ -34,10 +34,12 @@ Props:
 	import ChangePassword from "./ChangePassword.svelte";
 	import type { ChangeEmailStatus } from "./ChangeEmail.svelte";
 	import ChangeEmail from "./ChangeEmail.svelte";
+	import type { DeleteAccountStatus } from "./DeleteAccount.svelte";
+	import DeleteAccount from "./DeleteAccount.svelte";
 
 
     interface BaseProps {
-        mode: "create_account" | "sign_in" | "change_password" | "forgot_password" | "verify_email" | "change_email" | "create_passkey"
+        mode: "create_account" | "sign_in" | "change_password" | "forgot_password" | "verify_email" | "change_email" | "create_passkey" | "delete_account"
         email?: never
         emailVerificationStatus?: never
         forgotPasswordStatus?: never
@@ -45,6 +47,7 @@ Props:
         changeEmailStatus?: never
         createPasskeyStatus?: never
         createPasskeyRequireUserVerification?: never
+        deleteAccountStatus?: never
     }
     interface VerifyEmailProps {
         mode: "verify_email"
@@ -55,6 +58,7 @@ Props:
         changeEmailStatus?: never
         createPasskeyStatus?: never
         createPasskeyRequireUserVerification?: never
+        deleteAccountStatus?: never
     }
     interface ForgotPasswordProps {
         mode: "forgot_password"
@@ -65,6 +69,7 @@ Props:
         changeEmailStatus?: never
         createPasskeyStatus?: never
         createPasskeyRequireUserVerification?: never
+        deleteAccountStatus?: never
     }
     interface ChangePasswordProps {
         mode: "change_password"
@@ -75,6 +80,7 @@ Props:
         changeEmailStatus?: never
         createPasskeyStatus?: never
         createPasskeyRequireUserVerification?: never
+        deleteAccountStatus?: never
     }
     interface ChangeEmailProps {
         mode: "change_email"
@@ -85,6 +91,7 @@ Props:
         changeEmailStatus?: ChangeEmailStatus
         createPasskeyStatus?: never
         createPasskeyRequireUserVerification?: never
+        deleteAccountStatus?: never
     }
     interface CreatePasskeyProps {
         mode: "create_passkey"
@@ -95,8 +102,20 @@ Props:
         changeEmailStatus?: never
         createPasskeyStatus?: CreatePasskeyStatus
         createPasskeyRequireUserVerification?: boolean
+        deleteAccountStatus?: never
     }
-    let { mode, email, emailVerificationStatus = $bindable(), forgotPasswordStatus = $bindable(), changePasswordStatus = $bindable(), changeEmailStatus = $bindable(), createPasskeyStatus = $bindable(), createPasskeyRequireUserVerification }: BaseProps | VerifyEmailProps | ForgotPasswordProps | ChangePasswordProps | ChangeEmailProps | CreatePasskeyProps = $props();
+    interface DeleteAccountProps {
+        mode: "delete_account"
+        email?: never
+        emailVerificationStatus?: never
+        forgotPasswordStatus?: never
+        changePasswordStatus?: never
+        changeEmailStatus?: never
+        createPasskeyStatus?: never
+        createPasskeyRequireUserVerification?: never
+        deleteAccountStatus?: DeleteAccountStatus
+    }
+    let { mode, email, emailVerificationStatus = $bindable(), forgotPasswordStatus = $bindable(), changePasswordStatus = $bindable(), changeEmailStatus = $bindable(), createPasskeyStatus = $bindable(), createPasskeyRequireUserVerification, deleteAccountStatus = $bindable() }: BaseProps | VerifyEmailProps | ForgotPasswordProps | ChangePasswordProps | ChangeEmailProps | CreatePasskeyProps | DeleteAccountProps = $props();
 </script>
 
 <Card.Root>
@@ -157,6 +176,13 @@ Props:
             {#if email}
                 <CreatePasskey email={email} bind:status={createPasskeyStatus} requireUserVerification={createPasskeyRequireUserVerification} />
             {/if}
+
+        {:else if mode === "delete_account"}
+            <AuthenticationModeHeader title="Delete Account" description="Delete your account">
+                <TrashIcon weight="bold" size={32} />
+            </AuthenticationModeHeader>
+
+            <DeleteAccount bind:status={deleteAccountStatus} />
         {/if}
     </Card.Content>
 </Card.Root>
