@@ -31,6 +31,7 @@ Props:
 	import type { ChangePasswordStatus } from "$lib/components/generic/authentication/ChangePassword.svelte";
 	import type { ChangeEmailStatus } from "$lib/components/generic/authentication/ChangeEmail.svelte";
 	import type { CreatePasskeyStatus } from "$lib/components/generic/authentication/CreatePasskey.svelte";
+	import DeleteAccount, { type DeleteAccountStatus } from "$lib/components/generic/authentication/DeleteAccount.svelte";
 
 
     interface Props {
@@ -58,6 +59,9 @@ Props:
     let createPasskeyOpen = $state(false);
     let createPasskeyStatus: CreatePasskeyStatus = $state("idle");
     const passkeyNoVerificationHasElapsed = (new Date() - new Date(user.created_at)) >= (+PUBLIC_PASSKEY_NO_VERIFICATION_MINUTES * 60 * 1000);
+
+    let deleteAccountOpen = $state(false);
+    let deleteAccountStatus: DeleteAccountStatus = $state("idle");
 
 
     /**
@@ -182,6 +186,14 @@ Props:
             createPasskeyOpen = false;
             createPasskeyStatus = "idle";
         }
+
+        if (deleteAccountStatus == "success") {
+            deleteAccountOpen = false;
+            deleteAccountStatus = "idle";
+        } else if (deleteAccountStatus == "cancel") {
+            deleteAccountOpen = false;
+            deleteAccountStatus = "idle";
+        }
     });
 
     onMount(() => {
@@ -275,7 +287,7 @@ Props:
                         <InfoIcon weight="bold" />
                         <Alert.Title>Changing your email</Alert.Title>
                         <Alert.Description>
-                            If you change your email, you will need to verify it. Without a verified email, you will only be able to change your password by accessing your account using a passkey.
+                            If you change your email, you will need to verify it. This email will be used for recovering your account, or creating passkeys.
                         </Alert.Description>
                     </Alert.Root>
                 {:else}
@@ -344,6 +356,13 @@ Props:
                 <Button onclick={() => createPasskeyOpen = true}><KeyIcon weight="bold" /> Create Passkey</Button>
             </Card.Content>
         </Card.Root>
+
+        <Card.Root>
+            <Card.Content class="flex flex-col gap-2">
+                <p class="font-bold">Delete Account</p>
+                <Button onclick={() => deleteAccountOpen = true} variant="destructive"><TrashIcon weight="bold" /> Delete Account</Button>
+            </Card.Content>
+        </Card.Root>
     </div>
 </Section>
 
@@ -380,4 +399,8 @@ Props:
 
 <BaseDialog title="" description="" bind:open={createPasskeyOpen}>
     <Authentication mode="create_passkey" email={user?.email} bind:createPasskeyStatus createPasskeyRequireUserVerification={passkeyNoVerificationHasElapsed}/>
+</BaseDialog>
+
+<BaseDialog title="" description="" bind:open={deleteAccountOpen}>
+    <Authentication mode="delete_account" bind:deleteAccountStatus />
 </BaseDialog>
