@@ -29,6 +29,8 @@ Props:
 
 	import { createVerificationCodeAuthCreateVerificationCodePost, verifyVerificationCodeAuthVerifyVerificationCodePost } from "$lib/api/auth/auth";
 	import WhyAreEmailsDisabledDialog from "./WhyAreEmailsDisabledDialog.svelte";
+	import AuthenticationMessage from "./AuthenticationMessage.svelte";
+	import AuthenticationPage from "./AuthenticationPage.svelte";
 
 
     interface Props {
@@ -138,118 +140,120 @@ Props:
 <svelte:window on:keydown={handleKeydown} />
 
 <div class="flex flex-col gap-2 text-left lg:max-w-[50vw]" transition:slide>
-    {#if message}
-        <Alert.Root variant="destructive" class="mb-2">
-            <WarningIcon weight="bold" />
-            <Alert.Title>There was a problem</Alert.Title>
-            <Alert.Description>{message}</Alert.Description>
-        </Alert.Root>
-    {/if}
+    <AuthenticationMessage {message} />
 
     {#if PUBLIC_EMAIL_ENABLED}
         {#if page == "confirm_email"}
-            <div class="flex flex-col gap-2 text-left" transition:slide>
-                <Button variant="outline" size="sm" onclick={() => {status = "cancel"}} disabled={sendingCode} class="w-fit"><XCircleIcon weight="bold" /> Cancel</Button>
-                <div class="flex flex-row gap-2 items-center">
+            <AuthenticationPage title="Verify your email" onCancelButtonClick={() => {status = "cancel"}}>
+                {#snippet icon()}
                     <EnvelopeIcon weight="bold" />
-                    <p class="font-bold">Verify your email</p>
-                </div>
-                <p class="text-muted-foreground">We will send a verification code to</p>
+                {/snippet}
 
-                <p class="font-bold">{email}</p>
-                <p class="text-muted-foreground">Enter the code in the next step to verify your email</p>
-                <Button onclick={() => sendVerificationCode()} disabled={sendingCode}>
-                    {#if sendingCode}
-                        <CircleNotchIcon class="animate-spin" size={16} /> Sending...
-                    {:else}
-                        <ArrowRightIcon weight="bold" /> Send Code <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
+                {#snippet content()}
+                    <p class="text-muted-foreground">We will send a verification code to</p>
+
+                    <p class="font-bold">{email}</p>
+                    <p class="text-muted-foreground">Enter the code in the next step to verify your email</p>
+                    <Button onclick={() => sendVerificationCode()} disabled={sendingCode}>
+                        {#if sendingCode}
+                            <CircleNotchIcon class="animate-spin" size={16} /> Sending...
+                        {:else}
+                            <ArrowRightIcon weight="bold" /> Send Code <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
+                        {/if}
+                    </Button>
+                    {#if skippable}
+                        <AlertDialog.Root>
+                            <AlertDialog.Trigger>
+                                <Button onclick={() => {}} variant="outline" disabled={sendingCode} class="w-full"><FastForwardCircleIcon weight="bold" /> Skip</Button>
+                            </AlertDialog.Trigger>
+                            <AlertDialog.Content>
+                                <AlertDialog.Title>Skip Email Verification</AlertDialog.Title>
+                                <AlertDialog.Description>
+                                    <p>Are you sure you want to skip email verification?</p>
+                                    <p>Without a verified email, you will not be able to use the "Forgot Password" feature to recover your account.</p>
+                                    <p>You will still be able to change your password by accessing your account using a passkey.</p>
+                                </AlertDialog.Description>
+                                <AlertDialog.Footer>
+                                    <AlertDialog.Cancel type="button">Cancel</AlertDialog.Cancel>
+                                    <AlertDialog.Action type="button" onclick={() => {status = "skipped"}}>Skip</AlertDialog.Action>
+                                </AlertDialog.Footer>
+                            </AlertDialog.Content>
+                        </AlertDialog.Root>
                     {/if}
-                </Button>
-                {#if skippable}
-                    <AlertDialog.Root>
-                        <AlertDialog.Trigger>
-                            <Button onclick={() => {}} variant="outline" disabled={sendingCode} class="w-full"><FastForwardCircleIcon weight="bold" /> Skip</Button>
-                        </AlertDialog.Trigger>
-                        <AlertDialog.Content>
-                            <AlertDialog.Title>Skip Email Verification</AlertDialog.Title>
-                            <AlertDialog.Description>
-                                <p>Are you sure you want to skip email verification?</p>
-                                <p>Without a verified email, you will not be able to use the "Forgot Password" feature to recover your account.</p>
-                                <p>You will still be able to change your password by accessing your account using a passkey.</p>
-                            </AlertDialog.Description>
-                            <AlertDialog.Footer>
-                                <AlertDialog.Cancel type="button">Cancel</AlertDialog.Cancel>
-                                <AlertDialog.Action type="button" onclick={() => {status = "skipped"}}>Skip</AlertDialog.Action>
-                            </AlertDialog.Footer>
-                        </AlertDialog.Content>
-                    </AlertDialog.Root>
-                {/if}
-            </div>
+                {/snippet}
+            </AuthenticationPage>
 
         {:else if page == "enter_code"}
-            <div class="flex flex-col gap-2 text-left" transition:slide>
-                <Button variant="outline" size="sm" onclick={() => {status = "cancel"}} disabled={checkingCode} class="w-fit"><XCircleIcon weight="bold" /> Cancel</Button>
-                <div class="flex flex-row gap-2 items-center">
+            <AuthenticationPage title="Verification code sent" onCancelButtonClick={() => {status = "cancel"}}>
+                {#snippet icon()}
                     <EnvelopeIcon weight="bold" />
-                    <p class="font-bold">Verification code sent</p>
-                </div>
-                <p class="text-muted-foreground">A verification code has been sent to <span class="font-bold">{email}</span></p>
-                <p class="text-muted-foreground">Enter the code below to verify your email</p>
-                
-                <div class="flex flex-row items-center w-full justify-center gap-2">
-                    <InputOTP.Root maxlength={6} pattern={REGEXP_ONLY_DIGITS} class="my-4" bind:value={code}>
-                        {#snippet children({ cells })}
-                            <InputOTP.Group>
-                            {#each cells as cell (cell)}
-                                <InputOTP.Slot {cell} />
-                            {/each}
-                            </InputOTP.Group>
-                        {/snippet}
-                    </InputOTP.Root>
-                    <Button variant="outline" size="icon" onclick={() => code = ""} disabled={!code.length}><TrashIcon weight="bold" /></Button>
-                </div>
-                <Button onclick={() => {checkVerificationCode()}} disabled={code.length != 6 || checkingCode}>
-                    {#if checkingCode}
-                        <CircleNotchIcon class="animate-spin" size={16} /> Checking...
-                    {:else}
-                        <ArrowRightIcon weight="bold" /> Verify <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
-                    {/if}
-                </Button>
-                <Button onclick={() => {sendVerificationCode(true)}} variant="outline" disabled={checkingCode || resendCountdown > 0}>
-                    {#if sendingCode}
-                        <CircleNotchIcon class="animate-spin" size={16} /> Sending...
-                    {:else}
-                        {#if resendCountdown > 0}
-                            <ClockIcon weight="bold" /> Resend Code ({resendCountdown}s)
+                {/snippet}
+
+                {#snippet content()}
+                    <p class="text-muted-foreground">A verification code has been sent to <span class="font-bold">{email}</span></p>
+                    <p class="text-muted-foreground">Enter the code below to verify your email</p>
+                    
+                    <div class="flex flex-row items-center w-full justify-center gap-2">
+                        <InputOTP.Root maxlength={6} pattern={REGEXP_ONLY_DIGITS} class="my-4" bind:value={code}>
+                            {#snippet children({ cells })}
+                                <InputOTP.Group>
+                                {#each cells as cell (cell)}
+                                    <InputOTP.Slot {cell} />
+                                {/each}
+                                </InputOTP.Group>
+                            {/snippet}
+                        </InputOTP.Root>
+                        <Button variant="outline" size="icon" onclick={() => code = ""} disabled={!code.length}><TrashIcon weight="bold" /></Button>
+                    </div>
+                    <Button onclick={() => {checkVerificationCode()}} disabled={code.length != 6 || checkingCode}>
+                        {#if checkingCode}
+                            <CircleNotchIcon class="animate-spin" size={16} /> Checking...
                         {:else}
-                            <EnvelopeIcon weight="bold" /> Resend Code <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
+                            <ArrowRightIcon weight="bold" /> Verify <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
                         {/if}
-                    {/if}
-                </Button>
-            </div>
+                    </Button>
+                    <Button onclick={() => {sendVerificationCode(true)}} variant="outline" disabled={checkingCode || resendCountdown > 0}>
+                        {#if sendingCode}
+                            <CircleNotchIcon class="animate-spin" size={16} /> Sending...
+                        {:else}
+                            {#if resendCountdown > 0}
+                                <ClockIcon weight="bold" /> Resend Code ({resendCountdown}s)
+                            {:else}
+                                <EnvelopeIcon weight="bold" /> Resend Code <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
+                            {/if}
+                        {/if}
+                    </Button>
+                {/snippet}
+            </AuthenticationPage>
 
         {:else if page == "success"}
-            <div class="flex flex-col gap-2 text-left" transition:slide>
-                <div class="flex flex-row gap-2 items-center">
+            <AuthenticationPage title="Email Verified">
+                {#snippet icon()}
                     <CheckCircleIcon weight="bold" />
-                    <p class="font-bold">Email Verified</p>
-                </div>
-                <p class="text-muted-foreground">You have successfully verified your email: <span class="font-bold">{email}</span></p>
-                <Button onclick={() => {status = "success"}}><CheckCircleIcon weight="bold" /> Continue <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root></Button>
-            </div>
+                {/snippet}
+
+                {#snippet content()}
+                    <p class="text-muted-foreground">You have successfully verified your email: <span class="font-bold">{email}</span></p>
+                    <Button onclick={() => {status = "success"}}><CheckCircleIcon weight="bold" /> Continue <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root></Button>
+                {/snippet}
+            </AuthenticationPage>
         {/if}
     {:else}
-        <div class="flex flex-row gap-2 items-center">
-            <EnvelopeIcon weight="bold" />
-            <p class="font-bold">Emails are not enabled on this server</p>
-        </div>
-        <p class="text-muted-foreground">We are not able to verify your email at this time. If emails are enabled on this server later, you will be able to verify your email on your profile page.</p>
-        <p class="text-muted-foreground">With an unverified email, you will not be able to use the "Forgot Password" feature. You will still be able to change your password by accessing your account using a passkey.</p>
-        <p class="text-muted-foreground font-bold">Consider creating a passkey in the next steps.</p>
+        <AuthenticationPage title="Emails are not enabled on this server">
+            {#snippet icon()}
+                <EnvelopeIcon weight="bold" />
+            {/snippet}
 
-        <div class="flex flex-row gap-2 w-full">
-            <WhyAreEmailsDisabledDialog />
-            <Button class="flex-2" onclick={() => {status = "skipped"}}><ArrowRightIcon weight="bold" /> Continue</Button>
-        </div>
+            {#snippet content()}
+                <p class="text-muted-foreground">We are not able to verify your email at this time. If emails are enabled on this server later, you will be able to verify your email on your profile page.</p>
+                <p class="text-muted-foreground">With an unverified email, you will not be able to use the "Forgot Password" feature. You will still be able to change your password by accessing your account using a passkey.</p>
+                <p class="text-muted-foreground font-bold">Consider creating a passkey in the next steps.</p>
+
+                <div class="flex flex-row gap-2 w-full">
+                    <WhyAreEmailsDisabledDialog />
+                    <Button class="flex-2" onclick={() => {status = "skipped"}}><ArrowRightIcon weight="bold" /> Continue</Button>
+                </div>
+            {/snippet}
+        </AuthenticationPage>
     {/if}
 </div>

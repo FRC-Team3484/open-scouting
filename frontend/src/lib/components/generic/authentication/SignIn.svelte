@@ -1,9 +1,6 @@
 <!-- 
 @component
 Sign in mode for the universal authentication component
-
-TODO: Support passkeys
-
 -->
 <script lang="ts">
 	import { goto } from "$app/navigation";
@@ -21,9 +18,11 @@ TODO: Support passkeys
 	import Switch from "$lib/components/ui/switch/switch.svelte";
 	import Label from "$lib/components/ui/label/label.svelte";
 	import { startAuthentication } from "@simplewebauthn/browser";
+	import AuthenticationMessage from "./AuthenticationMessage.svelte";
+	import AuthenticationPage from "./AuthenticationPage.svelte";
 
 
-    let page: "username" | "passkey" | "password" | "success" = $state("username"); 
+    let page: "username" | "password" | "success" = $state("username"); 
 
     let username: string = $state("");
     let password: string = $state("");
@@ -103,57 +102,46 @@ TODO: Support passkeys
 
 <svelte:window on:keydown={handleKeyDown} />
 
-{#if message}
-    <div transition:slide>
-        <Alert.Root variant="destructive" class="mb-2 text-left">
-            <WarningIcon weight="bold" />
-            <Alert.Title>There was a problem</Alert.Title>
-            <Alert.Description>{message}</Alert.Description>
-        </Alert.Root>
-    </div>
-{/if}
+<AuthenticationMessage {message} />
 
 {#if page == "username"}
-    <div class="flex flex-col gap-2 text-left" transition:slide>
-        <p class="font-bold mb-4 text-lg">Welcome back</p>
-
-        <div class="flex flex-row gap-2 items-center">
+    <AuthenticationPage title="Username or email">
+        {#snippet icon()}
             <EnvelopeIcon weight="bold" />
-            <p class="font-bold">Username or email</p>
-        </div>
-        <Input placeholder="Username or email" type="text" bind:value={username} autofocus />
-        <Button onclick={() => {page = "password"}} disabled={username.trim() == ""}><ArrowRightIcon weight="bold" /> Next <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root></Button>
-        <Button variant="outline" size="sm" onclick={() => {loginWithPasskey()}}><KeyIcon weight="bold" /> Sign In with Passkey</Button>
-    </div>
-{:else if page == "passkey"}
-    <div class="flex flex-col gap-2 text-left" transition:slide>
-        <p>Passkeys are not yet supported</p>
-        <Button onclick={() => {page = "password"}}><ArrowLeftIcon weight="bold" /> Password Login</Button>
-    </div>
-{:else if page == "password"}
-    <div class="flex flex-col gap-2 text-left" transition:slide>
-        <div class="flex flex-row gap-2 items-center mb-4">
-            <Button variant="outline" onclick={() => {page = "username"}}><ArrowLeftIcon weight="bold" /> Back</Button>
-            <p>Signing in as <span class="font-bold">{username}</span></p>
-        </div>
-        <div class="flex flex-row gap-2 items-center">
-            <KeyIcon weight="bold" />
-            <p class="font-bold">Password</p>
-        </div>
-        <Input placeholder="Password" type={showPassword ? "text" : "password"} bind:value={password} autofocus />
-        <div class="flex flex-row gap-2 mb-4">
-            <Switch id="show-password" bind:checked={showPassword} />
-            <Label for="show-password">Show Password</Label>
-        </div>
+        {/snippet}
 
-        <Button onclick={() => {signIn()}} disabled={password.trim() == "" || loading} onkeydown={(e) => {if (e.key == "Enter") {signIn();}}}>
-            {#if loading}
-                <CircleNotchIcon class="animate-spin" size={16} /> Loading...
-            {:else}
-                <ArrowRightIcon weight="bold" /> Sign In <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
-            {/if}
-        </Button>
-    </div>
+        {#snippet content()}
+            <Input placeholder="Username or email" type="text" bind:value={username} autofocus />
+            <Button onclick={() => {page = "password"}} disabled={username.trim() == ""}><ArrowRightIcon weight="bold" /> Next <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root></Button>
+            <Button variant="outline" size="sm" onclick={() => {loginWithPasskey()}}><KeyIcon weight="bold" /> Sign In with Passkey</Button>
+        {/snippet}
+    </AuthenticationPage>
+
+{:else if page == "password"}
+    <AuthenticationPage title="Enter Password" onBackButtonClick={() => {page = "username"}}>
+        {#snippet icon()}
+            <KeyIcon weight="bold" />
+        {/snippet}
+
+        {#snippet content()}
+            <p class="mb-4">Signing in as <span class="font-bold">{username}</span></p>
+
+            <Input placeholder="Password" type={showPassword ? "text" : "password"} bind:value={password} autofocus />
+            <div class="flex flex-row gap-2 mb-4">
+                <Switch id="show-password" bind:checked={showPassword} />
+                <Label for="show-password">Show Password</Label>
+            </div>
+
+            <Button onclick={() => {signIn()}} disabled={password.trim() == "" || loading} onkeydown={(e) => {if (e.key == "Enter") {signIn();}}}>
+                {#if loading}
+                    <CircleNotchIcon class="animate-spin" size={16} /> Loading...
+                {:else}
+                    <ArrowRightIcon weight="bold" /> Sign In <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
+                {/if}
+            </Button>
+        {/snippet}
+    </AuthenticationPage>
+
 {:else if page == "success"}
     <SignInConfirmation user={successUser} redirect={5} />
 {/if}

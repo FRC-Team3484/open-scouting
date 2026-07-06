@@ -5,8 +5,6 @@ Part of the universal authentication component, for resetting your password from
 Users are asked to enter their email before being sent a verification code to that email, if their account exists. 
 If emails are disabled on the server, instead prompt them to log in with a passkey. 
 
-TODO: Support keyboard navigation
-
 Props:
     - `status` (`ForgotPasswordStatus`) - The state of the component. 
         Other components can bind to this status to know when this component can be hidden again
@@ -32,6 +30,8 @@ Props:
 	import WhyAreEmailsDisabledDialog from "./WhyAreEmailsDisabledDialog.svelte";
 	import { forgotPasswordAuthForgotPasswordPost } from "$lib/api/auth/auth";
 	import EmailVerification, { type EmailVerificationStatus } from "./EmailVerification.svelte";
+	import AuthenticationMessage from "./AuthenticationMessage.svelte";
+	import AuthenticationPage from "./AuthenticationPage.svelte";
     
 
     const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -115,105 +115,108 @@ Props:
 <svelte:window on:keydown={handleKeydown} />
 
 <div class="flex flex-col gap-2 text-left lg:max-w-[50vw]" transition:slide>
-    {#if message}
-        <Alert.Root variant="destructive" class="mb-2">
-            <WarningIcon weight="bold" />
-            <Alert.Title>There was a problem</Alert.Title>
-            <Alert.Description>{message}</Alert.Description>
-        </Alert.Root>
-    {/if}
+    <AuthenticationMessage {message} />
 
     {#if PUBLIC_EMAIL_ENABLED}
         {#if page == "enter_email"}
-            <div class="flex flex-col gap-2 text-left" transition:slide>
-                <Button variant="outline" size="sm" onclick={() => {status = "cancel"}} class="w-fit"><XCircleIcon weight="bold" /> Cancel</Button>
-                <div class="flex flex-row gap-2 items-center">
+            <AuthenticationPage title="Enter your email" onCancelButtonClick={() => {status = "cancel"}}>
+                {#snippet icon()}
                     <EnvelopeIcon weight="bold" />
-                    <p class="font-bold">Enter your email</p>
-                </div>
-                <p class="text-muted-foreground">Enter the email associated with the account you're trying to reset the password for</p>
+                {/snippet}
 
-                <Input type="email" placeholder="Email" bind:value={email} autofocus />
-                <p class="text-sm text-muted-foreground">A verification code will be sent to this email</p>
+                {#snippet content()}
+                    <p class="text-muted-foreground">Enter the email associated with the account you're trying to reset the password for</p>
 
-                <Button onclick={() => page = "verify"} disabled={email.trim() == "" || !EMAIL_REGEX.test(email)}>
-                    <ArrowRightIcon weight="bold" /> Send Verification Code <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
-                </Button>
+                    <Input type="email" placeholder="Email" bind:value={email} autofocus />
+                    <p class="text-sm text-muted-foreground">A verification code will be sent to this email</p>
 
-            </div>
+                    <Button onclick={() => page = "verify"} disabled={email.trim() == "" || !EMAIL_REGEX.test(email)}>
+                        <ArrowRightIcon weight="bold" /> Send Verification Code <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
+                    </Button>
+                {/snippet}
+            </AuthenticationPage>
+
         {:else if page == "verify"}
             <EmailVerification email={email} bind:status={emailVerificationStatus} bind:verificationCodeUuid={verificationCodeUuid} skippable={false} />
 
         {:else if page == "enter_new_password"}
-            <div class="flex flex-col gap-2 text-left" transition:slide>
-                <Button variant="outline" size="sm" onclick={() => {page = "enter_email"}} class="w-fit"><ArrowLeftIcon weight="bold" /> Back</Button>
-                <div class="flex flex-row gap-2 items-center">
+            <AuthenticationPage title="Enter new password" onBackButtonClick={() => {page = "enter_email"}}>
+                {#snippet icon()}
                     <PasswordIcon weight="bold" />
-                    <p class="font-bold">Enter new password</p>
-                </div>
-                <p class="text-muted-foreground">Enter your new password</p>
+                {/snippet}
 
-                <p class="text-sm text-muted-foreground mb-2">
-                    Strong passwords are 16+ characters long, and have a mix <br>
-                    of uppercase and lowercase letters, numbers, and special <br>
-                    characters. Consider using a passphrase, and don't use the <br>
-                    same password for multiple websites.
-                </p>
+                {#snippet content()}
+                    <p class="text-muted-foreground">Enter your new password</p>
 
-                <Input placeholder="Password" type={showPassword ? "text" : "password"} bind:value={password} autofocus />
-                <p class="text-sm text-muted-foreground">The password to use when logging into your account</p>
+                    <p class="text-sm text-muted-foreground mb-2">
+                        Strong passwords are 16+ characters long, and have a mix <br>
+                        of uppercase and lowercase letters, numbers, and special <br>
+                        characters. Consider using a passphrase, and don't use the <br>
+                        same password for multiple websites.
+                    </p>
 
-                <Input placeholder="Confirm password" type={showPassword ? "text" : "password"} bind:value={confirmPassword} />
-                <p class="text-sm text-muted-foreground">Confirm your password</p>
+                    <Input placeholder="Password" type={showPassword ? "text" : "password"} bind:value={password} autofocus />
+                    <p class="text-sm text-muted-foreground">The password to use when logging into your account</p>
 
-                <div class="flex flex-row gap-2 mb-4">
-                    <Switch id="show-password" bind:checked={showPassword} />
-                    <Label for="show-password">Show Password</Label>
-                </div>
+                    <Input placeholder="Confirm password" type={showPassword ? "text" : "password"} bind:value={confirmPassword} />
+                    <p class="text-sm text-muted-foreground">Confirm your password</p>
 
-                {#if confirmPassword != password}
-                    <div transition:slide>
-                        <Alert.Root variant="destructive" class="mb-2 text-left">
-                            <WarningIcon weight="bold" />
-                            <Alert.Title>Passwords do not match</Alert.Title>
-                        </Alert.Root>
+                    <div class="flex flex-row gap-2 mb-4">
+                        <Switch id="show-password" bind:checked={showPassword} />
+                        <Label for="show-password">Show Password</Label>
                     </div>
-                {/if}
 
-                <Button onclick={() => {changePassword()}} disabled={password.trim() == "" || confirmPassword.trim() == "" || password != confirmPassword}>
-                    {#if changingPassword}
-                        <CircleNotchIcon class="animate-spin" size={16} /> Changing...
-                    {:else}
-                        <ArrowRightIcon weight="bold" /> Change Password <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
+                    {#if confirmPassword != password}
+                        <div transition:slide>
+                            <Alert.Root variant="destructive" class="mb-2 text-left">
+                                <WarningIcon weight="bold" />
+                                <Alert.Title>Passwords do not match</Alert.Title>
+                            </Alert.Root>
+                        </div>
                     {/if}
-                </Button>
 
-            </div>
+                    <Button onclick={() => {changePassword()}} disabled={password.trim() == "" || confirmPassword.trim() == "" || password != confirmPassword}>
+                        {#if changingPassword}
+                            <CircleNotchIcon class="animate-spin" size={16} /> Changing...
+                        {:else}
+                            <ArrowRightIcon weight="bold" /> Change Password <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
+                        {/if}
+                    </Button>
+                {/snippet}
+            </AuthenticationPage>
+
         {:else if page == "success"}
-            <div class="flex flex-col gap-2 text-left" transition:slide>
-                <div class="flex flex-row gap-2 items-center">
+            <AuthenticationPage title="Password Changed">
+                {#snippet icon()}
                     <CheckCircleIcon weight="bold" />
-                    <p class="font-bold">Password Changed</p>
-                </div>
-                <p class="text-muted-foreground">Your password has been changed. Continue to the sign in page to log in with your new password.</p>
+                {/snippet}
 
-                <Button onclick={() => {status = "success"}}>
-                    <ArrowRightIcon weight="bold" /> Continue <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
-                </Button>
-            </div>
+                {#snippet content()}
+                    <p class="text-muted-foreground">Your password has been changed. Continue to the sign in page to log in with your new password.</p>
+
+                    <Button onclick={() => {status = "success"}}>
+                        <ArrowRightIcon weight="bold" /> Continue <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
+                    </Button>
+                {/snippet}
+            </AuthenticationPage>
+
         {/if}
     {:else}
-        <div class="flex flex-row gap-2 items-center">
-            <EnvelopeIcon weight="bold" />
-            <p class="font-bold">Unable to change password here</p>
-        </div>
-        <p class="text-muted-foreground font-bold">Emails are disabled on this server.</p>
-        <p class="text-muted-foreground">We cannot send you a code to verify your identity before changing your password.</p>
-        <p class="text-muted-foreground">If you have a passkey for Open Scouting, use that to log in, then change your password on your profile page.</p>
+        <AuthenticationPage title="Unable to change password here">
+            {#snippet icon()}
+                <EnvelopeIcon weight="bold" />
+            {/snippet}
 
-        <div class="flex flex-row gap-2 w-full">
-            <WhyAreEmailsDisabledDialog />
-            <Button class="flex-2" onclick={() => {status = "cancel"}}><ArrowLeftIcon weight="bold" /> Back</Button>
-        </div>
+            {#snippet content()}
+                <p class="text-muted-foreground font-bold">Emails are disabled on this server.</p>
+                <p class="text-muted-foreground">We cannot send you a code to verify your identity before changing your password.</p>
+                <p class="text-muted-foreground">If you have a passkey for Open Scouting, use that to log in, then change your password on your profile page.</p>
+
+                <div class="flex flex-row gap-2 w-full">
+                    <WhyAreEmailsDisabledDialog />
+                    <Button class="flex-2" onclick={() => {status = "cancel"}}><ArrowLeftIcon weight="bold" /> Back</Button>
+                </div>
+            {/snippet}
+        </AuthenticationPage>
     {/if}
 </div>

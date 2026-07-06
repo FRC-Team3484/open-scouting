@@ -11,10 +11,8 @@ Props:
     export type ChangeEmailStatus = "idle" | "success" | "cancel";
 </script>
 <script lang="ts">
-	import { slide } from "svelte/transition";
-	import { ArrowRightIcon, CheckCircleIcon, CircleNotchIcon, EnvelopeIcon, KeyReturnIcon, WarningIcon } from "phosphor-svelte";
+	import { ArrowRightIcon, CheckCircleIcon, CircleNotchIcon, EnvelopeIcon, KeyReturnIcon } from "phosphor-svelte";
 
-    import * as Alert from "$lib/components/ui/alert/index";
 	import Input from "$lib/components/ui/input/input.svelte";
 	import Button from "$lib/components/ui/button/button.svelte";
     import * as Kbd from "$lib/components/ui/kbd/index";
@@ -24,6 +22,8 @@ Props:
 	import { changeEmailAuthChangeEmailPost, checkUniqueUsernameAuthCheckUniqueUsernameGet } from "$lib/api/auth/auth";
 	import EmailVerification, { type EmailVerificationStatus } from "./EmailVerification.svelte";
 	import { PUBLIC_EMAIL_ENABLED } from "$env/static/public";
+	import AuthenticationPage from "./AuthenticationPage.svelte";
+	import AuthenticationMessage from "./AuthenticationMessage.svelte";
 
 
     interface Props {
@@ -108,46 +108,41 @@ Props:
 
 <svelte:window on:keydown={handleKeyDown} />
 
-{#if message}
-    <div transition:slide>
-        <Alert.Root variant="destructive" class="mb-2 text-left">
-            <WarningIcon weight="bold" />
-            <Alert.Title>There was a problem</Alert.Title>
-            <Alert.Description>{message}</Alert.Description>
-        </Alert.Root>
-    </div>
-{/if}
+<AuthenticationMessage {message} />
 
 {#if page == "verify"}
     <VerifyUser email={email} bind:status={verifyUserStatus} bind:emailVerificationCodeUuid={verifyEmailVerficationCodeUuid} bind:passkeyUuid={verifyPasskeyUuid}/>
 {:else if page == "change"}
-    <div class="flex flex-col gap-2 text-left" transition:slide>
-        <div class="flex flex-row gap-2 items-center">
+    <AuthenticationPage title="Enter your new email">
+        {#snippet icon()}
             <EnvelopeIcon weight="bold" />
-            <p class="font-bold">Enter your new email</p>
-        </div>
+        {/snippet}
 
-        <Input placeholder="Email" type="email" bind:value={newEmail} />
-        <p class="text-sm text-muted-foreground">You can also use your email to sign in. <br>We will use this email to send you verification emails (if supported).</p>
+        {#snippet content()}
+            <Input placeholder="Email" type="email" bind:value={newEmail} />
+            <p class="text-sm text-muted-foreground">You can also use your email to sign in. <br>We will use this email to send you verification emails (if supported).</p>
 
-        <Button onclick={() => {checkUniqueEmail()}} disabled={!EMAIL_REGEX.test(newEmail) || checkingEmail}>
-            {#if checkingEmail}
-                <CircleNotchIcon class="animate-spin" size={16} /> Checking...
-            {:else}
-                <ArrowRightIcon weight="bold" /> Next <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
-            {/if}
-        </Button>
-    </div>
+            <Button onclick={() => {checkUniqueEmail()}} disabled={!EMAIL_REGEX.test(newEmail) || checkingEmail}>
+                {#if checkingEmail}
+                    <CircleNotchIcon class="animate-spin" size={16} /> Checking...
+                {:else}
+                    <ArrowRightIcon weight="bold" /> Next <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
+                {/if}
+            </Button>
+        {/snippet}
+    </AuthenticationPage>
 {:else if page == "verify_new_email"}
     <EmailVerification email={newEmail} bind:status={verifyEmailStatus} skippable={false} />
 
 {:else if page == "success"}
-    <div class="flex flex-col gap-2 text-left" transition:slide>
-        <div class="flex flex-row gap-2 items-center">
+    <AuthenticationPage title="Email Changed">
+        {#snippet icon()}
             <CheckCircleIcon weight="bold" />
-            <p class="font-bold">Email Changed</p>
-        </div>
-        <p class="text-muted-foreground">You have successfully changed your email.</p>
-        <Button onclick={() => {status = "success"}}><CheckCircleIcon weight="bold" /> Continue <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root></Button>
-    </div>
+        {/snippet}
+
+        {#snippet content()}
+            <p class="text-muted-foreground">You have successfully changed your email.</p>
+            <Button onclick={() => {status = "success"}}><CheckCircleIcon weight="bold" /> Continue <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root></Button>
+        {/snippet}
+    </AuthenticationPage>
 {/if}

@@ -16,7 +16,7 @@ TODO: Support passkeys
 -->
 <script lang="ts">
 	import { slide } from "svelte/transition";
-	import { ArrowLeftIcon, ArrowRightIcon, CircleNotchIcon, EnvelopeIcon, KeyIcon, KeyReturnIcon, UserCircleIcon, WarningIcon } from "phosphor-svelte";
+	import { ArrowRightIcon, CircleNotchIcon, EnvelopeIcon, KeyIcon, KeyReturnIcon, UserCircleIcon, WarningIcon } from "phosphor-svelte";
 
     import * as Alert from "$lib/components/ui/alert/index";
 	import Button from "$lib/components/ui/button/button.svelte";
@@ -30,6 +30,8 @@ TODO: Support passkeys
 	import { checkUniqueUsernameAuthCheckUniqueUsernameGet, meAuthMeGet, signupAuthSignupPost } from "$lib/api/auth/auth";
 	import type { SignupRequest, UserResponse } from "$lib/api/model";
 	import CreatePasskey, { type CreatePasskeyStatus } from "./CreatePasskey.svelte";
+	import AuthenticationMessage from "./AuthenticationMessage.svelte";
+	import AuthenticationPage from "./AuthenticationPage.svelte";
 
 
     let page: "username" | "verify" | "password" | "profile" | "passkey" | "success" = $state("username");
@@ -143,105 +145,101 @@ TODO: Support passkeys
 
 <svelte:window on:keydown={handleKeyDown} />
 
-{#if message}
-    <div transition:slide>
-        <Alert.Root variant="destructive" class="mb-2 text-left">
-            <WarningIcon weight="bold" />
-            <Alert.Title>There was a problem</Alert.Title>
-            <Alert.Description>{message}</Alert.Description>
-        </Alert.Root>
-    </div>
-{/if}
+<AuthenticationMessage {message} />
 
 {#if page == "username"}
-    <div class="flex flex-col gap-2 text-left" transition:slide>
-        <div class="flex flex-row gap-2 items-center">
+    <AuthenticationPage title="Choose a username and enter your email">
+        {#snippet icon()}
             <EnvelopeIcon weight="bold" />
-            <p class="font-bold">First, choose a username and enter your email</p>
-        </div>
+        {/snippet}
 
-        <Input placeholder="Username" type="text" bind:value={username} autofocus />
-        <p class="text-sm text-muted-foreground">You will use your username to sign in. <br>It must be unique on this server. You can choose a display name later.</p>
+        {#snippet content()}
+            <Input placeholder="Username" type="text" bind:value={username} autofocus />
+            <p class="text-sm text-muted-foreground">You will use your username to sign in. <br>It must be unique on this server. You can choose a display name later.</p>
 
-        <Input placeholder="Email" type="email" bind:value={email} />
-        <p class="text-sm text-muted-foreground">You can also use your email to sign in. <br>We will use this email to send you verification emails (if supported).</p>
+            <Input placeholder="Email" type="email" bind:value={email} />
+            <p class="text-sm text-muted-foreground">You can also use your email to sign in. <br>We will use this email to send you verification emails (if supported).</p>
 
-        <Button onclick={() => {checkUsername()}} disabled={username.trim() == "" || !EMAIL_REGEX.test(email) || checkingUsername}>
-            {#if checkingUsername}
-                <CircleNotchIcon class="animate-spin" size={16} /> Checking...
-            {:else}
-                <ArrowRightIcon weight="bold" /> Next <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
-            {/if}
-        </Button>
-    </div>
+            <Button onclick={() => {checkUsername()}} disabled={username.trim() == "" || !EMAIL_REGEX.test(email) || checkingUsername}>
+                {#if checkingUsername}
+                    <CircleNotchIcon class="animate-spin" size={16} /> Checking...
+                {:else}
+                    <ArrowRightIcon weight="bold" /> Next <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
+                {/if}
+            </Button>
+        {/snippet}
+    </AuthenticationPage>
+
 {:else if page == "verify"}
     <EmailVerification email={email} bind:status={emailVerificationStatus} bind:verificationCodeUuid={verificationCodeUuid} />
 
 {:else if page == "password"}
-    <div class="flex flex-col gap-2 text-left" transition:slide>
-        <Button variant="outline" size="sm" onclick={() => {page = "username"}} class="w-fit"><ArrowLeftIcon weight="bold" /> Back</Button>
-        <div class="flex flex-row gap-2 items-center">
+    <AuthenticationPage title="Choose a password" onBackButtonClick={() => {page = "username"}}>
+        {#snippet icon()}
             <KeyIcon weight="bold" />
-            <p class="font-bold">Choose a password</p>
-        </div>
+        {/snippet}
 
-        <p class="text-sm text-muted-foreground mb-2">
-            Strong passwords are 16+ characters long, and have a mix <br>
-            of uppercase and lowercase letters, numbers, and special <br>
-            characters. Consider using a passphrase, and don't use the <br>
-            same password for multiple websites.
-        </p>
+        {#snippet content()}
+            <p class="text-sm text-muted-foreground mb-2">
+                Strong passwords are 16+ characters long, and have a mix <br>
+                of uppercase and lowercase letters, numbers, and special <br>
+                characters. Consider using a passphrase, and don't use the <br>
+                same password for multiple websites.
+            </p>
 
-        <Input placeholder="Password" type={showPassword ? "text" : "password"} bind:value={password} autofocus />
-        <p class="text-sm text-muted-foreground">The password to use when logging into your account</p>
+            <Input placeholder="Password" type={showPassword ? "text" : "password"} bind:value={password} autofocus />
+            <p class="text-sm text-muted-foreground">The password to use when logging into your account</p>
 
-        <Input placeholder="Confirm password" type={showPassword ? "text" : "password"} bind:value={confirmPassword} />
-        <p class="text-sm text-muted-foreground">Confirm your password</p>
+            <Input placeholder="Confirm password" type={showPassword ? "text" : "password"} bind:value={confirmPassword} />
+            <p class="text-sm text-muted-foreground">Confirm your password</p>
 
-        <div class="flex flex-row gap-2 mb-4">
-            <Switch id="show-password" bind:checked={showPassword} />
-            <Label for="show-password">Show Password</Label>
-        </div>
-
-        {#if confirmPassword != password}
-            <div transition:slide>
-                <Alert.Root variant="destructive" class="mb-2 text-left">
-                    <WarningIcon weight="bold" />
-                    <Alert.Title>Passwords do not match</Alert.Title>
-                </Alert.Root>
+            <div class="flex flex-row gap-2 mb-4">
+                <Switch id="show-password" bind:checked={showPassword} />
+                <Label for="show-password">Show Password</Label>
             </div>
-        {/if}
 
-        <Button onclick={() => {page = "profile"}} disabled={password.trim() == "" || confirmPassword.trim() == "" || password != confirmPassword}>
-            <ArrowRightIcon weight="bold" /> Next <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
-        </Button>
-    </div>
+            {#if confirmPassword != password}
+                <div transition:slide>
+                    <Alert.Root variant="destructive" class="mb-2 text-left">
+                        <WarningIcon weight="bold" />
+                        <Alert.Title>Passwords do not match</Alert.Title>
+                    </Alert.Root>
+                </div>
+            {/if}
+
+            <Button onclick={() => {page = "profile"}} disabled={password.trim() == "" || confirmPassword.trim() == "" || password != confirmPassword}>
+                <ArrowRightIcon weight="bold" /> Next <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
+            </Button>
+        {/snippet}
+    </AuthenticationPage>
 
 {:else if page == "profile"}
-    <div class="flex flex-col gap-2 text-left" transition:slide>
-        <Button variant="outline" size="sm" onclick={() => {page = "password"}} class="w-fit"><ArrowLeftIcon weight="bold" /> Back</Button>
-        <div class="flex flex-row gap-2 items-center">
+    <AuthenticationPage title="Profile Details" onBackButtonClick={() => {page = "password"}}>
+        {#snippet icon()}
             <UserCircleIcon weight="bold" />
-            <p class="font-bold">Profile Details</p>
-        </div>
+        {/snippet}
 
-        <Input placeholder="Display name" type="text" bind:value={displayName} defaultValue={username} />
-        <p class="text-sm text-muted-foreground">This is the name that will be displayed in place of your username.</p>
+        {#snippet content()}
+            <Input placeholder="Display name" type="text" bind:value={displayName} defaultValue={username} />
+            <p class="text-sm text-muted-foreground">This is the name that will be displayed in place of your username.</p>
 
-        <Input placeholder="Team Number" type="text" bind:value={teamNumber} />
-        <p class="text-sm text-muted-foreground">The team number for the team you are a part of.</p>
+            <Input placeholder="Team Number" type="text" bind:value={teamNumber} />
+            <p class="text-sm text-muted-foreground">The team number for the team you are a part of.</p>
 
-        <Button onclick={() => {createAccount()}} disabled={displayName.trim() == "" || teamNumber == 0 || creatingAccount}>
-            {#if creatingAccount}
-                <CircleNotchIcon class="animate-spin" size={16} /> Creating Account...
-            {:else}
-                <ArrowRightIcon weight="bold" /> Create Account <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
-            {/if}
-        </Button>
-    </div>
+            <Button onclick={() => {createAccount()}} disabled={displayName.trim() == "" || teamNumber == 0 || creatingAccount}>
+                {#if creatingAccount}
+                    <CircleNotchIcon class="animate-spin" size={16} /> Creating Account...
+                {:else}
+                    <ArrowRightIcon weight="bold" /> Create Account <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
+                {/if}
+            </Button>
+        {/snippet}
+    </AuthenticationPage>
 
 {:else if page == "passkey"}
     <CreatePasskey bind:status={createPasskeyStatus} />
+
 {:else if page == "success"}
     <SignInConfirmation user={successUser} redirect={5} />
+
 {/if}

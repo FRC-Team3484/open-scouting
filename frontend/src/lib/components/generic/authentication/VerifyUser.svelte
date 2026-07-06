@@ -26,6 +26,8 @@ Props:
 	import EmailVerification, { type EmailVerificationStatus } from "./EmailVerification.svelte";
 	import { createVerificationPasskeyAuthPasskeysVerificationCreatePost, verifyVerificationPasskeyAuthPasskeysVerificationVerifyPost } from "$lib/api/auth/auth";
 	import { PUBLIC_EMAIL_ENABLED } from "$env/static/public";
+	import AuthenticationMessage from "./AuthenticationMessage.svelte";
+	import AuthenticationPage from "./AuthenticationPage.svelte";
 
 
     interface Props {
@@ -99,47 +101,41 @@ Props:
 
 <svelte:window on:keydown={handleKeyDown} />
 
-{#if message}
-    <div transition:slide>
-        <Alert.Root variant="destructive" class="mb-2 text-left">
-            <WarningIcon weight="bold" />
-            <Alert.Title>There was a problem</Alert.Title>
-            <Alert.Description>{message}</Alert.Description>
-        </Alert.Root>
-    </div>
-{/if}
+<AuthenticationMessage {message} />
 
 {#if page == "start"}
-    <div class="flex flex-col gap-2 text-left" transition:slide>
-        <div class="flex flex-row gap-2 items-center">
+    <AuthenticationPage title="Verify Identity">
+        {#snippet icon()}
             <UserCircleIcon weight="bold" />
-            <p class="font-bold">Verify Identity</p>
-        </div>
+        {/snippet}
 
-        <p class="text-sm text-muted-foreground">We need to verify your identity.</p>
-        <p class="text-sm text-muted-foreground">Please choose a verification method. Email verification may not be supported on this server.</p>
+        {#snippet content()}
+            <p class="text-sm text-muted-foreground">We need to verify your identity.</p>
+            <p class="text-sm text-muted-foreground">Please choose a verification method. Email verification may not be supported on this server.</p>
 
-        <Button onclick={() => {verifyWithPasskey()}} disabled={verifyingWithPasskey}>
-            {#if verifyingWithPasskey}
-                <CircleNotchIcon class="animate-spin" size={16} /> Verifying...
-            {:else}
-                <KeyIcon weight="bold" /> Verify with Passkey <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
-            {/if}
-        </Button>
-        <Button onclick={() => {page = "email"}} disabled={verifyingWithPasskey || !PUBLIC_EMAIL_ENABLED}><EnvelopeIcon weight="bold" /> Send Verification Email</Button>
-    </div>
+            <Button onclick={() => {verifyWithPasskey()}} disabled={verifyingWithPasskey}>
+                {#if verifyingWithPasskey}
+                    <CircleNotchIcon class="animate-spin" size={16} /> Verifying...
+                {:else}
+                    <KeyIcon weight="bold" /> Verify with Passkey <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
+                {/if}
+            </Button>
+            <Button onclick={() => {page = "email"}} disabled={verifyingWithPasskey || !PUBLIC_EMAIL_ENABLED}><EnvelopeIcon weight="bold" /> Send Verification Email</Button>
+        {/snippet}
+    </AuthenticationPage>   
 
 {:else if page == "email"}
     <EmailVerification email={email} bind:status={emailVerificationStatus} bind:verificationCodeUuid={emailVerificationCodeUuid} skippable={false} />
 
 {:else if page == "success"}
-    <div class="flex flex-col gap-2 text-left" transition:slide>
-        <div class="flex flex-row gap-2 items-center">
-            <UserCircleCheckIcon weight="bold" />
-            <p class="font-bold">Identity Verified</p>
-        </div>
+    <AuthenticationPage title="Identity Verified">
+        {#snippet icon()}
+            <CheckCircleIcon weight="bold" />
+        {/snippet}
 
-        <p class="text-sm text-muted-foreground">You have successfully verified your identity.</p>
-        <Button onclick={() => {status = "success"}}><CheckCircleIcon weight="bold" /> Continue <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root></Button>
-    </div>
+        {#snippet content()}
+            <p class="text-muted-foreground">You have successfully verified your identity.</p>
+            <Button onclick={() => {status = "success"}}><CheckCircleIcon weight="bold" /> Continue <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root></Button>
+        {/snippet}
+    </AuthenticationPage>
 {/if}

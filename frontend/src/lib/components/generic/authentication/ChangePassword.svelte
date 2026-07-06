@@ -23,6 +23,8 @@ Props:
 
 	import VerifyUser, { type VerifyUserStatus } from "./VerifyUser.svelte";
 	import { changePasswordAuthChangePasswordPost } from "$lib/api/auth/auth";
+	import AuthenticationMessage from "./AuthenticationMessage.svelte";
+	import AuthenticationPage from "./AuthenticationPage.svelte";
 
 
     interface Props {
@@ -64,6 +66,10 @@ Props:
         changingPassword = false;
     }
 
+    /**
+     * Handle the enter key on this component
+     * @param e
+     */
     function handleKeyDown(e: KeyboardEvent) {
         if (e.key == "Enter") {
             if (page == "change" && password.trim() != "" && confirmPassword.trim() != "" && password == confirmPassword) {
@@ -85,15 +91,7 @@ Props:
 
 <svelte:window on:keydown={handleKeyDown}/>
 
-{#if message}
-    <div transition:slide>
-        <Alert.Root variant="destructive" class="mb-2 text-left">
-            <WarningIcon weight="bold" />
-            <Alert.Title>There was a problem</Alert.Title>
-            <Alert.Description>{message}</Alert.Description>
-        </Alert.Root>
-    </div>
-{/if}
+<AuthenticationMessage {message} />
 
 {#if page == "verify"}
     <VerifyUser email={email} bind:status={verifyUserStatus} bind:emailVerificationCodeUuid={verifyEmailVerficationCodeUuid} bind:passkeyUuid={verifyPasskeyUuid}/>
@@ -104,49 +102,61 @@ Props:
             <p class="font-bold">Enter your new password</p>
         </div>
         
-        <p class="text-sm text-muted-foreground mb-2">
-            Strong passwords are 16+ characters long, and have a mix <br>
-            of uppercase and lowercase letters, numbers, and special <br>
-            characters. Consider using a passphrase, and don't use the <br>
-            same password for multiple websites.
-        </p>
-
-        <Input placeholder="Password" type={showPassword ? "text" : "password"} bind:value={password} autofocus />
-        <p class="text-sm text-muted-foreground">The password to use when logging into your account</p>
-
-        <Input placeholder="Confirm password" type={showPassword ? "text" : "password"} bind:value={confirmPassword} />
-        <p class="text-sm text-muted-foreground">Confirm your password</p>
-
-        <div class="flex flex-row gap-2 mb-4">
-            <Switch id="show-password" bind:checked={showPassword} />
-            <Label for="show-password">Show Password</Label>
-        </div>
-
-        {#if confirmPassword != password}
-            <div transition:slide>
-                <Alert.Root variant="destructive" class="mb-2 text-left">
-                    <WarningIcon weight="bold" />
-                    <Alert.Title>Passwords do not match</Alert.Title>
-                </Alert.Root>
-            </div>
-        {/if}
-
-        <Button onclick={() => {changePassword()}} disabled={password.trim() == "" || confirmPassword.trim() == "" || password != confirmPassword}>
-            {#if changingPassword}
-                <CircleNotchIcon class="animate-spin" size={16} /> Changing...
-            {:else}
-                <ArrowRightIcon weight="bold" /> Change <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
-            {/if}
-        </Button>
+        
     </div>
+
+    <AuthenticationPage title="Enter your new password">
+        {#snippet icon()}
+            <PasswordIcon weight="bold" />
+        {/snippet}
+
+        {#snippet content()}
+            <p class="text-sm text-muted-foreground mb-2">
+                Strong passwords are 16+ characters long, and have a mix <br>
+                of uppercase and lowercase letters, numbers, and special <br>
+                characters. Consider using a passphrase, and don't use the <br>
+                same password for multiple websites.
+            </p>
+
+            <Input placeholder="Password" type={showPassword ? "text" : "password"} bind:value={password} autofocus />
+            <p class="text-sm text-muted-foreground">The password to use when logging into your account</p>
+
+            <Input placeholder="Confirm password" type={showPassword ? "text" : "password"} bind:value={confirmPassword} />
+            <p class="text-sm text-muted-foreground">Confirm your password</p>
+
+            <div class="flex flex-row gap-2 mb-4">
+                <Switch id="show-password" bind:checked={showPassword} />
+                <Label for="show-password">Show Password</Label>
+            </div>
+
+            {#if confirmPassword != password}
+                <div transition:slide>
+                    <Alert.Root variant="destructive" class="mb-2 text-left">
+                        <WarningIcon weight="bold" />
+                        <Alert.Title>Passwords do not match</Alert.Title>
+                    </Alert.Root>
+                </div>
+            {/if}
+
+            <Button onclick={() => {changePassword()}} disabled={password.trim() == "" || confirmPassword.trim() == "" || password != confirmPassword}>
+                {#if changingPassword}
+                    <CircleNotchIcon class="animate-spin" size={16} /> Changing...
+                {:else}
+                    <ArrowRightIcon weight="bold" /> Change <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
+                {/if}
+            </Button>
+        {/snippet}
+    </AuthenticationPage>
 
 {:else if page == "success"}
-    <div class="flex flex-col gap-2 text-left" transition:slide>
-        <div class="flex flex-row gap-2 items-center">
+    <AuthenticationPage title="Password Changed">
+        {#snippet icon()}
             <CheckCircleIcon weight="bold" />
-            <p class="font-bold">Password Changed</p>
-        </div>
-        <p class="text-muted-foreground">You have successfully changed your password.</p>
-        <Button onclick={() => {status = "success"}}><CheckCircleIcon weight="bold" /> Continue <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root></Button>
-    </div>
+        {/snippet}
+
+        {#snippet content()}
+            <p class="text-muted-foreground">You have successfully changed your password.</p>
+            <Button onclick={() => {status = "success"}}><CheckCircleIcon weight="bold" /> Continue <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root></Button>
+        {/snippet}
+    </AuthenticationPage>
 {/if}

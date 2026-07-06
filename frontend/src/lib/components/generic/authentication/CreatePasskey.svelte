@@ -19,10 +19,11 @@ Props:
     import * as Kbd from "$lib/components/ui/kbd/index";
 
     import { createPasskeyAuthPasskeysRegisterCreatePost, verifyPasskeyAuthPasskeysRegisterVerifyPost } from "$lib/api/auth/auth";
-	import { slide } from "svelte/transition";
 	import { ArrowRightIcon, CheckCircleIcon, CircleNotchIcon, KeyIcon, KeyReturnIcon, WarningIcon, XCircleIcon } from "phosphor-svelte";
 	import { PUBLIC_EMAIL_ENABLED } from "$env/static/public";
 	import Input from "$lib/components/ui/input/input.svelte";
+	import AuthenticationMessage from "./AuthenticationMessage.svelte";
+	import AuthenticationPage from "./AuthenticationPage.svelte";
 
 
     interface Props {
@@ -79,55 +80,48 @@ Props:
 
 <svelte:window on:keydown={handleKeyDown} />
 
-{#if message}
-    <div transition:slide>
-        <Alert.Root variant="destructive" class="mb-2 text-left">
-            <WarningIcon weight="bold" />
-            <Alert.Title>There was a problem</Alert.Title>
-            <Alert.Description>{message}</Alert.Description>
-        </Alert.Root>
-    </div>
-{/if}
+<AuthenticationMessage {message} />
 
 {#if page == "create"}
-    <div class="flex flex-col gap-2 text-left" transition:slide>
-        <div class="flex flex-row gap-2 items-center">
+    <AuthenticationPage title="Create a passkey?">
+        {#snippet icon()}
             <KeyIcon weight="bold" />
-            <p class="font-bold">Create a passkey?</p>
-        </div>
+        {/snippet}
 
-        <p class="text-sm text-muted-foreground">Creating a passkey makes it quick and easy to log into your account.</p>
+        {#snippet content()}
+            <p class="text-sm text-muted-foreground">Creating a passkey makes it quick and easy to log into your account.</p>
 
-        <Input bind:value={label} placeholder="Label" />
-        <p class="text-sm text-muted-foreground">The label of this passkey, to help identify it later</p>
+            <Input bind:value={label} placeholder="Label" />
+            <p class="text-sm text-muted-foreground">The label of this passkey, to help identify it later</p>
 
-        {#if !PUBLIC_EMAIL_ENABLED}
-            <Alert.Root variant="destructive" class="mb-2 text-left">
-                <WarningIcon weight="bold" />
-                <Alert.Title>Emails are disabled</Alert.Title>
-                <Alert.Description>If you loose your password, a passkey will be the only way to recover your account. We recommend creating a passkey now.</Alert.Description>
-            </Alert.Root>
-        {/if}
-
-        <Button onclick={() => {createPasskey()}} disabled={creatingPasskey || label.trim() == ""}>
-            {#if creatingPasskey}
-                <CircleNotchIcon class="animate-spin" size={16} /> Creating Passkey...
-            {:else}
-                <ArrowRightIcon weight="bold" /> Create <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
+            {#if !PUBLIC_EMAIL_ENABLED}
+                <Alert.Root variant="destructive" class="mb-2 text-left">
+                    <WarningIcon weight="bold" />
+                    <Alert.Title>Emails are disabled</Alert.Title>
+                    <Alert.Description>If you loose your password, a passkey will be the only way to recover your account. We recommend creating a passkey now.</Alert.Description>
+                </Alert.Root>
             {/if}
-        </Button>
-        <Button variant="outline" size="sm" onclick={() => {status = "cancel"}}><XCircleIcon weight="bold" /> Cancel</Button>
-    </div>
+
+            <Button onclick={() => {createPasskey()}} disabled={creatingPasskey || label.trim() == ""}>
+                {#if creatingPasskey}
+                    <CircleNotchIcon class="animate-spin" size={16} /> Creating Passkey...
+                {:else}
+                    <ArrowRightIcon weight="bold" /> Create <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
+                {/if}
+            </Button>
+            <Button variant="outline" size="sm" onclick={() => {status = "cancel"}}><XCircleIcon weight="bold" /> Cancel</Button>
+        {/snippet}
+    </AuthenticationPage>
 
 {:else if page == "success"}
-    <div class="flex flex-col gap-2 text-left" transition:slide>
-        <div class="flex flex-row gap-2 items-center">
+    <AuthenticationPage title="Passkey created">
+        {#snippet icon()}
             <CheckCircleIcon weight="bold" />
-            <p class="font-bold">Passkey created</p>
-        </div>
+        {/snippet}
 
-        <p>You've successfully created a passkey for your account</p>
-
-        <Button onclick={() => {status = "success"}}><ArrowRightIcon weight="bold" /> Continue <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root></Button>
-    </div>
+        {#snippet content()}
+            <p class="text-muted-foreground">You have successfully created a passkey for your account.</p>
+            <Button onclick={() => {status = "success"}}><CheckCircleIcon weight="bold" /> Continue <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root></Button>
+        {/snippet}
+    </AuthenticationPage>
 {/if}
