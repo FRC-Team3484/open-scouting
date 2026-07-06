@@ -209,7 +209,7 @@ TODO: Support passkeys
     </AuthenticationPage>
 
 {:else if page == "passkey"}
-    <CreatePasskey bind:status={createPasskeyStatus} />
+    <CreatePasskey email={email} bind:status={createPasskeyStatus} requireUserVerification={false} />
 
 {:else if page == "success"}
     <SignInConfirmation user={successUser} redirect={5} />

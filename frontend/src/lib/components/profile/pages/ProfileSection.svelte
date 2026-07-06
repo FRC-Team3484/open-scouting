@@ -7,7 +7,7 @@ Props:
     - `getNewUserData` (`() => void`) - A function to get the new user
 -->
 <script lang="ts">
-	import { PUBLIC_EMAIL_ENABLED } from "$env/static/public";
+	import { PUBLIC_EMAIL_ENABLED, PUBLIC_PASSKEY_NO_VERIFICATION_MINUTES } from "$env/static/public";
     import { onMount } from "svelte";
 	import { toast } from "svelte-sonner";
 	import { ArrowRightIcon, CheckCircleIcon, CircleNotchIcon, EnvelopeIcon, InfoIcon, KeyIcon, PasswordIcon, PencilIcon, TrashIcon, UploadSimpleIcon, WarningIcon } from "phosphor-svelte";
@@ -57,6 +57,8 @@ Props:
 
     let createPasskeyOpen = $state(false);
     let createPasskeyStatus: CreatePasskeyStatus = $state("idle");
+    const passkeyNoVerificationHasElapsed = (new Date() - new Date(user.created_at)) >= (+PUBLIC_PASSKEY_NO_VERIFICATION_MINUTES * 60 * 1000);
+
 
     /**
      * Set the user's display name on the server
@@ -377,5 +379,5 @@ Props:
 </BaseDialog>
 
 <BaseDialog title="" description="" bind:open={createPasskeyOpen}>
-    <Authentication mode="create_passkey" bind:createPasskeyStatus />
+    <Authentication mode="create_passkey" email={user?.email} bind:createPasskeyStatus createPasskeyRequireUserVerification={passkeyNoVerificationHasElapsed}/>
 </BaseDialog>

@@ -44,6 +44,7 @@ Props:
         changePasswordStatus?: never
         changeEmailStatus?: never
         createPasskeyStatus?: never
+        createPasskeyRequireUserVerification?: never
     }
     interface VerifyEmailProps {
         mode: "verify_email"
@@ -53,6 +54,7 @@ Props:
         changePasswordStatus?: never
         changeEmailStatus?: never
         createPasskeyStatus?: never
+        createPasskeyRequireUserVerification?: never
     }
     interface ForgotPasswordProps {
         mode: "forgot_password"
@@ -62,6 +64,7 @@ Props:
         changePasswordStatus?: never
         changeEmailStatus?: never
         createPasskeyStatus?: never
+        createPasskeyRequireUserVerification?: never
     }
     interface ChangePasswordProps {
         mode: "change_password"
@@ -71,6 +74,7 @@ Props:
         changePasswordStatus?: ChangePasswordStatus
         changeEmailStatus?: never
         createPasskeyStatus?: never
+        createPasskeyRequireUserVerification?: never
     }
     interface ChangeEmailProps {
         mode: "change_email"
@@ -80,17 +84,19 @@ Props:
         changePasswordStatus?: never
         changeEmailStatus?: ChangeEmailStatus
         createPasskeyStatus?: never
+        createPasskeyRequireUserVerification?: never
     }
     interface CreatePasskeyProps {
         mode: "create_passkey"
-        email?: never
+        email: string
         emailVerificationStatus?: never
         forgotPasswordStatus?: never
         changePasswordStatus?: never
         changeEmailStatus?: never
         createPasskeyStatus?: CreatePasskeyStatus
+        createPasskeyRequireUserVerification?: boolean
     }
-    let { mode, email, emailVerificationStatus = $bindable(), forgotPasswordStatus = $bindable(), changePasswordStatus = $bindable(), changeEmailStatus = $bindable(), createPasskeyStatus = $bindable() }: BaseProps | VerifyEmailProps | ForgotPasswordProps | ChangePasswordProps | ChangeEmailProps | CreatePasskeyProps = $props();
+    let { mode, email, emailVerificationStatus = $bindable(), forgotPasswordStatus = $bindable(), changePasswordStatus = $bindable(), changeEmailStatus = $bindable(), createPasskeyStatus = $bindable(), createPasskeyRequireUserVerification }: BaseProps | VerifyEmailProps | ForgotPasswordProps | ChangePasswordProps | ChangeEmailProps | CreatePasskeyProps = $props();
 </script>
 
 <Card.Root>
@@ -148,7 +154,9 @@ Props:
                 <FingerprintIcon weight="bold" size={32} />
             </AuthenticationModeHeader>
 
-            <CreatePasskey bind:status={createPasskeyStatus} />
+            {#if email}
+                <CreatePasskey email={email} bind:status={createPasskeyStatus} requireUserVerification={createPasskeyRequireUserVerification} />
+            {/if}
         {/if}
     </Card.Content>
 </Card.Root>
