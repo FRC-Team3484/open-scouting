@@ -130,6 +130,12 @@ async def perform_login(
             )
         )
 
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid username or password"
+            )
+
         if not verify_password(
             form_data.password,
             user.hashed_password
