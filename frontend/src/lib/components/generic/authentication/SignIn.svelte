@@ -74,6 +74,9 @@ Sign in mode for the universal authentication component
                         }
                     });
                     page = "success";
+                    message = "";
+                } else {
+                    message = response.data.message;
                 }
             });
         } catch (error) {
