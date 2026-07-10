@@ -72,6 +72,7 @@ export * from './seasonResponse';
 export * from './sendPasswordChangeNotificationEmailPasswordChangeNotificationPostParams';
 export * from './sendVerificationCodeEmailVerificationCodePostParams';
 export * from './sendVerificationCodeEmailVerificationCodePostStyle';
+export * from './serverStatsResponse';
 export * from './serverStatusResponse';
 export * from './setDisplayNameUsersMeSetDisplayNamePostParams';
 export * from './setTeamNumberUsersMeSetTeamNumberPostParams';
