@@ -5,7 +5,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException
 from tortoise.exceptions import IntegrityError
 
-from ..dependencies import Identity, require_superuser
+from ..dependencies import Identity, get_identity, require_superuser
 from ..schemas.generic import MessageResponse
 from ..models import Event, MatchScoutingAnswer, MatchScoutingField, MatchScoutingSubmission, Season, User
 from ..schemas.match_scouting import MatchScoutingRequest, MatchScoutingResponse, SubmissionResponse
@@ -19,7 +19,8 @@ router: APIRouter = APIRouter(
 
 @router.post("/scouting/submit", response_model=MatchScoutingResponse)
 async def submit_match_scouting(
-    data: MatchScoutingRequest
+    data: MatchScoutingRequest,
+    identity: Identity = Depends(get_identity)
 ) -> MatchScoutingResponse:
     """
     Submit a match scouting form
@@ -45,7 +46,7 @@ async def submit_match_scouting(
 
     season: Season = await get_season(year=data.year)
 
-    event, _ = await Event.get_or_create(
+    event, created = await Event.get_or_create(
         season=season,
         event_code=data.event_code,
         name=data.event_name,
@@ -56,6 +57,10 @@ async def submit_match_scouting(
         end_date=data.event_end_date
     )
 
+    if created:
+        event.created_by = identity.session
+        await event.save()
+
     try:
         submission: MatchScoutingSubmission = await MatchScoutingSubmission.create(
             uuid=data.submission_uuid,
@@ -63,7 +68,8 @@ async def submit_match_scouting(
             event=event,
             team_number=data.team_number,
             match_number=data.match_number,
-            match_type=data.match_type
+            match_type=data.match_type,
+            created_by=identity.session
         )
     except IntegrityError:
         raise HTTPException(status_code=200, detail="Submission already exists")
@@ -76,7 +82,8 @@ async def submit_match_scouting(
         _ = await MatchScoutingAnswer.create(
             field=field,
             value=json.dumps(value),
-            submission=submission
+            submission=submission,
+            created_by=identity.session
         )
 
     return MatchScoutingResponse(

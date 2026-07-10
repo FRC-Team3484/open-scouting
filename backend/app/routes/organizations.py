@@ -25,8 +25,8 @@ async def create_organization(data: OrganizationRequest, identity: Identity = De
     Returns:
         `Organization`: The created organization
     """
-    organization = await Organization.create(name=data.name, description=data.description)
-    await OrganizationMember.create(organization=organization, user=identity.user, role="admin")
+    organization = await Organization.create(name=data.name, description=data.description, created_by=identity.session)
+    await OrganizationMember.create(organization=organization, user=identity.user, role="admin", created_by=identity.session)
     return organization
 
 @router.get("/organizations/all/list", response_model=list[OrganizationResponse])

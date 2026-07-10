@@ -143,7 +143,7 @@ async def upload_profile_picture(file: UploadFile = File(...), identity: Identit
     # Get user profile
     profile: Profile | None = await Profile.get_or_none(user=identity.user)
     if not profile:
-        profile = await Profile.create(user=identity.user)
+        profile = await Profile.create(user=identity.user, created_by=identity.session)
 
     # If user has old profile picture, delete it
     if profile.profile_picture_url:

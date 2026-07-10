@@ -46,13 +46,13 @@ async def create_gamepiece(data: GamepieceRequest, identity: Identity = Depends(
         `GamepieceResponse`: The created game piece
     """
     season: Season = await get_season(data.season_uuid)
-    gamepiece: GamePiece = await GamePiece.create(season=season, name=data.name)
+    gamepiece: GamePiece = await GamePiece.create(season=season, name=data.name, created_by=identity.session)
     
     return GamepieceResponse(
         uuid=gamepiece.uuid,
         season=season.uuid,
         name=gamepiece.name,
-        created_at=gamepiece.created_at,
+        created_at=gamepiece.created_at
     )
 
 @router.get("/gamepieces/season/{season_uuid}", response_model=list[GamepieceResponse])

@@ -7,7 +7,7 @@ from ..schemas.generic import MessageResponse
 from ..models import Event, MatchScoutingAnswer, MatchScoutingSubmission, PitScoutingAnswer, PitScoutingField, Season, TeamPit
 from ..schemas.event import AdminEventResponse, EventInfoResponse, EventResponse, CustomEventRequest
 from ..utils import get_season, IS_DEV
-from ..dependencies import Identity, require_superuser
+from ..dependencies import Identity, get_identity, require_superuser
 
 router: APIRouter = APIRouter(
     tags=["Events"],
@@ -47,7 +47,8 @@ async def get_custom_events(season_uuid: str) -> list[EventResponse]:
 @router.post("/event/custom/{season_uuid}/create", response_model=EventResponse)
 async def create_custom_event(
         season_uuid: UUID,
-        data: CustomEventRequest
+        data: CustomEventRequest,
+        identity: Identity = Depends(get_identity)
     ) -> EventResponse:
     """
     Create a custom event for a season
@@ -62,7 +63,7 @@ async def create_custom_event(
     
     season: Season = await get_season(season_uuid)
 
-    event, _ = await Event.get_or_create(
+    event, created = await Event.get_or_create(
         season=season,
         event_code=data.event_code,
         name=data.event_name,
@@ -73,6 +74,10 @@ async def create_custom_event(
         end_date=data.event_end_date,
         custom=True
     )
+
+    if created:
+        event.created_by = identity.session
+        await event.save()
 
     return EventResponse(
         uuid=event.uuid,

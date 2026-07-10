@@ -198,7 +198,8 @@ async def create_season_field(
                 required=data.required, 
                 options=data.options, 
                 order=data.order, 
-                organization=organization
+                organization=organization,
+                created_by=identity.session
             )
     else:
         field = await MatchScoutingField.create(
@@ -212,7 +213,8 @@ async def create_season_field(
             required=data.required, 
             options=data.options, 
             order=data.order, 
-            organization=organization
+            organization=organization,
+            created_by=identity.session
         )
 
     return MatchScoutingFieldResponse(

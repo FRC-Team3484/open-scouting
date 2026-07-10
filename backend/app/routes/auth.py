@@ -85,7 +85,7 @@ async def me(
 
         if settings:
             for key, field in Settings._meta.fields_map.items():
-                if key in {"user", "uuid"}:
+                if key in {"user", "uuid", "created_at", "created_by"}:
                     continue
 
                 if key.endswith("_id"):
@@ -244,6 +244,7 @@ async def signup(
     hashed_password: str = get_password_hash(data.password)
 
     try:
+        # TODO: These should probably set their created_by attributes somehow
         user: User = await User.create(
             username=data.username,
             email=data.email,
@@ -392,7 +393,7 @@ async def get_user_settings(identity: Identity = Depends(require_user)) -> list[
     settings_list: list[UserSetting] | None = []        
 
     if not settings:
-        settings = await Settings.create(user=identity.user)
+        settings = await Settings.create(user=identity.user, created_by=identity.session)
 
     for key, field in Settings._meta.fields_map.items():
         if key in {"user", "uuid"}:
@@ -429,7 +430,7 @@ async def update_user_settings(data: BaseSettings, identity: Identity = Depends(
     settings: Settings | None = await Settings.get_or_none(user=identity.user)
 
     if not settings:
-        settings = await Settings.create(user=identity.user)
+        settings = await Settings.create(user=identity.user, created_by=identity.session)
 
     updates = data.model_dump(exclude_unset=True)
 
@@ -504,7 +505,7 @@ async def set_display_name(display_name: str, identity: Identity = Depends(requi
     profile: Profile | None = await Profile.get_or_none(user=identity.user)
 
     if not profile:
-        profile = await Profile.create(user=identity.user)
+        profile = await Profile.create(user=identity.user, created_by=identity.session)
 
     profile.display_name = display_name
     await profile.save()
@@ -525,7 +526,7 @@ async def set_team_number(team_number: int, identity: Identity = Depends(require
     profile: Profile | None = await Profile.get_or_none(user=identity.user)
 
     if not profile:
-        profile = await Profile.create(user=identity.user)
+        profile = await Profile.create(user=identity.user, created_by=identity.session)
 
     profile.team_number = team_number
     await profile.save()
@@ -590,7 +591,8 @@ async def create_verification_code(email: str, style: Literal["verification_code
             user=identity.user,
             code=create_verification_code(VERIFICATION_CODE_LENGTH),
             email=email,
-            verified=False
+            verified=False,
+            created_by=identity.session
         )
 
         await code.save()
@@ -720,7 +722,8 @@ async def create_passkey(response: Response, verification_code_uuid: UUID | None
     challenge = await WebAuthnChallenge.create(
         challenge=options.challenge,
         user=identity.user,
-        expires_at=datetime.now(UTC) + timedelta(minutes=5)
+        expires_at=datetime.now(UTC) + timedelta(minutes=5),
+        created_by=identity.session
     )
 
     options_json["challenge_uuid"] = str(challenge.uuid)
@@ -761,6 +764,7 @@ async def verify_passkey(challenge_uuid: UUID, label: str, response: Response, d
         credential_id=verification.credential_id,
         public_key=verification.credential_public_key,
         sign_count=verification.sign_count,
+        created_by=identity.session
     )
 
     await challenge.delete()
@@ -856,7 +860,7 @@ async def create_verification_passkey(email: str, response: Response):
     challenge = await WebAuthnChallenge.create(
         challenge=options.challenge,
         expires_at=datetime.now(UTC) + timedelta(minutes=5),
-        user=user
+        user=user,
     )
 
     options_json["challenge_uuid"] = str(challenge.uuid)
@@ -924,8 +928,6 @@ async def get_passkeys(identity: Identity = Depends(require_user)):
     """
     Get the passkeys for the current user
     """
-    passkeys = await Passkey.filter(user=identity.user)
-
     return [
         PasskeyResponse(
             uuid=passkey.uuid,

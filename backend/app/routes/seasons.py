@@ -50,7 +50,7 @@ async def create_season(
         `SeasonResponse`: The created season
     """
 
-    return await Season.create(**data.model_dump())
+    return await Season.create(**data.model_dump(), created_by=identity.session)
 
 @router.delete("/seasons/delete/{season_uuid}", response_model=MessageResponse)
 async def delete_season(

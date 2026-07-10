@@ -9,7 +9,7 @@ import httpx
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from ..dependencies import Identity, Identity, require_superuser
+from ..dependencies import Identity, Identity, get_identity, require_superuser
 from ..models import Event, Organization, PitScoutingAnswer, PitScoutingField, Season, TeamPit, User
 from ..schemas.generic import MessageResponse
 from ..schemas.pit_scouting import AdminPitResponse, GetPitsResponse, PitAnswerResponse, PitFieldResponse, PitFieldRequest, GetPitsForSeasonRequest, PitScoutingPresetResponse, ReorderPitFieldsRequest, SubmitPitFieldAnswerRequest
@@ -140,7 +140,8 @@ async def create_pit_field(
                 field_type=data.field_type,
                 options=data.options,
                 order=data.order,
-                organization=organization
+                organization=organization,
+                created_by=identity.session
             )
 
     else:
@@ -153,7 +154,8 @@ async def create_pit_field(
             field_type=data.field_type,
             options=data.options,
             order=data.order,
-            organization=organization
+            organization=organization,
+            created_by=identity.session
         )
         
 
@@ -280,7 +282,8 @@ async def delete_pit_field(
 @router.post("/pits/get/{season_uuid}", response_model=list[GetPitsResponse])
 async def get_pits(
         season_uuid: UUID,
-        data: GetPitsForSeasonRequest
+        data: GetPitsForSeasonRequest,
+        identity: Identity = Depends(get_identity)
     )-> list[GetPitsResponse]:
     """
     Get all pits for a season
@@ -294,7 +297,7 @@ async def get_pits(
     """
     season: Season = await get_season(season_uuid)
 
-    event, _ = await Event.get_or_create(
+    event, created = await Event.get_or_create(
         season=season,
         event_code=data.event_code,
         name=data.event_name,
@@ -305,6 +308,10 @@ async def get_pits(
         end_date=to_date_string(data.event_end_date),
         custom=data.event_custom
     )
+
+    if created:
+        event.created_by = identity.session
+        await event.save()
 
     # If pits have not been generated yet, get teams from TBA and create TeamPits
     if not event.pits_generated and TBA_API_KEY != "" and TBA_API_KEY is not None and event.custom == False:
@@ -322,7 +329,8 @@ async def get_pits(
                 team_number=team["team_number"],
                 nickname=team["nickname"],
                 season=season,
-                event=event
+                event=event,
+                created_by=identity.session
             )
 
         event.pits_generated = True
@@ -353,7 +361,8 @@ async def get_pits(
 async def submit_pit(
         season_uuid: UUID,
         team_number: int,
-        data: SubmitPitFieldAnswerRequest
+        data: SubmitPitFieldAnswerRequest,
+        identity: Identity = Depends(require_superuser)
     ):
     """
     Get the season and event from the uuids. Then, check if a pit with that team number exists.
@@ -383,10 +392,12 @@ async def submit_pit(
         team_number=team_number,
         season=season,
         event=event,
-        nickname=data.nickname
+        nickname=data.nickname,
     )
 
     if created:
+        pit.created_by = identity.session
+        await pit.save()
         print("Created pit", pit.uuid, "for team", team_number, "and event", event.uuid)
 
     for answer in data.answers:
@@ -404,6 +415,8 @@ async def submit_pit(
         )
 
         if created:
+            answer.created_by = identity.session
+            await answer.save()
             print("Created answer", answer["uuid"], "for pit", pit.uuid, "and field", field.uuid)
 
     return {"message": "Pit submitted successfully"}
