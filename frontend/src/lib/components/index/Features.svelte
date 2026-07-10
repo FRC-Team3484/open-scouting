@@ -21,27 +21,27 @@ Shows the features of Open Scouting on the index page
     <div class="flex flex-row gap-4 items-center flex-wrap justify-center">
         <Card.Root>
             <Card.Content>
-                <div class="flex flex-col gap-2 items-center w-16 md:w-30 aspect-square justify-center">
-                    <GithubLogoIcon weight="bold" size={32} />
-                    <p class="text-sm md:text-xl">Open Source</p>
+                <div class="flex flex-col gap-2 items-center w-16 md:w-20 aspect-square justify-center">
+                    <GithubLogoIcon weight="bold" size={25} />
+                    <p class="text-sm md:text-md">Open Source</p>
                 </div>
             </Card.Content>
         </Card.Root>
 
         <Card.Root>
             <Card.Content>
-                <div class="flex flex-col gap-2 items-center w-16 md:w-30 aspect-square justify-center">
-                    <CloudSlashIcon weight="bold" size={32} />
-                    <p class="text-sm md:text-xl">Offline Support</p>
+                <div class="flex flex-col gap-2 items-center w-16 md:w-20 aspect-square justify-center">
+                    <CloudSlashIcon weight="bold" size={25} />
+                    <p class="text-sm md:text-md">Offline Support</p>
                 </div>
             </Card.Content>
         </Card.Root>
 
         <Card.Root>
             <Card.Content>
-                <div class="flex flex-col gap-2 items-center w-16 md:w-30 aspect-square justify-center">
-                    <UsersThreeIcon weight="bold" size={32} />
-                    <p class="text-sm md:text-xl">Collaborative Scouting</p>
+                <div class="flex flex-col gap-2 items-center w-16 md:w-20 aspect-square justify-center">
+                    <UsersThreeIcon weight="bold" size={25} />
+                    <p class="text-sm md:text-md">Collaborative Scouting</p>
                 </div>
             </Card.Content>
         </Card.Root>
