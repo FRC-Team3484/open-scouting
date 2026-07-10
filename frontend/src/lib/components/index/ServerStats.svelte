@@ -1,11 +1,15 @@
+<!-- 
+@component
+Displays some basic server stats on the index page
+-->
 <script lang="ts">
-	import { getServerStatsStatusStatsGet } from "$lib/api/generic/generic";
-	import type { ServerStatsResponse } from "$lib/api/model";
-
-
-    import * as Card from "$lib/components/ui/card/index.js";
 	import { CircleNotchIcon, WarningIcon } from "phosphor-svelte";
-	import { onMount } from "svelte";
+        
+    import * as Card from "$lib/components/ui/card/index.js";
+
+	import type { ServerStatsResponse } from "$lib/api/model";
+	import { getServerStatsStatusStatsGet } from "$lib/api/generic/generic";
+
 
     let stats: ServerStatsResponse = $state({
         seasons: 0,
@@ -15,6 +19,9 @@
     });
     let loadingState: "loading" | "error" | "success" = $state("loading");
 
+    /**
+     * Get stats from the server
+     */
     async function getStats() {
         loadingState = "loading";
         await getServerStatsStatusStatsGet().then((res) => {
@@ -31,6 +38,11 @@
         })
     }
 
+    /**
+     * Svelte action to run a function when an element is in view
+     * @param node
+     * @param callback
+     */
     function runOnInView(node, callback) {
         const observer = new IntersectionObserver(([entry]) => {
         if (entry.isIntersecting) {

@@ -35,5 +35,4 @@ Shows the LiveEvents widget, the logo, a description, and some useful buttons
         <Button href="/data" variant="outline"><DatabaseIcon weight="bold" /> Match Scouting Data</Button>
         <Button href="/events" variant="outline"><CalendarIcon weight="bold" /> Events</Button>
     </div>
-
 </div>

@@ -1,10 +1,14 @@
+<!-- 
+@component
+A footer for the index page, with some links to important places and credit information
+-->
 <script lang="ts">
 	import { ArrowRightIcon, BugIcon, CalendarIcon, DatabaseIcon, DiscordLogoIcon, GithubLogoIcon, RocketIcon } from "phosphor-svelte";
-import Logo from "../generic/Logo.svelte";
+
 	import Button from "../ui/button/button.svelte";
 	import Separator from "../ui/separator/separator.svelte";
 
-
+    import Logo from "../generic/Logo.svelte";
 </script>
 
 <div class="flex flex-col gap-2 w-full mt-16 mb-8 text-left">
@@ -29,5 +33,4 @@ import Logo from "../generic/Logo.svelte";
 
     <p class="text-muted-foreground">Made by <a class="underline" href="https://github.com/FRC-Team3484/">FRC 3484 Short Circuit</a></p>
     <p class="text-muted-foreground">Powered by <a class="underline" href="https://www.thebluealliance.com/">The Blue Alliance</a></p>
-
 </div>
