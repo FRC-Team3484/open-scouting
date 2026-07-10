@@ -18,6 +18,7 @@ class User(Model):
         hashed_password (str): The hashed password of the user
         is_superuser (bool): Whether the user is a superuser
         created_at (datetime): The date and time the user was created
+        created_by (Session): The session that created the user
     """
     uuid = fields.UUIDField(pk=True)
     username = fields.CharField(max_length=255, unique=True)
@@ -25,7 +26,9 @@ class User(Model):
     hashed_password = fields.CharField(max_length=255)
     is_superuser = fields.BooleanField(default=False)
     email_verified = fields.BooleanField(default=False, db_default=False)
+
     created_at = fields.DatetimeField(auto_now_add=True)
+    created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True)
 
     @override
     def __str__(self) -> str:
@@ -40,13 +43,18 @@ class Profile(Model):
         user (User): The user associated with the profile
         display_name (str): The display name of the user
         team_number (int): The team number of the user
+        profile_picture_url (str): The URL of the profile picture of the user
+        created_at (datetime): The date and time the profile was created
+        created_by (Session): The session that created the profile
     """
     uuid = fields.UUIDField(pk=True)
     user = fields.ForeignKeyField("models.User", related_name="profiles")
     display_name = fields.CharField(max_length=255)
     team_number = fields.IntField(null=True)
     profile_picture_url = fields.CharField(max_length=255, null=True, default=None)
+
     created_at = fields.DatetimeField(auto_now_add=True, null=True)
+    created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True)
 
     @override
     def __str__(self) -> str:
@@ -62,11 +70,14 @@ class Organization(Model):
         name (str): The name of the organization
         description (str): The description of the organization
         created_at (datetime): The date and time the organization was created
+        created_by (Session): The session that created the organization
     """
     uuid = fields.UUIDField(pk=True)
     name = fields.CharField(max_length=255)
     description = fields.TextField(null=True)
+
     created_at = fields.DatetimeField(auto_now_add=True)
+    created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True)
 
 class OrganizationMember(Model):
     """
@@ -78,12 +89,15 @@ class OrganizationMember(Model):
         user (User): The user the member is a member of
         role (str): The role of the member in the organization
         created_at (datetime): The date and time the organization member was created
+        created_by (Session): The session that created the organization member
     """
     uuid = fields.UUIDField(pk=True)
     organization = fields.ForeignKeyField("models.Organization", related_name="members")
     user = fields.ForeignKeyField("models.User", related_name="organizations")
     role = fields.CharField(max_length=255) # member, admin
+
     created_at = fields.DatetimeField(auto_now_add=True)
+    created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True)
 
 class Settings(Model):
     """
@@ -95,10 +109,15 @@ class Settings(Model):
     Attributes:
         uuid (UUID): The unique identifier for the settings
         user (User): The user the settings are associated with
+        created_at (datetime): The date and time the settings were created
+        created_by (Session): The session that created the settings
         favorite_events (list): The list of favorite events for the user
     """
     uuid = fields.UUIDField(pk=True)
     user = fields.ForeignKeyField("models.User", related_name="settings")
+
+    created_at = fields.DatetimeField(auto_now_add=True, null=True) # This field was not added until v2.2.0, so it may be null in prod
+    created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True)
 
     # Settings:
     favorite_events = ArraySetting(null=True, default=list, display_name="Favorite Events", setting_description="Your favorite events, which appear at the top of the event list", section="General", visible=True)
@@ -138,13 +157,16 @@ class VerificationCode(Model):
         email (str): The email the verification code is associated with
         verified (bool): Whether the verification code has been verified
         created_at (datetime): The date and time the verification code was created
+        created_by (Session): The session that created the verification code
     """
     uuid = fields.UUIDField(pk=True)
     user = fields.ForeignKeyField("models.User", related_name="verification_codes", null=True)
     code = fields.CharField(max_length=6)
     email = fields.CharField(max_length=255)
     verified = fields.BooleanField(default=False)
+
     created_at = fields.DatetimeField(auto_now_add=True)
+    created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True)
 
 class Passkey(Model):
     """
@@ -158,6 +180,7 @@ class Passkey(Model):
         sign_count (int): The sign count of the passkey
         transports (list): The transports of the passkey
         created_at (datetime): The date and time the passkey was created
+        created_by (Session): The session that created the passkey
     """
     uuid = fields.UUIDField(pk=True)
     user = fields.ForeignKeyField(
@@ -172,19 +195,31 @@ class Passkey(Model):
     transports = fields.JSONField(null=True)
 
     created_at = fields.DatetimeField(auto_now_add=True)
+    created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True)
 
 class WebAuthnChallenge(Model):
+    """
+    Store a webauthn challenge for a user
+
+    Attributes:
+        uuid (UUID): The unique identifier for the challenge
+        challenge (bytes): The challenge
+        user (User): The user the challenge is associated with
+        expires_at (datetime): The date and time the challenge expires
+        created_at (datetime): The date and time the challenge was created
+        created_by (Session): The session that created the challenge
+    """
     uuid = fields.UUIDField(pk=True)
-
     challenge = fields.BinaryField(null=True)
-
     user = fields.ForeignKeyField(
         "models.User",
         related_name="webauthn_challenges",
         null=True,
     )
-
     expires_at = fields.DatetimeField()
+
+    created_at = fields.DatetimeField(auto_now_add=True, null=True) # This field was not added until v2.2.0, so it may be null in prod
+    created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True)
 
 # Main
 class Season(Model):
@@ -197,12 +232,15 @@ class Season(Model):
         name (str): The name of the season
         active (bool): Whether the season is active or not
         created_at (datetime): The date and time the season was created
+        created_by (Session): The session that created the season
     """
     uuid = fields.UUIDField(pk=True)
     year = fields.IntField()
     name = fields.CharField(max_length=255)
     active = fields.BooleanField(default=True)
+
     created_at = fields.DatetimeField(auto_now_add=True)
+    created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True)
 
     # Deactivate all other seasons if this one is saved as active
     @override
@@ -221,11 +259,14 @@ class GamePiece(Model):
         season (Season): The season the game piece is associated with
         name (str): The name of the game piece
         created_at (datetime): The date and time the game piece was created
+        created_by (Session): The session that created the game piece
     """
     uuid = fields.UUIDField(pk=True)
     season = fields.ForeignKeyField("models.Season", related_name="game_pieces")
     name = fields.CharField(max_length=255)
+
     created_at = fields.DatetimeField(auto_now_add=True)
+    created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True)
 
 class MatchScoutingField(Model):
     """
@@ -246,6 +287,7 @@ class MatchScoutingField(Model):
         organization (Organization): The organization the match scouting field is associated with
         archived (bool): Whether the match scouting field is archived or not
         created_at (datetime): The date and time the match scouting field was created
+        created_by (Session): The session that created the match scouting field
     """
     uuid = fields.UUIDField(pk=True)
     parent = fields.ForeignKeyField("models.MatchScoutingField", related_name="children", null=True)
@@ -260,7 +302,9 @@ class MatchScoutingField(Model):
     order = fields.IntField(default=0) # The order the field should appear in the frontend or section
     organization = fields.ForeignKeyField("models.Organization", related_name="scouting_fields", null=True) # Optional, used if the field is specific to an organization
     archived= fields.BooleanField(default=False)
+
     created_at = fields.DatetimeField(auto_now_add=True)
+    created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True)
 
 class Event(Model):
     """
@@ -282,6 +326,7 @@ class Event(Model):
         pits_generated (bool): Whether the pits for the event have been generated or not
         custom (bool): Whether the event is a custom event or not
         created_at (datetime): The date and time the event was created
+        created_by (Session): The session that created the event
     """
     uuid = fields.UUIDField(pk=True)
     season = fields.ForeignKeyField("models.Season", related_name="events")
@@ -294,7 +339,9 @@ class Event(Model):
     end_date = fields.DateField(null=True)
     pits_generated = fields.BooleanField(default=False)
     custom = fields.BooleanField(default=False)
+
     created_at = fields.DatetimeField(auto_now_add=True)
+    created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True)
 
 class MatchScoutingSubmission(Model):
     """
@@ -309,6 +356,7 @@ class MatchScoutingSubmission(Model):
         match_number (int): The match number of the match scouting submission
         match_type (str): The match type of the match scouting submission
         created_at (datetime): The date and time the match scouting submission was created
+        created_by (Session): The session that created the match scouting submission
     """
     uuid = fields.UUIDField(pk=True)
     user = fields.ForeignKeyField("models.User", related_name="answers", null=True)
@@ -316,7 +364,9 @@ class MatchScoutingSubmission(Model):
     team_number = fields.IntField(default=0)
     match_number = fields.IntField(default=0)
     match_type = fields.CharField(max_length=255, default="")
+
     created_at = fields.DatetimeField(auto_now_add=True)
+    created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True)
 
 class MatchScoutingAnswer(Model):
     """
@@ -327,11 +377,16 @@ class MatchScoutingAnswer(Model):
         field (MatchScoutingField): The field the match scouting answer is associated with
         value (str): The value of the match scouting answer
         submission (MatchScoutingSubmission): The match scouting submission the match scouting answer is associated with
+        created_at (datetime): The date and time the match scouting answer was created
+        created_by (Session): The session that created the match scouting answer
     """
     uuid = fields.UUIDField(pk=True)
     field = fields.ForeignKeyField("models.MatchScoutingField", related_name="answers")
     value = fields.CharField(max_length=255, null=True)
     submission = fields.ForeignKeyField("models.MatchScoutingSubmission", related_name="answers")
+
+    created_at = fields.DatetimeField(auto_now_add=True, null=True) # This field was not added until v2.2.0, so it may be null in prod
+    created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True)
 
 #    Pit Scouting
 class PitScoutingField(Model):
@@ -350,6 +405,7 @@ class PitScoutingField(Model):
         organization (Organization): The organization the pit scouting field is associated with
         archived (bool): Whether the pit scouting field is archived or not
         created_at (datetime): The date and time the pit scouting field was created
+        created_by (Session): The session that created the pit scouting field
     """
     uuid = fields.UUIDField(pk=True)
     season = fields.ForeignKeyField("models.Season", related_name="pit_fields")
@@ -361,7 +417,9 @@ class PitScoutingField(Model):
     order = fields.IntField(default=0) # The order the field should appear in the frontend or section
     organization = fields.ForeignKeyField("models.Organization", related_name="pit_fields", null=True) # Optional, used if the field is specific to an organization
     archived= fields.BooleanField(default=False)
+
     created_at = fields.DatetimeField(auto_now_add=True)
+    created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True)
 
 class TeamPit(Model):
     """
@@ -374,6 +432,8 @@ class TeamPit(Model):
         created_at (datetime): The date and time the team pit was created
         season (Season): The season the team pit is associated with
         event (Event): The event the team pit is associated with
+        created_at (datetime): The date and time the team pit was created
+        created_by (Session): The session that created the team pit
     """
     uuid = fields.UUIDField(pk=True)
     team_number = fields.IntField()
@@ -381,6 +441,9 @@ class TeamPit(Model):
     created_at = fields.DatetimeField(auto_now_add=True)
     season = fields.ForeignKeyField("models.Season", related_name="team_pits")
     event = fields.ForeignKeyField("models.Event", related_name="team_pits")
+
+    created_at = fields.DatetimeField(auto_now_add=True)
+    created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True)
 
 class PitScoutingAnswer(Model):
     """
@@ -393,10 +456,13 @@ class PitScoutingAnswer(Model):
         team (TeamPit): The team the pit scouting answer is associated with
         username (str): The username of the user who submitted the pit scouting answer
         created_at (datetime): The date and time the pit scouting answer was created
+        created_by (Session): The session that created the pit scouting answer
     """
     uuid = fields.UUIDField(pk=True)
     field = fields.ForeignKeyField("models.PitScoutingField", related_name="answers")
     value = fields.CharField(max_length=255, null=True)
     team = fields.ForeignKeyField("models.TeamPit", related_name="answers")
     username = fields.CharField(max_length=255, null=True)
+
     created_at = fields.DatetimeField(auto_now_add=True)
+    created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True)
