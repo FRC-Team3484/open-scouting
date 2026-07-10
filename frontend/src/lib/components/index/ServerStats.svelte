@@ -51,7 +51,7 @@
     }
 </script>
 
-<div class="flex flex-row gap-2 items-center">
+<div class="flex flex-row gap-2 items-center mt-16 mb-4">
     <p class="text-2xl font-bold">Server Stats</p>
 
     {#if loadingState == "loading"}
