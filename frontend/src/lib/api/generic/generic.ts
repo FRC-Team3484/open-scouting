@@ -5,6 +5,7 @@
  * OpenAPI spec version: v2.2.0
  */
 import type {
+  ServerStatsResponse,
   ServerStatusResponse
 } from '../model';
 
@@ -36,6 +37,42 @@ export const getGetServerStatusStatusGetUrl = () => {
 export const getServerStatusStatusGet = async ( options?: RequestInit): Promise<getServerStatusStatusGetResponse> => {
 
   return customInstance<getServerStatusStatusGetResponse>(getGetServerStatusStatusGetUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+export type getServerStatsStatusStatsGetResponse200 = {
+  data: ServerStatsResponse
+  status: 200
+}
+
+export type getServerStatsStatusStatsGetResponseSuccess = (getServerStatsStatusStatsGetResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getServerStatsStatusStatsGetResponse = (getServerStatsStatusStatsGetResponseSuccess)
+
+export const getGetServerStatsStatusStatsGetUrl = () => {
+
+
+
+
+  return `/status/stats`
+}
+
+/**
+ * Get basic server stats, which are displayed on the index page
+ * @summary Get Server Stats
+ */
+export const getServerStatsStatusStatsGet = async ( options?: RequestInit): Promise<getServerStatsStatusStatsGetResponse> => {
+
+  return customInstance<getServerStatsStatusStatsGetResponse>(getGetServerStatsStatusStatsGetUrl(),
   {
     ...options,
     method: 'GET'

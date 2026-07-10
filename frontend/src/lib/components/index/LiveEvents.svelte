@@ -95,8 +95,11 @@ Includes a button to view that event on the event page.
      */
     function scrollToEvent(event: Event) {
         const element = document.getElementById(event.event_code);
-        if (element) {
-            element.scrollIntoView({ behavior: "smooth" });
+        if (element && container) {
+            container.scrollTo({ 
+                left: element.offsetLeft - container.offsetLeft,
+                behavior: "smooth" 
+            });
         }
     }
 

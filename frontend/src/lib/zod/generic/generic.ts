@@ -15,3 +15,14 @@ export const GetServerStatusStatusGetResponse = zod.object({
   "active_season": zod.string().uuid()
 })
 
+/**
+ * Get basic server stats, which are displayed on the index page
+ * @summary Get Server Stats
+ */
+export const GetServerStatsStatusStatsGetResponse = zod.object({
+  "seasons": zod.number(),
+  "events_scouted": zod.number(),
+  "match_scouting_submissions": zod.number(),
+  "pits_scouted": zod.number()
+})
+
