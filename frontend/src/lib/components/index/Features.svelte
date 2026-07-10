@@ -13,6 +13,7 @@ Shows the features of Open Scouting on the index page
     import more_1 from "$lib/assets/features/more_1.png";
 	import FeatureCard from "./FeatureCard.svelte";
 	import Button from "../ui/button/button.svelte";
+	import ServerStats from "./ServerStats.svelte";
 </script>
 
 <div class="flex flex-col gap-4 items-center min-h-[calc(100vh-4rem)]">
@@ -141,4 +142,6 @@ Shows the features of Open Scouting on the index page
             {/snippet}
         </FeatureCard>
     </div>
+
+    <ServerStats />
 </div>
