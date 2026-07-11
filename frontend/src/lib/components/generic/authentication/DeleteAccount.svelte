@@ -147,7 +147,14 @@ Props:
 
                 <ul class="list-disc list-inside ml-4 text-muted-foreground mb-4">
                     <li>Match scouting submissions and answers</li>
-                    <li>Pit scouting pits and answers</li>
+                    <li>Pit scouting answers</li>
+                </ul>
+
+                <p class="text-muted-foreground">Some data will not be deleted:</p>
+
+                <ul class="list-disc list-inside ml-4 text-muted-foreground mb-4">
+                    <li>Pit scouting pits</li>
+                    <li>Custom events</li>
                 </ul>
 
                 <p>Type profile details:</p>
@@ -168,7 +175,15 @@ Props:
                             <InfoIcon weight="bold" />
                             <Alert.Title>Delete Data</Alert.Title>
                             <Alert.Description>
-                                You have chosen to delete optional data related to your account, like match and pit scouting data you have submitted.
+                                You have chosen to delete optional data related to your account, like match and pit scouting data.
+                            </Alert.Description>
+                        </Alert.Root>
+
+                        <Alert.Root>
+                            <WarningIcon weight="bold" />
+                            <Alert.Title>Some data may not be deleted</Alert.Title>
+                            <Alert.Description>
+                                <p>Data submitted prior to <span class="font-mono">v2.2.0</span> did not track who submitted it. This data will not be deleted.</p>
                             </Alert.Description>
                         </Alert.Root>
                     </div>
