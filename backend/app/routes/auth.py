@@ -24,7 +24,7 @@ from ..utils import IS_DEV
 from ..auth import create_access_token, get_password_hash, verify_password
 from ..dependencies import Identity, get_identity, require_user, require_superuser
 
-from ..models import Passkey, User, Profile, Settings, Session, VerificationCode, WebAuthnChallenge
+from ..models import MatchScoutingAnswer, MatchScoutingSubmission, Passkey, PitScoutingAnswer, User, Profile, Settings, Session, VerificationCode, WebAuthnChallenge
 from .emails import send_password_change_notification, send_verification_code
 from ..schemas.generic import MessageResponse
 from ..schemas.auth import BaseSettings, ChangeEmailRequest, ChangePasswordRequest, DeleteAccountRequest, ForgotPasswordRequest, PasskeyResponse, SignupRequest, UserMeResponse, UserResponse, UserSetting, VerifyVerificationCodeRequest, VerifyVerificationCodeResponse
@@ -1038,8 +1038,11 @@ async def delete_account(data: DeleteAccountRequest, identity: Identity = Depend
         raise HTTPException(status_code=400, detail="User not found")
 
     if data.delete_data:
-        # TODO: Delete all data associated with the user, once #145 is done
-        pass
+        # Delete match scouting submissions, match scouting answers, and pit scouting answers created by the user
+
+        await MatchScoutingSubmission.filter(created_by__user=identity.user).delete()
+        await MatchScoutingAnswer.filter(created_by__user=identity.user).delete()
+        await PitScoutingAnswer.filter(created_by__user=identity.user).delete()
 
     await identity.user.delete()
 
