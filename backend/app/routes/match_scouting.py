@@ -64,7 +64,6 @@ async def submit_match_scouting(
     try:
         submission: MatchScoutingSubmission = await MatchScoutingSubmission.create(
             uuid=data.submission_uuid,
-            user=user,
             event=event,
             team_number=data.team_number,
             match_number=data.match_number,
