@@ -125,7 +125,6 @@ Also allows for viewing old changelogs, managing local db data, and viewing the 
                 <Button variant="outline" href="https://github.com/FRC-Team3484/open-scouting"><GithubLogoIcon weight="bold" /> Source Code</Button>
                 <Button variant="outline" href="https://github.com/FRC-Team3484/open-scouting/issues"><BugIcon weight="bold" /> Issues</Button>
                 <Button variant="outline" href="https://github.com/FRC-Team3484/open-scouting/releases"><RocketIcon weight="bold" /> Releases</Button>
-                <Button variant="outline" href="https://open-scouting-legacy.nfoert.dev"><ArchiveIcon weight="bold" /> Legacy v1</Button>
             </div>
 
             <Separator orientation="horizontal" />
