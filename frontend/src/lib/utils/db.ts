@@ -121,6 +121,16 @@ export interface File {
     url: string
     synced: boolean
 }
+export interface Notification {
+    uuid: string
+    title: string
+    message: string
+    type: string
+    action_type: string | null
+    action_data: string | null
+    read: boolean
+    created_at: Date
+}
 
 // Create DB
 export class OpenScoutingDB extends Dexie {
@@ -129,6 +139,7 @@ export class OpenScoutingDB extends Dexie {
     event!: Dexie.Table<Event>;
     pit_scouting!: Dexie.Table<PitScoutingData>;
     files!: Dexie.Table<File>;
+    notifications!: Dexie.Table<Notification>;
 
     constructor() {
         super('open-scouting');
@@ -158,10 +169,17 @@ export class OpenScoutingDB extends Dexie {
             season_data: "&uuid, year, name, fields, game_pieces, pit_scouting_questions, active, fetch_time"
         });
 
+        // Create notifications table
+        this.version(6).stores({
+            notifications: "&uuid, title, message, type, action_type, action_data, read, created_at"
+        });
+
         this.match_scouting = this.table('match_scouting');
         this.season_data = this.table('season_data');
         this.event = this.table('event');
         this.pit_scouting = this.table('pit_scouting');
+        this.files = this.table('files');
+        this.notifications = this.table('notifications');
     }
 }
 
