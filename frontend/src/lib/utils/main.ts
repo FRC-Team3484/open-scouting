@@ -1,4 +1,5 @@
 import { VERSION } from "./constants";
+import { notifications } from "./notifications";
 
 /**
  * Pretty console print
@@ -10,4 +11,6 @@ export function main() {
         "color: #9e9e9eb3;",
         "color: #45b0ff;",
     );
+
+    notifications.success("Open Scouting", "Welcome to Open Scouting!");
 }

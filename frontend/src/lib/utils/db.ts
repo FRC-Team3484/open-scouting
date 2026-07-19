@@ -129,6 +129,8 @@ export interface Notification {
     action_type: string | null
     action_data: string | null
     read: boolean
+    local: boolean
+    deleted: boolean
     created_at: Date
 }
 
@@ -171,7 +173,7 @@ export class OpenScoutingDB extends Dexie {
 
         // Create notifications table
         this.version(6).stores({
-            notifications: "&uuid, title, message, type, action_type, action_data, read, created_at"
+            notifications: "&uuid, title, message, type, action_type, action_data, read, local, deleted, created_at"
         });
 
         this.match_scouting = this.table('match_scouting');

@@ -21,6 +21,7 @@ Also allows for viewing old changelogs, managing local db data, and viewing the 
 	import User from "../generic/User.svelte";
 	import { changelogDialogOpen } from "$lib/stores/dialog";
 	import SyncingToggleDrawer from "./SyncingToggleDrawer.svelte";
+	import NotificationDrawer from "./NotificationDrawer.svelte";
 
 
     let menu_open: boolean = $state(false);
@@ -77,6 +78,7 @@ Also allows for viewing old changelogs, managing local db data, and viewing the 
         <div class="flex flex-col gap-4 mt-4 overflow-y-scroll pr-2">
             <div class="flex flex-row gap-4 justify-between items-center">
                 <div class="flex flex-row gap-2 items-center">
+                    <NotificationDrawer />
                     <User show_text={true} />
                 </div>
             </div>
