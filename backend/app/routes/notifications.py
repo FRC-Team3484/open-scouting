@@ -1,5 +1,5 @@
 from typing import Any
-from uuid import UUID
+import uuid as uuid_module
 
 from fastapi import APIRouter, Depends, HTTPException
 
@@ -22,7 +22,8 @@ async def send_notification(
     type: str,
     action_type: str | None = None,
     action_data: dict[Any, Any] | None = None,
-    read: bool = False
+    read: bool = False,
+    uuid: uuid_module.UUID | None = None
 ):
     """
     Send a notification to a user
@@ -36,11 +37,16 @@ async def send_notification(
         type (str): The type of the notification
         action (dict): The action of the notification
         read (bool): Whether the notification is read
+        uuid (UUID): The uuid of the notification
 
     Returns:
         Notification: The notification that was sent
     """
-    return await Notification.create(
+    if not uuid:
+        uuid = uuid_module.uuid4()
+
+    return await Notification.get_or_create(
+        uuid=uuid,
         user=user,
         title=title,
         message=message,
@@ -60,6 +66,7 @@ async def get_notifications(identity: Identity = Depends(require_user)):
     Returns:
         list[Notification]: A list of all notifications
     """
+    print(await Notification.filter(user=identity.user))
     return [
         NotificationResponse(
             uuid=notification.uuid,
@@ -74,7 +81,7 @@ async def get_notifications(identity: Identity = Depends(require_user)):
     ]
 
 @router.delete("/notifications/delete/{notification_uuid}", response_model=MessageResponse)
-async def delete_notification(notification_uuid: UUID, identity: Identity = Depends(require_user)) -> MessageResponse:
+async def delete_notification(notification_uuid: uuid_module.UUID, identity: Identity = Depends(require_user)) -> MessageResponse:
     """
     Delete a notification
 
@@ -90,7 +97,7 @@ async def delete_notification(notification_uuid: UUID, identity: Identity = Depe
     return MessageResponse(message="Notification deleted")
 
 @router.put("/notifications/set_read/{notification_uuid}/{read}", response_model=MessageResponse)
-async def set_notification_read(notification_uuid: UUID, read: bool, identity: Identity = Depends(require_user)) -> MessageResponse:
+async def set_notification_read(notification_uuid: uuid_module.UUID, read: bool, identity: Identity = Depends(require_user)) -> MessageResponse:
     """
     Mark a notification as read or unread
 
@@ -106,7 +113,7 @@ async def set_notification_read(notification_uuid: UUID, read: bool, identity: I
     _ = await Notification.filter(uuid=notification_uuid, user=identity.user).update(read=read)
     return MessageResponse(message=f"Notification marked read = {read}")
 
-@router.post("/notifications/send", response_model=NotificationResponse)
+@router.post("/notifications/send", response_model=NotificationResponse | MessageResponse)
 async def add_notification(data: NotificationRequest, identity: Identity = Depends(require_user)):
     """
     Add a notification to the database
@@ -124,11 +131,35 @@ async def add_notification(data: NotificationRequest, identity: Identity = Depen
     if not identity.user:
         raise HTTPException(status_code=401, detail="User not authenticated")
 
-    return await send_notification(
+    if data.deleted:
+        print("deleting notification", data.uuid)
+        notification = await Notification.get(uuid=data.uuid, user=identity.user)
+        if not notification:
+            raise HTTPException(status_code=404, detail="Notification not found")
+
+        await notification.delete()
+
+        return MessageResponse(message="Notification deleted")
+
+    print("adding notification", data.uuid)
+    notification, created = await send_notification(
         user=identity.user,
         title=data.title,
         message=data.message,
         type=data.type,
         action_type=data.action_type,
-        action_data=data.action_data
+        action_data=data.action_data,
+        uuid=data.uuid
+    )
+
+
+    return NotificationResponse(
+        uuid=notification.uuid,
+        title=notification.title,
+        message=notification.message,
+        type=notification.type,
+        action_type=notification.action_type,
+        action_data=notification.action_data,
+        read=notification.read,
+        created_at=notification.created_at
     )

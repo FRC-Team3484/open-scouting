@@ -160,7 +160,7 @@ export const setNotificationReadNotificationsSetReadNotificationUuidReadPut = as
 
 
 export type addNotificationNotificationsSendPostResponse200 = {
-  data: NotificationResponse
+  data: NotificationResponse | MessageResponse
   status: 200
 }
 

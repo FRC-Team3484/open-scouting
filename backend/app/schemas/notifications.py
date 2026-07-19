@@ -24,3 +24,4 @@ class NotificationRequest(BaseModel):
     action_type: str | None
     action_data: dict[Any, Any] | None
     read: bool
+    deleted: bool

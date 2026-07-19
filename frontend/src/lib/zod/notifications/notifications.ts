@@ -91,10 +91,11 @@ export const AddNotificationNotificationsSendPostBody = zod.object({
   "type": zod.string(),
   "action_type": zod.union([zod.string(),zod.null()]),
   "action_data": zod.union([zod.record(zod.string(), zod.unknown()),zod.null()]),
-  "read": zod.boolean()
+  "read": zod.boolean(),
+  "deleted": zod.boolean()
 })
 
-export const AddNotificationNotificationsSendPostResponse = zod.object({
+export const AddNotificationNotificationsSendPostResponse = zod.union([zod.object({
   "uuid": zod.string().uuid(),
   "title": zod.string(),
   "message": zod.string(),
@@ -103,5 +104,7 @@ export const AddNotificationNotificationsSendPostResponse = zod.object({
   "action_data": zod.union([zod.record(zod.string(), zod.unknown()),zod.null()]),
   "read": zod.boolean(),
   "created_at": zod.string().datetime({"offset":true})
-})
+}),zod.object({
+  "message": zod.string()
+})])
 

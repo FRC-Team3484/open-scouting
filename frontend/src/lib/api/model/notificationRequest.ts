@@ -14,4 +14,5 @@ export interface NotificationRequest {
   action_type: string | null;
   action_data: NotificationRequestActionData;
   read: boolean;
+  deleted: boolean;
 }
