@@ -224,6 +224,36 @@ class WebAuthnChallenge(Model):
     created_at = fields.DatetimeField(auto_now_add=True, null=True) # This field was not added until v2.2.0, so it may be null in prod
     created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
 
+class Notification(Model):
+    """
+    Stores a notification for a user
+
+    These notifications are synced to the client, and allows notifications to be sent to a user when they are offline
+
+    Attributes:
+        uuid (UUID): The unique identifier for the notification
+        user (User): The user the notification is associated with
+        title (str): The title of the notification
+        message (str): The message of the notification
+        type (str): The type of the notification
+        action_type (str): The type of the action
+        action_data (dict): The data for the action
+        created_at (datetime): The date and time the notification was created
+        created_by (Session): The session that created the notification
+    """
+    uuid = fields.UUIDField(pk=True)
+    user = fields.ForeignKeyField("models.User", related_name="notifications", on_delete=fields.CASCADE)
+
+    title = fields.CharField(max_length=255)
+    message = fields.CharField(max_length=255)
+    type = fields.CharField(max_length=255) # success, info, warning, error
+    action_type = fields.CharField(max_length=255, null=True)
+    action_data = fields.JSONField(default=dict, null=True)
+    read = fields.BooleanField(default=False)
+
+    created_at = fields.DatetimeField(auto_now_add=True)
+    created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
+
 # Main
 class Season(Model):
     """

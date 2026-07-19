@@ -1,4 +1,8 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from datetime import datetime
+
+from ..dependencies import get_identity
+from ..routes.notifications import send_notification
 
 from ..models import Event, MatchScoutingSubmission, Season, TeamPit
 from ..schemas.main import ServerStatsResponse, ServerStatusResponse
@@ -19,7 +23,7 @@ async def get_server_status() -> ServerStatusResponse:
     )
 
 @router.get("/status/stats")
-async def get_server_stats() -> ServerStatsResponse:
+async def get_server_stats(identity = Depends(get_identity)) -> ServerStatsResponse:
     """
     Get basic server stats, which are displayed on the index page
     """
@@ -27,6 +31,9 @@ async def get_server_stats() -> ServerStatsResponse:
     events_scouted = await Event.all()
     match_scouting_submissions = await MatchScoutingSubmission.all()
     pits_scouted = await TeamPit.filter(answers__isnull=False).distinct()
+
+    # TODO: Remove
+    await send_notification(identity.user, "Server stats update", "test notification" + datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "info")
 
     return ServerStatsResponse(
         seasons=len(seasons),
