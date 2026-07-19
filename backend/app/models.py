@@ -463,7 +463,32 @@ class PitScoutingAnswer(Model):
     field = fields.ForeignKeyField("models.PitScoutingField", related_name="answers", null=True, on_delete=fields.SET_NULL)
     value = fields.CharField(max_length=255, null=True)
     team = fields.ForeignKeyField("models.TeamPit", related_name="answers", null=True, on_delete=fields.SET_NULL)
-    username = fields.CharField(max_length=255, null=True)
+    username = fields.CharField(max_length=255, null=True) # TODO: Remove in favor of created_by
+
+    created_at = fields.DatetimeField(auto_now_add=True)
+    created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
+
+# Reports
+class Report(Model):
+    """
+    A model for user-defined reports of content. Superusers can view these reports in the admin panel, and remove content as needed.
+
+    MatchScoutingSubmissions, MatchScoutingAnswers, TeamPits, PitScoutingAnswers, and Events where custom=True can be reported
+
+    Attributes:
+        uuid (UUID): The unique identifier for the report
+        type (str): The type of content being reported
+        content_uuid (UUID): The UUID of the content being reported
+        report_reason (str): The reason for reporting the content
+        report_details (str): Additional details about the report
+        created_at (datetime): The date and time the report was created
+        created_by (Session): The session that created the report
+    """
+    uuid = fields.UUIDField(pk=True)
+    type = fields.CharField(max_length=255) # match_scouting_submission, match_scouting_answer, team_pit, pit_scouting_answer, event
+    content_uuid = fields.UUIDField()
+    report_reason = fields.CharField(max_length=255) # spam, inaccurate, inappropriate, offensive, duplicate, other
+    report_details = fields.TextField(null=True)
 
     created_at = fields.DatetimeField(auto_now_add=True)
     created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
