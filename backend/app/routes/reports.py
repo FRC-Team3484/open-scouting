@@ -167,6 +167,21 @@ async def get_reports(identity: Identity = Depends(require_superuser)):
 
     return response
 
+@router.get("/reports/get/count", response_model=int)
+async def get_reports_count(identity: Identity = Depends(require_superuser)):
+    """
+    Get the number of reports
+
+    Requires superuser access
+
+    Returns:
+        CountResponse: The number of reports
+    """
+    if not identity.user or not identity.user.is_superuser:
+        raise HTTPException(status_code=403, detail="Superuser required")
+
+    return await Report.all().count()
+
 @router.delete("/report/content/delete/{report_uuid}", response_model=MessageResponse)
 async def delete_report_content(report_uuid: UUID, identity: Identity = Depends(require_superuser)):
     """

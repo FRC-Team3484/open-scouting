@@ -107,6 +107,47 @@ export const getReportsReportsGetGet = async ( options?: RequestInit): Promise<g
 );}
 
 
+export type getReportsCountReportsGetCountGetResponse200 = {
+  data: number
+  status: 200
+}
+
+export type getReportsCountReportsGetCountGetResponseSuccess = (getReportsCountReportsGetCountGetResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getReportsCountReportsGetCountGetResponse = (getReportsCountReportsGetCountGetResponseSuccess)
+
+export const getGetReportsCountReportsGetCountGetUrl = () => {
+
+
+
+
+  return `/reports/get/count`
+}
+
+/**
+ * Get the number of reports
+
+Requires superuser access
+
+Returns:
+    CountResponse: The number of reports
+ * @summary Get Reports Count
+ */
+export const getReportsCountReportsGetCountGet = async ( options?: RequestInit): Promise<getReportsCountReportsGetCountGetResponse> => {
+
+  return customInstance<getReportsCountReportsGetCountGetResponse>(getGetReportsCountReportsGetCountGetUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
 export type deleteReportContentReportContentDeleteReportUuidDeleteResponse200 = {
   data: MessageResponse
   status: 200

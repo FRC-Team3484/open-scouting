@@ -98,6 +98,17 @@ export const GetReportsReportsGetGetResponseItem = zod.object({
 export const GetReportsReportsGetGetResponse = zod.array(GetReportsReportsGetGetResponseItem)
 
 /**
+ * Get the number of reports
+
+Requires superuser access
+
+Returns:
+    CountResponse: The number of reports
+ * @summary Get Reports Count
+ */
+export const GetReportsCountReportsGetCountGetResponse = zod.number()
+
+/**
  * Delete the content for a report. Then delete the report itself.
 
 Requires superuser access
