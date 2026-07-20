@@ -27,12 +27,17 @@ Presents a warning dialog to the user when in production.
 	import PitScoutingDataManager from "$lib/components/admin/PitScoutingDataManager.svelte";
 	import type { UserResponse } from "$lib/api/model";
 	import { goto } from "$app/navigation";
+	import { getReportsCountReportsGetCountGet } from "$lib/api/reports/reports";
+	import Badge from "$lib/components/ui/badge/badge.svelte";
+	import Skeleton from "$lib/components/ui/skeleton/skeleton.svelte";
+	import ReportsManager from "$lib/components/admin/ReportsManager.svelte";
 
 
     let user: UserResponse | null = getUser();
-    type Page = "start" | "seasons" | "match_fields" | "pit_scouting_questions" | "users" | "events" | "match_scouting" | "pit_scouting";
+    type Page = "start" | "seasons" | "match_fields" | "pit_scouting_questions" | "users" | "events" | "match_scouting" | "pit_scouting" | "reports";
     let page: Page = $state("start");
     let show_warning_dialog: boolean = $state(!(env.PUBLIC_MODE == "dev"));
+    let reportCount: number | null = $state(null);
 
     overrideItemIdKeyNameBeforeInitialisingDndZones("uuid");
     
@@ -45,6 +50,14 @@ Presents a warning dialog to the user when in production.
         page = <Page>nextPage;
     }
 
+    async function getReportCount() {
+        await getReportsCountReportsGetCountGet().then((response) => {
+            if (response.status === 200) {
+                reportCount = response.data;
+            }
+        })
+    }
+
     /**
      * When the component mounts, check if the user is authenticated. 
      * If they're not a superuser, redirect them back to the index page.
@@ -53,6 +66,8 @@ Presents a warning dialog to the user when in production.
         if (!user || !user.is_superuser) {
             await goto("/");
         }
+
+        getReportCount();
     });
 </script>
 
@@ -76,6 +91,15 @@ Presents a warning dialog to the user when in production.
                         <Button onclick={() => page = "events"}>Manage Events</Button>
                         <Button onclick={() => page = "match_scouting"}>Manage Match Scouting Data</Button>
                         <Button onclick={() => page = "pit_scouting"}>Manage Pit Scouting Data</Button>
+                        <Separator orientation="horizontal" />
+                        <Button onclick={() => page = "reports"}>
+                            Manage Reports
+                            {#if reportCount}
+                                <Badge variant="secondary">{reportCount}</Badge>
+                            {:else}
+                                <Skeleton class="ml-2 h-4 w-4" />
+                            {/if}
+                        </Button>
                     </div>
                 </Card.Content>
             </Card.Root>
@@ -107,6 +131,10 @@ Presents a warning dialog to the user when in production.
         {:else if page === "pit_scouting"}
             <AdminHeader handleNavigate={handleNavigate}/>
             <PitScoutingDataManager />
+
+        {:else if page === "reports"}
+            <AdminHeader handleNavigate={handleNavigate}/>
+            <ReportsManager />
 
         {/if}
     {:else}
