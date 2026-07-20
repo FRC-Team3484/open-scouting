@@ -8,7 +8,7 @@ TODO: Add a proper interface for user
 -->
 <script lang="ts">
 	import { slide } from "svelte/transition";
-	import { CaretDownIcon, CaretUpIcon, CheckCircleIcon, DotsThreeCircleIcon, XCircleIcon } from "phosphor-svelte";
+	import { CaretDownIcon, CaretUpIcon, CheckCircleIcon, DotsThreeCircleIcon, FlagIcon, XCircleIcon } from "phosphor-svelte";
 
     import * as Card from "$lib/components/ui/card/index.js";
 	import Button from "../ui/button/button.svelte";
@@ -19,6 +19,7 @@ TODO: Add a proper interface for user
 	import BooleanQuestion from "../generic/pit_questions/main/BooleanQuestion.svelte";
 	import ChoiceQuestion from "../generic/pit_questions/main/ChoiceQuestion.svelte";
 	import ImageQuestion from "../generic/pit_questions/main/ImageQuestion.svelte";
+	import CreateReportDialog from "../generic/reports/CreateReportDialog.svelte";
 
 
     interface Props {
@@ -64,6 +65,8 @@ TODO: Add a proper interface for user
 
     let expanded: boolean = $state(false);
     let avatar_loaded: boolean = $state(true);
+
+    let reportContentOpen: boolean = $state(false);
 </script>
 
 <Card.Root class="w-full md:w-auto min-w-64 md:min-w-lg" data-teamNumber={pit.team_number}>
@@ -96,13 +99,19 @@ TODO: Add a proper interface for user
                     <p class="text-sm text-muted-foreground">{pit.nickname}</p>
                 </div>
 
-                <Button size="icon" variant="ghost" onclick={() => expanded = !expanded}>
-                    {#if expanded}
-                        <CaretDownIcon weight="bold" />
-                    {:else}
-                        <CaretUpIcon weight="bold" />
-                    {/if}
-                </Button>
+                <div class="flex flex-row gap-2">
+                    <Button size="icon" variant="ghost" onclick={() => reportContentOpen = true}>
+                        <FlagIcon weight="bold" />
+                    </Button>
+
+                    <Button size="icon" variant="ghost" onclick={() => expanded = !expanded}>
+                        {#if expanded}
+                            <CaretDownIcon weight="bold" />
+                        {:else}
+                            <CaretUpIcon weight="bold" />
+                        {/if}
+                    </Button>
+                </div>
             </div>
 
             {#if expanded}
@@ -125,3 +134,5 @@ TODO: Add a proper interface for user
         </div>
     </Card.Content>
 </Card.Root>
+
+<CreateReportDialog type="team_pit" bind:open={reportContentOpen} contentName={`Pit for team ${pit.team_number}`} contentUuid={pit.uuid} />
