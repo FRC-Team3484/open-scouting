@@ -396,7 +396,7 @@ async def get_user_settings(identity: Identity = Depends(require_user)) -> list[
         settings = await Settings.create(user=identity.user, created_by=identity.session)
 
     for key, field in Settings._meta.fields_map.items():
-        if key in {"user", "uuid"}:
+        if key in {"user", "uuid", "created_at", "created_by"}:
             continue
 
         if key.endswith("_id"):
