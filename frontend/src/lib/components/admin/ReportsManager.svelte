@@ -13,7 +13,7 @@ Management page for reports on the admin page
 	import Button from "../ui/button/button.svelte";
     import * as AlertDialog from "$lib/components/ui/alert-dialog/index.js";
 
-	import type { ReportResponse } from "$lib/api/model";
+	import type { EventReportDetails, MatchScoutingAnswerReportDetails, MatchScoutingSubmissionReportDetails, PitScoutingAnswerReportDetails, ReportResponse, TeamPitReportDetails } from "$lib/api/model";
 	import { deleteReportContentReportContentDeleteReportUuidDelete, deleteReportReportDeleteReportUuidDelete, getReportsReportsGetGet } from "$lib/api/reports/reports";
 
 
@@ -94,14 +94,16 @@ Management page for reports on the admin page
                                 <Separator orientation="horizontal" class="my-2" />
 
                                 {#if report.type == "match_scouting_submission"}
-                                    <p>Event: <span class="font-mono">{report.content_details.event_uuid}</span></p>
-                                    <p>Season: <span class="font-mono">{report.content_details.season_uuid}</span></p>
-                                    <p>Team Number: {report.content_details.team_number}</p>
-                                    <p>Match Number: {report.content_details.match_number}</p>
-                                    <p>Match Type: {report.content_details.match_type}</p>
-                                    <p>{report.content_details.answers_count} answers:</p>
-                                    {#if report.content_details.answers.length > 0}
-                                        {#each report.content_details.answers as answer}
+                                    {@const details = report.content_details as MatchScoutingSubmissionReportDetails}
+
+                                    <p>Event: <span class="font-mono">{details.event_uuid}</span></p>
+                                    <p>Season: <span class="font-mono">{details.season_uuid}</span></p>
+                                    <p>Team Number: {details.team_number}</p>
+                                    <p>Match Number: {details.match_number}</p>
+                                    <p>Match Type: {details.match_type}</p>
+                                    <p>{details.answers_count} answers:</p>
+                                    {#if details.answers.length > 0}
+                                        {#each details.answers as answer}
                                             <Card.Root>
                                                 <Card.Content>
                                                     <div class="flex flex-col text-sm items-start w-full">
@@ -114,35 +116,42 @@ Management page for reports on the admin page
                                         {/each}
                                     {/if}
                                 {:else if report.type == "match_scouting_answer"}
-                                    <p>Field: <span class="font-mono">{report.content_details.field_uuid}</span></p>
-                                    <p>Value: {report.content_details.value}</p>
-                                    <p>Created: {report.content_details.created_at}</p>
+                                    {@const details = report.content_details as MatchScoutingAnswerReportDetails}
+                                    
+                                    <p>Field: <span class="font-mono">{details.field_uuid}</span></p>
+                                    <p>Value: {details.value}</p>
+                                    <p>Created: {details.created_at}</p>
 
                                 {:else if report.type == "team_pit"}
-                                    <p>Team Number: {report.content_details.team_number}</p>
-                                    <p>Nickname: {report.content_details.nickname}</p>
-                                    <p>Season: <span class="font-mono">{report.content_details.season_uuid}</span></p>
-                                    <p>Event: <span class="font-mono">{report.content_details.event_uuid}</span></p>
+                                    {@const details = report.content_details as TeamPitReportDetails}
+
+                                    <p>Team Number: {details.team_number}</p>
+                                    <p>Nickname: {details.nickname}</p>
+                                    <p>Season: <span class="font-mono">{details.season_uuid}</span></p>
+                                    <p>Event: <span class="font-mono">{details.event_uuid}</span></p>
 
                                 {:else if report.type == "pit_scouting_answer"}
-                                    <p>Field: <span class="font-mono">{report.content_details.field_uuid}</span></p>
-                                    <p>Value: {report.content_details.value}</p>
-                                    <p>Team Pit: <span class="font-mono">{report.content_details.team_uuid}</span></p>
-                                    <p>Team Number: {report.content_details.team_number}</p>
-                                    <p>Created: {report.content_details.created_at}</p>
+                                    {@const details = report.content_details as PitScoutingAnswerReportDetails}
 
+                                    <p>Field: <span class="font-mono">{details.field_uuid}</span></p>
+                                    <p>Value: {details.value}</p>
+                                    <p>Team Pit: <span class="font-mono">{details.team_uuid}</span></p>
+                                    <p>Team Number: {details.team_number}</p>
+                                    <p>Created: {details.created_at}</p>
 
                                 {:else if report.type == "event"}
-                                    <p>Season: <span class="font-mono">{report.content_details.season_uuid}</span></p>
-                                    <p>Event Code: <span class="font-mono">{report.content_details.event_code}</span></p>
-                                    <p>Name: {report.content_details.name}</p>
-                                    <p>Type: {report.content_details.type}</p>
-                                    <p>City: {report.content_details.city}</p>
-                                    <p>Country: {report.content_details.country}</p>
-                                    <p>Start Date: {report.content_details.start_date}</p>
-                                    <p>End Date: {report.content_details.end_date}</p>
-                                    <p>Custom: {report.content_details.custom}</p>
-                                    <p>Created: {report.content_details.created_at}</p>
+                                    {@const details = report.content_details as EventReportDetails}
+
+                                    <p>Season: <span class="font-mono">{details.season_uuid}</span></p>
+                                    <p>Event Code: <span class="font-mono">{details.event_code}</span></p>
+                                    <p>Name: {details.name}</p>
+                                    <p>Type: {details.type}</p>
+                                    <p>City: {details.city}</p>
+                                    <p>Country: {details.country}</p>
+                                    <p>Start Date: {details.start_date}</p>
+                                    <p>End Date: {details.end_date}</p>
+                                    <p>Custom: {details.custom}</p>
+                                    <p>Created: {details.created_at}</p>
                                 {/if}
 
                                 <Separator orientation="horizontal" class="my-2" />
