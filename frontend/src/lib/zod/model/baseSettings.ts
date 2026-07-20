@@ -6,5 +6,7 @@
  */
 
 export interface BaseSettings {
+  created_at?: unknown | null;
+  created_by?: unknown | null;
   favorite_events?: unknown[] | null;
 }
