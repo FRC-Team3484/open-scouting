@@ -7,7 +7,7 @@ Allows for editing profile details, changing password, and updating settings
 	import { onMount } from "svelte";
 	import { goto } from "$app/navigation";
 	import { toast } from "svelte-sonner";
-	import { GearIcon, ListIcon, SignOutIcon, UserIcon } from "phosphor-svelte";
+	import { DatabaseIcon, GearIcon, ListIcon, SignOutIcon, UserIcon } from "phosphor-svelte";
     
     import * as Card from "$lib/components/ui/card/index.js";
     import Button from "$lib/components/ui/button/button.svelte";
@@ -24,9 +24,10 @@ Allows for editing profile details, changing password, and updating settings
 	import ProfileSection from "$lib/components/profile/pages/ProfileSection.svelte";
 	import SettingsSection from "$lib/components/profile/pages/SettingsSection.svelte";
 	import Authentication from "$lib/components/generic/authentication/Authentication.svelte";
+	import DataSection from "$lib/components/profile/pages/DataSection.svelte";
 
 
-    let section: "profile" | "settings" = $state("profile");
+    let section: "profile" | "settings" | "data" = $state("profile");
 
     let user: UserResponse | null = $state(getUser());
     let authenticated: boolean = getAuthenticationStatus();
@@ -108,6 +109,7 @@ Allows for editing profile details, changing password, and updating settings
 
         <Button variant={section == "profile" ? "default" : "outline"} disabled={section == "profile"} onclick={() => section = "profile"}><UserIcon weight="bold" /> Profile</Button>
         <Button variant={section == "settings" ? "default" : "outline"} disabled={section == "settings"} onclick={() => section = "settings"}><GearIcon weight="bold" /> Settings</Button>
+        <Button variant={section == "data" ? "default" : "outline"} disabled={section == "data"} onclick={() => section = "data"}><DatabaseIcon weight="bold" /> Data</Button>
     </div>
 {/snippet}
 
@@ -147,6 +149,9 @@ Allows for editing profile details, changing password, and updating settings
 
                 {:else if section == "settings"}
                     <SettingsSection settings={settings} getNewSettings={getNewSettings} />
+
+                {:else if section == "data"}
+                    <DataSection />
                 {/if}
             </Card.Content>
         </Card.Root>
