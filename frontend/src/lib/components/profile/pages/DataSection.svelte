@@ -220,5 +220,9 @@ TODO: Data here should probably be paginated
                 </Card.Content>
             </Card.Root>
         {/each}
+
+        {#if filteredData.length == 0}
+            <p class="text-muted-foreground w-full my-8 text-center">No data found</p>
+        {/if}
     </div>
 </Section>
