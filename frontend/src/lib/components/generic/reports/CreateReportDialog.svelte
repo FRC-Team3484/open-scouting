@@ -26,6 +26,7 @@ Props:
     
 	import { createReportReportCreatePost } from "$lib/api/reports/reports";
 	import type { CreateReportRequest, CreateReportRequestReportReason } from "$lib/api/model";
+	import Separator from "$lib/components/ui/separator/separator.svelte";
 
 
     interface Props {
@@ -35,7 +36,7 @@ Props:
         contentUuid: string;
         status?: CreateReportStatus;
     }
-    let { type, open, contentName, contentUuid, status = $bindable() }: Props = $props();
+    let { type, open = $bindable(false), contentName, contentUuid, status = $bindable() }: Props = $props();
 
     let reportReasonOptions = {
         "na": "Select Reason",
@@ -53,6 +54,9 @@ Props:
 
     let submitting: boolean = $state(false);
 
+    /**
+     * Submit the report on the server for superuser review
+     */
     async function submitReport() {
         submitting = true;
 
@@ -83,8 +87,10 @@ Props:
 
 <BaseDialog title="Report Content" description="Report content for superuser review" bind:open>
     <div class="flex flex-col gap-2">
-        <p>Reporting a <span class="font-bold">{type.replace("_", " ").charAt(0).toUpperCase() + type.replace("_", " ").slice(1)}:</span></p>
+        <p>Reporting an <span class="font-bold">{type.replace("_", " ").charAt(0).toUpperCase() + type.replace("_", " ").slice(1)}:</span></p>
         <p class="font-bold">{contentName}</p>
+
+        <Separator class="my-2" />
 
         <p>Report Reason</p>
         <Select.Root type="single" required bind:value={reportReasonValue}>
@@ -99,13 +105,15 @@ Props:
                 {/each}
             </Select.Content>
         </Select.Root>
-        <p class="text-xs text-muted-foreground">The reason for reporting this content</p>
+        <p class="text-xs text-muted-foreground mb-2">The reason for reporting this content</p>
 
         <p>Report Details</p>
         <Textarea placeholder="Report Details" bind:value={reportDetails} />
-        <p class="text-xs text-muted-foreground">Additional details about the reason for reporting</p>
+        <p class="text-xs text-muted-foreground mb-2">Additional details about the reason for reporting</p>
 
-        <div class="flex flex-row gap-2 items-end w-full mt-4">
+        <p class="my-2">Superusers will review your report and remove the content if necessary.</p>
+
+        <div class="flex flex-row gap-2 w-full mt-4 justify-end">
             <Button variant="outline" onclick={() => open = false} disabled={submitting}>Cancel</Button>
             <Button onclick={() => {submitReport();}} disabled={submitting || reportReasonValue === "na"}>Submit Report</Button>
         </div>
