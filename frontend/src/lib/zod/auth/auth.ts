@@ -156,10 +156,14 @@ Returns:
  * @summary Update User Settings
  */
 export const UpdateUserSettingsUsersMeUpdateSettingsPostBody = zod.object({
+  "created_at": zod.union([zod.unknown(),zod.null()]).optional(),
+  "created_by": zod.union([zod.unknown(),zod.null()]).optional(),
   "favorite_events": zod.union([zod.array(zod.unknown()),zod.null()]).optional()
 })
 
 export const UpdateUserSettingsUsersMeUpdateSettingsPostResponse = zod.object({
+  "created_at": zod.union([zod.unknown(),zod.null()]).optional(),
+  "created_by": zod.union([zod.unknown(),zod.null()]).optional(),
   "favorite_events": zod.union([zod.array(zod.unknown()),zod.null()]).optional()
 })
 

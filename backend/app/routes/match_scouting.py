@@ -87,7 +87,7 @@ async def submit_match_scouting(
 
     return MatchScoutingResponse(
         uuid=submission.uuid,
-        user=submission.user.uuid if submission.user else None,
+        user=identity.user.uuid,
         event=submission.event.uuid,
         team_number=submission.team_number,
         match_number=submission.match_number,

@@ -11,13 +11,14 @@ Props:
 -->
 <script lang="ts">
 	import { slide } from "svelte/transition";
-	import { CalendarIcon, EyeIcon, PlusCircleIcon, UserIcon, XIcon } from "phosphor-svelte";
+	import { CalendarIcon, EyeIcon, FlagIcon, PlusCircleIcon, UserIcon, XIcon } from "phosphor-svelte";
 
 	import Badge from "$lib/components/ui/badge/badge.svelte";
     import Button from "$lib/components/ui/button/button.svelte";
     import * as Card from "$lib/components/ui/card/index.js";
 	import type { Snippet } from "svelte";
 	import type { PitScoutingAnswer, SeasonPitScoutingQuestion } from "$lib/utils/db";
+	import CreateReportDialog from "../../reports/CreateReportDialog.svelte";
 
 
     interface Props {
@@ -30,6 +31,8 @@ Props:
     type Mode = "none" | "view" | "add";
 
     let mode: Mode = $state("none");
+
+    let createReportDialogOpen: boolean = $state(false);
 
     /**
      * Close any open menus on the component
@@ -88,7 +91,10 @@ Props:
                                 <p class="text-muted-foreground text-sm">{answer.username}</p>
                                 <CalendarIcon weight="bold" class="text-muted-foreground ml-2 mr-1"/>
                                 <p class="text-muted-foreground text-sm">{new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(answer.created_at))}</p>
+                                <Button variant="outline" size="icon-sm" class="ml-2" onclick={() => createReportDialogOpen = true}><FlagIcon weight="bold" /></Button>
                             </div>
+
+                            <CreateReportDialog type="pit_scouting_answer" bind:open={createReportDialogOpen} contentName={`Pit scouting answer by ${answer.username} with value ${answer.value}`} contentUuid={answer.uuid} />
                         {/each}
                     </div>
                 {/if}

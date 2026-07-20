@@ -13,7 +13,7 @@ Props:
 -->
 <script lang="ts">
 	import { scale, slide } from "svelte/transition";
-	import { ArrowSquareOutIcon, CalendarIcon, CheckSquareIcon, InfoIcon, MapPinIcon, SquareIcon, StarIcon, WrenchIcon } from "phosphor-svelte";
+	import { ArrowSquareOutIcon, CalendarIcon, CheckSquareIcon, FlagIcon, InfoIcon, MapPinIcon, SquareIcon, StarIcon, WrenchIcon } from "phosphor-svelte";
 
 	import Badge from "$lib/components/ui/badge/badge.svelte";
 	import Button from "$lib/components/ui/button/button.svelte";
@@ -21,6 +21,7 @@ Props:
 	import Skeleton from "$lib/components/ui/skeleton/skeleton.svelte";
 	import type { Event } from "$lib/utils/db";
 	import type { UserResponse } from "$lib/api/model";
+	import CreateReportDialog from "../reports/CreateReportDialog.svelte";
 
     
     interface Props {
@@ -50,6 +51,7 @@ Props:
             e.event_code === event.event_code
         );
     });
+    let createReportOpen: boolean = $state(false);
 </script>
 
 <Card.Root>
@@ -107,7 +109,15 @@ Props:
                 {:else}
                     <Button onclick={() => selectEvent(event)}><CheckSquareIcon weight="bold" /> Select</Button>
                 {/if}
+
+                {#if event.custom}
+                    <Button variant="outline" size="icon" onclick={() => createReportOpen = true}><FlagIcon weight="bold" /></Button>
+                {/if}
             </div>
         </div>
     </Card.Content>
 </Card.Root>
+
+{#if event.custom}
+    <CreateReportDialog type="event" bind:open={createReportOpen} contentName={`Custom event ${event.name}`} contentUuid={event.uuid} />
+{/if}
