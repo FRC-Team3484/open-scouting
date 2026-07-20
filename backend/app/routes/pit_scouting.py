@@ -406,7 +406,7 @@ async def submit_pit(
         if not field:
             raise HTTPException(status_code=404, detail="Field not found")
 
-        _, created = await PitScoutingAnswer.get_or_create(
+        answer_object, created = await PitScoutingAnswer.get_or_create(
             uuid=answer["uuid"],
             team=pit,
             field=field,
@@ -415,8 +415,8 @@ async def submit_pit(
         )
 
         if created:
-            answer.created_by = identity.session
-            await answer.save()
+            answer_object.created_by = identity.session
+            await answer_object.save()
             print("Created answer", answer["uuid"], "for pit", pit.uuid, "and field", field.uuid)
 
     return {"message": "Pit submitted successfully"}
