@@ -62,6 +62,8 @@ export * from './matchScoutingResponse';
 export * from './matchScoutingSeasonFieldsResponse';
 export * from './matchScoutingSubmissionReportDetails';
 export * from './messageResponse';
+export * from './myDataResponse';
+export * from './myDataTypes';
 export * from './organizationMemberResponse';
 export * from './organizationRequest';
 export * from './organizationResponse';
