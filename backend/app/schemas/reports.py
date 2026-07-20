@@ -65,7 +65,7 @@ class ReportResponse(BaseModel):
     uuid: UUID
     type: Literal["match_scouting_submission", "match_scouting_answer", "team_pit", "pit_scouting_answer", "event"]
     content_uuid: UUID
+    content_details: MatchScoutingSubmissionReportDetails | MatchScoutingAnswerReportDetails | TeamPitReportDetails | PitScoutingAnswerReportDetails | EventReportDetails | None
     report_reason: Literal["spam", "innaccurate", "inappropriate", "offensive", "duplicate", "other"]
     report_details: str
     created_at: datetime
-    report_details: MatchScoutingSubmissionReportDetails | MatchScoutingAnswerReportDetails | TeamPitReportDetails | PitScoutingAnswerReportDetails | EventReportDetails | None

@@ -47,8 +47,7 @@ export const GetReportsReportsGetGetResponseItem = zod.object({
   "uuid": zod.string().uuid(),
   "type": zod.enum(['match_scouting_submission', 'match_scouting_answer', 'team_pit', 'pit_scouting_answer', 'event']),
   "content_uuid": zod.string().uuid(),
-  "report_reason": zod.enum(['spam', 'innaccurate', 'inappropriate', 'offensive', 'duplicate', 'other']),
-  "report_details": zod.union([zod.object({
+  "content_details": zod.union([zod.object({
   "uuid": zod.string().uuid(),
   "event_uuid": zod.string().uuid(),
   "season_uuid": zod.string().uuid(),
@@ -93,6 +92,8 @@ export const GetReportsReportsGetGetResponseItem = zod.object({
   "custom": zod.boolean(),
   "created_at": zod.string().datetime({"offset":true})
 }),zod.null()]),
+  "report_reason": zod.enum(['spam', 'innaccurate', 'inappropriate', 'offensive', 'duplicate', 'other']),
+  "report_details": zod.string(),
   "created_at": zod.string().datetime({"offset":true})
 })
 export const GetReportsReportsGetGetResponse = zod.array(GetReportsReportsGetGetResponseItem)

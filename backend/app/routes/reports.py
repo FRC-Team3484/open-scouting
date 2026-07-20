@@ -61,7 +61,7 @@ async def get_reports(identity: Identity = Depends(require_superuser)):
     response: list[ReportResponse] = []
 
     for report in reports:
-        report_details: MatchScoutingSubmissionReportDetails | MatchScoutingAnswerReportDetails | TeamPitReportDetails | PitScoutingAnswerReportDetails | EventReportDetails | None = None
+        content_details: MatchScoutingSubmissionReportDetails | MatchScoutingAnswerReportDetails | TeamPitReportDetails | PitScoutingAnswerReportDetails | EventReportDetails | None = None
 
         if report.type == "match_scouting_submission":
             match_scouting_submission = await MatchScoutingSubmission.get(uuid=report.content_uuid)
@@ -83,7 +83,7 @@ async def get_reports(identity: Identity = Depends(require_superuser)):
                         )
                     )
 
-                report_details = MatchScoutingSubmissionReportDetails(
+                content_details = MatchScoutingSubmissionReportDetails(
                     uuid=match_scouting_submission.uuid,
                     event_uuid=match_scouting_submission.event.uuid,
                     season_uuid=match_scouting_submission.event.season.uuid,
@@ -100,7 +100,7 @@ async def get_reports(identity: Identity = Depends(require_superuser)):
             if match_scouting_answer:
                 await match_scouting_answer.fetch_related("field")
 
-                report_details = MatchScoutingAnswerReportDetails(
+                content_details = MatchScoutingAnswerReportDetails(
                     uuid=match_scouting_answer.uuid,
                     field_uuid=match_scouting_answer.field.uuid,
                     value=match_scouting_answer.value,
@@ -113,7 +113,7 @@ async def get_reports(identity: Identity = Depends(require_superuser)):
             if team_pit:
                 await team_pit.fetch_related("event", "event__season")
 
-                report_details = TeamPitReportDetails(
+                content_details = TeamPitReportDetails(
                     uuid=team_pit.uuid,
                     team_number=team_pit.team_number,
                     nickname=team_pit.nickname,
@@ -127,7 +127,7 @@ async def get_reports(identity: Identity = Depends(require_superuser)):
             if pit_scouting_answer:
                 await pit_scouting_answer.fetch_related("field", "team")
 
-                report_details = PitScoutingAnswerReportDetails(
+                content_details = PitScoutingAnswerReportDetails(
                     uuid=pit_scouting_answer.uuid,
                     field_uuid=pit_scouting_answer.field.uuid,
                     value=pit_scouting_answer.value,
@@ -142,7 +142,7 @@ async def get_reports(identity: Identity = Depends(require_superuser)):
             if event:
                 await event.fetch_related("season")
 
-                report_details = EventReportDetails(
+                content_details = EventReportDetails(
                     uuid=event.uuid,
                     season_uuid=event.season.uuid,
                     event_code=event.event_code,
@@ -160,8 +160,9 @@ async def get_reports(identity: Identity = Depends(require_superuser)):
             uuid=report.uuid,
             type=report.type,
             content_uuid=report.content_uuid,
+            content_details=content_details,
             report_reason=report.report_reason,
-            report_details=report_details,
+            report_details=report.report_details,
             created_at=report.created_at
         ))
 

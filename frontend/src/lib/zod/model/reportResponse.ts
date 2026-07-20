@@ -16,7 +16,8 @@ export interface ReportResponse {
   uuid: string;
   type: ReportResponseType;
   content_uuid: string;
+  content_details: MatchScoutingSubmissionReportDetails | MatchScoutingAnswerReportDetails | TeamPitReportDetails | PitScoutingAnswerReportDetails | EventReportDetails | null;
   report_reason: ReportResponseReportReason;
-  report_details: MatchScoutingSubmissionReportDetails | MatchScoutingAnswerReportDetails | TeamPitReportDetails | PitScoutingAnswerReportDetails | EventReportDetails | null;
+  report_details: string;
   created_at: string;
 }
