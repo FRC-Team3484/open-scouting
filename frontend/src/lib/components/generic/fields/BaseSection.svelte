@@ -26,6 +26,7 @@ Props:
 	import { deleteFieldFieldsDeleteFieldUuidDelete } from "$lib/api/match-scouting-fields/match-scouting-fields";
 	import type { MatchScoutingFieldResponse } from "$lib/api/model";
 	import type { Snippet } from "svelte";
+	import Collapsable from "../Collapsable.svelte";
 
     interface Props {
         field: MatchScoutingFieldResponse
@@ -145,10 +146,9 @@ Props:
     </Card.Header>
 
     <Card.Content>
-        {#if expanded}
-            <div transition:slide>
-                {@render children()}
-            </div>
-        {/if}
+        <Collapsable open={expanded}>
+            {@render children()}
+        </Collapsable>
     </Card.Content>
 </Card.Root>
+
