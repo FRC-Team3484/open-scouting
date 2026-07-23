@@ -20,6 +20,7 @@ TODO: Add a proper interface for user
 	import ChoiceQuestion from "../generic/pit_questions/main/ChoiceQuestion.svelte";
 	import ImageQuestion from "../generic/pit_questions/main/ImageQuestion.svelte";
 	import CreateReportDialog from "../generic/reports/CreateReportDialog.svelte";
+	import { pitVisibility } from "./pitVisibility";
 
 
     interface Props {
@@ -27,8 +28,9 @@ TODO: Add a proper interface for user
         pit_questions: SeasonPitScoutingQuestion[]
         user: unknown
         show_avatar?: boolean
+        expanded?: boolean
     }
-    let { pit, pit_questions, user, show_avatar = false }: Props = $props();
+    let { pit, pit_questions, user, show_avatar = false, expanded = false }: Props = $props();
 
     let pitCompletion: {answered: number, total: number, status: "done" | "incomplete" | "none"} = $derived.by(() => {
         if (!pit || !pit_questions?.length) {
@@ -63,15 +65,14 @@ TODO: Add a proper interface for user
         };
     });
 
-    let expanded: boolean = $state(false);
     let avatar_loaded: boolean = $state(true);
 
     let reportContentOpen: boolean = $state(false);
 </script>
 
-<Card.Root class="w-full md:w-auto min-w-64 md:min-w-lg" data-teamNumber={pit.team_number}>
+<Card.Root class="w-full md:w-auto min-w-64 md:min-w-lg">
     <Card.Content>
-        <div class="flex flex-col gap-2 md:gap-4">
+        <div class="flex flex-col gap-2 md:gap-4" data-teamNumber={pit.team_number} use:pitVisibility={pit.team_number}>
             <div class="flex flex-row gap-2 items-center justify-between">
                 <div class="flex flex-row gap-2 items-center flex-wrap cursor-pointer" onclick={() => expanded = !expanded} tabindex="0" onkeydown={(e) => { if (e.key === "Enter") { expanded = !expanded; }}} role="button">
                     {#if show_avatar && avatar_loaded}

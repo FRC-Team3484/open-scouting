@@ -5,10 +5,12 @@ Allows for creating new pits, and includes a section for viewing the progress of
 -->
 <script lang="ts">
     import { onMount } from "svelte";
-	import { liveQuery } from "dexie";
+	import { liveQuery, type Observable } from "dexie";
 	import { CircleNotchIcon } from "phosphor-svelte";
+	import { page } from "$app/state";
+	import { replaceState } from "$app/navigation";
 
-	import { db, type Event, type SeasonPitScoutingQuestion } from "$lib/utils/db";
+	import { db, type Event, type PitScoutingData, type SeasonPitScoutingQuestion } from "$lib/utils/db";
 	import { getUser } from "$lib/utils/user";
 	import PageContainer from "$lib/components/layout/PageContainer.svelte";
 	import AddPit from "$lib/components/pit_scouting/AddPit.svelte";
@@ -17,6 +19,7 @@ Allows for creating new pits, and includes a section for viewing the progress of
 	import SyncManager from "$lib/components/pit_scouting/SyncManager.svelte";
 	import PitStatus from "$lib/components/pit_scouting/PitStatus.svelte";
 	import { type UserResponse } from "$lib/api/model";
+
 
     let season_uuid: string = $state("");
     let year: string | null = $state(null);
@@ -27,11 +30,24 @@ Allows for creating new pits, and includes a section for viewing the progress of
 
     let user: UserResponse | null = getUser();
 
-    let pits = liveQuery(
-        () => db.pit_scouting
-            .filter(pit => pit.year === event_data.year && pit.event_code === event_data.event_code)
-            .sortBy("team_number")
-    );
+    let scrolledFromUrl: boolean = $state(false);
+    let scrolledFromUrlTeam: number | null = $state(null);
+
+    let pits: Observable<PitScoutingData[]> = $derived.by(() => {
+        if (!event_data) {
+            return liveQuery(() => Promise.resolve([]));
+        }
+
+        return liveQuery(() =>
+            db.pit_scouting
+                .filter(
+                    pit =>
+                        pit.year === event_data.year &&
+                        pit.event_code === event_data.event_code
+                )
+                .sortBy("team_number")
+        );
+    });
 
     /**
      * Get the season uuid for the given year
@@ -58,6 +74,28 @@ Allows for creating new pits, and includes a section for viewing the progress of
     }
 
     /**
+     * Scroll to the team with the given team number, or the add pit section
+     * 
+     * @param team_number The team number to scroll to, or "addPit"
+     */
+    function scrollToTeam(team_number: number | "addPit") {
+        const element = document.querySelector(`[data-teamNumber="${team_number}"]`);
+        if (element) {
+            element.scrollIntoView({ behavior: "smooth" });
+
+            const params = new URLSearchParams(page.url.search);
+            if (params.get("pit") === team_number) return;
+
+            // Wait a bit before updating the URL, so that the interaction observer doesn't overwrite it
+            setTimeout(() => {
+                params.set("pit", team_number.toString());
+                replaceState(`?${params}`, {});
+            }, 500);
+
+        }
+    }
+
+    /**
      * Load the year from the URL and find it's UUID
      * 
      * Then get the pit questions and user data.
@@ -71,6 +109,24 @@ Allows for creating new pits, and includes a section for viewing the progress of
 
         await get_season_uuid(year);
         await get_pit_questions();
+    }); 
+
+    /**
+     * Scroll to the team with the given team number stored in the URL params, 
+     * either from the interaction observer, or by clicking a team in the PitStatus component
+     */
+    $effect(() => {
+        if (!$pits?.length || scrolledFromUrl) return;
+
+        queueMicrotask(() => {
+            const team = page.url.searchParams.get("pit");
+            if (!team || team === "addPit") return;
+
+            scrollToTeam(parseInt(team));
+
+            scrolledFromUrl = true;
+            scrolledFromUrlTeam = parseInt(team);
+        });
     });
 </script>
 
@@ -78,11 +134,15 @@ Allows for creating new pits, and includes a section for viewing the progress of
     <Header bind:event_data={event_data}/>
     {#if year && season_uuid && event_data && event_data.year !== 0}
         <div class="flex flex-col gap-4 items-center">
-            <PitStatus pits={$pits} pit_questions={pit_questions} />
+            <PitStatus pits={$pits} pit_questions={pit_questions} scrollToTeam={scrollToTeam} />
 
-            {#each ($pits || []) as pit}
-                <Pit pit={pit} pit_questions={pit_questions} user={user} show_avatar={false} />
-            {/each}
+            {#if $pits && $pits.length > 0}
+                {#each ($pits) as pit}
+                    <Pit pit={pit} pit_questions={pit_questions} user={user} show_avatar={false} expanded={scrolledFromUrl && scrolledFromUrlTeam === pit.team_number} />
+                {/each}
+            {:else}
+                <p>No pits found</p>
+            {/if}
 
             <AddPit event_data={event_data} />
         </div>

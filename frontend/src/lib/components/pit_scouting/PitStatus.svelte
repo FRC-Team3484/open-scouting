@@ -4,6 +4,11 @@ The pit status card on the pit scouting page
 
 Shows every loaded pit, and how completed each one is. Clicking on a team number jumps to that team's location in the list.ArrowDown
 Also shows the number of loaded pits, and a key to the status icons.
+
+Props:
+    - `pits` (`PitScoutingData[]`) - The loaded pits
+    - `pit_questions` (`SeasonPitScoutingQuestion[]`) - The loaded pit questions
+    - `scrollToTeam` (`(team_number: number | "addPit") => void`) - A function to scroll to a team
 -->
 <script lang="ts">
 	import { ArrowDownIcon, CheckCircleIcon, DotsThreeCircleIcon, RewindCircleIcon, XCircleIcon } from "phosphor-svelte";
@@ -17,8 +22,9 @@ Also shows the number of loaded pits, and a key to the status icons.
     interface Props {
         pits: PitScoutingData[];
         pit_questions: SeasonPitScoutingQuestion[];
+        scrollToTeam: (team_number: number | "addPit") => void;
     }
-    let { pits, pit_questions }: Props = $props();
+    let { pits, pit_questions, scrollToTeam }: Props = $props();
 
     let pitStatus: { team_number: number, status: "done" | "incomplete" | "none"}[] = $derived.by(() => {
         if (!pits || !pit_questions?.length) return [];
@@ -48,18 +54,6 @@ Also shows the number of loaded pits, and a key to the status icons.
             };
         });
     });
-
-    /**
-     * Scroll to the team with the given team number, or the add pit section
-     * 
-     * @param team_number The team number to scroll to, or "addPit"
-     */
-    function scrollToTeam(team_number: number | "addPit") {
-        const element = document.querySelector(`[data-teamNumber="${team_number}"]`);
-        if (element) {
-            element.scrollIntoView({ behavior: "smooth" });
-        }
-    }
 </script>
 
 <Card.Root class="w-auto min-w-64">
