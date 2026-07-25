@@ -1,15 +1,16 @@
 <!-- 
 @component
 Sign in mode for the universal authentication component
+
+Props:
+    - `ref` (`string`) - The ref to redirect to
 -->
 <script lang="ts">
 	import { goto } from "$app/navigation";
-	import { slide } from "svelte/transition";
-	import { ArrowLeftIcon, ArrowRightIcon, CircleNotchIcon, EnvelopeIcon, KeyIcon, KeyReturnIcon, WarningIcon } from "phosphor-svelte";
+	import { ArrowRightIcon, CircleNotchIcon, EnvelopeIcon, KeyIcon, KeyReturnIcon } from "phosphor-svelte";
 
 	import Button from "$lib/components/ui/button/button.svelte";
 	import Input from "$lib/components/ui/input/input.svelte";
-    import * as Alert from "$lib/components/ui/alert/index";
     import * as Kbd from "$lib/components/ui/kbd/index";
 
 	import { createLoginPasskeyAuthPasskeysLoginCreatePost, loginAuthLoginPost, meAuthMeGet, verifyLoginPasskeyAuthPasskeysLoginVerifyPost } from "$lib/api/auth/auth";
@@ -21,6 +22,11 @@ Sign in mode for the universal authentication component
 	import AuthenticationMessage from "./AuthenticationMessage.svelte";
 	import AuthenticationPage from "./AuthenticationPage.svelte";
 
+
+    interface Props {
+        ref?: string;
+    }
+    let { ref = "/" }: Props = $props();
 
     let page: "username" | "password" | "success" = $state("username"); 
 
@@ -96,7 +102,7 @@ Sign in mode for the universal authentication component
             } else if (page == "password" && password.trim() != "") {
                 signIn();
             } else if (page == "success") {
-                goto("/");
+                goto(ref);
                 window.location.reload();
             }
         }
@@ -146,5 +152,5 @@ Sign in mode for the universal authentication component
     </AuthenticationPage>
 
 {:else if page == "success"}
-    <SignInConfirmation user={successUser} redirect={5} />
+    <SignInConfirmation user={successUser} redirect={5} ref={ref} />
 {/if}

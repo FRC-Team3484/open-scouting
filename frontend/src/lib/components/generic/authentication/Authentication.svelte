@@ -41,6 +41,31 @@ Props:
     interface BaseProps {
         mode: "create_account" | "sign_in" | "change_password" | "forgot_password" | "verify_email" | "change_email" | "create_passkey" | "delete_account"
         email?: never
+        ref?: never
+        emailVerificationStatus?: never
+        forgotPasswordStatus?: never
+        changePasswordStatus?: never
+        changeEmailStatus?: never
+        createPasskeyStatus?: never
+        createPasskeyRequireUserVerification?: never
+        deleteAccountStatus?: never
+    }
+    interface CreateAccountProps {
+        mode: "create_account"
+        email?: never
+        ref?: string
+        emailVerificationStatus?: never
+        forgotPasswordStatus?: never
+        changePasswordStatus?: never
+        changeEmailStatus?: never
+        createPasskeyStatus?: never
+        createPasskeyRequireUserVerification?: never
+        deleteAccountStatus?: never
+    }
+    interface SignInProps {
+        mode: "sign_in"
+        email?: never
+        ref?: string
         emailVerificationStatus?: never
         forgotPasswordStatus?: never
         changePasswordStatus?: never
@@ -52,6 +77,7 @@ Props:
     interface VerifyEmailProps {
         mode: "verify_email"
         email: string
+        ref?: never
         emailVerificationStatus?: EmailVerificationStatus
         forgotPasswordStatus?: never
         changePasswordStatus?: never
@@ -63,6 +89,7 @@ Props:
     interface ForgotPasswordProps {
         mode: "forgot_password"
         email?: never
+        ref?: never
         emailVerificationStatus?: never
         forgotPasswordStatus?: ForgotPasswordStatus
         changePasswordStatus?: never
@@ -74,6 +101,7 @@ Props:
     interface ChangePasswordProps {
         mode: "change_password"
         email: string
+        ref?: never
         emailVerificationStatus?: never
         forgotPasswordStatus?: never
         changePasswordStatus?: ChangePasswordStatus
@@ -85,6 +113,7 @@ Props:
     interface ChangeEmailProps {
         mode: "change_email"
         email: string
+        ref?: never
         emailVerificationStatus?: never
         forgotPasswordStatus?: never
         changePasswordStatus?: never
@@ -96,6 +125,7 @@ Props:
     interface CreatePasskeyProps {
         mode: "create_passkey"
         email: string
+        ref?: never
         emailVerificationStatus?: never
         forgotPasswordStatus?: never
         changePasswordStatus?: never
@@ -107,6 +137,7 @@ Props:
     interface DeleteAccountProps {
         mode: "delete_account"
         email?: never
+        ref?: never
         emailVerificationStatus?: never
         forgotPasswordStatus?: never
         changePasswordStatus?: never
@@ -115,7 +146,7 @@ Props:
         createPasskeyRequireUserVerification?: never
         deleteAccountStatus?: DeleteAccountStatus
     }
-    let { mode, email, emailVerificationStatus = $bindable(), forgotPasswordStatus = $bindable(), changePasswordStatus = $bindable(), changeEmailStatus = $bindable(), createPasskeyStatus = $bindable(), createPasskeyRequireUserVerification, deleteAccountStatus = $bindable() }: BaseProps | VerifyEmailProps | ForgotPasswordProps | ChangePasswordProps | ChangeEmailProps | CreatePasskeyProps | DeleteAccountProps = $props();
+    let { mode, email, ref, emailVerificationStatus = $bindable(), forgotPasswordStatus = $bindable(), changePasswordStatus = $bindable(), changeEmailStatus = $bindable(), createPasskeyStatus = $bindable(), createPasskeyRequireUserVerification, deleteAccountStatus = $bindable() }: BaseProps | CreateAccountProps | SignInProps | VerifyEmailProps | ForgotPasswordProps | ChangePasswordProps | ChangeEmailProps | CreatePasskeyProps | DeleteAccountProps = $props();
 </script>
 
 <Card.Root>
@@ -125,14 +156,14 @@ Props:
                 <UserCirclePlusIcon weight="bold" size={32} />
             </AuthenticationModeHeader>
 
-            <CreateAccount />
+            <CreateAccount ref={ref} />
 
         {:else if mode === "sign_in"}
             <AuthenticationModeHeader title="Sign In" description="Sign in to your Open Scouting account">
                 <UserCircleIcon weight="bold" size={32} />
             </AuthenticationModeHeader>
 
-            <SignIn />
+            <SignIn ref={ref} />
 
         {:else if mode === "change_password"}
             <AuthenticationModeHeader title="Change Password" description="Change your password">

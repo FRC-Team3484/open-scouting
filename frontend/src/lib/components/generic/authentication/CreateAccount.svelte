@@ -12,7 +12,8 @@ Then, the account will be created on the server, and the user will be authentica
 Finally, ask the user to create a passkey.
 Then show the user the `SignInConfirmation` component.
 
-TODO: Support passkeys
+Props:
+    - `ref` (`string`) - The ref to redirect to after creating the account
 -->
 <script lang="ts">
 	import { ArrowRightIcon, CircleNotchIcon, EnvelopeIcon, KeyIcon, KeyReturnIcon, UserCircleIcon } from "phosphor-svelte";
@@ -29,7 +30,13 @@ TODO: Support passkeys
 	import AuthenticationMessage from "./AuthenticationMessage.svelte";
 	import AuthenticationPage from "./AuthenticationPage.svelte";
 	import PasswordInput from "./PasswordInput.svelte";
+	import { goto } from "$app/navigation";
 
+
+    interface Props {
+        ref?: string
+    }
+    let { ref = "/" }: Props = $props();
 
     let page: "username" | "verify" | "password" | "profile" | "passkey" | "success" = $state("username");
 
@@ -41,7 +48,6 @@ TODO: Support passkeys
     let emailVerified = $state(false);
     let password: string = $state("");
     let confirmPassword: string = $state("");
-    let showPassword: boolean = $state(false);
     let displayName: string = $state("");
     let teamNumber: number = $state(0);
     let verificationCodeUuid: string | null = $state(null);
@@ -115,6 +121,8 @@ TODO: Support passkeys
                 page = "profile";
             } else if (page == "profile" && displayName.trim() != "" && teamNumber != 0 && !creatingAccount) {
                 createAccount();
+            } else if (page == "success") {
+                goto(ref);
             }
         }
     }
@@ -212,6 +220,6 @@ TODO: Support passkeys
     <CreatePasskey email={email} bind:status={createPasskeyStatus} requireUserVerification={false} />
 
 {:else if page == "success"}
-    <SignInConfirmation user={successUser} redirect={5} />
+    <SignInConfirmation user={successUser} redirect={5} ref={ref} />
 
 {/if}

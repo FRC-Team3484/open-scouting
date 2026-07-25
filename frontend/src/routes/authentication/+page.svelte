@@ -21,13 +21,19 @@ Allows for the user to sign into their account, or create a new account.
     let page: "signin" | "signup" | "forgot_password" = $state("signin");
     let authenticated: boolean = getAuthenticationStatus();
     let forgotPasswordStatus: ForgotPasswordStatus = $state("idle");
+    let ref: string = $state("/");
 
     /**
      * If the user is already signed in, redirect them to the index page
      */
     onMount(async () => {
+        const params = new URLSearchParams(window.location.search);
+        if (params.has("ref")) {
+            ref = params.get("ref") || "/";
+        }
+
         if (authenticated) {
-            await goto("/");
+            await goto(ref);
         }
     });
 
@@ -46,14 +52,14 @@ Allows for the user to sign into their account, or create a new account.
 
             {#if page === "signin"}
                 <div class="flex flex-col gap-4 items-center" transition:slide>
-                    <Authentication mode="sign_in" />
+                    <Authentication mode="sign_in" ref={ref} />
                     <Button variant="outline" onclick={() => {page = "forgot_password"}}><QuestionMarkIcon weight="bold" /> Forgot Password</Button>
                     <Button variant="outline" onclick={() => {page = "signup"}}><ArrowRightIcon weight="bold" /> Sign Up</Button>
                 </div>
 
             {:else if page === "signup"}
                 <div class="flex flex-col gap-4 items-center" transition:slide>
-                    <Authentication mode="create_account" />
+                    <Authentication mode="create_account" ref={ref} />
                     <Button variant="outline" onclick={() => {page = "signin"}}><ArrowRightIcon weight="bold" /> Sign In</Button>
                 </div>
 

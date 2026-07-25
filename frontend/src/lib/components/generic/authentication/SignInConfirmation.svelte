@@ -7,6 +7,7 @@ Shows user information for the user that was just authenticated, then redirects 
 Props:
     - `user` (`UserResponse | null`) - The user that was just authenticated
     - `redirect` (`number`) - The number of seconds to redirect the user. Set to 0 to redirect immediately
+    - `ref` (`string`) - The ref to redirect to
 
 -->
 <script lang="ts">
@@ -25,8 +26,9 @@ Props:
     interface Props {
         user: UserResponse | null
         redirect?: number
+        ref?: string
     }
-    let { user, redirect = 5 }: Props = $props();
+    let { user, redirect = 5, ref = "/" }: Props = $props();
 
     let interval: any = $state(null);
 
@@ -38,7 +40,7 @@ Props:
             redirect--;
             if (redirect <= 0) {
                 clearInterval(interval);
-                await goto("/");
+                await goto(ref);
                 window.location.reload()
             }
         }, 1000);
@@ -77,6 +79,6 @@ Props:
         </div>
     {/if}
 
-    <p class="text-muted-foreground animate-pulse">Redirecting home in {redirect}...</p>
+    <p class="text-muted-foreground animate-pulse">Redirecting {ref == "/" ? "home" : ""} in {redirect}...</p>
     <Button onclick={async () => {await goto("/"); window.location.reload()}}><ArrowRightIcon weight="bold" /> Redirect now</Button>
 </div>
