@@ -143,7 +143,7 @@ Props:
                         Continue as {user.username} <ArrowRightIcon weight="bold" />
                     </Button>
                 {:else}
-                    <Button href="/authentication">Sign In <SignInIcon weight="bold" /></Button>
+                    <Button href="/authentication?ref={encodeURIComponent("/start?page=auth")}">Sign In <SignInIcon weight="bold" /></Button>
                 {/if}
             </Card.Footer>
         </Card.Root>
