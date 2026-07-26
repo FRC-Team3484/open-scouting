@@ -37,7 +37,7 @@ Props:
 
                 if (!data.length) return null;
 
-                const color = `var(--chart-${(i % 6) + 1})`;
+                const color = `var(--chart-${(i % 5) + 1})`;
 
                 return {
                     key: `${team.team_number}`,
