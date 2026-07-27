@@ -9,11 +9,13 @@ Presents a warning dialog to the user when in production.
     import { env } from "$env/dynamic/public";
     import { overrideItemIdKeyNameBeforeInitialisingDndZones } from "svelte-dnd-action";
     import { CircleNotchIcon } from "phosphor-svelte";
+	import { goto } from "$app/navigation";
 
     import * as Card from "$lib/components/ui/card/index.js";
 	import Button from "$lib/components/ui/button/button.svelte";
 	import Separator from "$lib/components/ui/separator/separator.svelte";
     import * as AlertDialog from "$lib/components/ui/alert-dialog/index.js";
+	import Badge from "$lib/components/ui/badge/badge.svelte";
     
 	import { getUser } from "$lib/utils/user";
 	import PageContainer from "$lib/components/layout/PageContainer.svelte";
@@ -26,18 +28,18 @@ Presents a warning dialog to the user when in production.
 	import MatchScoutingSubmissionsManager from "$lib/components/admin/MatchScoutingSubmissionsManager.svelte";
 	import PitScoutingDataManager from "$lib/components/admin/PitScoutingDataManager.svelte";
 	import type { UserResponse } from "$lib/api/model";
-	import { goto } from "$app/navigation";
 	import { getReportsCountReportsGetCountGet } from "$lib/api/reports/reports";
-	import Badge from "$lib/components/ui/badge/badge.svelte";
-	import Skeleton from "$lib/components/ui/skeleton/skeleton.svelte";
 	import ReportsManager from "$lib/components/admin/ReportsManager.svelte";
+	import { getRepairCountRepairsGetCountGet } from "$lib/api/repairs/repairs";
+	import RepairsManager from "$lib/components/admin/RepairsManager.svelte";
 
 
     let user: UserResponse | null = getUser();
-    type Page = "start" | "seasons" | "match_fields" | "pit_scouting_questions" | "users" | "events" | "match_scouting" | "pit_scouting" | "reports";
+    type Page = "start" | "seasons" | "match_fields" | "pit_scouting_questions" | "users" | "events" | "match_scouting" | "pit_scouting" | "reports" | "repairs";
     let page: Page = $state("start");
     let show_warning_dialog: boolean = $state(!(env.PUBLIC_MODE == "dev"));
     let reportCount: number | null = $state(null);
+    let repairCount: number | null = $state(null);
 
     overrideItemIdKeyNameBeforeInitialisingDndZones("uuid");
     
@@ -50,10 +52,24 @@ Presents a warning dialog to the user when in production.
         page = <Page>nextPage;
     }
 
+    /**
+     * Get the number of reports that need to be reviewed
+     */
     async function getReportCount() {
         await getReportsCountReportsGetCountGet().then((response) => {
             if (response.status === 200) {
                 reportCount = response.data;
+            }
+        })
+    }
+
+    /**
+     * Get the number of repairs that need to be completed
+     */
+    async function getRepairCount() {
+        await getRepairCountRepairsGetCountGet().then((response) => {
+            if (response.status === 200) {
+                repairCount = response.data;
             }
         })
     }
@@ -68,6 +84,7 @@ Presents a warning dialog to the user when in production.
         }
 
         getReportCount();
+        getRepairCount();
     });
 </script>
 
@@ -83,21 +100,35 @@ Presents a warning dialog to the user when in production.
                 <Card.Content>
                     <div class="flex flex-col gap-4">
                         <Button id="seasons" onclick={() => page = "seasons"}>Manage Seasons</Button>
+
                         <Separator orientation="horizontal" />
+
                         <Button onclick={() => page = "match_fields"}>Manage Match Scouting Fields</Button>
                         <Button onclick={() => page = "pit_scouting_questions"}>Manage Pit Scouting Questions</Button>
+
                         <Separator orientation="horizontal" />
+
                         <Button onclick={() => page = "users"}>Manage Users</Button>
                         <Button onclick={() => page = "events"}>Manage Events</Button>
                         <Button onclick={() => page = "match_scouting"}>Manage Match Scouting Data</Button>
                         <Button onclick={() => page = "pit_scouting"}>Manage Pit Scouting Data</Button>
+
                         <Separator orientation="horizontal" />
+
                         <Button onclick={() => page = "reports"}>
                             Manage Reports
                             {#if reportCount}
                                 <Badge variant="secondary">{reportCount}</Badge>
                             {:else}
-                                <Skeleton class="ml-2 h-4 w-4" />
+                                <CircleNotchIcon weight="bold" class="animate-spin" />
+                            {/if}
+                        </Button>
+                        <Button onclick={() => page = "repairs"}>
+                            Manage Repairs
+                            {#if repairCount}
+                                <Badge variant="secondary">{repairCount}</Badge>
+                            {:else}
+                                <CircleNotchIcon weight="bold" class="animate-spin" />
                             {/if}
                         </Button>
                     </div>
@@ -135,6 +166,10 @@ Presents a warning dialog to the user when in production.
         {:else if page === "reports"}
             <AdminHeader handleNavigate={handleNavigate}/>
             <ReportsManager />
+
+        {:else if page === "repairs"}
+            <AdminHeader handleNavigate={handleNavigate}/>
+            <RepairsManager />
 
         {/if}
     {:else}
