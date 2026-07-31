@@ -5,20 +5,22 @@ Management page for repairs on the admin page
 <script lang="ts">
 	import { onMount } from "svelte";
 	import { toast } from "svelte-sonner";
+	import { ChartBarIcon } from "phosphor-svelte";
 
     import * as Card from "$lib/components/ui/card/index.js";
-
-	import type { RepairResponse } from "$lib/api/model";
-	import { getRepairsRepairsGetGet } from "$lib/api/repairs/repairs";
-	import Repair from "./Repair.svelte";
-	import { ChartBarIcon } from "phosphor-svelte";
 	import Button from "../ui/button/button.svelte";
 	import Badge from "../ui/badge/badge.svelte";
     import * as Select from "$lib/components/ui/select";
+
+	import type { RepairResponse } from "$lib/api/model";
+	import { getRepairsRepairsGetGet } from "$lib/api/repairs/repairs";
+	import Repair from "./repairs/Repair.svelte";
+	import { slide } from "svelte/transition";
 	import Separator from "../ui/separator/separator.svelte";
 
 
     let repairs: RepairResponse[] = $state([]);
+    let selectedRepairs: RepairResponse[] = $state([]);
     let selectedRepairTypes: string[] = $state([
         "event",
         "game_piece",
@@ -140,11 +142,26 @@ Management page for repairs on the admin page
         <Card.Root>
             <Card.Content>
                 <div class="flex flex-col gap-2 w-full lg:w-[60vw]">
+                    <Card.Root>
+                        <Card.Content>
+                            <div class="flex flex-col gap-2 items-start text-left">
+                                <p>{selectedRepairs.length} selected</p>
+
+                                <div class="flex flex-row gap-2 items-center flex-wrap">
+                                    <Button variant="outline" size="sm" onclick={() => {selectedRepairs = repairs}}>Select All</Button>
+                                    <Button variant="outline" size="sm" onclick={() => {selectedRepairs = []}}>Select None</Button>
+                                </div>
+                            </div>
+                        </Card.Content>
+                    </Card.Root>
+
+                    <Separator class="my-4" />
+
                     {#if filteredRepairs.length === 0}
                         <p class="text-muted-foreground my-8">No repairs found</p>
                     {:else}
                         {#each filteredRepairs as repair}
-                            <Repair repair={repair} />
+                            <Repair repair={repair} bind:selectedRepairs={selectedRepairs} />
                         {/each}
                     {/if}
                 </div>
