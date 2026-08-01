@@ -5,11 +5,11 @@ This page is only accessible to superusers. Allows for managing seasons, match s
 Presents a warning dialog to the user when in production.
 -->
 <script lang="ts">
-	import { onMount } from "svelte";
+	import { onMount, tick } from "svelte";
     import { env } from "$env/dynamic/public";
     import { overrideItemIdKeyNameBeforeInitialisingDndZones } from "svelte-dnd-action";
     import { CircleNotchIcon } from "phosphor-svelte";
-	import { goto } from "$app/navigation";
+	import { goto, pushState } from "$app/navigation";
 
     import * as Card from "$lib/components/ui/card/index.js";
 	import Button from "$lib/components/ui/button/button.svelte";
@@ -75,17 +75,46 @@ Presents a warning dialog to the user when in production.
     }
 
     /**
+     * Sets the page in the URL params
+     * @param page
+     */
+    function setPageInUrl(page: Page) {
+        const url = new URL(window.location.href);
+
+        url.searchParams.set("page", page);
+
+        tick().then(() => {
+            pushState(url, {});
+        })
+    }
+
+    /**
+     * Get the page from the URL params
+     */
+    function getPageFromUrl(): Page {
+        const url = new URL(window.location.href);
+
+        return url.searchParams.get("page") as Page ?? "start";
+    }
+
+    /**
      * When the component mounts, check if the user is authenticated. 
      * If they're not a superuser, redirect them back to the index page.
      */
     onMount(async () => {
         if (!user || !user.is_superuser) {
             await goto("/");
+        } else {
+            getReportCount();
+            getRepairCount();
+    
+            page = getPageFromUrl();
         }
-
-        getReportCount();
-        getRepairCount();
     });
+
+    $effect(() => {
+        setPageInUrl(page);
+    })
 </script>
 
 <PageContainer>
