@@ -94,3 +94,40 @@ export const GetRepairCountRepairsGetCountGetResponse = zod.number()
  */
 export const CreateRepairsForTestingRepairsCreatePostResponse = zod.unknown()
 
+/**
+ * Get all match scouting fields. Used on the admin repair page when setting the match scouting field on a piece of data.
+
+Requires superuser access
+
+Returns:
+    list[MatchScoutingFieldRepairResponse]: A list of all match scouting fields
+ * @summary Get All Match Scouting Fields
+ */
+export const GetAllMatchScoutingFieldsRepairsGetMatchScoutingFieldsGetResponseItem = zod.object({
+  "uuid": zod.string().uuid(),
+  "name": zod.string(),
+  "season_year": zod.union([zod.number(),zod.null()]),
+  "game_piece_name": zod.union([zod.string(),zod.null()]),
+  "archived": zod.boolean(),
+  "created_at": zod.string().datetime({"offset":true})
+})
+export const GetAllMatchScoutingFieldsRepairsGetMatchScoutingFieldsGetResponse = zod.array(GetAllMatchScoutingFieldsRepairsGetMatchScoutingFieldsGetResponseItem)
+
+/**
+ * Get all pit scouting fields. Used on the admin repair page when setting the pit scouting field on a piece of data.
+
+Requires superuser access
+
+Returns:
+    list[PitScoutingFieldRepairResponse]: A list of all pit scouting fields
+ * @summary Get All Pit Scouting Fields
+ */
+export const GetAllPitScoutingFieldsRepairsGetPitScoutingFieldsGetResponseItem = zod.object({
+  "uuid": zod.string().uuid(),
+  "name": zod.string(),
+  "season_year": zod.union([zod.number(),zod.null()]),
+  "archived": zod.boolean(),
+  "created_at": zod.string().datetime({"offset":true})
+})
+export const GetAllPitScoutingFieldsRepairsGetPitScoutingFieldsGetResponse = zod.array(GetAllPitScoutingFieldsRepairsGetPitScoutingFieldsGetResponseItem)
+

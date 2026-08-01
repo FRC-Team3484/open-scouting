@@ -5,6 +5,8 @@
  * OpenAPI spec version: v2.2.0
  */
 import type {
+  MatchScoutingFieldRepairResponse,
+  PitScoutingFieldRepairResponse,
   RepairResponse
 } from '../model';
 
@@ -132,6 +134,88 @@ export const createRepairsForTestingRepairsCreatePost = async ( options?: Reques
   {
     ...options,
     method: 'POST'
+
+
+  }
+);}
+
+
+export type getAllMatchScoutingFieldsRepairsGetMatchScoutingFieldsGetResponse200 = {
+  data: MatchScoutingFieldRepairResponse[]
+  status: 200
+}
+
+export type getAllMatchScoutingFieldsRepairsGetMatchScoutingFieldsGetResponseSuccess = (getAllMatchScoutingFieldsRepairsGetMatchScoutingFieldsGetResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getAllMatchScoutingFieldsRepairsGetMatchScoutingFieldsGetResponse = (getAllMatchScoutingFieldsRepairsGetMatchScoutingFieldsGetResponseSuccess)
+
+export const getGetAllMatchScoutingFieldsRepairsGetMatchScoutingFieldsGetUrl = () => {
+
+
+
+
+  return `/repairs/get/match_scouting_fields`
+}
+
+/**
+ * Get all match scouting fields. Used on the admin repair page when setting the match scouting field on a piece of data.
+
+Requires superuser access
+
+Returns:
+    list[MatchScoutingFieldRepairResponse]: A list of all match scouting fields
+ * @summary Get All Match Scouting Fields
+ */
+export const getAllMatchScoutingFieldsRepairsGetMatchScoutingFieldsGet = async ( options?: RequestInit): Promise<getAllMatchScoutingFieldsRepairsGetMatchScoutingFieldsGetResponse> => {
+
+  return customInstance<getAllMatchScoutingFieldsRepairsGetMatchScoutingFieldsGetResponse>(getGetAllMatchScoutingFieldsRepairsGetMatchScoutingFieldsGetUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+export type getAllPitScoutingFieldsRepairsGetPitScoutingFieldsGetResponse200 = {
+  data: PitScoutingFieldRepairResponse[]
+  status: 200
+}
+
+export type getAllPitScoutingFieldsRepairsGetPitScoutingFieldsGetResponseSuccess = (getAllPitScoutingFieldsRepairsGetPitScoutingFieldsGetResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getAllPitScoutingFieldsRepairsGetPitScoutingFieldsGetResponse = (getAllPitScoutingFieldsRepairsGetPitScoutingFieldsGetResponseSuccess)
+
+export const getGetAllPitScoutingFieldsRepairsGetPitScoutingFieldsGetUrl = () => {
+
+
+
+
+  return `/repairs/get/pit_scouting_fields`
+}
+
+/**
+ * Get all pit scouting fields. Used on the admin repair page when setting the pit scouting field on a piece of data.
+
+Requires superuser access
+
+Returns:
+    list[PitScoutingFieldRepairResponse]: A list of all pit scouting fields
+ * @summary Get All Pit Scouting Fields
+ */
+export const getAllPitScoutingFieldsRepairsGetPitScoutingFieldsGet = async ( options?: RequestInit): Promise<getAllPitScoutingFieldsRepairsGetPitScoutingFieldsGetResponse> => {
+
+  return customInstance<getAllPitScoutingFieldsRepairsGetPitScoutingFieldsGetResponse>(getGetAllPitScoutingFieldsRepairsGetPitScoutingFieldsGetUrl(),
+  {
+    ...options,
+    method: 'GET'
 
 
   }
