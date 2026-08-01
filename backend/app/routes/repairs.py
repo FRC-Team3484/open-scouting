@@ -1,11 +1,13 @@
 from datetime import datetime
+from typing import Literal
+from uuid import UUID
 
-from fastapi import APIRouter, Depends
-
+from fastapi import APIRouter, Depends, HTTPException
 
 from ..dependencies import Identity, require_superuser
-from ..schemas.repairs import EventRepair, GamePieceRepair, MatchScoutingAnswerRepair, MatchScoutingFieldRepair, MatchScoutingFieldRepairResponse, MatchScoutingSubmissionRepair, PitScoutingAnswerRepair, PitScoutingFieldRepair, PitScoutingFieldRepairResponse, RepairResponse, TeamPitRepair
-from ..models import Event, GamePiece, MatchScoutingAnswer, MatchScoutingField, MatchScoutingSubmission, PitScoutingAnswer, PitScoutingField, TeamPit
+from ..schemas.generic import MessageResponse
+from ..schemas.repairs import EventRepair, GamePieceRepair, MatchScoutingAnswerRepair, MatchScoutingFieldRepair, MatchScoutingFieldRepairResponse, MatchScoutingSubmissionRepair, PitScoutingAnswerRepair, PitScoutingFieldRepair, PitScoutingFieldRepairResponse, RepairRequest, RepairResponse, TeamPitRepair
+from ..models import Event, GamePiece, MatchScoutingAnswer, MatchScoutingField, MatchScoutingSubmission, PitScoutingAnswer, PitScoutingField, Season, TeamPit
 from ..utils import IS_DEV
 
 
@@ -349,6 +351,7 @@ async def create_repairs_for_testing(identity: Identity = Depends(require_superu
 
     return "Repairs created"
 
+# Get data that can be used for repairs
 @router.get("/repairs/get/match_scouting_fields", response_model=list[MatchScoutingFieldRepairResponse])
 async def get_all_match_scouting_fields(identity: Identity = Depends(require_superuser)):
     """
@@ -395,3 +398,236 @@ async def get_all_pit_scouting_fields(identity: Identity = Depends(require_super
         )
         for field in fields
     ]
+
+# Fix repairs
+async def repair_event(data_uuid: UUID, repair_data_uuid: UUID, data_type: Literal["event"], repair_type: Literal["missing_season"]):
+    """
+    Repair an event
+
+    Parameters:
+        data_uuid (`UUID`): The uuid of the event to repair
+        repair_data_uuid (`UUID`): The uuid of the season to repair the event with
+        data_type (`Literal["event"]`): The type of data to repair
+        repair_type (`Literal["missing_season"]`): The type of repair to perform
+    """
+    event = await Event.get_or_none(uuid=data_uuid)
+    season = await Season.get_or_none(uuid=repair_data_uuid)
+    
+    if event is None:
+        raise HTTPException(status_code=404, detail="Event not found")
+    if season is None:
+        raise HTTPException(status_code=404, detail="Season not found")
+        
+    event.season = season
+
+    await event.save()
+
+async def repair_game_piece(data_uuid: UUID, repair_data_uuid: UUID, data_type: Literal["game_piece"], repair_type: Literal["missing_season"]):
+    """
+    Repair a game piece
+
+    Parameters:
+        data_uuid (`UUID`): The uuid of the game piece to repair
+        repair_data_uuid (`UUID`): The uuid of the season to repair the game piece with
+        data_type (`Literal["game_piece"]`): The type of data to repair
+        repair_type (`Literal["missing_season"]`): The type of repair to perform
+    """
+    game_piece = await GamePiece.get_or_none(uuid=data_uuid)
+    season = await Season.get_or_none(uuid=repair_data_uuid)
+    
+    if game_piece is None:
+        raise HTTPException(status_code=404, detail="Game piece not found")
+    if season is None:
+        raise HTTPException(status_code=404, detail="Season not found")
+        
+    game_piece.season = season
+
+    await game_piece.save()
+
+async def repair_match_scouting_field(data_uuid: UUID, repair_data_uuid: UUID, data_type: Literal["match_scouting_field"], repair_type: Literal["missing_season", "missing_game_piece"]):
+    """
+    Repair a match scouting field
+
+    Parameters:
+        data_uuid (`UUID`): The uuid of the match scouting field to repair
+        repair_data_uuid (`UUID`): The uuid of the season or game piece to repair the match scouting field with
+        data_type (`Literal["match_scouting_field"]`): The type of data to repair
+        repair_type (`Literal["missing_season", "missing_game_piece"]`): The type of repair to perform
+    """
+    match_scouting_field = await MatchScoutingField.get_or_none(uuid=data_uuid)
+
+    if match_scouting_field is None:
+        raise HTTPException(status_code=404, detail="Match scouting field not found")
+
+    if repair_type == "missing_season":
+        season = await Season.get_or_none(uuid=repair_data_uuid)
+        if season is None:
+            raise HTTPException(status_code=404, detail="Season not found")
+        match_scouting_field.season = season
+    elif repair_type == "missing_game_piece":
+        game_piece = await GamePiece.get_or_none(uuid=repair_data_uuid)
+        if game_piece is None:
+            raise HTTPException(status_code=404, detail="Game piece not found")
+        match_scouting_field.game_piece = game_piece
+
+    await match_scouting_field.save()
+
+async def repair_match_scouting_submission(data_uuid: UUID, repair_data_uuid: UUID, data_type: Literal["match_scouting_submission"], repair_type: Literal["missing_event"]):
+    """
+    Repair a match scouting submission
+
+    Parameters:
+        data_uuid (`UUID`): The uuid of the match scouting submission to repair
+        repair_data_uuid (`UUID`): The uuid of the season or game piece to repair the match scouting submission with
+        data_type (`Literal["match_scouting_submission"]`): The type of data to repair
+        repair_type (`Literal["missing_event"]`): The type of repair to perform
+    """
+    match_scouting_submission = await MatchScoutingSubmission.get_or_none(uuid=data_uuid)
+    event = await Event.get_or_none(uuid=repair_data_uuid)
+
+    if match_scouting_submission is None:
+        raise HTTPException(status_code=404, detail="Match scouting submission not found")
+    if event is None:
+        raise HTTPException(status_code=404, detail="Event not found")
+
+    match_scouting_submission.event = event
+
+    await match_scouting_submission.save()
+
+async def repair_match_scouting_answer(data_uuid: UUID, repair_data_uuid: UUID, data_type: Literal["match_scouting_answer"], repair_type: Literal["missing_field", "missing_submission"]):
+    """
+    Repair a match scouting answer
+
+    Parameters:
+        data_uuid (`UUID`): The uuid of the match scouting answer to repair
+        repair_data_uuid (`UUID`): The uuid of the field or team to repair the match scouting answer with
+        data_type (`Literal["match_scouting_answer"]`): The type of data to repair
+        repair_type (`Literal["missing_field", "missing_team"]`): The type of repair to perform
+    """
+    match_scouting_answer = await MatchScoutingAnswer.get_or_none(uuid=data_uuid)
+
+    if match_scouting_answer is None:
+        raise HTTPException(status_code=404, detail="Match scouting answer not found")
+
+    if repair_type == "missing_field":
+        match_scouting_field = await MatchScoutingField.get_or_none(uuid=repair_data_uuid)
+        if match_scouting_field is None:
+            raise HTTPException(status_code=404, detail="Match scouting field not found")
+        match_scouting_answer.match_scouting_field = match_scouting_field
+    elif repair_type == "missing_submission":
+        match_scouting_submission = await MatchScoutingSubmission.get_or_none(uuid=repair_data_uuid)
+        if match_scouting_submission is None:
+            raise HTTPException(status_code=404, detail="Match scouting submission not found")
+        match_scouting_answer.match_scouting_submission = match_scouting_submission
+
+    await match_scouting_answer.save()
+
+async def repair_pit_scouting_field(data_uuid: UUID, repair_data_uuid: UUID, data_type: Literal["pit_scouting_field"], repair_type: Literal["missing_season"]):
+    """
+    Repair a pit scouting field
+
+    Parameters:
+        data_uuid (`UUID`): The uuid of the pit scouting field to repair
+        repair_data_uuid (`UUID`): The uuid of the season or game piece to repair the pit scouting field with
+        data_type (`Literal["pit_scouting_field"]`): The type of data to repair
+        repair_type (`Literal["missing_season"]`): The type of repair to perform
+    """
+    pit_scouting_field = await PitScoutingField.get_or_none(uuid=data_uuid)
+    season = await Season.get_or_none(uuid=repair_data_uuid)
+
+    if pit_scouting_field is None:
+        raise HTTPException(status_code=404, detail="Pit scouting field not found")
+    if season is None:
+        raise HTTPException(status_code=404, detail="Season not found")
+
+    pit_scouting_field.season = season
+
+    await pit_scouting_field.save()
+
+async def repair_team_pit(data_uuid: UUID, repair_data_uuid: UUID, data_type: Literal["team_pit"], repair_type: Literal["missing_season", "missing_event"]):
+    """
+    Repair a team pit
+
+    Parameters:
+        data_uuid (`UUID`): The uuid of the team pit to repair
+        repair_data_uuid (`UUID`): The uuid of the season or game piece to repair the team pit with
+        data_type (`Literal["team_pit"]`): The type of data to repair
+        repair_type (`Literal["missing_season", "missing_event"]`): The type of repair to perform
+    """
+    team_pit = await TeamPit.get_or_none(uuid=data_uuid)
+
+    if team_pit is None:
+        raise HTTPException(status_code=404, detail="Team pit not found")
+
+    if repair_type == "missing_season":
+        season = await Season.get_or_none(uuid=repair_data_uuid)
+        if season is None:
+            raise HTTPException(status_code=404, detail="Season not found")
+        team_pit.season = season
+    elif repair_type == "missing_event":
+        event = await Event.get_or_none(uuid=repair_data_uuid)
+        if event is None:
+            raise HTTPException(status_code=404, detail="Event not found")
+        team_pit.event = event
+
+    await team_pit.save()
+
+async def repair_pit_scouting_answer(data_uuid: UUID, repair_data_uuid: UUID, data_type: Literal["pit_scouting_answer"], repair_type: Literal["missing_field", "missing_team"]):
+    """
+    Repair a pit scouting answer
+
+    Parameters:
+        data_uuid (`UUID`): The uuid of the pit scouting answer to repair
+        repair_data_uuid (`UUID`): The uuid of the field or team to repair the pit scouting answer with
+        data_type (`Literal["pit_scouting_answer"]`): The type of data to repair
+        repair_type (`Literal["missing_field", "missing_team"]`): The type of repair to perform
+    """
+    pit_scouting_answer = await PitScoutingAnswer.get_or_none(uuid=data_uuid)
+
+    if pit_scouting_answer is None:
+        raise HTTPException(status_code=404, detail="Pit scouting answer not found")
+
+    if repair_type == "missing_field":
+        pit_scouting_field = await PitScoutingField.get_or_none(uuid=repair_data_uuid)
+        if pit_scouting_field is None:
+            raise HTTPException(status_code=404, detail="Pit scouting field not found")
+        pit_scouting_answer.pit_scouting_field = pit_scouting_field
+    elif repair_type == "missing_team":
+        team = await TeamPit.get_or_none(uuid=repair_data_uuid)
+        if team is None:
+            raise HTTPException(status_code=404, detail="Team not found")
+        pit_scouting_answer.team = team
+
+    await pit_scouting_answer.save()
+
+@router.post(f"/repairs/fix", response_model=MessageResponse)
+async def fix_repair(data: RepairRequest, identity: Identity = Depends(require_superuser)):
+    """
+    Fix a repair
+
+    Requires superuser access
+
+    Parameters:
+        data (`RepairRequest`): The data to fix
+
+    Returns:
+        `MessageResponse`: A message indicating that the repair was fixed (or failed to fix)
+    """
+    if data.data_type == "event":
+        await repair_event(data.data_uuid, data.repair_data_uuid, data.data_type, data.repair_type)
+    elif data.data_type == "game_piece":
+        await repair_game_piece(data.data_uuid, data.repair_data_uuid, data.data_type, data.repair_type)
+    elif data.data_type == "match_scouting_field":
+        await repair_match_scouting_field(data.data_uuid, data.repair_data_uuid, data.data_type, data.repair_type)
+    elif data.data_type == "match_scouting_submission":
+        await repair_match_scouting_submission(data.data_uuid, data.repair_data_uuid, data.data_type, data.repair_type)
+    elif data.data_type == "match_scouting_answer":
+        await repair_match_scouting_answer(data.data_uuid, data.repair_data_uuid, data.data_type, data.repair_type)
+    elif data.data_type == "pit_scouting_field":
+        await repair_pit_scouting_field(data.data_uuid, data.repair_data_uuid, data.data_type, data.repair_type)
+    elif data.data_type == "team_pit":
+        await repair_team_pit(data.data_uuid, data.repair_data_uuid, data.data_type, data.repair_type)
+    elif data.data_type == "pit_scouting_answer":
+        await repair_pit_scouting_answer(data.data_uuid, data.repair_data_uuid, data.data_type, data.repair_type)
+
+    return MessageResponse(message="Repair fixed")

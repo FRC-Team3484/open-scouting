@@ -4,7 +4,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, Field, RootModel
 
-
+# Repair response
 class BaseRepair(BaseModel):
     name: str
     data_uuid: UUID
@@ -57,6 +57,7 @@ Repair = Annotated[
 class RepairResponse(RootModel[Repair]):
     pass
 
+# Avaliable data that can be used for repairs
 class MatchScoutingFieldRepairResponse(BaseModel):
     uuid: UUID
     name: str
@@ -71,3 +72,52 @@ class PitScoutingFieldRepairResponse(BaseModel):
     season_year: int | None
     archived: bool
     created_at: datetime
+
+# Repair request
+class BaseRepairRequest(BaseModel):
+    data_uuid: UUID # UUID of the data that needs to be fixed
+    repair_data_uuid: UUID # UUID of the data that is being used to fix the relation in data_uuid
+
+class EventRepairRequest(BaseRepairRequest):
+    data_type: Literal["event"]
+    repair_type: Literal["missing_season"]
+
+class GamePieceRepairRequest(BaseRepairRequest):
+    data_type: Literal["game_piece"]
+    repair_type: Literal["missing_season"]
+
+class MatchScoutingFieldRepairRequest(BaseRepairRequest):
+    data_type: Literal["match_scouting_field"]
+    repair_type: Literal["missing_season", "missing_game_piece"]
+
+class MatchScoutingSubmissionRepairRequest(BaseRepairRequest):
+    data_type: Literal["match_scouting_submission"]
+    repair_type: Literal["missing_event"]
+
+class MatchScoutingAnswerRepairRequest(BaseRepairRequest):
+    data_type: Literal["match_scouting_answer"]
+    repair_type: Literal["missing_field","missing_submission"]
+
+class PitScoutingFieldRepairRequest(BaseRepairRequest):
+    data_type: Literal["pit_scouting_field"]
+    repair_type: Literal["missing_season"]
+
+class TeamPitRepairRequest(BaseRepairRequest):
+    data_type: Literal["team_pit"]
+    repair_type: Literal["missing_season", "missing_event"]
+
+class PitScoutingAnswerRepairRequest(BaseRepairRequest):
+    data_type: Literal["pit_scouting_answer"]
+    repair_type: Literal["missing_field", "missing_team"]
+
+RepairRequest = Annotated[
+    EventRepairRequest | 
+    GamePieceRepairRequest | 
+    MatchScoutingFieldRepairRequest | 
+    MatchScoutingSubmissionRepairRequest | 
+    MatchScoutingAnswerRepairRequest | 
+    PitScoutingFieldRepairRequest | 
+    TeamPitRepairRequest | 
+    PitScoutingAnswerRepairRequest,
+    Field(discriminator="data_type")
+]

@@ -5,9 +5,19 @@
  * OpenAPI spec version: v2.2.0
  */
 import type {
+  EventRepairRequest,
+  GamePieceRepairRequest,
+  HTTPValidationError,
+  MatchScoutingAnswerRepairRequest,
+  MatchScoutingFieldRepairRequest,
   MatchScoutingFieldRepairResponse,
+  MatchScoutingSubmissionRepairRequest,
+  MessageResponse,
+  PitScoutingAnswerRepairRequest,
+  PitScoutingFieldRepairRequest,
   PitScoutingFieldRepairResponse,
-  RepairResponse
+  RepairResponse,
+  TeamPitRepairRequest
 } from '../model';
 
 import { customInstance } from '.././client';
@@ -218,6 +228,58 @@ export const getAllPitScoutingFieldsRepairsGetPitScoutingFieldsGet = async ( opt
     method: 'GET'
 
 
+  }
+);}
+
+
+export type fixRepairRepairsFixPostResponse200 = {
+  data: MessageResponse
+  status: 200
+}
+
+export type fixRepairRepairsFixPostResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type fixRepairRepairsFixPostResponseSuccess = (fixRepairRepairsFixPostResponse200) & {
+  headers: Headers;
+};
+export type fixRepairRepairsFixPostResponseError = (fixRepairRepairsFixPostResponse422) & {
+  headers: Headers;
+};
+
+export type fixRepairRepairsFixPostResponse = (fixRepairRepairsFixPostResponseSuccess | fixRepairRepairsFixPostResponseError)
+
+export const getFixRepairRepairsFixPostUrl = () => {
+
+
+
+
+  return `/repairs/fix`
+}
+
+/**
+ * Fix a repair
+
+Requires superuser access
+
+Parameters:
+    data (`RepairRequest`): The data to fix
+
+Returns:
+    `MessageResponse`: A message indicating that the repair was fixed (or failed to fix)
+ * @summary Fix Repair
+ */
+export const fixRepairRepairsFixPost = async (eventRepairRequestGamePieceRepairRequestMatchScoutingFieldRepairRequestMatchScoutingSubmissionRepairRequestMatchScoutingAnswerRepairRequestPitScoutingFieldRepairRequestTeamPitRepairRequestPitScoutingAnswerRepairRequest: EventRepairRequest | GamePieceRepairRequest | MatchScoutingFieldRepairRequest | MatchScoutingSubmissionRepairRequest | MatchScoutingAnswerRepairRequest | PitScoutingFieldRepairRequest | TeamPitRepairRequest | PitScoutingAnswerRepairRequest, options?: RequestInit): Promise<fixRepairRepairsFixPostResponse> => {
+
+  return customInstance<fixRepairRepairsFixPostResponse>(getFixRepairRepairsFixPostUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      eventRepairRequestGamePieceRepairRequestMatchScoutingFieldRepairRequestMatchScoutingSubmissionRepairRequestMatchScoutingAnswerRepairRequestPitScoutingFieldRepairRequestTeamPitRepairRequestPitScoutingAnswerRepairRequest,)
   }
 );}
 

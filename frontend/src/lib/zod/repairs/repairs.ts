@@ -131,3 +131,61 @@ export const GetAllPitScoutingFieldsRepairsGetPitScoutingFieldsGetResponseItem =
 })
 export const GetAllPitScoutingFieldsRepairsGetPitScoutingFieldsGetResponse = zod.array(GetAllPitScoutingFieldsRepairsGetPitScoutingFieldsGetResponseItem)
 
+/**
+ * Fix a repair
+
+Requires superuser access
+
+Parameters:
+    data (`RepairRequest`): The data to fix
+
+Returns:
+    `MessageResponse`: A message indicating that the repair was fixed (or failed to fix)
+ * @summary Fix Repair
+ */
+export const FixRepairRepairsFixPostBody = zod.union([zod.object({
+  "data_uuid": zod.string().uuid(),
+  "repair_data_uuid": zod.string().uuid(),
+  "data_type": zod.literal("event"),
+  "repair_type": zod.literal("missing_season")
+}),zod.object({
+  "data_uuid": zod.string().uuid(),
+  "repair_data_uuid": zod.string().uuid(),
+  "data_type": zod.literal("game_piece"),
+  "repair_type": zod.literal("missing_season")
+}),zod.object({
+  "data_uuid": zod.string().uuid(),
+  "repair_data_uuid": zod.string().uuid(),
+  "data_type": zod.literal("match_scouting_field"),
+  "repair_type": zod.enum(['missing_season', 'missing_game_piece'])
+}),zod.object({
+  "data_uuid": zod.string().uuid(),
+  "repair_data_uuid": zod.string().uuid(),
+  "data_type": zod.literal("match_scouting_submission"),
+  "repair_type": zod.literal("missing_event")
+}),zod.object({
+  "data_uuid": zod.string().uuid(),
+  "repair_data_uuid": zod.string().uuid(),
+  "data_type": zod.literal("match_scouting_answer"),
+  "repair_type": zod.enum(['missing_field', 'missing_submission'])
+}),zod.object({
+  "data_uuid": zod.string().uuid(),
+  "repair_data_uuid": zod.string().uuid(),
+  "data_type": zod.literal("pit_scouting_field"),
+  "repair_type": zod.literal("missing_season")
+}),zod.object({
+  "data_uuid": zod.string().uuid(),
+  "repair_data_uuid": zod.string().uuid(),
+  "data_type": zod.literal("team_pit"),
+  "repair_type": zod.enum(['missing_season', 'missing_event'])
+}),zod.object({
+  "data_uuid": zod.string().uuid(),
+  "repair_data_uuid": zod.string().uuid(),
+  "data_type": zod.literal("pit_scouting_answer"),
+  "repair_type": zod.enum(['missing_field', 'missing_team'])
+})])
+
+export const FixRepairRepairsFixPostResponse = zod.object({
+  "message": zod.string()
+})
+
