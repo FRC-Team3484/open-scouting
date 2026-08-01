@@ -2,6 +2,18 @@
 @component
 Management page for repairs on the admin page
 -->
+<script lang="ts" module>
+    export type ChooseDataDialogType = null | "season" | "game_piece" | "event" | "match_scouting_field" | "match_scouting_submission" | "pit_scouting_field" | "team"
+    export type ChooseDataDialogRepairType = null | "missing_season" | "missing_game_piece" | "missing_event" | "missing_field" | "missing_submission" | "missing_team"
+
+    export interface ChooseDataDialog {
+        open: boolean;
+        type: ChooseDataDialogType
+        dataUuid: null | string // The data to fix
+        contentUuid: null | string // The selected content to fix the issue
+        repairType: ChooseDataDialogRepairType
+    }
+</script>
 <script lang="ts">
 	import { onMount } from "svelte";
 	import { toast } from "svelte-sonner";
@@ -17,6 +29,8 @@ Management page for repairs on the admin page
 	import Repair from "./repairs/Repair.svelte";
 	import { slide } from "svelte/transition";
 	import Separator from "../ui/separator/separator.svelte";
+	import SeasonSelector from "./repairs/DataSelector.svelte";
+	import DataSelector from "./repairs/DataSelector.svelte";
 
 
     let repairs: RepairResponse[] = $state([]);
@@ -51,6 +65,14 @@ Management page for repairs on the admin page
     let sortByLabel: string = $derived(
         sortByTypes.find((type) => type.value === sortBy)?.name || "Sort By"
     );
+    
+    let repairChooseDataDialog: ChooseDataDialog = $state({
+        open: false,
+        type: null,
+        dataUuid: null,
+        contentUuid: null,
+        repairType: null
+    })
 
     let filteredRepairs: RepairResponse[] = $derived.by(() => {
             return repairs.filter((r) => selectedRepairTypes.includes(r.data_type)).sort((a, b) => {
@@ -67,6 +89,7 @@ Management page for repairs on the admin page
         await getRepairsRepairsGetGet().then((response) => {
             if (response.status === 200) {
                 repairs = response.data
+                console.log("got repairs")
             } else {
                 toast.error("Failed to get repairs", { duration: 5000 });
             }
@@ -161,7 +184,7 @@ Management page for repairs on the admin page
                         <p class="text-muted-foreground my-8">No repairs found</p>
                     {:else}
                         {#each filteredRepairs as repair}
-                            <Repair repair={repair} bind:selectedRepairs={selectedRepairs} />
+                            <Repair repair={repair} bind:selectedRepairs={selectedRepairs} bind:dialog={repairChooseDataDialog} getRepairs={getRepairs} />
                         {/each}
                     {/if}
                 </div>
@@ -169,3 +192,5 @@ Management page for repairs on the admin page
         </Card.Root>
     </div>
 </div>
+
+<DataSelector bind:open={repairChooseDataDialog.open} type={repairChooseDataDialog.type} bind:contentUuid={repairChooseDataDialog.contentUuid} />
