@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 
 
 from ..dependencies import Identity, require_superuser
-from ..schemas.repairs import EventRepair, GamePieceRepair, MatchScoutingAnswerRepair, MatchScoutingFieldRepair, MatchScoutingSubmissionRepair, PitScoutingAnswerRepair, PitScoutingFieldRepair, RepairResponse, TeamPitRepair
+from ..schemas.repairs import EventRepair, GamePieceRepair, MatchScoutingAnswerRepair, MatchScoutingFieldRepair, MatchScoutingFieldRepairResponse, MatchScoutingSubmissionRepair, PitScoutingAnswerRepair, PitScoutingFieldRepair, PitScoutingFieldRepairResponse, RepairResponse, TeamPitRepair
 from ..models import Event, GamePiece, MatchScoutingAnswer, MatchScoutingField, MatchScoutingSubmission, PitScoutingAnswer, PitScoutingField, TeamPit
 from ..utils import IS_DEV
 
@@ -348,3 +348,50 @@ async def create_repairs_for_testing(identity: Identity = Depends(require_superu
     await PitScoutingAnswer.create(field=pit_field, team=None)
 
     return "Repairs created"
+
+@router.get("/repairs/get/match_scouting_fields", response_model=list[MatchScoutingFieldRepairResponse])
+async def get_all_match_scouting_fields(identity: Identity = Depends(require_superuser)):
+    """
+    Get all match scouting fields. Used on the admin repair page when setting the match scouting field on a piece of data.
+
+    Requires superuser access
+
+    Returns:
+        list[MatchScoutingFieldRepairResponse]: A list of all match scouting fields
+    """
+    fields = await MatchScoutingField.all().prefetch_related("season", "game_piece")
+
+    return [
+        MatchScoutingFieldRepairResponse(
+            uuid=field.uuid,
+            name=field.name,
+            season_year=getattr(field.season, "year", None),
+            game_piece_name=getattr(field.game_piece, "name", None),
+            archived=field.archived,
+            created_at=field.created_at
+        )
+        for field in fields
+    ]
+
+@router.get("/repairs/get/pit_scouting_fields", response_model=list[PitScoutingFieldRepairResponse])
+async def get_all_pit_scouting_fields(identity: Identity = Depends(require_superuser)):
+    """
+    Get all pit scouting fields. Used on the admin repair page when setting the pit scouting field on a piece of data.
+
+    Requires superuser access
+
+    Returns:
+        list[PitScoutingFieldRepairResponse]: A list of all pit scouting fields
+    """
+    fields = await PitScoutingField.all().prefetch_related("season")
+
+    return [
+        PitScoutingFieldRepairResponse(
+            uuid=field.uuid,
+            name=field.name,
+            season_year=getattr(field.season, "year", None),
+            archived=field.archived,
+            created_at=field.created_at
+        )
+        for field in fields
+    ]

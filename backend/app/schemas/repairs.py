@@ -56,3 +56,18 @@ Repair = Annotated[
 
 class RepairResponse(RootModel[Repair]):
     pass
+
+class MatchScoutingFieldRepairResponse(BaseModel):
+    uuid: UUID
+    name: str
+    season_year: int | None
+    game_piece_name: str | None
+    archived: bool
+    created_at: datetime
+
+class PitScoutingFieldRepairResponse(BaseModel):
+    uuid: UUID
+    name: str
+    season_year: int | None
+    archived: bool
+    created_at: datetime
