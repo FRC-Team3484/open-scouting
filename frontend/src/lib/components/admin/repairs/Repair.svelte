@@ -108,7 +108,17 @@ Props:
 <Card.Root>
     <Card.Content>
         <div class="flex flex-row gap-2 items-center">
-            <input type="checkbox" bind:group={selectedRepairs} value={repair} />
+            <input
+                type="checkbox"
+                checked={selectedRepairs.includes(repair)}
+                onchange={(e) => {
+                    if ((e.currentTarget as HTMLInputElement).checked) {
+                        selectedRepairs = [...selectedRepairs, repair];
+                    } else {
+                        selectedRepairs = selectedRepairs.filter(r => r !== repair);
+                    }
+                }}
+            />
 
             <div class="flex flex-col gap-2 items-start">
                 <div class="flex flex-row gap-2 flex-wrap">

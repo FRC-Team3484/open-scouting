@@ -73,8 +73,6 @@ Management page for repairs on the admin page
         repairType: null
     })
 
-    $inspect(repairs, selectedRepairs, selectedRepairTypes, sortBy, sortByLabel, repairChooseDataDialog)
-
     let filteredRepairs: RepairResponse[] = $derived.by(() => {
             return repairs.filter((r) => selectedRepairTypes.includes(r.data_type)).sort((a, b) => {
                 if (sortBy === "newest_to_oldest") {
@@ -136,7 +134,7 @@ Management page for repairs on the admin page
 
     onMount(() => {
         getRepairs();
-    })
+    });
 </script>
 
 <div class="flex flex-col gap-4">
@@ -218,7 +216,7 @@ Management page for repairs on the admin page
                                         </AlertDialog.Trigger>
 
                                         <AlertDialog.Content>
-                                            <AlertDialog.Title>Delete {selectedRepairs.length} repairs?</AlertDialog.Title>
+                                            <AlertDialog.Title>Delete data for {selectedRepairs.length} repairs?</AlertDialog.Title>
                                             <AlertDialog.Description>Are you sure you want to delete the data for {selectedRepairs.length} repairs? This action cannot be undone.</AlertDialog.Description>
                                             <AlertDialog.Footer>
                                                 <AlertDialog.Cancel type="button">Cancel</AlertDialog.Cancel>
