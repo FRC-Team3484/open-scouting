@@ -59,12 +59,24 @@ Props:
      * Fix the repair
      */
     async function fixRepair() {
-        const data = {
-            data_uuid: repair.data_uuid,
-            repair_data_uuid: dialog.contentUuid,
-            repair_type: dialog.repairType,
-            data_type: repair.data_type,
+        let data: any = {}
+
+        if (dialog.repairType == "missing_event") {
+            data = {
+                data_uuid: repair.data_uuid,
+                repair_type: dialog.repairType,
+                data_type: repair.data_type,
+                event_code: dialog.contentUuid
+            }
+        } else {
+            data = {
+                data_uuid: repair.data_uuid,
+                content_uuid: dialog.contentUuid,
+                repair_type: dialog.repairType,
+                data_type: repair.data_type,
+            }
         }
+
         await fixRepairRepairsFixPost(data).then((response) => {
             if (response.status == 200) {
                 closeDataDialog();

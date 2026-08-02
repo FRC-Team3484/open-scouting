@@ -10,12 +10,12 @@ Props:
     - `contentUuid` (`string`) - The uuid of the content to repair
 -->
 <script lang="ts">
-	import { onMount } from "svelte";
 	import { toast } from "svelte-sonner";
 
     import * as Card from "$lib/components/ui/card/index.js";
     import * as AlertDialog from "$lib/components/ui/alert-dialog/index.js";
 	import Button from "$lib/components/ui/button/button.svelte";
+	import Badge from "$lib/components/ui/badge/badge.svelte";
 
 	import type { AdminPitResponse, GamepieceResponse, MatchScoutingFieldRepairResponse, PitScoutingFieldRepairResponse, SeasonResponse, SubmissionResponse } from "$lib/api/model";
 	import { getSeasonsSeasonsGet } from "$lib/api/seasons/seasons";
@@ -25,6 +25,8 @@ Props:
 	import { getMatchScoutingSubmissionsScoutingSubmissionsGet } from "$lib/api/match-scouting/match-scouting";
 	import { getAllPitsPitsGetGet } from "$lib/api/pit-scouting/pit-scouting";
 	import type { ChooseDataDialogType } from "../RepairsManager.svelte";
+	import EventList from "$lib/components/generic/event_list/EventList.svelte";
+    import type { Event as EventType } from "$lib/utils/db";
 
 
     interface Props {
@@ -49,6 +51,9 @@ Props:
             return "Select data to use when repairing data";
         }
     });
+
+    let selectedEvents: EventType[] = $state([]);
+    let eventConfirmOpen: boolean = $state(false);
 
     /**
      * Get seasons from the server
@@ -80,15 +85,6 @@ Props:
                 return null;
             }
         });
-    }
-
-    /**
-     * Get events from the local cache
-     * 
-     * TODO: Implement
-     */
-    async function get_events() {
-        
     }
 
     /**
@@ -182,7 +178,8 @@ Props:
     async function selectData(uuid: string) {
         contentUuid = uuid;
         open = false;
-        console.log("DataSelector: Selected data", uuid);
+        eventConfirmOpen = false;
+        selectedEvents = [];
     }
 
     $effect(() => {
@@ -190,11 +187,19 @@ Props:
             get_data();
         }
     })
+
+    $effect(() => {
+        if (selectedEvents.length > 0) {
+            eventConfirmOpen = true;
+        } else {
+            eventConfirmOpen = false;
+        }
+    })
 </script>
 
 <BaseDialog title={title} description={description} bind:open={open}>
     <div class="flex flex-col gap-2">
-        {#if data}
+        {#if data || type == "event"}
             {#if type == "season"}
                 {@const seasonData = data as SeasonResponse[]}
 
@@ -223,15 +228,167 @@ Props:
                     </Card.Root>
                 {/each}
             {:else if type == "game_piece"}
+                {@const gamePieceData = data as GamepieceResponse[]}
+
+                {#each gamePieceData as gamePiece}
+                    <Card.Root>
+                        <Card.Content>
+                            <div class="flex flex-row gap-2 justify-between items-center">
+                                <p>{gamePiece.name}</p>
+
+                                <AlertDialog.Root>
+                                    <AlertDialog.Trigger>
+                                        <Button size="sm">Select</Button>
+                                    </AlertDialog.Trigger>
+
+                                    <AlertDialog.Content>
+                                        <AlertDialog.Title>Select game piece "{gamePiece.name}"?</AlertDialog.Title>
+                                        <AlertDialog.Description>Are you sure you want to select this game piece for this data? This action cannot be undone.</AlertDialog.Description>
+                                        <AlertDialog.Footer>
+                                            <AlertDialog.Cancel type="button">Cancel</AlertDialog.Cancel>
+                                            <AlertDialog.Action type="button" onclick={() => selectData(gamePiece.uuid)}>Select</AlertDialog.Action>
+                                        </AlertDialog.Footer>
+                                    </AlertDialog.Content>
+                                </AlertDialog.Root>
+                            </div>
+                        </Card.Content>
+                    </Card.Root>
+                {/each}
+            
+            {:else if type == "event"}
+                <EventList bind:value={selectedEvents} multiple={false} />
+
+                <AlertDialog.Root bind:open={eventConfirmOpen}>
+                    <AlertDialog.Content>
+                        <AlertDialog.Title>Select event "{selectedEvents[0].name}"?</AlertDialog.Title>
+                        <AlertDialog.Description>Are you sure you want to select this event for this data? This action cannot be undone.</AlertDialog.Description>
+                        <AlertDialog.Footer>
+                            <AlertDialog.Cancel type="button">Cancel</AlertDialog.Cancel>
+                            <AlertDialog.Action type="button" onclick={() => selectData(selectedEvents[0].uuid)}>Select</AlertDialog.Action>
+                        </AlertDialog.Footer>
+                    </AlertDialog.Content>
+                </AlertDialog.Root>
 
             {:else if type == "match_scouting_field"}
+                {@const matchScoutingFieldData = data as MatchScoutingFieldRepairResponse[]}
+
+                {#each matchScoutingFieldData as field}
+                    <Card.Root>
+                        <Card.Content>
+                            <div class="flex flex-row gap-2 justify-between items-center">
+                                <div class="flex flex-row gap-2 items-center flex-wrap">
+                                    <p class="font-bold">{field.name}</p>
+                                    <p>Year: {field.season_year || "Unknown"}</p>
+                                    <p>Game Piece: {field.game_piece_name || "Unknown"}</p>
+                                    {#if field.archived}
+                                        <Badge>Archived</Badge>
+                                    {/if}
+                                </div>
+
+                                <AlertDialog.Root>
+                                    <AlertDialog.Trigger>
+                                        <Button size="sm">Select</Button>
+                                    </AlertDialog.Trigger>                                    
+                                    <AlertDialog.Content>
+                                        <AlertDialog.Title>Select match scouting field "{field.name}"?</AlertDialog.Title>
+                                        <AlertDialog.Description>Are you sure you want to select this match scouting field for this data? This action cannot be undone.</AlertDialog.Description>
+                                        <AlertDialog.Footer>
+                                            <AlertDialog.Cancel type="button">Cancel</AlertDialog.Cancel>
+                                            <AlertDialog.Action type="button" onclick={() => selectData(field.uuid)}>Select</AlertDialog.Action>
+                                        </AlertDialog.Footer>
+                                    </AlertDialog.Content>
+                                </AlertDialog.Root>
+                            </div>
+                        </Card.Content>
+                    </Card.Root>
+                {/each}
 
             {:else if type == "match_scouting_submission"}
+                {@const matchScoutingSubmissionData = data as SubmissionResponse[]}
+
+                {#each matchScoutingSubmissionData as submission}
+                    <Card.Root>
+                        <Card.Content>
+                            <div class="flex flex-row gap-2 justify-between items-center">
+                                <p>Submission at {submission.event_name} (#{submission.event_code}) for team {submission.team_number} in {submission.match_type} match {submission.match_number}</p>
+
+                                <AlertDialog.Root>
+                                    <AlertDialog.Trigger>
+                                        <Button size="sm">Select</Button>
+                                    </AlertDialog.Trigger>
+                                    <AlertDialog.Content>
+                                        <AlertDialog.Title>Select match scouting submission for team {submission.team_number} in {submission.match_type} match {submission.match_number}?</AlertDialog.Title>
+                                        <AlertDialog.Description>Are you sure you want to select this match scouting submission for this data? This action cannot be undone.</AlertDialog.Description>
+                                        <AlertDialog.Footer>
+                                            <AlertDialog.Cancel type="button">Cancel</AlertDialog.Cancel>
+                                            <AlertDialog.Action type="button" onclick={() => selectData(submission.uuid)}>Select</AlertDialog.Action>
+                                        </AlertDialog.Footer>
+                                    </AlertDialog.Content>
+                                </AlertDialog.Root>
+                            </div>
+                        </Card.Content>
+                    </Card.Root>
+                {/each}
 
             {:else if type == "pit_scouting_field"}
+                {@const pitScoutingFieldData = data as PitScoutingFieldRepairResponse[]}
+
+                {#each pitScoutingFieldData as field}
+                    <Card.Root>
+                        <Card.Content>
+                            <div class="flex flex-row gap-2 justify-between items-center">
+                                <div class="flex flex-row gap-2 items-center flex-wrap">
+                                    <p class="font-bold">{field.name}</p>
+                                    <p>Year: {field.season_year || "Unknown"}</p>
+                                    {#if field.archived}
+                                        <Badge>Archived</Badge>
+                                    {/if}
+                                </div>
+
+                                <AlertDialog.Root>
+                                    <AlertDialog.Trigger>
+                                        <Button size="sm">Select</Button>
+                                    </AlertDialog.Trigger>
+                                    <AlertDialog.Content>
+                                        <AlertDialog.Title>Select pit scouting field "{field.name}"?</AlertDialog.Title>
+                                        <AlertDialog.Description>Are you sure you want to select this pit scouting field for this data? This action cannot be undone.</AlertDialog.Description>
+                                        <AlertDialog.Footer>
+                                            <AlertDialog.Cancel type="button">Cancel</AlertDialog.Cancel>
+                                            <AlertDialog.Action type="button" onclick={() => selectData(field.uuid)}>Select</AlertDialog.Action>
+                                        </AlertDialog.Footer>
+                                    </AlertDialog.Content>
+                                </AlertDialog.Root>
+                            </div>
+                        </Card.Content>
+                    </Card.Root>
+                {/each}
 
             {:else if type == "team"}
+                {@const teamData = data as AdminPitResponse[]}
 
+                {#each teamData as team}
+                    <Card.Root>
+                        <Card.Content>
+                            <div class="flex flex-row gap-2 justify-between items-center">
+                                <p>Pit for team {team.team_number} at {team.event_name} (#{team.event_code})</p>
+
+                                <AlertDialog.Root>
+                                    <AlertDialog.Trigger>
+                                        <Button size="sm">Select</Button>
+                                    </AlertDialog.Trigger>
+                                    <AlertDialog.Content>
+                                        <AlertDialog.Title>Select pit for team {team.team_number} at {team.event_name} (#{team.event_code})?</AlertDialog.Title>
+                                        <AlertDialog.Description>Are you sure you want to select this pit for this data? This action cannot be undone.</AlertDialog.Description>
+                                        <AlertDialog.Footer>
+                                            <AlertDialog.Cancel type="button">Cancel</AlertDialog.Cancel>
+                                            <AlertDialog.Action type="button" onclick={() => selectData(team.uuid)}>Select</AlertDialog.Action>
+                                        </AlertDialog.Footer>
+                                    </AlertDialog.Content>
+                                </AlertDialog.Root>
+                            </div>
+                        </Card.Content>
+                    </Card.Root>
+                {/each}
             {/if}
         {:else}
             <p>Loading...</p>
