@@ -441,8 +441,8 @@ async def get_all_pits(identity: Identity = Depends(require_superuser)) -> list[
     return [
         AdminPitResponse(
             uuid=pit.uuid, 
-            event_name=pit.event.name,
-            event_code=pit.event.event_code,
+            event_name=getattr(pit.event, "name", "N/A"),
+            event_code=getattr(pit.event, "event_code", "N/A"),
             team_number=pit.team_number, 
             answers=answers[pit.uuid],
             created_at=pit.created_at
