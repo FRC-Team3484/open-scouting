@@ -7,8 +7,8 @@
 
 export interface MatchScoutingSubmissionRepairRequest {
   data_uuid: string;
-  content_uuid: string | null;
+  content_uuid?: string | null;
   data_type: 'match_scouting_submission';
   repair_type: 'missing_event';
-  event_code: string | null;
+  event_code?: string | null;
 }

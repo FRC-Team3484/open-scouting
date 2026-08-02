@@ -7,7 +7,7 @@
 
 export interface PitScoutingFieldRepairRequest {
   data_uuid: string;
-  content_uuid: string | null;
+  content_uuid?: string | null;
   data_type: 'pit_scouting_field';
   repair_type: 'missing_season';
 }

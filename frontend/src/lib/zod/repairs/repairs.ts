@@ -145,44 +145,44 @@ Returns:
  */
 export const FixRepairRepairsFixPostBody = zod.union([zod.object({
   "data_uuid": zod.string().uuid(),
-  "content_uuid": zod.union([zod.string().uuid(),zod.null()]),
+  "content_uuid": zod.union([zod.string().uuid(),zod.null()]).optional(),
   "data_type": zod.literal("event"),
   "repair_type": zod.literal("missing_season")
 }),zod.object({
   "data_uuid": zod.string().uuid(),
-  "content_uuid": zod.union([zod.string().uuid(),zod.null()]),
+  "content_uuid": zod.union([zod.string().uuid(),zod.null()]).optional(),
   "data_type": zod.literal("game_piece"),
   "repair_type": zod.literal("missing_season")
 }),zod.object({
   "data_uuid": zod.string().uuid(),
-  "content_uuid": zod.union([zod.string().uuid(),zod.null()]),
+  "content_uuid": zod.union([zod.string().uuid(),zod.null()]).optional(),
   "data_type": zod.literal("match_scouting_field"),
   "repair_type": zod.enum(['missing_season', 'missing_game_piece'])
 }),zod.object({
   "data_uuid": zod.string().uuid(),
-  "content_uuid": zod.union([zod.string().uuid(),zod.null()]),
+  "content_uuid": zod.union([zod.string().uuid(),zod.null()]).optional(),
   "data_type": zod.literal("match_scouting_submission"),
   "repair_type": zod.literal("missing_event"),
-  "event_code": zod.union([zod.string(),zod.null()])
+  "event_code": zod.union([zod.string(),zod.null()]).optional()
 }),zod.object({
   "data_uuid": zod.string().uuid(),
-  "content_uuid": zod.union([zod.string().uuid(),zod.null()]),
+  "content_uuid": zod.union([zod.string().uuid(),zod.null()]).optional(),
   "data_type": zod.literal("match_scouting_answer"),
   "repair_type": zod.enum(['missing_field', 'missing_submission'])
 }),zod.object({
   "data_uuid": zod.string().uuid(),
-  "content_uuid": zod.union([zod.string().uuid(),zod.null()]),
+  "content_uuid": zod.union([zod.string().uuid(),zod.null()]).optional(),
   "data_type": zod.literal("pit_scouting_field"),
   "repair_type": zod.literal("missing_season")
 }),zod.object({
   "data_uuid": zod.string().uuid(),
-  "content_uuid": zod.union([zod.string().uuid(),zod.null()]),
+  "content_uuid": zod.union([zod.string().uuid(),zod.null()]).optional(),
   "data_type": zod.literal("team_pit"),
   "repair_type": zod.enum(['missing_season', 'missing_event']),
-  "event_code": zod.union([zod.string(),zod.null()])
+  "event_code": zod.union([zod.string(),zod.null()]).optional()
 }),zod.object({
   "data_uuid": zod.string().uuid(),
-  "content_uuid": zod.union([zod.string().uuid(),zod.null()]),
+  "content_uuid": zod.union([zod.string().uuid(),zod.null()]).optional(),
   "data_type": zod.literal("pit_scouting_answer"),
   "repair_type": zod.enum(['missing_field', 'missing_team'])
 })])
