@@ -631,3 +631,37 @@ async def fix_repair(data: RepairRequest, identity: Identity = Depends(require_s
         await repair_pit_scouting_answer(data.data_uuid, data.content_uuid, data.data_type, data.repair_type)
 
     return MessageResponse(message="Repair fixed")
+
+@router.delete("/repairs/delete/{data_type}/{data_uuid}", response_model=MessageResponse)
+async def delete_repair_data(
+    data_type: Literal["event", "game_piece", "match_scouting_field", "match_scouting_submission", "match_scouting_answer", "pit_scouting_field", "team_pit", "pit_scouting_answer"], 
+    data_uuid: UUID, 
+    identity: Identity = Depends(require_superuser)
+):
+    """
+    Delete data associated with a repair
+
+    Requires superuser access
+
+    Parameters:
+        data_type: The type of data to delete
+        data_uuid (`UUID`): The uuid of the data to delete
+    """
+    if data_type == "event":
+        _ = await Event.filter(uuid=data_uuid).delete()
+    elif data_type == "game_piece":
+        _ = await GamePiece.filter(uuid=data_uuid).delete()
+    elif data_type == "match_scouting_field":
+        _ = await MatchScoutingField.filter(uuid=data_uuid).delete()
+    elif data_type == "match_scouting_submission":
+        _ = await MatchScoutingSubmission.filter(uuid=data_uuid).delete()
+    elif data_type == "match_scouting_answer":
+        _ = await MatchScoutingAnswer.filter(uuid=data_uuid).delete()
+    elif data_type == "pit_scouting_field":
+        _ = await PitScoutingField.filter(uuid=data_uuid).delete()
+    elif data_type == "team_pit":
+        _ = await TeamPit.filter(uuid=data_uuid).delete()
+    elif data_type == "pit_scouting_answer":
+        _ = await PitScoutingAnswer.filter(uuid=data_uuid).delete()
+
+    return MessageResponse(message="Data deleted")

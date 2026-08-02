@@ -284,3 +284,54 @@ export const fixRepairRepairsFixPost = async (eventRepairRequestGamePieceRepairR
 );}
 
 
+export type deleteRepairDataRepairsDeleteDataTypeDataUuidDeleteResponse200 = {
+  data: MessageResponse
+  status: 200
+}
+
+export type deleteRepairDataRepairsDeleteDataTypeDataUuidDeleteResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type deleteRepairDataRepairsDeleteDataTypeDataUuidDeleteResponseSuccess = (deleteRepairDataRepairsDeleteDataTypeDataUuidDeleteResponse200) & {
+  headers: Headers;
+};
+export type deleteRepairDataRepairsDeleteDataTypeDataUuidDeleteResponseError = (deleteRepairDataRepairsDeleteDataTypeDataUuidDeleteResponse422) & {
+  headers: Headers;
+};
+
+export type deleteRepairDataRepairsDeleteDataTypeDataUuidDeleteResponse = (deleteRepairDataRepairsDeleteDataTypeDataUuidDeleteResponseSuccess | deleteRepairDataRepairsDeleteDataTypeDataUuidDeleteResponseError)
+
+export const getDeleteRepairDataRepairsDeleteDataTypeDataUuidDeleteUrl = (dataType: 'event' | 'game_piece' | 'match_scouting_field' | 'match_scouting_submission' | 'match_scouting_answer' | 'pit_scouting_field' | 'team_pit' | 'pit_scouting_answer',
+    dataUuid: string,) => {
+
+
+
+
+  return `/repairs/delete/${dataType}/${dataUuid}`
+}
+
+/**
+ * Delete data associated with a repair
+
+Requires superuser access
+
+Parameters:
+    data_type: The type of data to delete
+    data_uuid (`UUID`): The uuid of the data to delete
+ * @summary Delete Repair Data
+ */
+export const deleteRepairDataRepairsDeleteDataTypeDataUuidDelete = async (dataType: 'event' | 'game_piece' | 'match_scouting_field' | 'match_scouting_submission' | 'match_scouting_answer' | 'pit_scouting_field' | 'team_pit' | 'pit_scouting_answer',
+    dataUuid: string, options?: RequestInit): Promise<deleteRepairDataRepairsDeleteDataTypeDataUuidDeleteResponse> => {
+
+  return customInstance<deleteRepairDataRepairsDeleteDataTypeDataUuidDeleteResponse>(getDeleteRepairDataRepairsDeleteDataTypeDataUuidDeleteUrl(dataType,dataUuid),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+

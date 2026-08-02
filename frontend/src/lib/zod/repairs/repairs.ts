@@ -191,3 +191,22 @@ export const FixRepairRepairsFixPostResponse = zod.object({
   "message": zod.string()
 })
 
+/**
+ * Delete data associated with a repair
+
+Requires superuser access
+
+Parameters:
+    data_type: The type of data to delete
+    data_uuid (`UUID`): The uuid of the data to delete
+ * @summary Delete Repair Data
+ */
+export const DeleteRepairDataRepairsDeleteDataTypeDataUuidDeleteParams = zod.object({
+  "data_type": zod.enum(['event', 'game_piece', 'match_scouting_field', 'match_scouting_submission', 'match_scouting_answer', 'pit_scouting_field', 'team_pit', 'pit_scouting_answer']),
+  "data_uuid": zod.string().uuid()
+})
+
+export const DeleteRepairDataRepairsDeleteDataTypeDataUuidDeleteResponse = zod.object({
+  "message": zod.string()
+})
+
