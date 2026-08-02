@@ -115,8 +115,8 @@ async def get_match_scouting_submissions(identity: Identity = Depends(require_su
     return [
         SubmissionResponse(
             uuid=submission.uuid,
-            event_name=submission.event.name,
-            event_code=submission.event.event_code,
+            event_name=getattr(submission.event, "name", "N/A"),
+            event_code=getattr(submission.event, "event_code", "N/A"),
             team_number=submission.team_number,
             match_number=submission.match_number,
             match_type=submission.match_type,

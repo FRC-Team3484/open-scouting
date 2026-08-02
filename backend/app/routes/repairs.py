@@ -513,12 +513,12 @@ async def repair_match_scouting_answer(data_uuid: UUID, content_uuid: UUID, data
         match_scouting_field = await MatchScoutingField.get_or_none(uuid=content_uuid)
         if match_scouting_field is None:
             raise HTTPException(status_code=404, detail="Match scouting field not found")
-        match_scouting_answer.match_scouting_field = match_scouting_field
+        match_scouting_answer.field = match_scouting_field
     elif repair_type == "missing_submission":
         match_scouting_submission = await MatchScoutingSubmission.get_or_none(uuid=content_uuid)
         if match_scouting_submission is None:
             raise HTTPException(status_code=404, detail="Match scouting submission not found")
-        match_scouting_answer.match_scouting_submission = match_scouting_submission
+        match_scouting_answer.submission = match_scouting_submission
 
     await match_scouting_answer.save()
 
