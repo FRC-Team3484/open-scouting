@@ -10,7 +10,7 @@ from tortoise.contrib.fastapi import register_tortoise
 
 from .constants import VERSION
 
-from .routes import main, auth, organizations, seasons, gamepieces, fields, match_scouting, pit_scouting, data, event, uploads, emails, reports, profile
+from .routes import main, auth, organizations, seasons, gamepieces, fields, match_scouting, pit_scouting, data, event, uploads, emails, reports, profile, repairs
 
 # Setup
 app: FastAPI = FastAPI(root_path="", version=VERSION)
@@ -47,6 +47,7 @@ app.include_router(uploads.router)
 app.include_router(emails.router)
 app.include_router(reports.router)
 app.include_router(profile.router)
+app.include_router(repairs.router)
 
 # Setup database
 register_tortoise(
