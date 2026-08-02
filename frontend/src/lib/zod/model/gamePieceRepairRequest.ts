@@ -7,7 +7,7 @@
 
 export interface GamePieceRepairRequest {
   data_uuid: string;
-  repair_data_uuid: string;
+  content_uuid: string | null;
   data_type: 'game_piece';
   repair_type: 'missing_season';
 }

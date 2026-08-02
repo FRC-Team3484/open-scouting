@@ -76,7 +76,7 @@ class PitScoutingFieldRepairResponse(BaseModel):
 # Repair request
 class BaseRepairRequest(BaseModel):
     data_uuid: UUID # UUID of the data that needs to be fixed
-    repair_data_uuid: UUID # UUID of the data that is being used to fix the relation in data_uuid
+    content_uuid: UUID | None # UUID of the content to fix the issue. None when repair_type is "missing_event"
 
 class EventRepairRequest(BaseRepairRequest):
     data_type: Literal["event"]
@@ -93,6 +93,7 @@ class MatchScoutingFieldRepairRequest(BaseRepairRequest):
 class MatchScoutingSubmissionRepairRequest(BaseRepairRequest):
     data_type: Literal["match_scouting_submission"]
     repair_type: Literal["missing_event"]
+    event_code: str | None # Used when repair_type is "missing_event"
 
 class MatchScoutingAnswerRepairRequest(BaseRepairRequest):
     data_type: Literal["match_scouting_answer"]
@@ -105,6 +106,7 @@ class PitScoutingFieldRepairRequest(BaseRepairRequest):
 class TeamPitRepairRequest(BaseRepairRequest):
     data_type: Literal["team_pit"]
     repair_type: Literal["missing_season", "missing_event"]
+    event_code: str | None # Used when repair_type is "missing_event"
 
 class PitScoutingAnswerRepairRequest(BaseRepairRequest):
     data_type: Literal["pit_scouting_answer"]

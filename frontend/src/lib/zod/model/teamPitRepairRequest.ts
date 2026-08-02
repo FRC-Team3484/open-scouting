@@ -8,7 +8,8 @@ import type { TeamPitRepairRequestRepairType } from './teamPitRepairRequestRepai
 
 export interface TeamPitRepairRequest {
   data_uuid: string;
-  repair_data_uuid: string;
+  content_uuid: string | null;
   data_type: 'team_pit';
   repair_type: TeamPitRepairRequestRepairType;
+  event_code: string | null;
 }

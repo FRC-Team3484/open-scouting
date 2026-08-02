@@ -8,7 +8,7 @@ import type { PitScoutingAnswerRepairRequestRepairType } from './pitScoutingAnsw
 
 export interface PitScoutingAnswerRepairRequest {
   data_uuid: string;
-  repair_data_uuid: string;
+  content_uuid: string | null;
   data_type: 'pit_scouting_answer';
   repair_type: PitScoutingAnswerRepairRequestRepairType;
 }

@@ -8,7 +8,7 @@ import type { MatchScoutingFieldRepairRequestRepairType } from './matchScoutingF
 
 export interface MatchScoutingFieldRepairRequest {
   data_uuid: string;
-  repair_data_uuid: string;
+  content_uuid: string | null;
   data_type: 'match_scouting_field';
   repair_type: MatchScoutingFieldRepairRequestRepairType;
 }
