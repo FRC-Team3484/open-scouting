@@ -23,13 +23,12 @@ Management page for repairs on the admin page
 	import Button from "../ui/button/button.svelte";
 	import Badge from "../ui/badge/badge.svelte";
     import * as Select from "$lib/components/ui/select";
+    import * as AlertDialog from "$lib/components/ui/alert-dialog/index.js";
+	import Separator from "../ui/separator/separator.svelte";
 
 	import type { RepairResponse } from "$lib/api/model";
-	import { getRepairsRepairsGetGet } from "$lib/api/repairs/repairs";
+	import { deleteRepairDataRepairsDeleteDataTypeDataUuidDelete, getRepairsRepairsGetGet } from "$lib/api/repairs/repairs";
 	import Repair from "./repairs/Repair.svelte";
-	import { slide } from "svelte/transition";
-	import Separator from "../ui/separator/separator.svelte";
-	import SeasonSelector from "./repairs/DataSelector.svelte";
 	import DataSelector from "./repairs/DataSelector.svelte";
 
 
@@ -74,6 +73,8 @@ Management page for repairs on the admin page
         repairType: null
     })
 
+    $inspect(repairs, selectedRepairs, selectedRepairTypes, sortBy, sortByLabel, repairChooseDataDialog)
+
     let filteredRepairs: RepairResponse[] = $derived.by(() => {
             return repairs.filter((r) => selectedRepairTypes.includes(r.data_type)).sort((a, b) => {
                 if (sortBy === "newest_to_oldest") {
@@ -85,6 +86,9 @@ Management page for repairs on the admin page
         }
     )
 
+    /**
+     * Get the repairs from the server
+     */
     async function getRepairs() {
         await getRepairsRepairsGetGet().then((response) => {
             if (response.status === 200) {
@@ -94,6 +98,40 @@ Management page for repairs on the admin page
                 toast.error("Failed to get repairs", { duration: 5000 });
             }
         })
+    }
+
+    /**
+     * Delete a repair's content from the server
+     * 
+     * @param repair The repair to delete
+     * @param showToast Whether to show a toast and get repairs upon completion
+     */
+    async function deleteRepair(
+        repair: RepairResponse,
+        showToast = true
+    ) {
+        await deleteRepairDataRepairsDeleteDataTypeDataUuidDelete(repair.data_type, repair.data_uuid).then(async (response) => {
+            if (response.status === 200) {
+                if (showToast) {
+                    toast.success("Deleted repair", { duration: 5000 });
+                    await getRepairs();
+                }
+            } else {
+                toast.error("Failed to delete repair", { duration: 5000 });
+            }
+        })
+    }
+
+    /**
+     * Delete the selected repairs
+     */
+    async function deleteSelectedRepairs() {
+        for (let repair of selectedRepairs) {
+            await deleteRepair(repair, false);
+        }
+        toast.success("Deleted selected repairs", { duration: 5000 });
+        selectedRepairs = [];
+        await getRepairs();
     }
 
     onMount(() => {
@@ -138,10 +176,10 @@ Management page for repairs on the admin page
                         </div>
 
                         <div class="flex flex-row gap-2 flex-wrap mt-4">
-                            <Button size="sm" variant="outline" onclick={() => {
+                            <Button size="sm" variant="outline" disabled={selectedRepairTypes.length === 0} onclick={() => {
                                 selectedRepairTypes = [];
                             }}>Select None</Button>
-                            <Button size="sm" variant="outline" onclick={() => {
+                            <Button size="sm" variant="outline" disabled={selectedRepairTypes.length === repairTypes.length} onclick={() => {
                                 selectedRepairTypes = repairTypes.map((type) => type.value);
                             }}>Select All</Button>
                         </div>
@@ -171,8 +209,23 @@ Management page for repairs on the admin page
                                 <p>{selectedRepairs.length} selected</p>
 
                                 <div class="flex flex-row gap-2 items-center flex-wrap">
-                                    <Button variant="outline" size="sm" onclick={() => {selectedRepairs = repairs}}>Select All</Button>
-                                    <Button variant="outline" size="sm" onclick={() => {selectedRepairs = []}}>Select None</Button>
+                                    <Button variant="outline" size="sm" onclick={() => {selectedRepairs = repairs}} disabled={selectedRepairs.length == repairs.length}>Select All</Button>
+                                    <Button variant="outline" size="sm" onclick={() => {selectedRepairs = []}} disabled={selectedRepairs.length == 0}>Select None</Button>
+
+                                    <AlertDialog.Root>
+                                        <AlertDialog.Trigger>
+                                            <Button variant="destructive" size="sm" disabled={selectedRepairs.length === 0}>Delete data for {selectedRepairs.length} repairs</Button>
+                                        </AlertDialog.Trigger>
+
+                                        <AlertDialog.Content>
+                                            <AlertDialog.Title>Delete {selectedRepairs.length} repairs?</AlertDialog.Title>
+                                            <AlertDialog.Description>Are you sure you want to delete the data for {selectedRepairs.length} repairs? This action cannot be undone.</AlertDialog.Description>
+                                            <AlertDialog.Footer>
+                                                <AlertDialog.Cancel type="button">Cancel</AlertDialog.Cancel>
+                                                <AlertDialog.Action type="button" onclick={() => deleteSelectedRepairs()}>Delete</AlertDialog.Action>
+                                            </AlertDialog.Footer>
+                                        </AlertDialog.Content>
+                                    </AlertDialog.Root>
                                 </div>
                             </div>
                         </Card.Content>
@@ -184,7 +237,7 @@ Management page for repairs on the admin page
                         <p class="text-muted-foreground my-8">No repairs found</p>
                     {:else}
                         {#each filteredRepairs as repair}
-                            <Repair repair={repair} bind:selectedRepairs={selectedRepairs} bind:dialog={repairChooseDataDialog} getRepairs={getRepairs} />
+                            <Repair repair={repair} bind:selectedRepairs={selectedRepairs} bind:dialog={repairChooseDataDialog} getRepairs={getRepairs} deleteRepair={deleteRepair} />
                         {/each}
                     {/if}
                 </div>

@@ -5,19 +5,23 @@ Represents a single repair for the admin page's repair manager
 Props:
     - `repair` (`RepairResponse`) - The repair to show info for
     - `selectedRepairs` (`RepairResponse[]`) - The selected repairs
+    - `dialog` (`ChooseDataDialog`) - The data selector dialog
+    - `getRepairs` (`() => Promise<void>`) - The function to get repairs
+    - `deleteRepair` (`(repair: RepairResponse) => Promise<void>`) - The function to delete a repair
 -->
 <script lang="ts">
-    import * as Card from "$lib/components/ui/card/index.js";
+	import { toast } from "svelte-sonner";
 	import { TrashIcon } from "phosphor-svelte";
-
+    
+    import * as Card from "$lib/components/ui/card/index.js";
 	import Badge from "../../ui/badge/badge.svelte";
 	import { Button } from "$lib/components/ui/button";
+    import * as AlertDialog from "$lib/components/ui/alert-dialog/index.js";
 
 	import type { RepairResponse } from "$lib/api/model";
 	import type { ChooseDataDialog, ChooseDataDialogType } from "../RepairsManager.svelte";
 	import { untrack } from "svelte";
 	import { fixRepairRepairsFixPost } from "$lib/api/repairs/repairs";
-	import { toast } from "svelte-sonner";
 
 
     interface Props {
@@ -25,8 +29,9 @@ Props:
         selectedRepairs?: RepairResponse[]
         dialog: ChooseDataDialog
         getRepairs: () => Promise<void>
+        deleteRepair: (repair: RepairResponse) => Promise<void>
     }
-    let { repair, selectedRepairs = $bindable([]), dialog = $bindable({ open: false, type: null, dataUuid: null, contentUuid: null }), getRepairs }: Props = $props();
+    let { repair, selectedRepairs = $bindable([]), dialog = $bindable({ open: false, type: null, dataUuid: null, contentUuid: null, repairType: null }), getRepairs, deleteRepair }: Props = $props();
 
     /**
      * Open the data selector dialog
@@ -137,7 +142,20 @@ Props:
 
                     {/if}
 
-                    <Button size="sm" variant="destructive"><TrashIcon weight="bold" /> Delete Content</Button>
+                    <AlertDialog.Root>
+                        <AlertDialog.Trigger>
+                            <Button size="sm" variant="destructive" ><TrashIcon weight="bold" /> Delete Content</Button>
+                        </AlertDialog.Trigger>
+
+                        <AlertDialog.Content>
+                            <AlertDialog.Title>Delete content for repair "{repair.name}"?</AlertDialog.Title>
+                            <AlertDialog.Description>Are you sure you want to delete the content for this repair? This action cannot be undone.</AlertDialog.Description>
+                            <AlertDialog.Footer>
+                                <AlertDialog.Cancel type="button">Cancel</AlertDialog.Cancel>
+                                <AlertDialog.Action type="button" onclick={() => {deleteRepair(repair)}}>Delete</AlertDialog.Action>
+                            </AlertDialog.Footer>
+                        </AlertDialog.Content>
+                    </AlertDialog.Root>
                 </div>
             </div>
         </div>
