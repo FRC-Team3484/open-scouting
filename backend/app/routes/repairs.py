@@ -592,7 +592,7 @@ async def repair_pit_scouting_answer(data_uuid: UUID, content_uuid: UUID, data_t
         pit_scouting_field = await PitScoutingField.get_or_none(uuid=content_uuid)
         if pit_scouting_field is None:
             raise HTTPException(status_code=404, detail="Pit scouting field not found")
-        pit_scouting_answer.pit_scouting_field = pit_scouting_field
+        pit_scouting_answer.field = pit_scouting_field
     elif repair_type == "missing_team":
         team = await TeamPit.get_or_none(uuid=content_uuid)
         if team is None:
