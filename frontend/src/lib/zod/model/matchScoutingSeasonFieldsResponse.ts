@@ -14,7 +14,7 @@ export interface MatchScoutingSeasonFieldsResponse {
   stat_type: string;
   game_piece_uuid?: string | null;
   required: boolean;
-  options: MatchScoutingFieldOptions;
+  options: MatchScoutingFieldOptions | null;
   order: number;
   organization_id: string | null;
   fields?: MatchScoutingSeasonFieldsResponse[];

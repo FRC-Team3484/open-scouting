@@ -28,9 +28,9 @@ export const GetPitFieldsPitsFieldsSeasonUuidGetResponseItem = zod.object({
   "description": zod.union([zod.string(),zod.null()]),
   "required": zod.boolean(),
   "field_type": zod.string(),
-  "options": zod.object({
+  "options": zod.union([zod.object({
   "choices": zod.array(zod.unknown())
-}),
+}),zod.null()]),
   "order": zod.int(),
   "organization": zod.union([zod.uuid(),zod.null()]),
   "created_at": zod.iso.datetime({"offset":true})
@@ -96,9 +96,9 @@ export const CreatePitFieldPitsFieldsSeasonUuidCreatePostResponse = zod.object({
   "description": zod.union([zod.string(),zod.null()]),
   "required": zod.boolean(),
   "field_type": zod.string(),
-  "options": zod.object({
+  "options": zod.union([zod.object({
   "choices": zod.array(zod.unknown())
-}),
+}),zod.null()]),
   "order": zod.int(),
   "organization": zod.union([zod.uuid(),zod.null()]),
   "created_at": zod.iso.datetime({"offset":true})
@@ -144,9 +144,9 @@ export const EditPitFieldPitsFieldsSeasonUuidEditFieldUuidPatchResponse = zod.ob
   "description": zod.union([zod.string(),zod.null()]),
   "required": zod.boolean(),
   "field_type": zod.string(),
-  "options": zod.object({
+  "options": zod.union([zod.object({
   "choices": zod.array(zod.unknown())
-}),
+}),zod.null()]),
   "order": zod.int(),
   "organization": zod.union([zod.uuid(),zod.null()]),
   "created_at": zod.iso.datetime({"offset":true})

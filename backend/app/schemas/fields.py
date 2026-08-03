@@ -62,7 +62,7 @@ class MatchScoutingSeasonFieldsResponse(BaseModel):
     stat_type: str
     game_piece_uuid: UUID | None = None
     required: bool
-    options: MatchScoutingFieldOptions
+    options: MatchScoutingFieldOptions | None
     order: int
     organization_id: UUID | None
     fields: list["MatchScoutingSeasonFieldsResponse"] = Field(default_factory=list)

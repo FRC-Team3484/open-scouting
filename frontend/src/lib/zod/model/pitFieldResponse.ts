@@ -13,7 +13,7 @@ export interface PitFieldResponse {
   description: string | null;
   required: boolean;
   field_type: string;
-  options: PitFieldOptions;
+  options: PitFieldOptions | null;
   order: number;
   organization: string | null;
   created_at: string;

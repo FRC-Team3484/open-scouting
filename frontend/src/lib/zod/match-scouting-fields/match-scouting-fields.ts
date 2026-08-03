@@ -29,12 +29,12 @@ export const GetSeasonFieldsFieldsSeasonSeasonUuidGetResponseItem = zod.object({
   "stat_type": zod.string(),
   "game_piece_uuid": zod.union([zod.uuid(),zod.null()]).optional(),
   "required": zod.boolean(),
-  "options": zod.object({
+  "options": zod.union([zod.object({
   "choices": zod.array(zod.unknown()),
   "default": zod.number(),
   "minimum": zod.number(),
   "maximum": zod.number()
-}),
+}),zod.null()]),
   "order": zod.int(),
   "organization_id": zod.union([zod.uuid(),zod.null()]),
   "fields": zod.array(zod.unknown()).optional()

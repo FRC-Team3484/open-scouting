@@ -45,6 +45,12 @@ async def get_season_fields(season_uuid: UUID) -> list[MatchScoutingSeasonFields
 
     # Attach children recursively
     for field in field_list:
+
+        # Fix options that were set to [] as default
+        options = field.options
+        if field.options == []:
+            options = None
+
         # Convert model instance to dict
         field_data = {
             "uuid": str(field.uuid),
@@ -54,7 +60,7 @@ async def get_season_fields(season_uuid: UUID) -> list[MatchScoutingSeasonFields
             "stat_type": field.stat_type,
             "game_piece_uuid": str(field.game_piece_id) if field.game_piece_id else None,
             "required": field.required,
-            "options": field.options,
+            "options": options,
             "order": field.order,
             "organization_id": str(field.organization_id) if field.organization_id else None,
             "fields": []  # for children

@@ -18,7 +18,7 @@ class PitFieldResponse(BaseModel):
     description: str | None
     required: bool
     field_type: str
-    options: PitFieldOptions
+    options: PitFieldOptions | None
     order: int
     organization: UUID | None
     created_at: datetime

@@ -53,7 +53,7 @@ async def get_pit_fields(season_uuid: UUID) -> list[PitFieldResponse]:
             description=field.description,
             required=field.required,
             field_type=field.field_type,
-            options=field.options,
+            options=None if field.options == [] else field.options, # Fix options that were set to [] as default
             order=field.order,
             organization=field.organization.uuid if field.organization else None,
             created_at=field.created_at
