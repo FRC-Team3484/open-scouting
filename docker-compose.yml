@@ -48,6 +48,33 @@ services:
       - frontend
       - backend
 
+  backup:
+    image: docker.io/nfrastack/db-backup
+    restart: unless-stopped
+    depends_on:
+      - postgres
+
+    volumes:
+      - /mnt/openscouting_db/backups:/backup
+
+    environment:
+      TIMEZONE: America/New_York
+
+      BACKUP_JOB_CONCURRENCY: 1
+
+      DEFAULT_BACKUP_INTERVAL: 1440
+      DEFAULT_BACKUP_BEGIN: 0300
+      DEFAULT_CLEANUP_TIME: 20160 # 14 days
+
+      DEFAULT_COMPRESSION: ZSTD
+      DEFAULT_CHECKSUM: NONE
+
+      DB01_TYPE: postgres
+      DB01_HOST: postgres
+      DB01_NAME: app
+      DB01_USER: app
+      DB01_PASS: app
+
 volumes:
   caddy_data:
   caddy_config:

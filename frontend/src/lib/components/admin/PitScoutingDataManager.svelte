@@ -1,17 +1,28 @@
+<!-- 
+@component
+Pit data management page for superusers.
+
+Allows pits to be deleted, for one or many that are selected.
+-->
 <script lang="ts">
-	import type { AdminPitResponse, SubmissionResponse } from "$lib/api/model";
-    import * as Card from "$lib/components/ui/card";
 	import { onMount } from "svelte";
+	import { toast } from "svelte-sonner";
+
+    import * as Card from "$lib/components/ui/card";
 	import Button from "../ui/button/button.svelte";
 	import Separator from "../ui/separator/separator.svelte";
     import * as AlertDialog from "$lib/components/ui/alert-dialog";
-	import { toast } from "svelte-sonner";
-	import { deleteMatchScoutingSubmissionScoutingSubmissionsDeleteSubmissionUuidDelete, getMatchScoutingSubmissionsScoutingSubmissionsGet } from "$lib/api/match-scouting/match-scouting";
+
+	import type { AdminPitResponse } from "$lib/api/model";
 	import { deletePitPitsDeletePitUuidDelete, getAllPitsPitsGetGet } from "$lib/api/pit-scouting/pit-scouting";
+
 
     let pits: AdminPitResponse[] = $state([]);
     let selected: string[] = $state([]);
 
+    /**
+     * Get pits from the server
+     */
     async function getPits() {
         selected = [];
 
@@ -25,6 +36,12 @@
         })
     }
 
+    /**
+     * Delete one pit from the server
+     * 
+     * @param uuid The uuid of the pit to delete
+     * @param once If false, logging that the pit was deleted will happen elsewhere
+     */
     async function deletePit(uuid: string, once: boolean = true) {
         await deletePitPitsDeletePitUuidDelete(uuid).then((res) => {
             if (res.status !== 200) {
@@ -37,6 +54,9 @@
         })
     }
 
+    /**
+     * Delete all selected pits
+     */
     async function deleteSelected() {
         for (const uuid of selected) {
             await deletePit(uuid, false);

@@ -1,29 +1,60 @@
+<!-- 
+@component
+The pit scouting question for a number
+
+Props:
+    - `pit` (`PitScoutingData`) - The parent pit for this question
+    - `question` (`SeasonPitScoutingQuestion`) - The question
+    - `answers` (`PitScoutingAnswer[]`) - Any answers for this question
+    - `user` (`unknown`) - The user from the parent
+-->
 <script lang="ts">
-	import Button from "$lib/components/ui/button/button.svelte";
-	import Input from "$lib/components/ui/input/input.svelte";
-	import { db } from "$lib/utils/db";
-	import BaseQuestion from "./BaseQuestion.svelte";
+	import Button from '$lib/components/ui/button/button.svelte';
+	import Input from '$lib/components/ui/input/input.svelte';
 
-    let { pit, question, answers, user } = $props();
+	import {
+		db,
+		type PitScoutingAnswer,
+		type PitScoutingData,
+		type SeasonPitScoutingQuestion
+	} from '$lib/utils/db';
+	import BaseQuestion from './BaseQuestion.svelte';
 
-    let value = $state(0);
-    let resetBase;
+	interface Props {
+		pit: PitScoutingData;
+		question: SeasonPitScoutingQuestion;
+		answers: PitScoutingAnswer[];
+		user: unknown;
+	}
+	let { pit, question, answers, user }: Props = $props();
 
-    async function addAnswer() {
-        const newAnswer = { uuid: crypto.randomUUID(), value: value, username: user?.username ?? "guest", field_uuid: question.uuid, created_at: new Date().toISOString() }
-        await db.pit_scouting.update(pit.uuid, {
-            answers: [...pit.answers, newAnswer],
-            synced: false
-        });
+	let value = $state(0);
+	let resetBase;
 
-        value = 0;
-        resetBase();
-    }
+	/**
+	 * Add the typed answer to this question
+	 */
+	async function addAnswer() {
+		const newAnswer = {
+			uuid: crypto.randomUUID(),
+			value: value,
+			username: user?.username ?? 'guest',
+			field_uuid: question.uuid,
+			created_at: new Date().toISOString()
+		};
+		await db.pit_scouting.update(pit.uuid, {
+			answers: [...pit.answers, newAnswer],
+			synced: false
+		});
+
+		value = 0;
+		resetBase();
+	}
 </script>
 
-<BaseQuestion question={question} answers={answers} bind:reset={resetBase}>
-    <div class="flex flex-row gap-2 items-center">
-        <Input type="number" placeholder={question.name} bind:value />
-        <Button onclick={addAnswer}>Save</Button>
-    </div>
+<BaseQuestion {question} {answers} bind:reset={resetBase}>
+	<div class="flex flex-row items-center gap-2">
+		<Input type="number" placeholder={question.name} bind:value />
+		<Button onclick={addAnswer}>Save</Button>
+	</div>
 </BaseQuestion>

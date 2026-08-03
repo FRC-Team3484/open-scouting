@@ -10,7 +10,9 @@ cd open-scouting
 Setup the `.env` file:
 ```bash
 cp .env.production.template .env
-nano .env # Change the `TBA_API_KEY`, `SECRET_KEY` in this file. You may need to update `CORS_ORIGINS`, `PUBLIC_FAST_API_URL`, and `UPLOAD_ROOT` as well
+# Change the `TBA_API_KEY`, `SECRET_KEY` in this file. You may need to update `CORS_ORIGINS`, `PUBLIC_FAST_API_URL`, and `UPLOAD_ROOT` as well
+# If you want to support emails on teh server, set `PUBLIC_EMAIL_ENABLED` to `true`, and then set the other email fields to match your email server.
+nano .env 
 ```
 
 Pull the images and start the containers:
@@ -19,7 +21,9 @@ docker compose pull
 docker compose up -d
 ```
 
-Now, set up the initial superuser, replacing `<ip>` with the server's ip, and filling in your information. The first user created on the server will be a superuser.
+Now, navigate to the server in your browser, and create your account. The first account created on the server will be a superuser.
+
+You can also set up the user account via the API. Replace `<ip>` with the server's ip, and fill in your information:
 ```bash
 curl -X POST https://<ip>/api/auth/signup \
      -H "Content-Type: application/json" \

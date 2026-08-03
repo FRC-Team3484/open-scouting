@@ -34,7 +34,7 @@
       }
     },
     {
-      "label": "Start Postgres DB Server",
+      "label": "Start Dev Docker Containers",
       "type": "shell",
       "command": "docker compose -f docker-compose.dev.yml up",
       "options": {

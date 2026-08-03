@@ -6,7 +6,7 @@ from pydantic import BaseModel
 
 class EventResponse(BaseModel):
     uuid: UUID
-    season: UUID
+    season: UUID | None
     event_code: str
     name: str
     type: str

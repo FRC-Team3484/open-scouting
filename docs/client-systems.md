@@ -8,35 +8,13 @@ This document lists the various client side systems that are available to aid in
   - [Database](#database)
   - [UI](#ui)
   - [User Managment](#user-managment)
+  - [Authentication Components](#authentication-components)
+  - [User Settings](#user-settings)
   - [API Requests](#api-requests)
   - [Form Validation](#form-validation)
   - [Menu Status](#menu-status)
 
 ## Dialogs
-### AlertDialog
-A simple alert dialog that is presented to the user
-
-```html
-<script lang="ts">
-    import Dialog from "$lib/components/generic/Dialog.svelte";
-    
-    let show_warning_dialog = true;
-
-    function closeWarningDialog(): void {
-        show_warning_dialog = false;
-    }
-</script>
-
-<Dialog 
-    open={show_warning_dialog} 
-    title="Open Scouting Administration" 
-    description="By continuing, understand that changes made here are irreversible, and may cause unintended consequences. Know what you're doing and proceed with caution." 
-    cancel_text=""
-    submit_text="Continue"
-    onSubmit={closeWarningDialog}
-/>
-```
-
 ### BaseDialog
 A larger dialog that automatically switches to a drawer on smaller screens
 ```html
@@ -85,17 +63,51 @@ npx shadcn-svelte@latest add
 ## User Managment
 The client can manage the currently authenticated user using `$lib/utils/user.ts`
 
-- `validateTokenOnline()` - If the user is authenticated and has a valid token, returns the user's data
-- `signOut()` - Signs the user out by deleting the access token from the client
-- `getUserSettings()` - Returns all the settings for the user
-- `setUserSettings(settings)` - Updates all the settings for the user
-    - `settings` - The dictionary of settings, hopefully edited based off of the result of `getUserSettings()`
-- `getUserSetting(key)` - Returns the value of a specific setting for the user
-    - `key` - The key of the specific setting
-- `setUserSetting(key, value)` - Sets a specific setting to a certain value
-    - `key` - The key of the specific setting
-    - `value` - The value to set the setting to
+- `getUser()` - Gets user data, loaded from +layout.server.ts
+- `getAuthenticationStatus()` - Gets the authentication status, loaded from +layout.server.ts
+- `getSettings()` - Returns all the settings for the user, from the page data
+- `signOut()` - Sign the user out
+- `getUserSettings()` - Get all user settings from the server
+- `setUserSettings(settings)` - Update the user's settings on the server
+- `getUserSetting(key)` - Get a single user setting from the server
+- `setUserSetting(key, value)` - Set a single user setting on the server
 
+## Authentication Components
+Various universal authentication components are provided in `$lib/components/generic/authentication`.
+
+These components support most user operations. This includes changing emails and passwords, creating and logging into accounts, creating passkeys, deleting accounts, email verification, a forgot password flow, and passkey verification. These components still work when the server has emails disabled. Users are encouraged to always create a passkey so they can recover their account when emails are disabled.
+
+These components should be accessed using the wrapper `Authentication.svelte`. This component requires the mode prop:
+- `mode` (`create_account | sign_in | change_password | forgot_password | verify_email | change_email | create_passkey | delete_account`)
+
+Additional props are needed depending on the mode. For example, `email` is required when the `mode` is `verify_email`, `change_password`, `change_email` or `create_passkey`.
+
+Finally, this component exposes bindable status props for most of the avaliable modes. Use these status props to listen to when the authentication action has completed, to know when the dialog can be closed or the next step can proceed.
+
+See the full component for more information.
+
+## User Settings
+Settings can be defined for user accounts in `backend/models.py`. These use special tortoise fields which provide some special metadata for each setting.
+
+The following settings are avaliable:
+- `StringSetting` (subclass of `CharField`)
+- `NumberSetting` (subclass of `IntField`)
+- `BooleanSetting` (subclass of `BooleanField`)
+- `ArraySetting` (subclass of `JSONField`)
+- `JSONSetting` (subclass of `JSONField`)
+
+These settings include metadata which appear on the user's profile page:
+- `display_name` - The human readable name for the setting
+- `setting_description` - The human readable description for the setting
+- `section` - The section to show the setting in. Settings with the same section will be grouped together. Leave this string empty to place the setting in the root section.
+- `visible` - If the setting should be shown on the profile page.
+
+Create these fields in the `Settings` model:
+```python
+favorite_events = ArraySetting(null=True, default=list, display_name="Favorite Events", setting_description="Your favorite events, which appear at the top of the event list", section="General", visible=True)
+```
+
+Upon running database migrations with the new setting, the user will be able to view the current value of these settings and change them on their profile page.
 
 ## API Requests
 Requests can be made to the backend using the typed request functions in `$lib/api`

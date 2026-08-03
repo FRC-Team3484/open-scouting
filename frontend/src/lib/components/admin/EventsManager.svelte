@@ -1,21 +1,34 @@
+<!-- 
+@component
+Handles the admin page for event management
+
+This page lets superusers delete events, delete match scouting data for events, and delete pit scouting data for events.
+Superusers can select more than one event at once to do actions on.
+-->
 <script lang="ts">
-	import { deleteUserUsersDeleteUuidDelete, removeSuperuserUsersRemoveSuperuserUuidPost, setSuperuserUsersSetSuperuserUuidPost } from "$lib/api/auth/auth";
-	import type { AdminEventResponse, EventResponse } from "$lib/api/model";
-    import * as Card from "$lib/components/ui/card";
 	import { onMount } from "svelte";
+	import { toast } from "svelte-sonner";
+	import { CalendarIcon, ListIcon, MapPinIcon, PlusCircleIcon } from "phosphor-svelte";
+
+    import * as Card from "$lib/components/ui/card";
 	import Badge from "../ui/badge/badge.svelte";
 	import Button from "../ui/button/button.svelte";
 	import Separator from "../ui/separator/separator.svelte";
     import * as AlertDialog from "$lib/components/ui/alert-dialog";
-	import { toast } from "svelte-sonner";
-	import { validateTokenOnline } from "$lib/utils/user";
+
+	import type { AdminEventResponse } from "$lib/api/model";
 	import { deleteEventEventsDeleteEventUuidDelete, deleteMatchScoutingSubmissionsEventsDeleteEventUuidMatchScoutingSubmissionsDelete, deleteTeamPitsEventsDeleteEventUuidTeamPitsDelete, getAllEventsEventsGetGet } from "$lib/api/events/events";
-	import { Calendar, List, MapPin, PlusCircle } from "phosphor-svelte";
+
 
     let events: AdminEventResponse[] = $state([]);
     let selected: string[] = $state([]);
 
-    async function getEvents() {
+    /**
+     * Fetches all events from the server
+     * 
+     * Use this instead of the local event cache to ensure the data is up to date
+     */
+    async function getEvents(): Promise<void> {
         selected = [];
 
         await getAllEventsEventsGetGet().then((res) => {
@@ -29,19 +42,27 @@
         })
     }
 
-    async function deleteEvent(uuid: string, once: boolean = true) {
+    /**
+     * Delete an event from the server
+     * 
+     * @param uuid The uuid of the event to delete
+     * @param once If false, log messages about the deletion state will be handled elsewhere
+     */
+    async function deleteEvent(uuid: string, once: boolean = true): Promise<void> {
         await deleteEventEventsDeleteEventUuidDelete(uuid).then((res) => {
             if (res.status !== 200) {
-                console.error(res)
+                console.error(res);
                 toast.error("Failed to delete event", { duration: 5000 });
-                return
             } else {
                 if (once) { toast.success("Event deleted", { duration: 5000 }); getEvents(); }
             }
         })
     }
 
-    async function deleteSelectedEvents() {
+    /**
+     * Delete all selected events from the server
+     */
+    async function deleteSelectedEvents(): Promise<void> {
         for (let uuid of selected) {
             await deleteEvent(uuid, false);
         }
@@ -50,6 +71,12 @@
         getEvents();
     }
 
+    /**
+     * Deletes match scouting submissions for an event from the server
+     * 
+     * @param uuid What event to delete match scouting data for
+     * @param once If false, log messages about the deletion state will be handled elsewhere
+     */
     async function deleteEventMatchScoutingSubmissions(uuid: string, once: boolean = true) {
         await deleteMatchScoutingSubmissionsEventsDeleteEventUuidMatchScoutingSubmissionsDelete(uuid).then((res) => {
             if (res.status !== 200) {
@@ -62,6 +89,9 @@
         });
     }
 
+    /**
+     * Delete match scouting submissions for all selected events
+     */
     async function deleteSelectedEventMatchScoutingSubmissions() {
         for (let uuid of selected) {
             await deleteEventMatchScoutingSubmissions(uuid, false);
@@ -71,6 +101,12 @@
         getEvents();
     }
 
+    /**
+     * Delete pit scouting data for an event
+     * 
+     * @param uuid What event to delete pit scouting data for
+     * @param once If false, log messages about the deletion state will be handled elsewhere
+     */
     async function deleteEventPits(uuid: string, once: boolean = true) {
         await deleteTeamPitsEventsDeleteEventUuidTeamPitsDelete(uuid).then((res) => {
             if (res.status !== 200) {
@@ -83,6 +119,9 @@
         })
     }
 
+    /**
+     * Delete pit scouting data for all selected events
+     */
     async function deleteSelectedEventPitScoutingSubmissions() {
         for (let uuid of selected) {
             await deleteEventPits(uuid, false);
@@ -185,11 +224,11 @@
                             </div>
 
                             <div class="flex flex-row gap-2 items-center flex-wrap">
-                                <List weight="bold" />
+                                <ListIcon weight="bold" />
                                 <p class="wrap-anywhere">{event.type}</p>
-                                <MapPin weight="bold" />
+                                <MapPinIcon weight="bold" />
                                 <p class="wrap-anywhere">{event.country} - {event.city}</p>
-                                <Calendar weight="bold" />
+                                <CalendarIcon weight="bold" />
                                 <p class="wrap-anywhere">{event.start_date} - {event.end_date}</p>
                             </div>
 
@@ -198,7 +237,7 @@
                             </div>
 
                             <div class="flex flex-row gap-2 items-center flex-wrap text-sm text-muted-foreground">
-                                <PlusCircle weight="bold" />
+                                <PlusCircleIcon weight="bold" />
                                 <p>Created: {event.created_at}</p>
                             </div>
 

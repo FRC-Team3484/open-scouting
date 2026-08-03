@@ -2,7 +2,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException
 
 from ..utils import IS_DEV
-from ..dependencies import require_superuser
+from ..dependencies import Identity, require_superuser
 from ..models import Season, User
 from ..schemas.generic import MessageResponse
 from ..schemas.seasons import SeasonCreate, SeasonResponse
@@ -36,7 +36,7 @@ async def get_active_season() -> Season | None:
 @router.post("/seasons/create", response_model=SeasonResponse)
 async def create_season(
         data: SeasonCreate,
-        superuser: User = Depends(require_superuser),
+        identity: Identity = Depends(require_superuser),
     ) -> Season:
     """
     Create a new season
@@ -50,12 +50,12 @@ async def create_season(
         `SeasonResponse`: The created season
     """
 
-    return await Season.create(**data.model_dump())
+    return await Season.create(**data.model_dump(), created_by=identity.session)
 
 @router.delete("/seasons/delete/{season_uuid}", response_model=MessageResponse)
 async def delete_season(
         season_uuid: str,
-        superuser: User = Depends(require_superuser),
+        identity: Identity = Depends(require_superuser),
     ) -> dict[str, str]:
     """
     Delete a season
@@ -77,7 +77,7 @@ async def delete_season(
     return {"message": "Season deleted"}
 
 @router.post("/seasons/activate/{season_uuid}", response_model=MessageResponse)
-async def activate_season(season_uuid: UUID, superuser = Depends(require_superuser)):
+async def activate_season(season_uuid: UUID, identity: Identity = Depends(require_superuser)):
     """
     Deactivate the current season and make the given season active
 

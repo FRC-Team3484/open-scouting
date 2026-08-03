@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Binoculars, ChartBar, CloudSlash, Garage, Lock, Pencil } from "phosphor-svelte";
+	import { BinocularsIcon, ChartBarIcon, CloudSlashIcon, GarageIcon, LockIcon, PencilIcon } from "phosphor-svelte";
 	import MajorFeature from "../MajorFeature.svelte";
 	import Generic from "./Generic.svelte";
 </script>
@@ -11,37 +11,37 @@
 {#snippet features()}
     <MajorFeature text="Match Scouting">
         {#snippet icon()}
-            <Binoculars weight="bold" />
+            <BinocularsIcon weight="bold" />
         {/snippet}
     </MajorFeature>
 
     <MajorFeature text="Pit Scouting">
         {#snippet icon()}
-            <Garage weight="bold" />
+            <GarageIcon weight="bold" />
         {/snippet}
     </MajorFeature>
 
     <MajorFeature text="Data View">
         {#snippet icon()}
-            <ChartBar weight="bold" />
+            <ChartBarIcon weight="bold" />
         {/snippet}
     </MajorFeature>
 
     <MajorFeature text="Offline Support">
         {#snippet icon()}
-            <CloudSlash weight="bold" />
+            <CloudSlashIcon weight="bold" />
         {/snippet}
     </MajorFeature>
 
     <MajorFeature text="Authentication">
         {#snippet icon()}
-            <Lock weight="bold" />
+            <LockIcon weight="bold" />
         {/snippet}
     </MajorFeature>
 
     <MajorFeature text="Admin Management">
         {#snippet icon()}
-            <Pencil weight="bold" />
+            <PencilIcon weight="bold" />
         {/snippet}
     </MajorFeature>
 {/snippet}

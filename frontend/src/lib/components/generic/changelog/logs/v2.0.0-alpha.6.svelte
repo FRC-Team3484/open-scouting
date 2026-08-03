@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Bug, Image, List, TextIndent, Wrench } from "phosphor-svelte";
+	import { BugIcon, ImageIcon, ListIcon, TextIndentIcon, WrenchIcon } from "phosphor-svelte";
 	import MajorFeature from "../MajorFeature.svelte";
 	import Generic from "./Generic.svelte";
 </script>
@@ -11,31 +11,31 @@
 {#snippet features()}
     <MajorFeature text="Bug Fixes">
         {#snippet icon()}
-            <Bug weight="bold" />
+            <BugIcon weight="bold" />
         {/snippet}
     </MajorFeature>
 
     <MajorFeature text="Admin User and Event Management">
         {#snippet icon()}
-            <Wrench weight="bold" />
+            <WrenchIcon weight="bold" />
         {/snippet}
     </MajorFeature>
 
     <MajorFeature text="Admin Scouting Data Management">
         {#snippet icon()}
-            <List weight="bold" />
+            <ListIcon weight="bold" />
         {/snippet}
     </MajorFeature>
 
     <MajorFeature text="Pit Scouting Image Uploads">
         {#snippet icon()}
-            <Image weight="bold" />
+            <ImageIcon weight="bold" />
         {/snippet}
     </MajorFeature>
 
     <MajorFeature text="Field Descriptions">
         {#snippet icon()}
-            <TextIndent weight="bold" />
+            <TextIndentIcon weight="bold" />
         {/snippet}
     </MajorFeature>
 {/snippet}

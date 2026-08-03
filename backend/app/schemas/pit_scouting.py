@@ -18,7 +18,7 @@ class PitFieldResponse(BaseModel):
     description: str | None
     required: bool
     field_type: str
-    options: PitFieldOptions
+    options: PitFieldOptions | None
     order: int
     organization: UUID | None
     created_at: datetime
@@ -81,3 +81,21 @@ class AdminPitResponse(BaseModel):
     team_number: int
     answers: int
     created_at: datetime
+
+class PitScoutingPresetResponse(BaseModel):
+    name: str
+    preset: dict[Any, Any]
+
+class PitAnswerResponse(BaseModel):
+    uuid: UUID
+    field_uuid: UUID
+    value: str | bool | int | float
+    username: str
+    created_at: datetime
+
+class GetPitsResponse(BaseModel):
+    uuid: UUID
+    team_number: int
+    nickname: str
+    created_at: datetime
+    answers: list[PitAnswerResponse]
