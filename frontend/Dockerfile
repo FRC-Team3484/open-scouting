@@ -6,7 +6,7 @@ ENV NODE_OPTIONS=--max-old-space-size=4096
 # Set dummy .env values so node build doesn't fail
 ENV PUBLIC_FAST_API_URL=https://open-scouting.shortcircuitfirst.org
 ENV PUBLIC_FRONTEND_URL=https://open-scouting.shortcircuitfirst.org
-ENV PUBLIC_MODE=prod # dev/prod
+ENV PUBLIC_MODE=prod
 ENV PUBLIC_EMAIL_ENABLED=false
 ENV PUBLIC_PASSKEY_NO_VERIFICATION_MINUTES=15
 
