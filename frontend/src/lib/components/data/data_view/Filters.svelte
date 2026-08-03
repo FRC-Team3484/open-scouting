@@ -44,8 +44,8 @@ Props:
      * Load all seasons from the local database
      */
     async function loadSeasons(): Promise<void> {
-        await db.season_data.toArray().then((seasons) => {
-            seasons = seasons.sort((a, b) => b.year - a.year);
+        await db.season_data.toArray().then((data) => {
+            seasons = data.sort((a, b) => b.year - a.year);
 
             if (!filters.year && seasons.length > 0) {
                 const activeSeason = seasons.find((s) => s.active);
