@@ -14,10 +14,14 @@ Additional props optionally take data depending on the mode
 
 Props:
     - `mode` (`create_account | sign_in | change_password | forgot_password | verify_email | change_email | create_passkey | delete_account`) - The current authentication mode
-    - `email` (`string`) - The email to verify (if `mode` is `verify_email`)
+    - `email` (`string`) - The email to verify (if `mode` is `verify_email`, `change_password`, `change_email`, or `create_passkey`)
     - `emailVerificationStatus` (`EmailVerificationStatus`) - The state of the `EmailVerification` component (if `mode` is `verify_email`)
     - `forgotPasswordStatus` (`ForgotPasswordStatus`) - The state of the `ForgotPassword` component (if `mode` is `forgot_password`)
     - `changePasswordStatus` (`ChangePasswordStatus`) - The state of the `ChangePassword` component (if `mode` is `change_password`)
+    - `changeEmailStatus` (`ChangeEmailStatus`) - The state of the `ChangeEmail` component (if `mode` is `change_email`)
+    - `createPasskeyStatus` (`CreatePasskeyStatus`) - The state of the `CreatePasskey` component (if `mode` is `create_passkey`)
+    - `createPasskeyRequireUserVerification` (`boolean`) - Whether to require user verification (if `mode` is `create_passkey`)
+    - `deleteAccountStatus` (`DeleteAccountStatus`) - The state of the `DeleteAccount` component (if `mode` is `delete_account`)
 -->
 <script lang="ts">
 	import { EnvelopeIcon, FingerprintIcon, KeyIcon, TrashIcon, UserCircleIcon, UserCirclePlusIcon } from "phosphor-svelte";
