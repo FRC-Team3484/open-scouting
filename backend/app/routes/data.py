@@ -256,11 +256,15 @@ async def get_data(
 
         teams[team_number]["team_number"] = team_number
         teams[team_number]["nickname"] = team_names.get(team_number)
-
         key = (team_number, field.uuid)
+
+        value = ""
+        if ans.value != None:
+            value = json.loads(ans.value)
+
         field_values[key].append({
             "match_number": ans.submission.match_number,
-            "value": json.loads(ans.value),
+            "value": value,
         })
         field_values[key] = sorted(field_values[key], key=lambda x: x["match_number"])
 
