@@ -7,7 +7,7 @@
 
 export interface AdminEventResponse {
   uuid: string;
-  season: string;
+  season: string | null;
   event_code: string;
   name: string;
   type: string;

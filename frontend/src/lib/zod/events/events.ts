@@ -23,7 +23,7 @@ export const GetCustomEventsEventCustomSeasonUuidGetParams = zod.object({
 
 export const GetCustomEventsEventCustomSeasonUuidGetResponseItem = zod.object({
   "uuid": zod.uuid(),
-  "season": zod.uuid(),
+  "season": zod.union([zod.uuid(),zod.null()]),
   "event_code": zod.string(),
   "name": zod.string(),
   "type": zod.string(),
@@ -65,7 +65,7 @@ export const CreateCustomEventEventCustomSeasonUuidCreatePostBody = zod.object({
 
 export const CreateCustomEventEventCustomSeasonUuidCreatePostResponse = zod.object({
   "uuid": zod.uuid(),
-  "season": zod.uuid(),
+  "season": zod.union([zod.uuid(),zod.null()]),
   "event_code": zod.string(),
   "name": zod.string(),
   "type": zod.string(),
@@ -89,7 +89,7 @@ export const CreateCustomEventEventCustomSeasonUuidCreatePostResponse = zod.obje
  */
 export const GetAllEventsEventsGetGetResponseItem = zod.object({
   "uuid": zod.uuid(),
-  "season": zod.uuid(),
+  "season": zod.union([zod.uuid(),zod.null()]),
   "event_code": zod.string(),
   "name": zod.string(),
   "type": zod.string(),

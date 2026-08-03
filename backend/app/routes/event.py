@@ -117,7 +117,7 @@ async def get_all_events(identity: Identity = Depends(require_superuser)) -> lis
     events = [
         AdminEventResponse(
             uuid=event.uuid,
-            season=event.season.uuid,
+            season=getattr(getattr(event, "season", None), "uuid", None),
             event_code=event.event_code,
             name=event.name,
             type=event.type,
