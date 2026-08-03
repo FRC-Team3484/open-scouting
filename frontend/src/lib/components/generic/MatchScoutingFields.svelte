@@ -448,6 +448,11 @@ Props:
                                 <Dialog.Content>
                                     <Dialog.Title>Import Field Data</Dialog.Title>
                                     <Dialog.Description>Import Field Data either from a JSON file, or from a preset provided by the server.</Dialog.Description>
+
+                                    <Alert.Root>
+                                        <InfoIcon weight="bold" />
+                                        <Alert.Description>Game pieces are stored in the preset by UUID. If this preset came from a different server, the game piece won't be added correctly. Use repair mode to fix these fields.</Alert.Description>
+                                    </Alert.Root>
                                     
                                     <Alert.Root variant="destructive">
                                         <WarningIcon weight="bold" />
