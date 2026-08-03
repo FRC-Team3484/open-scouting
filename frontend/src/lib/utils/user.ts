@@ -56,6 +56,8 @@ async function signOut() {
 /**
  * Get the user's settings
  * 
+ * TODO: Should this be removed?
+ * 
  * @returns The user's settings
  */
 async function getUserSettings() {
@@ -66,6 +68,7 @@ async function getUserSettings() {
  * Set the user's settings
  * 
  * TODO: Add types
+ * TODO: Should this be removed?
  * 
  * @param settings The user's settings
  */
@@ -77,6 +80,7 @@ async function setUserSettings(settings) {
  * Get a user setting
  * 
  * TODO: Add types
+ * TODO: Should this be removed?
  * 
  * @param key The key of the setting
  * @returns The value of the setting
@@ -90,6 +94,7 @@ async function getUserSetting(key) {
  * Set a single user setting
  * 
  * TODO: Add types
+ * TODO: Should this be removed?
  * 
  * @param key The key of the setting
  * @param value The value of the setting
