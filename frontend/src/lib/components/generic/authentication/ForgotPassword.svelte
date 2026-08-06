@@ -14,7 +14,7 @@ Props:
 </script>
 
 <script lang="ts">
-	import { PUBLIC_EMAIL_ENABLED } from "$env/static/public";
+	import { env } from "$env/dynamic/public";
 	import { onMount } from "svelte";
 	import { slide } from "svelte/transition";
 	import { toast } from "svelte-sonner";
@@ -114,7 +114,7 @@ Props:
 <div class="flex flex-col gap-2 text-left lg:max-w-[50vw]" transition:slide>
     <AuthenticationMessage {message} />
 
-    {#if PUBLIC_EMAIL_ENABLED}
+    {#if env.PUBLIC_EMAIL_ENABLED}
         {#if page == "enter_email"}
             <AuthenticationPage title="Enter your email" onCancelButtonClick={() => {status = "cancel"}}>
                 {#snippet icon()}

@@ -7,7 +7,7 @@ Props:
     - `getNewUserData` (`() => void`) - A function to get the new user
 -->
 <script lang="ts">
-	import { PUBLIC_EMAIL_ENABLED, PUBLIC_PASSKEY_NO_VERIFICATION_MINUTES } from "$env/static/public";
+	import { env } from "$env/dynamic/public";
     import { onMount } from "svelte";
 	import { toast } from "svelte-sonner";
 	import { ArrowRightIcon, CheckCircleIcon, CircleNotchIcon, EnvelopeIcon, InfoIcon, KeyIcon, PasswordIcon, PencilIcon, TrashIcon, UploadSimpleIcon, WarningIcon } from "phosphor-svelte";
@@ -58,7 +58,7 @@ Props:
 
     let createPasskeyOpen = $state(false);
     let createPasskeyStatus: CreatePasskeyStatus = $state("idle");
-    const passkeyNoVerificationHasElapsed = (new Date() - new Date(user.created_at)) >= (+PUBLIC_PASSKEY_NO_VERIFICATION_MINUTES * 60 * 1000);
+    const passkeyNoVerificationHasElapsed = (new Date() - new Date(user.created_at)) >= (+env.PUBLIC_PASSKEY_NO_VERIFICATION_MINUTES * 60 * 1000);
 
     let deleteAccountOpen = $state(false);
     let deleteAccountStatus: DeleteAccountStatus = $state("idle");
@@ -271,7 +271,7 @@ Props:
                     {/if}
                 </div>
 
-                {#if !user.email_verified && PUBLIC_EMAIL_ENABLED}
+                {#if !user.email_verified && env.PUBLIC_EMAIL_ENABLED}
                     <Alert.Root>
                         <InfoIcon weight="bold" />
                         <Alert.Title>Verify your email</Alert.Title>
@@ -282,7 +282,7 @@ Props:
                     </Alert.Root>
                 {/if}
 
-                {#if PUBLIC_EMAIL_ENABLED}
+                {#if env.PUBLIC_EMAIL_ENABLED}
                     <Alert.Root>
                         <InfoIcon weight="bold" />
                         <Alert.Title>Changing your email</Alert.Title>
