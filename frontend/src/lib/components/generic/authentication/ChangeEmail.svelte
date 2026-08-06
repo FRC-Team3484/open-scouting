@@ -21,7 +21,7 @@ Props:
 	import VerifyUser from "./VerifyUser.svelte";
 	import { changeEmailAuthChangeEmailPost, checkUniqueUsernameAuthCheckUniqueUsernameGet } from "$lib/api/auth/auth";
 	import EmailVerification, { type EmailVerificationStatus } from "./EmailVerification.svelte";
-	import { PUBLIC_EMAIL_ENABLED } from "$env/static/public";
+	import { env } from "$env/dynamic/public";
 	import AuthenticationPage from "./AuthenticationPage.svelte";
 	import AuthenticationMessage from "./AuthenticationMessage.svelte";
 
@@ -69,7 +69,7 @@ Props:
     async function changeEmail() {
         await changeEmailAuthChangeEmailPost({email: newEmail, verification_code_uuid: verifyEmailVerficationCodeUuid, passkey_uuid: verifyPasskeyUuid}).then((response) => {
             if (response.status == 200) {
-                if (PUBLIC_EMAIL_ENABLED) {
+                if (env.PUBLIC_EMAIL_ENABLED) {
                     page = "verify_new_email";
                 } else {
                     page = "success";

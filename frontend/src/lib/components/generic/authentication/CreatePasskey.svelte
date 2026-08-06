@@ -22,7 +22,7 @@ Props:
 
     import { createPasskeyAuthPasskeysRegisterCreatePost, verifyPasskeyAuthPasskeysRegisterVerifyPost } from "$lib/api/auth/auth";
 	import { ArrowRightIcon, CheckCircleIcon, CircleNotchIcon, InfoIcon, KeyIcon, KeyReturnIcon, WarningIcon, XCircleIcon } from "phosphor-svelte";
-	import { PUBLIC_EMAIL_ENABLED, PUBLIC_PASSKEY_NO_VERIFICATION_MINUTES } from "$env/static/public";
+	import { env } from "$env/dynamic/public";
 	import Input from "$lib/components/ui/input/input.svelte";
 	import AuthenticationMessage from "./AuthenticationMessage.svelte";
 	import AuthenticationPage from "./AuthenticationPage.svelte";
@@ -48,7 +48,7 @@ Props:
     let verifyPasskeyUuid: string | null = $state(null);
 
     function getRequireUserVerification() {
-        if (+PUBLIC_PASSKEY_NO_VERIFICATION_MINUTES == -1) {
+        if (+env.PUBLIC_PASSKEY_NO_VERIFICATION_MINUTES == -1) {
             return false;
         } else {
             return requireUserVerification;
@@ -143,7 +143,7 @@ Props:
         {#snippet content()}
             <p class="text-sm text-muted-foreground">Creating a passkey makes it quick and easy to log into your account.</p>
 
-            {#if !PUBLIC_EMAIL_ENABLED}
+            {#if !env.PUBLIC_EMAIL_ENABLED}
                 <Alert.Root variant="destructive" class="mb-2 text-left">
                     <WarningIcon weight="bold" />
                     <Alert.Title>Emails are disabled</Alert.Title>
@@ -156,9 +156,9 @@ Props:
                     <InfoIcon weight="bold" />
                     <Alert.Title>Passkeys will need user verification</Alert.Title>
                     <Alert.Description>
-                        {PUBLIC_PASSKEY_NO_VERIFICATION_MINUTES} minutes after your account creation, you will need user verification to create new passkeys. 
-                        {#if !PUBLIC_EMAIL_ENABLED}
-                            <br><span class="font-bold">Emails are disabled, so this passkey will be the only way to change your password later. Make sure to create one in the next {PUBLIC_PASSKEY_NO_VERIFICATION_MINUTES} minutes.</span> 
+                        {env.PUBLIC_PASSKEY_NO_VERIFICATION_MINUTES} minutes after your account creation, you will need user verification to create new passkeys. 
+                        {#if !env.PUBLIC_EMAIL_ENABLED}
+                            <br><span class="font-bold">Emails are disabled, so this passkey will be the only way to change your password later. Make sure to create one in the next {env.PUBLIC_PASSKEY_NO_VERIFICATION_MINUTES} minutes.</span> 
                         {/if}
                     </Alert.Description>
                 </Alert.Root>

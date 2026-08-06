@@ -25,7 +25,7 @@ Props:
 
 	import EmailVerification, { type EmailVerificationStatus } from "./EmailVerification.svelte";
 	import { createVerificationPasskeyAuthPasskeysVerificationCreatePost, verifyVerificationPasskeyAuthPasskeysVerificationVerifyPost } from "$lib/api/auth/auth";
-	import { PUBLIC_EMAIL_ENABLED } from "$env/static/public";
+	import { env } from "$env/dynamic/public";
 	import AuthenticationMessage from "./AuthenticationMessage.svelte";
 	import AuthenticationPage from "./AuthenticationPage.svelte";
 
@@ -120,7 +120,7 @@ Props:
                     <KeyIcon weight="bold" /> Verify with Passkey <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root>
                 {/if}
             </Button>
-            <Button onclick={() => {page = "email"}} disabled={verifyingWithPasskey || !PUBLIC_EMAIL_ENABLED}><EnvelopeIcon weight="bold" /> Send Verification Email</Button>
+            <Button onclick={() => {page = "email"}} disabled={verifyingWithPasskey || !env.PUBLIC_EMAIL_ENABLED}><EnvelopeIcon weight="bold" /> Send Verification Email</Button>
         {/snippet}
     </AuthenticationPage>   
 
