@@ -66,3 +66,15 @@ Now that the frontend and backend is running, configure your superuser account.
 4. The server is ready for use!
 
 You'll probably want to set up some seasons, fields, and game pieces in the [admin dashboard](http://localhost:5173/admin).
+
+## Running a production build locally
+In some cases you may need to run a production build locally, for things like testing the service worker:
+
+```bash
+cd frontend
+
+npm run build
+
+cd ..
+PORT=5137 node --env-file.env frontend/build
+```
