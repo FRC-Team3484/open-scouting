@@ -36,6 +36,7 @@ export default defineConfig({
 		sveltePhosphorOptimize(),
 		restartOnChangelogChange(),
 		SvelteKitPWA({
+			strategies: 'injectManifest',
 			registerType: 'autoUpdate',
 			devOptions: { enabled: false, type: 'module' },
 			includeAssets: [
@@ -61,10 +62,12 @@ export default defineConfig({
 				}
 				]
 			},
-			workbox: {
-				globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
-				navigateFallback: '/',
-			},
+			workbox: { 
+				globPatterns: [
+					'client/**/*.{js,css,ico,png,svg,webp,webmanifest}', 
+					'prerendered/**/*.{html,json}'
+				]
+			}
 		})
 	],
 	optimizeDeps: {
