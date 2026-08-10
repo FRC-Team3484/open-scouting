@@ -137,7 +137,12 @@ Example URL:
 	 * @returns The target page to actually go to
 	 */
 	function resolvePage(target: string): string {
-		if (!(user.uuid && user.uuid.length > 0)) {
+		// User is continuing without an account
+		if (target === "year" && !user.uuid && user.username) {
+			return "year";
+		}
+
+		if (target === "year" && !(user.uuid && user.uuid.length > 0)) {
 			return "auth";
 		}
 

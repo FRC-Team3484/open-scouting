@@ -16,13 +16,12 @@ Props:
 <script lang="ts">
 	import { onMount } from "svelte";
 	import { slide } from "svelte/transition";
-	import { PUBLIC_EMAIL_ENABLED } from "$env/static/public";
+	import { env } from "$env/dynamic/public";
 	import { ArrowRightIcon, CheckCircleIcon, CircleNotchIcon, ClockIcon, EnvelopeIcon, FastForwardCircleIcon, FastForwardIcon, KeyReturnIcon, QuestionIcon, TrashIcon, WarningIcon, XCircleIcon } from "phosphor-svelte";
 	import { toast } from "svelte-sonner";
 
 	import Button from "$lib/components/ui/button/button.svelte";
     import * as AlertDialog from "$lib/components/ui/alert-dialog/index.js";
-    import * as Alert from "$lib/components/ui/alert/index.js";
     import * as InputOTP from "$lib/components/ui/input-otp/index.js";
     import * as Kbd from "$lib/components/ui/kbd/index.js";
 	import { REGEXP_ONLY_DIGITS } from "bits-ui";
@@ -142,7 +141,7 @@ Props:
 <div class="flex flex-col gap-2 text-left lg:max-w-[50vw]" transition:slide>
     <AuthenticationMessage {message} />
 
-    {#if PUBLIC_EMAIL_ENABLED}
+    {#if env.PUBLIC_EMAIL_ENABLED}
         {#if page == "confirm_email"}
             <AuthenticationPage title="Verify your email" onCancelButtonClick={() => {status = "cancel"}}>
                 {#snippet icon()}

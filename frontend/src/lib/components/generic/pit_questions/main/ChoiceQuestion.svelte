@@ -6,21 +6,22 @@ Props:
     - `pit` (`PitScoutingData`) - The parent pit for this question
     - `question` (`SeasonPitScoutingQuestion`) - The question
     - `answers` (`PitScoutingAnswer[]`) - Any answers for this question
-    - `user` (`unknown`) - The user from the parent
+    - `user` (`UserResponse | null`) - The user from the parent
 -->
 <script lang="ts">
 	import Button from "$lib/components/ui/button/button.svelte";
     import * as Select from "$lib/components/ui/select/index.js";
-
+    
 	import { db, type PitScoutingAnswer, type PitScoutingData, type SeasonPitScoutingQuestion } from "$lib/utils/db";
 	import BaseQuestion from "./BaseQuestion.svelte";
+	import { type UserResponse } from "$lib/api/model";
 
     
     interface Props {
         pit: PitScoutingData
         question: SeasonPitScoutingQuestion
         answers: PitScoutingAnswer[]
-        user: unknown
+        user: UserResponse | null
     }
     let { pit, question, answers, user }: Props = $props();
 

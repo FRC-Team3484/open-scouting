@@ -18,20 +18,34 @@ Allows for editing profile details, changing password, and updating settings
     import PageContainer from "$lib/components/layout/PageContainer.svelte";
 	import Logo from "$lib/components/generic/Logo.svelte";
 
-	import { getAuthenticationStatus, getSettings, getUser, signOut } from "$lib/utils/user";
-	import { type UserResponse, type UserSetting } from "$lib/api/model";
+	import { signOut } from "$lib/utils/user";
+	import { type UserSetting } from "$lib/api/model";
 	import { getUserSettingsUsersMeGetSettingsGet, meAuthMeGet } from "$lib/api/auth/auth";
 	import ProfileSection from "$lib/components/profile/pages/ProfileSection.svelte";
 	import SettingsSection from "$lib/components/profile/pages/SettingsSection.svelte";
 	import Authentication from "$lib/components/generic/authentication/Authentication.svelte";
 	import DataSection from "$lib/components/profile/pages/DataSection.svelte";
+	import { user as userData } from "$lib/utils/auth";
 
 
     let section: "profile" | "settings" | "data" = $state("profile");
 
-    let user: UserResponse | null = $state(getUser());
-    let authenticated: boolean = getAuthenticationStatus();
-    let settings: {[key: string]: UserSetting[]} = $state(parseSettings(getSettings()));
+    let user = $derived($userData.user);
+    let authenticated = $derived($userData.authenticated);
+
+    let settings: {[key: string]: UserSetting[]} | null = $derived.by(() => {
+        if (!$userData.authenticated) {
+            return null;
+        }
+
+        settings = $userData.settings;
+
+        if (settings) {
+            return parseSettings(settings);
+        } else {
+            return null;
+        }
+    });
 
     /**
      * Parses the settings into sections
@@ -78,7 +92,7 @@ Allows for editing profile details, changing password, and updating settings
     }
 
     onMount(() => {
-        if (!authenticated) {
+        if (!authenticated && !$userData.loading) {
             goto("/");
             toast.error("You must be signed in to view this page.");
         }

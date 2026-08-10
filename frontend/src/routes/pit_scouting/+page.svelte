@@ -11,14 +11,13 @@ Allows for creating new pits, and includes a section for viewing the progress of
 	import { replaceState } from "$app/navigation";
 
 	import { db, type Event, type PitScoutingData, type SeasonPitScoutingQuestion } from "$lib/utils/db";
-	import { getUser } from "$lib/utils/user";
 	import PageContainer from "$lib/components/layout/PageContainer.svelte";
 	import AddPit from "$lib/components/pit_scouting/AddPit.svelte";
 	import Header from "$lib/components/pit_scouting/Header.svelte";
 	import Pit from "$lib/components/pit_scouting/Pit.svelte";
 	import SyncManager from "$lib/components/pit_scouting/SyncManager.svelte";
 	import PitStatus from "$lib/components/pit_scouting/PitStatus.svelte";
-	import { type UserResponse } from "$lib/api/model";
+	import { user } from "$lib/utils/auth";
 
 
     let season_uuid: string = $state("");
@@ -28,7 +27,6 @@ Allows for creating new pits, and includes a section for viewing the progress of
 
     let pit_questions: SeasonPitScoutingQuestion[] = $state([]);
 
-    let user: UserResponse | null = getUser();
 
     let scrolledFromUrl: boolean = $state(false);
     let scrolledFromUrlTeam: number | null = $state(null);
@@ -138,7 +136,7 @@ Allows for creating new pits, and includes a section for viewing the progress of
 
             {#if $pits && $pits.length > 0}
                 {#each ($pits) as pit}
-                    <Pit pit={pit} pit_questions={pit_questions} user={user} show_avatar={false} expanded={scrolledFromUrl && scrolledFromUrlTeam === pit.team_number} />
+                    <Pit pit={pit} pit_questions={pit_questions} user={$user.user} show_avatar={false} expanded={scrolledFromUrl && scrolledFromUrlTeam === pit.team_number} />
                 {/each}
             {:else}
                 <p>No pits found</p>

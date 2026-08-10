@@ -11,15 +11,14 @@ Allows for the user to sign into their account, or create a new account.
 
 	import Button from "$lib/components/ui/button/button.svelte";
     
-	import { getAuthenticationStatus } from "$lib/utils/user";
     import Logo from "$lib/components/generic/Logo.svelte";
 	import PageContainer from "$lib/components/layout/PageContainer.svelte";
 	import Authentication from "$lib/components/generic/authentication/Authentication.svelte";
 	import type { ForgotPasswordStatus } from "$lib/components/generic/authentication/ForgotPassword.svelte";
+	import { user } from "$lib/utils/auth";
 
 
     let page: "signin" | "signup" | "forgot_password" = $state("signin");
-    let authenticated: boolean = getAuthenticationStatus();
     let forgotPasswordStatus: ForgotPasswordStatus = $state("idle");
     let ref: string = $state("/");
 
@@ -32,7 +31,7 @@ Allows for the user to sign into their account, or create a new account.
             ref = params.get("ref") || "/";
         }
 
-        if (authenticated) {
+        if ($user.authenticated && !$user.loading) {
             await goto(ref);
         }
     });
@@ -45,7 +44,7 @@ Allows for the user to sign into their account, or create a new account.
 </script>
 
 <PageContainer>
-    {#if !authenticated}
+    {#if !$user.authenticated}
         <div class="flex flex-col w-full md:w-1/2 items-center gap-4">
             <Logo text={false} href="/" />
             <p class="text-2xl font-bold">Authentication</p>

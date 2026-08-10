@@ -5,7 +5,7 @@ Renders info for each event on the event list
 Props:
     - `event` (`Event`) - The event that is displayed
     - `favoriteEvents` (`string[]`) - The user's favorite events, from the parent
-    - `user` (`UserResponse | null`) - The user from the parent
+    - `user` (`UserData`) - The user from the parent
     - `favoriteEvent` (`(event: Event) => Promise<void>`) - The function to favorite an event
     - `selectEvent` (`(event: Event) => void`) - The function to select an event
     - `deselectEvent` (`(event: Event) => void`) - The function to deselect an event
@@ -20,14 +20,14 @@ Props:
     import * as Card from "$lib/components/ui/card/index.js";
 	import Skeleton from "$lib/components/ui/skeleton/skeleton.svelte";
 	import type { Event } from "$lib/utils/db";
-	import type { UserResponse } from "$lib/api/model";
 	import CreateReportDialog from "../reports/CreateReportDialog.svelte";
+	import type { UserData } from "$lib/utils/auth";
 
     
     interface Props {
         event: Event
         favoriteEvents: string[]
-        user: UserResponse | null
+        user: UserData
         favoriteEvent: (event: Event) => Promise<void>
         selectEvent: (event: Event) => void
         deselectEvent: (event: Event) => void
@@ -92,7 +92,7 @@ Props:
             </div>
 
             <div class="flex flex-row gap-2">
-                {#if user}
+                {#if user.authenticated && !user.loading}
                     <Button variant="outline" onclick={(e) => favoriteEvent(e, event)}>
                         {#if favoriteEvents.includes(`${event.year}_${event.event_code}`)}
                             <StarIcon weight="fill" />
@@ -100,7 +100,7 @@ Props:
                             <StarIcon weight="bold" />
                         {/if}
                     </Button>
-                {:else}
+                {:else if user.loading}
                     <Skeleton class="h-8 w-8 rounded-full" />
                 {/if}
                 

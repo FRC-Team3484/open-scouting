@@ -18,17 +18,14 @@ Props:
 
 	import { fetchSeasonData } from "$lib/utils/sync";
 	import { db, type Event } from "$lib/utils/db";
-    import { getUser } from "$lib/utils/user";
 	import Logo from "../generic/Logo.svelte";
-	import { type UserResponse } from "$lib/api/model";
+	import { user } from "$lib/utils/auth";
 
 
     interface Props {
         event_data: Event | null
     }
     let { event_data = $bindable() }: Props = $props();
-
-    let user: UserResponse | null = getUser();
 
     let username = $state("");
 
@@ -43,8 +40,8 @@ Props:
         
         if (get_username && get_team_number) {
             username = get_username;
-        } else if (user) {
-            username = user.username;
+        } else if ($user.user) {
+            username = $user.user.username;
         } else {
             username = "";
         }

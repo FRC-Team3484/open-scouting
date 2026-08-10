@@ -20,9 +20,9 @@ Props:
     import * as Avatar from "$lib/components/ui/avatar/index.js";
 	import Skeleton from "../ui/skeleton/skeleton.svelte";
 
-	import { signOut, getUser } from "$lib/utils/user";
+	import { signOut } from "$lib/utils/user";
 	import { getUserOrganizationsOrganizationsMeListGet } from "$lib/api/organizations/organizations";
-	import { type UserResponse } from "$lib/api/model";
+	import { user } from "$lib/utils/auth";
 
 
     interface Props {
@@ -31,7 +31,6 @@ Props:
     }
     let { handleNavigate, setUser }: Props = $props();
 
-    let user: UserResponse | null = getUser();
     let organizations: any = $state(null);
 
     let organization_value = {"name":"default", "id":"0"};
@@ -78,7 +77,7 @@ Props:
             </Card.Content>
 
             <Card.Footer>
-                <Button disabled={username.trim() !== "" && teamNumber.trim() !== ""} onclick={continueForward}>
+                <Button disabled={username.trim() == "" || teamNumber.trim() == ""} onclick={continueForward}>
                     <ArrowRightIcon weight="bold" /> Continue
                 </Button>
             </Card.Footer>
@@ -93,10 +92,10 @@ Props:
             </Card.Header>
 
             <Card.Content class="flex flex-col gap-2">
-                {#if user === null}
+                {#if $user.loading}
                     <Skeleton class="w-1/2" />
-                {:else if user}
-                    <p class="text-lg">Signed in as <strong>{user.username}</strong></p>
+                {:else if $user.authenticated && $user.loading == false && $user.user}
+                    <p class="text-lg">Signed in as <strong>{$user.user.username}</strong></p>
 
                     <!-- {#if organizations === null}
                         <Skeleton class="w-1/2" />
@@ -129,18 +128,18 @@ Props:
             </Card.Content>
 
             <Card.Footer class="flex flex-row gap-2 mt-auto flex-wrap">
-                {#if user}
+                {#if $user.authenticated && $user.user}
                     <Button variant="outline" onclick={async () => {await signOut(); window.location.reload()}}>
                         <SignOutIcon weight="bold" />
                         Sign Out
                     </Button>
-                    <Button onclick={() => {setUser(user.username, user.team_number, user.uuid); handleNavigate("year")}}>
+                    <Button onclick={() => {setUser($user.user?.username, $user.user?.team_number, $user.user?.uuid); handleNavigate("year")}}>
                         <Avatar.Root>
-                            <Avatar.Image src={user.profile_picture_url} alt={user.username} />
-                            <Avatar.Fallback>{user.username.substring(0, 1)}</Avatar.Fallback>
+                            <Avatar.Image src={$user.user?.profile_picture_url} alt={$user.user?.username} />
+                            <Avatar.Fallback>{$user.user?.username.substring(0, 1)}</Avatar.Fallback>
                         </Avatar.Root>
                         
-                        Continue as {user.username} <ArrowRightIcon weight="bold" />
+                        Continue as {$user.user?.username} <ArrowRightIcon weight="bold" />
                     </Button>
                 {:else}
                     <Button href="/authentication?ref={encodeURIComponent("/start?page=auth")}">Sign In <SignInIcon weight="bold" /></Button>

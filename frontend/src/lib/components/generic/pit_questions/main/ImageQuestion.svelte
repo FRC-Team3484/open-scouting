@@ -6,7 +6,7 @@ Props:
     - `pit` (`PitScoutingData`) - The parent pit for this question
     - `question` (`SeasonPitScoutingQuestion`) - The question
     - `answers` (`PitScoutingAnswer[]`) - Any answers for this question
-    - `user` (`unknown`) - The user from the parent
+    - `user` (`UserResponse | null`) - The user from the parent
 
 TODO: This could be refactored
 TODO: Make a full screen camera dialog instead of just a preview in a dialog?
@@ -27,13 +27,14 @@ TODO: Make a full screen camera dialog instead of just a preview in a dialog?
     import { pushFiles } from "$lib/utils/sync";
 	import { db, type PitScoutingAnswer, type PitScoutingData, type SeasonPitScoutingQuestion } from "$lib/utils/db";
 	import BaseDialog from "../../dialogs/BaseDialog.svelte";
+	import { type UserResponse } from "$lib/api/model";
 
 
     interface Props {
         pit: PitScoutingData
         question: SeasonPitScoutingQuestion
         answers: PitScoutingAnswer[]
-        user: unknown
+        user: UserResponse | null
     }
     let { pit, question, answers, user }: Props = $props();
     

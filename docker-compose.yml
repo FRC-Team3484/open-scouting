@@ -49,31 +49,24 @@ services:
       - backend
 
   backup:
-    image: docker.io/nfrastack/db-backup
-    restart: unless-stopped
-    depends_on:
-      - postgres
-
+    image: prodrigestivill/postgres-backup-local
+    restart: always
     volumes:
-      - /mnt/openscouting_db/backups:/backup
-
+        - /var/opt/pgbackups:/backups
+    depends_on:
+        - postgres
     environment:
-      TIMEZONE: America/New_York
-
-      BACKUP_JOB_CONCURRENCY: 1
-
-      DEFAULT_BACKUP_INTERVAL: 1440
-      DEFAULT_BACKUP_BEGIN: 0300
-      DEFAULT_CLEANUP_TIME: 20160 # 14 days
-
-      DEFAULT_COMPRESSION: ZSTD
-      DEFAULT_CHECKSUM: NONE
-
-      DB01_TYPE: postgres
-      DB01_HOST: postgres
-      DB01_NAME: app
-      DB01_USER: app
-      DB01_PASS: app
+        - POSTGRES_HOST=postgres
+        - POSTGRES_DB=app
+        - POSTGRES_USER=app
+        - POSTGRES_PASSWORD=app
+        - POSTGRES_EXTRA_OPTS=-Z1 --schema=public --blobs
+        - SCHEDULE=@daily
+        - BACKUP_ON_START=TRUE
+        - BACKUP_KEEP_DAYS=7
+        - BACKUP_KEEP_WEEKS=4
+        - BACKUP_KEEP_MONTHS=3
+        - HEALTHCHECK_PORT=8080
 
 volumes:
   caddy_data:

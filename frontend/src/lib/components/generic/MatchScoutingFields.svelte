@@ -29,13 +29,13 @@ Props:
 	import * as Alert from "../ui/alert/index.js";
 
 	import { db, type Event as EventType, type SeasonGamePiece, type SeasonMatchScoutingField } from "$lib/utils/db";
-	import { getUser } from "$lib/utils/user";
 	import { pushMatchScoutingData } from "$lib/utils/sync";
     import { addFieldDialogOpen, addSectionDialogOpen } from "$lib/stores/dialog";
+	import { user } from "$lib/utils/auth";
     
 	import { clearSeasonFieldsFieldsSeasonSeasonUuidClearDelete, createSeasonFieldFieldsSeasonSeasonUuidCreatePost, getMatchScoutingFieldPresetsFieldsGetPresetsGet, getSeasonFieldsFieldsSeasonSeasonUuidGet, moveMatchScoutingFieldsFieldsSeasonUuidReorderPatch } from "$lib/api/match-scouting-fields/match-scouting-fields";
 	import { getSeasonGamepiecesGamepiecesSeasonSeasonUuidGet } from "$lib/api/gamepieces/gamepieces";
-	import type { GamepieceResponse, MatchScoutingPresetResponse, MatchScoutingSeasonFieldsResponse, UserResponse } from "$lib/api/model";
+	import type { GamepieceResponse, MatchScoutingPresetResponse, MatchScoutingSeasonFieldsResponse } from "$lib/api/model";
     
 	import StringField from "./fields/StringField.svelte";
 	import LargeNumberField from "./fields/LargeNumberField.svelte";
@@ -63,7 +63,6 @@ Props:
     let fields: SeasonMatchScoutingField[] | MatchScoutingSeasonFieldsResponse[] = $state([]);
     let gamePieces: SeasonGamePiece[] | GamepieceResponse[] = $state([]);
     
-    let user: UserResponse | null = getUser();
     let matchScoutingTeamInfoChild: ReturnType<typeof MatchScoutingTeamInfo>;
 
     let fieldFile = $state(null);
@@ -167,7 +166,7 @@ Props:
         await db.match_scouting.add({
             uuid: crypto.randomUUID(),
             data: filteredFields,
-            user_uuid: user?.uuid ?? "",
+            user_uuid: $user.user?.uuid ?? "",
             year: event_data.year,
             team_number: parseInt(formData.get("team_number")),
             match_number: parseInt(formData.get("match_number")),

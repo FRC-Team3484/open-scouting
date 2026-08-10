@@ -2,6 +2,7 @@ import tailwindcss from '@tailwindcss/vite';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { SvelteKitPWA } from '@vite-pwa/sveltekit';
 import { defineConfig } from 'vite';
+import { sveltePhosphorOptimize } from 'phosphor-svelte/vite';
 
 function restartOnChangelogChange() {
 	return {
@@ -32,8 +33,10 @@ export default defineConfig({
 	plugins: [
 		tailwindcss(),
 		sveltekit(),
+		sveltePhosphorOptimize(),
 		restartOnChangelogChange(),
 		SvelteKitPWA({
+			strategies: 'injectManifest',
 			registerType: 'autoUpdate',
 			devOptions: { enabled: false, type: 'module' },
 			includeAssets: [
@@ -59,10 +62,12 @@ export default defineConfig({
 				}
 				]
 			},
-			workbox: {
-				globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
-				navigateFallback: '/',
-			},
+			workbox: { 
+				globPatterns: [
+					'client/**/*.{js,css,ico,png,svg,webp,webmanifest}', 
+					'prerendered/**/*.{html,json}'
+				]
+			}
 		})
 	],
 	optimizeDeps: {
