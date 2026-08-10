@@ -4,7 +4,12 @@ Represents a single pit on the pit scouting page
 
 Renders questions for this pit, gets how complete it is, and allows for expanding each pit.
 
-TODO: Add a proper interface for user
+Props:
+    - `pit` (`PitScoutingData`) - The pit data
+    - `pit_questions` (`SeasonPitScoutingQuestion[]`) - The loaded pit questions
+    - `user` (`UserResponse | null`) - The user from the parent
+    - `show_avatar` (`boolean`) - Whether to show the avatar of the user that created this pit
+    - `expanded` (`boolean`) - Whether this pit is expanded
 -->
 <script lang="ts">
 	import { slide } from "svelte/transition";
@@ -21,12 +26,13 @@ TODO: Add a proper interface for user
 	import ImageQuestion from "../generic/pit_questions/main/ImageQuestion.svelte";
 	import CreateReportDialog from "../generic/reports/CreateReportDialog.svelte";
 	import { pitVisibility } from "./pitVisibility";
+	import { type UserResponse } from "$lib/api/model";
 
 
     interface Props {
         pit: PitScoutingData
         pit_questions: SeasonPitScoutingQuestion[]
-        user: unknown
+        user: UserResponse | null
         show_avatar?: boolean
         expanded?: boolean
     }

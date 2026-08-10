@@ -17,7 +17,6 @@ Presents a warning dialog to the user when in production.
     import * as AlertDialog from "$lib/components/ui/alert-dialog/index.js";
 	import Badge from "$lib/components/ui/badge/badge.svelte";
     
-	import { getUser } from "$lib/utils/user";
 	import PageContainer from "$lib/components/layout/PageContainer.svelte";
 	import SeasonsManager from "$lib/components/admin/SeasonsManager.svelte";
 	import AdminHeader from "$lib/components/admin/AdminHeader.svelte";
@@ -27,14 +26,13 @@ Presents a warning dialog to the user when in production.
 	import EventManager from "$lib/components/admin/EventsManager.svelte";
 	import MatchScoutingSubmissionsManager from "$lib/components/admin/MatchScoutingSubmissionsManager.svelte";
 	import PitScoutingDataManager from "$lib/components/admin/PitScoutingDataManager.svelte";
-	import type { UserResponse } from "$lib/api/model";
 	import { getReportsCountReportsGetCountGet } from "$lib/api/reports/reports";
 	import ReportsManager from "$lib/components/admin/ReportsManager.svelte";
 	import { getRepairCountRepairsGetCountGet } from "$lib/api/repairs/repairs";
 	import RepairsManager from "$lib/components/admin/RepairsManager.svelte";
+	import { user } from "$lib/utils/auth";
 
 
-    let user: UserResponse | null = getUser();
     type Page = "start" | "seasons" | "match_fields" | "pit_scouting_questions" | "users" | "events" | "match_scouting" | "pit_scouting" | "reports" | "repairs";
     let page: Page = $state("start");
     let show_warning_dialog: boolean = $state(!(env.PUBLIC_MODE == "dev"));
@@ -102,7 +100,7 @@ Presents a warning dialog to the user when in production.
      * If they're not a superuser, redirect them back to the index page.
      */
     onMount(async () => {
-        if (!user || !user.is_superuser) {
+        if (!$user.authenticated || !$user.user?.is_superuser) {
             await goto("/");
         } else {
             getReportCount();
@@ -118,7 +116,7 @@ Presents a warning dialog to the user when in production.
 </script>
 
 <PageContainer>
-    {#if user != null && user.is_superuser}
+    {#if $user.authenticated && $user.user?.is_superuser}
         {#if page === "start"}
             <Card.Root class="w-auto min-w-64">
                 <Card.Header>

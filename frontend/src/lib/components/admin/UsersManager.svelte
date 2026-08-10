@@ -17,12 +17,11 @@ This page lets superusers delete users, and make or revoke superuser status for 
 	import { deleteUserUsersDeleteUuidDelete, getUsersUsersGet, removeSuperuserUsersRemoveSuperuserUuidPost, setSuperuserUsersSetSuperuserUuidPost } from "$lib/api/auth/auth";
 	import type { UserResponse } from "$lib/api/model";
 
-	import { getUser } from "$lib/utils/user";
+	import { user } from "$lib/utils/auth";
 
 
     let users: UserResponse[] = $state([]);
     let selected: string[] = $state([]);
-    let user_self: UserResponse | null = getUser();
 
     /**
      * Get all users from the server
@@ -151,26 +150,26 @@ This page lets superusers delete users, and make or revoke superuser status for 
 
             <Separator orientation="horizontal" />
             
-            {#each users as user}
+            {#each users as item}
                 <Card.Root>
                     <Card.Content>
                         <div class="flex flex-col gap-2">
                             <div class="flex flex-row gap-2 items-center flex-wrap">
-                                <input type="checkbox" bind:group={selected} value={user.uuid} />
-                                <p class="wrap-anywhere font-bold">{user.username}</p>
-                                {#if user.is_superuser}
+                                <input type="checkbox" bind:group={selected} value={item.uuid} />
+                                <p class="wrap-anywhere font-bold">{item.username}</p>
+                                {#if item.is_superuser}
                                     <Badge>Superuser</Badge>
                                 {/if}
-                                {#if user_self}
-                                    {#if user.uuid == user_self.uuid}
+                                {#if $user.authenticated && $user.user}
+                                    {#if item.uuid == $user.user.uuid}
                                         <Badge>Self</Badge>
                                     {/if}
                                 {/if}
                             </div>
 
                             <div class="flex flex-row gap-2 items-center flex-wrap">
-                                <p class="wrap-anywhere">{user.email}</p>
-                                <p class="text-sm text-muted-foreground">Created: {user.created_at}</p>
+                                <p class="wrap-anywhere">{item.email}</p>
+                                <p class="text-sm text-muted-foreground">Created: {item.created_at}</p>
                             </div>
 
                             <div class="flex flex-row gap-2 items-center flex-wrap">
@@ -180,18 +179,18 @@ This page lets superusers delete users, and make or revoke superuser status for 
                                     </AlertDialog.Trigger>
 
                                     <AlertDialog.Content>
-                                        <AlertDialog.Title>Delete User "{user.username}"</AlertDialog.Title>
+                                        <AlertDialog.Title>Delete User "{item.username}"</AlertDialog.Title>
                                         <AlertDialog.Description>Are you sure you want to delete this user? This action cannot be undone.</AlertDialog.Description>
                                         <AlertDialog.Footer>
                                             <AlertDialog.Cancel type="button">Cancel</AlertDialog.Cancel>
-                                            <AlertDialog.Action type="button" onclick={() => deleteUser(user.uuid)}>Delete</AlertDialog.Action>
+                                            <AlertDialog.Action type="button" onclick={() => deleteUser(item.uuid)}>Delete</AlertDialog.Action>
                                         </AlertDialog.Footer>
                                     </AlertDialog.Content>
                                 </AlertDialog.Root>
-                                {#if !user.is_superuser}
-                                    <Button variant="outline" size="sm" onclick={() => makeSuperuser(user.uuid)} disabled={user.uuid == user_self?.uuid}>Make Superuser</Button>
+                                {#if !item.is_superuser}
+                                    <Button variant="outline" size="sm" onclick={() => makeSuperuser(item.uuid)} disabled={item.uuid == $user.user?.uuid}>Make Superuser</Button>
                                 {:else}
-                                    <Button variant="outline" size="sm" onclick={() => revokeSuperuser(user.uuid)} disabled={user.uuid == user_self?.uuid}>Remove Superuser</Button>
+                                    <Button variant="outline" size="sm" onclick={() => revokeSuperuser(item.uuid)} disabled={item.uuid == $user.user?.uuid}>Remove Superuser</Button>
                                 {/if}
                             </div>
                         </div>

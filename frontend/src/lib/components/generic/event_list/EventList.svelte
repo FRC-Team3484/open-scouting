@@ -51,10 +51,11 @@ Props:
 
 	import { db } from "$lib/utils/db";
     import type { Event as EventType } from "$lib/utils/db";
-	import { getUserSetting, setUserSetting, getUser } from "$lib/utils/user";
+	import { getUserSetting, setUserSetting } from "$lib/utils/user";
 	import { fetchEventData } from "$lib/utils/sync";
 	import Event from "./Event.svelte";
 	import CreateCustomEventDialog from "../dialogs/CreateCustomEventDialog.svelte";
+	import { user } from "$lib/utils/auth";
 
     
     interface Props {
@@ -214,7 +215,6 @@ Props:
             return [];
         }
     })
-    let user: UserResponse | null = getUser();
     let favoriteEvents: string[] = $state([]);
 
     let search: string = $state("");
@@ -303,7 +303,7 @@ Props:
      * If any default view options or filters are provided, set them
      */
     onMount(async () => {
-        if (user) {
+        if ($user.authenticated) {
             favoriteEvents = await getUserSetting("favorite_events") ?? [];
         }
 
@@ -436,7 +436,7 @@ Props:
                             <Event 
                                 event={event} 
                                 favoriteEvents={favoriteEvents} 
-                                user={user} 
+                                user={$user.user} 
                                 favoriteEvent={favoriteEvent} 
                                 selectEvent={selectEvent} 
                                 deselectEvent={deselectEvent} 
@@ -453,7 +453,7 @@ Props:
                                 <Event 
                                     event={event} 
                                     favoriteEvents={favoriteEvents} 
-                                    user={user} 
+                                    user={$user.user} 
                                     favoriteEvent={favoriteEvent} 
                                     selectEvent={selectEvent} 
                                     deselectEvent={deselectEvent} 

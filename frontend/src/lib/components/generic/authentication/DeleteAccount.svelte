@@ -23,12 +23,12 @@ Props:
 	import Label from "$lib/components/ui/label/label.svelte";
     import * as Kbd from "$lib/components/ui/kbd/index";
 
-	import type { UserResponse } from "$lib/api/model";
-	import { getUser, signOut } from "$lib/utils/user";
+	import { signOut } from "$lib/utils/user";
 	import { deleteAccountAuthMeDeleteAccountDelete } from "$lib/api/auth/auth";
 	import AuthenticationMessage from "./AuthenticationMessage.svelte";
 	import AuthenticationPage from "./AuthenticationPage.svelte";
 	import VerifyUser, { type VerifyUserStatus } from "./VerifyUser.svelte";
+	import { user } from "$lib/utils/auth";
 
 
     interface Props {
@@ -38,7 +38,6 @@ Props:
 
     let page: "confirm" | "verify" | "delete" | "success" = $state("confirm");
     let message: string = $state("");
-    let user: UserResponse | null = getUser();
 
     let username: string = $state("");
     let email: string = $state("");
@@ -85,8 +84,8 @@ Props:
      * @param e
      */
     function handleKeyDown(e: KeyboardEvent) {
-        if (e.key == "Enter") {
-            if (page == "confirm" && username == user.username && email == user.email) {
+        if (e.key == "Enter" && $user.authenticated && $user.user) {
+            if (page == "confirm" && username == $user.user.username && email == $user.user.email) {
                 page = "verify"
             } else if (page == "success") {
                 logOut();
@@ -108,7 +107,7 @@ Props:
 <AuthenticationMessage {message} />
 
 {#if user}
-    {#if page == "confirm" }
+    {#if page == "confirm"}
         <AuthenticationPage title="Delete Account" onCancelButtonClick={() => {status = "cancel"}}>
             {#snippet icon()}
                 <TrashIcon weight="bold" />
@@ -119,15 +118,15 @@ Props:
                     <Card.Content>
                         <div class="flex flex-row gap-2 items-center">
                             <Avatar.Root class="size-16">
-                                <Avatar.Image src={user.profile_picture_url} alt={user.username} />
-                                <Avatar.Fallback>{user.username.substring(0, 1)}</Avatar.Fallback>
+                                <Avatar.Image src={$user.user?.profile_picture_url} alt={$user.user?.username} />
+                                <Avatar.Fallback>{$user.user?.username.substring(0, 1)}</Avatar.Fallback>
                             </Avatar.Root>
                             <div class="flex flex-col gap-1 items-start">
-                                <p>{user.display_name}</p>
-                                {#if user.username != user.display_name}
-                                    <p class="text-muted-foreground">({user.username})</p>
+                                <p>{$user.user?.display_name}</p>
+                                {#if $user.user?.username != $user.user?.display_name}
+                                    <p class="text-muted-foreground">({$user.user?.username})</p>
                                 {/if}
-                                <p class="text-muted-foreground">{user.email}</p>
+                                <p class="text-muted-foreground">{$user.user?.email}</p>
                             </div>
                         </div>
                     </Card.Content>
@@ -158,13 +157,13 @@ Props:
                 </ul>
 
                 <p>Type profile details:</p>
-                {#if username != user.username || email != user.email}
+                {#if username != $user.user?.username || email != $user.user?.email}
                     <div transition:slide>
                         <Alert.Root variant="destructive">
                             <WarningIcon weight="bold" />
                             <Alert.Title>Type your username and email</Alert.Title>
                             <Alert.Description>
-                                Type your username ({user.username}) and email ({user.email}) to confirm that you want to delete your account.
+                                Type your username ({$user.user?.username}) and email ({$user.user?.email}) to confirm that you want to delete your account.
                             </Alert.Description>
                         </Alert.Root>
                     </div>
@@ -189,23 +188,23 @@ Props:
                     </div>
                 {/if}
 
-                <Input placeholder={user.username} bind:value={username} />
-                <p class="text-muted-foreground">Type your username ({user.username})</p>
+                <Input placeholder={$user.user?.username} bind:value={username} />
+                <p class="text-muted-foreground">Type your username ({$user.user?.username})</p>
 
-                <Input placeholder={user.email} bind:value={email} />
-                <p class="text-muted-foreground">Type your email ({user.email})</p>
+                <Input placeholder={$user.user?.email} bind:value={email} />
+                <p class="text-muted-foreground">Type your email ({$user.user?.email})</p>
 
                 <div class="flex flex-row gap-2 mb-4">
                     <Switch id="show-password" bind:checked={deleteData} />
                     <Label for="show-password">Delete Optional Data</Label>
                 </div>
 
-                <Button disabled={username != user.username || email != user.email} onclick={() => {page = "verify"}}><ArrowRightIcon weight="bold" /> Verify Identity <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root></Button>
+                <Button disabled={username != $user.user?.username || email != $user.user?.email} onclick={() => {page = "verify"}}><ArrowRightIcon weight="bold" /> Verify Identity <Kbd.Root class="hidden pointer-fine:flex"><KeyReturnIcon weight="bold" /></Kbd.Root></Button>
             {/snippet}
         </AuthenticationPage>
 
     {:else if page == "verify"}
-        <VerifyUser email={user.email} bind:status={verifyUserStatus} bind:emailVerificationCodeUuid={verifyEmailVerficationCodeUuid} bind:passkeyUuid={verifyPasskeyUuid}/>
+        <VerifyUser email={$user.user?.email} bind:status={verifyUserStatus} bind:emailVerificationCodeUuid={verifyEmailVerficationCodeUuid} bind:passkeyUuid={verifyPasskeyUuid}/>
 
     {:else if page == "delete"}
         <AuthenticationPage title="Are you really sure?" onBackButtonClick={() => {page = "confirm"}}>
