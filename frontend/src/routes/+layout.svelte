@@ -14,6 +14,7 @@
 	import "$lib/utils/sync";
 	import Changelog from "$lib/components/generic/changelog/Changelog.svelte";
 	import type { LayoutProps } from "./$types";
+	import { authenticate } from "$lib/utils/auth";
 
 	let { data, children }: LayoutProps = $props();
 
@@ -24,6 +25,7 @@
 	 * Register the service worker
 	 */
 	onMount(async () => {
+		authenticate();
 		main();
 
 		if (!pwaInfo || env.PUBLIC_MODE == "dev") return; // plugin not active, skip

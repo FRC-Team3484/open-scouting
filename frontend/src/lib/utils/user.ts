@@ -1,42 +1,7 @@
-import { browser } from "$app/environment";
-import { page } from "$app/state";
-import { getUserSettingsUsersMeGetSettingsGet, logoutAuthLogoutPost, updateUserSettingsUsersMeUpdateSettingsPost } from "$lib/api/auth/auth";
-import type { UserResponse } from "$lib/api/model";
 import { toast } from "svelte-sonner";
 
-/**
- * Get user data from the page
- * 
- * Also removes legacy token from local storage
- * 
- * @returns The user data
- */
-function getUser() : UserResponse | null {
-    // Remove legacy token from local storage
-    if (browser && localStorage.getItem("access_token")) {
-        localStorage.removeItem("access_token");
-    }
+import { getUserSettingsUsersMeGetSettingsGet, logoutAuthLogoutPost, updateUserSettingsUsersMeUpdateSettingsPost } from "$lib/api/auth/auth";
 
-    return page.data.user.user;
-}
-
-/**
- * Get the user's authentication status
- * 
- * @returns True if the user is authenticated
- */
-function getAuthenticationStatus(): boolean {
-    return page.data.user.authenticated;
-}
-
-/**
- * Get the user's settings
- * 
- * @returns The user's settings
- */
-function getSettings() {
-    return page.data.user.settings;
-}
 
 /**
  * Sign the user out
@@ -105,4 +70,4 @@ async function setUserSetting(key, value) {
     await setUserSettings(settings);
 }
 
-export { getUser, getAuthenticationStatus, getSettings, signOut, getUserSettings, setUserSettings, getUserSetting, setUserSetting };
+export { signOut, getUserSettings, setUserSettings, getUserSetting, setUserSetting };
