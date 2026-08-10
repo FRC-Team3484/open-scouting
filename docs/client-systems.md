@@ -61,11 +61,10 @@ npx shadcn-svelte@latest add
 ```
 
 ## User Managment
-The client can manage the currently authenticated user using `$lib/utils/user.ts`
+The client can get the current user data using the `user` store from `$lib/utils/auth.ts`.
 
-- `getUser()` - Gets user data, loaded from +layout.server.ts
-- `getAuthenticationStatus()` - Gets the authentication status, loaded from +layout.server.ts
-- `getSettings()` - Returns all the settings for the user, from the page data
+The client can manage the currently authenticated user using `$lib/utils/user.ts`:
+
 - `signOut()` - Sign the user out
 - `getUserSettings()` - Get all user settings from the server
 - `setUserSettings(settings)` - Update the user's settings on the server
