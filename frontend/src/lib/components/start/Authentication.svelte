@@ -77,7 +77,7 @@ Props:
             </Card.Content>
 
             <Card.Footer>
-                <Button disabled={username.trim() !== "" && teamNumber.trim() !== ""} onclick={continueForward}>
+                <Button disabled={username.trim() == "" || teamNumber.trim() == ""} onclick={continueForward}>
                     <ArrowRightIcon weight="bold" /> Continue
                 </Button>
             </Card.Footer>
