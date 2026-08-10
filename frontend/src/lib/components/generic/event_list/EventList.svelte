@@ -436,7 +436,7 @@ Props:
                             <Event 
                                 event={event} 
                                 favoriteEvents={favoriteEvents} 
-                                user={$user.user} 
+                                user={$user} 
                                 favoriteEvent={favoriteEvent} 
                                 selectEvent={selectEvent} 
                                 deselectEvent={deselectEvent} 
@@ -453,7 +453,7 @@ Props:
                                 <Event 
                                     event={event} 
                                     favoriteEvents={favoriteEvents} 
-                                    user={$user.user} 
+                                    user={$user} 
                                     favoriteEvent={favoriteEvent} 
                                     selectEvent={selectEvent} 
                                     deselectEvent={deselectEvent} 
