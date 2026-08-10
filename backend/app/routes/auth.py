@@ -1,10 +1,10 @@
 
 import os
-import re
 import secrets
 from datetime import UTC, timedelta, datetime
 from typing import Literal
 from uuid import UUID
+from urllib.parse import urlparse
 
 from sqlite3 import IntegrityError
 from webauthn.helpers.exceptions import InvalidAuthenticationResponse, InvalidRegistrationResponse
@@ -33,9 +33,15 @@ from ..schemas.auth import BaseSettings, ChangeEmailRequest, ChangePasswordReque
 VERIFICATION_CODE_LENGTH = 6
 VERIFICATION_CODE_EXPIRE_MINUTES = 15
 
-# Remove the protocol and port from the URL
 # TODO: If the host changes, will all passkeys break?
-PASSKEY_RP_ID = "localhost" if IS_DEV else re.sub(r"^https?:\/\/|:\d+$", "", os.getenv("PUBLIC_FAST_API_URL", "localhost"))
+PASSKEY_RP_ID: str = (
+    "localhost"
+    if IS_DEV
+    else os.getenv(
+        "PASSKEY_RP_ID",
+        "localhost"
+    )
+)
 
 router: APIRouter = APIRouter(
     tags=["Auth"],
