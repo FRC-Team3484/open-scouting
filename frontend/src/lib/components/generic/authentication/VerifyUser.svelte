@@ -24,10 +24,11 @@ Props:
     import * as Kbd from "$lib/components/ui/kbd/index";
 
 	import EmailVerification, { type EmailVerificationStatus } from "./EmailVerification.svelte";
-	import { createVerificationPasskeyAuthPasskeysVerificationCreatePost, verifyVerificationPasskeyAuthPasskeysVerificationVerifyPost } from "$lib/api/auth/auth";
 	import { env } from "$env/dynamic/public";
 	import AuthenticationMessage from "./AuthenticationMessage.svelte";
 	import AuthenticationPage from "./AuthenticationPage.svelte";
+	import { createVerificationCodeAuthCreateVerificationCodePost } from "$lib/api/auth/auth";
+	import { verifyVerificationPasskeyPasskeysVerificationVerifyPost } from "$lib/api/passkeys/passkeys";
 
 
     interface Props {
@@ -52,13 +53,13 @@ Props:
         message = "";
         verifyingWithPasskey = true;
         try {
-            const options = await createVerificationPasskeyAuthPasskeysVerificationCreatePost({ email: email });
+            const options = await createVerificationCodeAuthCreateVerificationCodePost({ email: email });
 
             const authenticationResponse = await startAuthentication({
                 optionsJSON: options.data,
             });
 
-            await verifyVerificationPasskeyAuthPasskeysVerificationVerifyPost(authenticationResponse, {challenge_uuid: options.data.challenge_uuid, email: email}).then(async (response) => {
+            await verifyVerificationPasskeyPasskeysVerificationVerifyPost(authenticationResponse, {challenge_uuid: options.data.challenge_uuid, email: email}).then(async (response) => {
                 if (response.status == 200) {
                     passkeyUuid = response.data.passkey_uuid;
                     page = "success";
