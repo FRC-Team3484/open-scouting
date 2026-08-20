@@ -1,15 +1,18 @@
 from collections import defaultdict
 from datetime import datetime
+import json
 import os
+from pathlib import Path
+from typing import Any
 from uuid import UUID
 import httpx
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from ..dependencies import require_superuser
+from ..dependencies import Identity, Identity, get_identity, require_superuser
 from ..models import Event, Organization, PitScoutingAnswer, PitScoutingField, Season, TeamPit, User
 from ..schemas.generic import MessageResponse
-from ..schemas.pit_scouting import AdminPitResponse, PitFieldResponse, PitFieldRequest, GetPitsForSeasonRequest, ReorderPitFieldsRequest, SubmitPitFieldAnswerRequest
+from ..schemas.pit_scouting import AdminPitResponse, GetPitsResponse, PitAnswerResponse, PitFieldResponse, PitFieldRequest, GetPitsForSeasonRequest, PitScoutingPresetResponse, ReorderPitFieldsRequest, SubmitPitFieldAnswerRequest
 from ..utils import get_season, IS_DEV
 
 router: APIRouter = APIRouter(
@@ -48,8 +51,9 @@ async def get_pit_fields(season_uuid: UUID) -> list[PitFieldResponse]:
             season=season.uuid,
             name=field.name,
             description=field.description,
+            required=field.required,
             field_type=field.field_type,
-            options=field.options,
+            options=None if field.options == [] else field.options, # Fix options that were set to [] as default
             order=field.order,
             organization=field.organization.uuid if field.organization else None,
             created_at=field.created_at
@@ -57,7 +61,7 @@ async def get_pit_fields(season_uuid: UUID) -> list[PitFieldResponse]:
     ]
 
 @router.delete("/pits/fields/{season_uuid}/clear", response_model=MessageResponse)
-async def clear_pit_fields(season_uuid: UUID, superuser: User = Depends(require_superuser)):
+async def clear_pit_fields(season_uuid: UUID, identity: Identity = Depends(require_superuser)):
     """
     Clear all pit scouting fields for a season
 
@@ -79,7 +83,7 @@ async def clear_pit_fields(season_uuid: UUID, superuser: User = Depends(require_
 async def create_pit_field(
         season_uuid: UUID,
         data: PitFieldRequest,
-        superuser: User = Depends(require_superuser)
+        identity: Identity = Depends(require_superuser)
     ) -> PitFieldResponse:
     """
     Create a new pit scouting field
@@ -102,21 +106,65 @@ async def create_pit_field(
     else:
         organization = None
 
-    field: PitScoutingField = await PitScoutingField.create(
-        season=season,
-        name=data.name,
-        description=data.description,
-        field_type=data.field_type,
-        options=data.options,
-        order=data.order,
-        organization=organization
-    )
+    # When importing from a preset, uuid is provided
+    if data.uuid != "" and data.uuid is not None:
+        # Check if an existing archived field exists
+        existing_field = await PitScoutingField.filter(
+            uuid=data.uuid, 
+            archived=True
+        ).first()
+
+        # If an existing archived field exists, edit it with the given data and unarchive it
+        if existing_field:
+            existing_field.season = season
+            existing_field.name = data.name
+            existing_field.description = data.description
+            existing_field.required = data.required
+            existing_field.field_type = data.field_type
+            existing_field.options = data.options
+            existing_field.order = data.order
+            existing_field.organization = organization
+            existing_field.archived = False
+            await existing_field.save()
+
+            field = existing_field
+
+        # Otherwise, create a new one
+        else:
+            field: PitScoutingField = await PitScoutingField.create(
+                uuid=data.uuid,
+                season=season,
+                name=data.name,
+                description=data.description,
+                required=data.required,
+                field_type=data.field_type,
+                options=data.options,
+                order=data.order,
+                organization=organization,
+                created_by=identity.session
+            )
+
+    else:
+        # Otherwise, create a new field
+        field: PitScoutingField = await PitScoutingField.create(
+            season=season,
+            name=data.name,
+            description=data.description,
+            required=data.required,
+            field_type=data.field_type,
+            options=data.options,
+            order=data.order,
+            organization=organization,
+            created_by=identity.session
+        )
+        
 
     return PitFieldResponse(
         uuid=field.uuid,
         season=season.uuid,
         name=field.name,
         description=field.description,
+        required=field.required,
         field_type=field.field_type,
         options=field.options,
         order=field.order,
@@ -129,7 +177,7 @@ async def edit_pit_field(
         season_uuid: UUID,
         field_uuid: UUID,
         data: PitFieldRequest,
-        superuser: User = Depends(require_superuser)
+        identity: Identity = Depends(require_superuser)
     ) -> PitFieldResponse:
     """
     Edit a pit scouting field
@@ -160,6 +208,7 @@ async def edit_pit_field(
 
     field.name = data.name
     field.description = data.description
+    field.required = data.required
     field.field_type = data.field_type
     field.options = data.options
     field.order = data.order
@@ -172,6 +221,7 @@ async def edit_pit_field(
         season=season.uuid,
         name=field.name,
         description=field.description,
+        required=field.required,
         field_type=field.field_type,
         options=field.options,
         order=field.order,
@@ -205,7 +255,7 @@ async def move_pit_fields(
 @router.delete("/pits/fields/{field_uuid}/delete", response_model=MessageResponse)
 async def delete_pit_field(
         field_uuid: UUID,
-        superuser: User = Depends(require_superuser)
+        identity: Identity = Depends(require_superuser)
     ) -> MessageResponse:
     """
     Delete a pit scouting field
@@ -229,12 +279,12 @@ async def delete_pit_field(
 
     return MessageResponse(message="Field deleted")
 
-# TODO: This needs a proper response_model
-@router.post("/pits/get/{season_uuid}")
+@router.post("/pits/get/{season_uuid}", response_model=list[GetPitsResponse])
 async def get_pits(
         season_uuid: UUID,
-        data: GetPitsForSeasonRequest
-    ):
+        data: GetPitsForSeasonRequest,
+        identity: Identity = Depends(get_identity)
+    )-> list[GetPitsResponse]:
     """
     Get all pits for a season
 
@@ -247,7 +297,7 @@ async def get_pits(
     """
     season: Season = await get_season(season_uuid)
 
-    event, _ = await Event.get_or_create(
+    event, created = await Event.get_or_create(
         season=season,
         event_code=data.event_code,
         name=data.event_name,
@@ -258,6 +308,10 @@ async def get_pits(
         end_date=to_date_string(data.event_end_date),
         custom=data.event_custom
     )
+
+    if created:
+        event.created_by = identity.session
+        await event.save()
 
     # If pits have not been generated yet, get teams from TBA and create TeamPits
     if not event.pits_generated and TBA_API_KEY != "" and TBA_API_KEY is not None and event.custom == False:
@@ -275,30 +329,31 @@ async def get_pits(
                 team_number=team["team_number"],
                 nickname=team["nickname"],
                 season=season,
-                event=event
+                event=event,
+                created_by=identity.session
             )
 
         event.pits_generated = True
         await event.save()
 
-    pits = await TeamPit.filter(event=event).prefetch_related("answers")
+    pits: list[TeamPit] = await TeamPit.filter(event=event).prefetch_related("answers")
     return [
-        {
-            "uuid": pit.uuid,
-            "team_number": pit.team_number,
-            "nickname": pit.nickname,
-            "created_at": pit.created_at,
-            "answers": [
-                {
-                    "uuid": ans.uuid,
-                    "field_uuid": ans.field_id,
-                    "value": ans.value,
-                    "username": ans.username,
-                    "created_at": ans.created_at
-                }
+        GetPitsResponse(
+            uuid=pit.uuid,
+            team_number=pit.team_number,
+            nickname=pit.nickname,
+            created_at=pit.created_at,
+            answers=[
+                PitAnswerResponse(
+                    uuid=ans.uuid,
+                    field_uuid=ans.field_id,
+                    value=ans.value,
+                    username=ans.username,
+                    created_at=ans.created_at
+                )
                 for ans in pit.answers
             ]
-        }
+        )
         for pit in pits
     ]
 
@@ -306,7 +361,8 @@ async def get_pits(
 async def submit_pit(
         season_uuid: UUID,
         team_number: int,
-        data: SubmitPitFieldAnswerRequest
+        data: SubmitPitFieldAnswerRequest,
+        identity: Identity = Depends(require_superuser)
     ):
     """
     Get the season and event from the uuids. Then, check if a pit with that team number exists.
@@ -336,10 +392,12 @@ async def submit_pit(
         team_number=team_number,
         season=season,
         event=event,
-        nickname=data.nickname
+        nickname=data.nickname,
     )
 
     if created:
+        pit.created_by = identity.session
+        await pit.save()
         print("Created pit", pit.uuid, "for team", team_number, "and event", event.uuid)
 
     for answer in data.answers:
@@ -348,7 +406,7 @@ async def submit_pit(
         if not field:
             raise HTTPException(status_code=404, detail="Field not found")
 
-        _, created = await PitScoutingAnswer.get_or_create(
+        answer_object, created = await PitScoutingAnswer.get_or_create(
             uuid=answer["uuid"],
             team=pit,
             field=field,
@@ -357,12 +415,14 @@ async def submit_pit(
         )
 
         if created:
+            answer_object.created_by = identity.session
+            await answer_object.save()
             print("Created answer", answer["uuid"], "for pit", pit.uuid, "and field", field.uuid)
 
     return {"message": "Pit submitted successfully"}
 
 @router.get("/pits/get", response_model=list[AdminPitResponse])
-async def get_all_pits(superuser = Depends(require_superuser)) -> list[AdminPitResponse]:
+async def get_all_pits(identity: Identity = Depends(require_superuser)) -> list[AdminPitResponse]:
     """
     Get all pits
 
@@ -381,8 +441,8 @@ async def get_all_pits(superuser = Depends(require_superuser)) -> list[AdminPitR
     return [
         AdminPitResponse(
             uuid=pit.uuid, 
-            event_name=pit.event.name,
-            event_code=pit.event.event_code,
+            event_name=getattr(pit.event, "name", "N/A"),
+            event_code=getattr(pit.event, "event_code", "N/A"),
             team_number=pit.team_number, 
             answers=answers[pit.uuid],
             created_at=pit.created_at
@@ -390,7 +450,7 @@ async def get_all_pits(superuser = Depends(require_superuser)) -> list[AdminPitR
     ]
 
 @router.delete("/pits/delete/{pit_uuid}", response_model=MessageResponse)
-async def delete_pit(pit_uuid: UUID, superuser = Depends(require_superuser)) -> MessageResponse:
+async def delete_pit(pit_uuid: UUID, identity: Identity = Depends(require_superuser)) -> MessageResponse:
     """
     Delete a pit
 
@@ -404,3 +464,22 @@ async def delete_pit(pit_uuid: UUID, superuser = Depends(require_superuser)) -> 
     """
     await TeamPit.filter(uuid=pit_uuid).delete()
     return MessageResponse(message="Pit deleted")
+
+@router.get("/pits/get_presets", response_model=list[PitScoutingPresetResponse])
+async def get_pit_scouting_field_presets(identity: Identity = Depends(require_superuser)) -> list[PitScoutingPresetResponse]:    
+    """
+    Get all JSON pit scouting field presets
+
+    Requires superuser access
+
+    Returns:
+        `list[Any]`: A list of all pit scouting field presets
+    """
+    path = Path("./app/pit_scouting_presets")
+    presets: list[PitScoutingPresetResponse] = []
+
+    for file in path.iterdir():
+        with open(file, "r") as f:
+            presets.append({ "name": file.stem, "preset": json.load(f) })
+
+    return presets

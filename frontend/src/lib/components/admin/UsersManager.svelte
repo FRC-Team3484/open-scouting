@@ -1,19 +1,31 @@
+<!-- 
+@component
+Handles the admin page for user management
+
+This page lets superusers delete users, and make or revoke superuser status for one or more users.
+-->
 <script lang="ts">
-	import { deleteUserUsersDeleteUuidDelete, getUsersUsersGet, removeSuperuserUsersRemoveSuperuserUuidPost, setSuperuserUsersSetSuperuserUuidPost } from "$lib/api/auth/auth";
-	import type { UserResponse } from "$lib/api/model";
-    import * as Card from "$lib/components/ui/card";
 	import { onMount } from "svelte";
+	import { toast } from "svelte-sonner";
+
+    import * as Card from "$lib/components/ui/card";
 	import Badge from "../ui/badge/badge.svelte";
 	import Button from "../ui/button/button.svelte";
 	import Separator from "../ui/separator/separator.svelte";
     import * as AlertDialog from "$lib/components/ui/alert-dialog";
-	import { toast } from "svelte-sonner";
-	import { validateTokenOnline } from "$lib/utils/user";
+
+	import { deleteUserUsersDeleteUuidDelete, getUsersUsersGet, removeSuperuserUsersRemoveSuperuserUuidPost, setSuperuserUsersSetSuperuserUuidPost } from "$lib/api/auth/auth";
+	import type { UserResponse } from "$lib/api/model";
+
+	import { user } from "$lib/utils/auth";
+
 
     let users: UserResponse[] = $state([]);
     let selected: string[] = $state([]);
-    let user_self = $state(null);
 
+    /**
+     * Get all users from the server
+     */
     async function getUsers() {
         selected = [];
 
@@ -28,6 +40,12 @@
         })
     }
 
+    /**
+     * Delete a user from the server
+     * 
+     * @param uuid The UUID of the user to delete
+     * @param once If false, log messages about the deletion state will be handled elsehwere
+     */
     async function deleteUser(uuid: string, once: boolean = true) {
         await deleteUserUsersDeleteUuidDelete(uuid).then((res) => {
             if (res.status !== 200) {
@@ -40,6 +58,9 @@
         })
     }
 
+    /**
+     * Delete all selected users
+     */
     async function deleteSelected() {
         for (const uuid of selected) {
             await deleteUser(uuid, false);
@@ -49,6 +70,11 @@
         getUsers();
     }
 
+    /**
+     * Make a user a superuser
+     * 
+     * @param uuid The UUID of the user to make a superuser
+     */
     async function makeSuperuser(uuid: string) {
         await setSuperuserUsersSetSuperuserUuidPost(uuid).then((res) => {
             if (res.status !== 200) {
@@ -62,6 +88,11 @@
         })
     }
 
+    /**
+     * Revoke superuser status from a user
+     * 
+     * @param uuid The UUID of the user to revoke the superuser status
+     */
     async function revokeSuperuser(uuid: string) {
         await removeSuperuserUsersRemoveSuperuserUuidPost(uuid).then((res) => {
             if (res.status !== 200) {
@@ -77,9 +108,7 @@
 
     onMount(async () => {
         await getUsers();
-
-        user_self = await validateTokenOnline();
-    })
+    });
 </script>
 
 <div class="flex flex-col gap-4">
@@ -121,26 +150,26 @@
 
             <Separator orientation="horizontal" />
             
-            {#each users as user}
+            {#each users as item}
                 <Card.Root>
                     <Card.Content>
                         <div class="flex flex-col gap-2">
                             <div class="flex flex-row gap-2 items-center flex-wrap">
-                                <input type="checkbox" bind:group={selected} value={user.uuid} />
-                                <p class="wrap-anywhere font-bold">{user.username}</p>
-                                {#if user.is_superuser}
+                                <input type="checkbox" bind:group={selected} value={item.uuid} />
+                                <p class="wrap-anywhere font-bold">{item.username}</p>
+                                {#if item.is_superuser}
                                     <Badge>Superuser</Badge>
                                 {/if}
-                                {#if user_self != null}
-                                    {#if user.uuid == user_self.uuid}
+                                {#if $user.authenticated && $user.user}
+                                    {#if item.uuid == $user.user.uuid}
                                         <Badge>Self</Badge>
                                     {/if}
                                 {/if}
                             </div>
 
                             <div class="flex flex-row gap-2 items-center flex-wrap">
-                                <p class="wrap-anywhere">{user.email}</p>
-                                <p class="text-sm text-muted-foreground">Created: {user.created_at}</p>
+                                <p class="wrap-anywhere">{item.email}</p>
+                                <p class="text-sm text-muted-foreground">Created: {item.created_at}</p>
                             </div>
 
                             <div class="flex flex-row gap-2 items-center flex-wrap">
@@ -150,18 +179,18 @@
                                     </AlertDialog.Trigger>
 
                                     <AlertDialog.Content>
-                                        <AlertDialog.Title>Delete User "{user.username}"</AlertDialog.Title>
+                                        <AlertDialog.Title>Delete User "{item.username}"</AlertDialog.Title>
                                         <AlertDialog.Description>Are you sure you want to delete this user? This action cannot be undone.</AlertDialog.Description>
                                         <AlertDialog.Footer>
                                             <AlertDialog.Cancel type="button">Cancel</AlertDialog.Cancel>
-                                            <AlertDialog.Action type="button" onclick={() => deleteUser(user.uuid)}>Delete</AlertDialog.Action>
+                                            <AlertDialog.Action type="button" onclick={() => deleteUser(item.uuid)}>Delete</AlertDialog.Action>
                                         </AlertDialog.Footer>
                                     </AlertDialog.Content>
                                 </AlertDialog.Root>
-                                {#if !user.is_superuser}
-                                    <Button variant="outline" size="sm" onclick={() => makeSuperuser(user.uuid)} disabled={user.uuid == user_self?.uuid}>Make Superuser</Button>
+                                {#if !item.is_superuser}
+                                    <Button variant="outline" size="sm" onclick={() => makeSuperuser(item.uuid)} disabled={item.uuid == $user.user?.uuid}>Make Superuser</Button>
                                 {:else}
-                                    <Button variant="outline" size="sm" onclick={() => revokeSuperuser(user.uuid)} disabled={user.uuid == user_self?.uuid}>Remove Superuser</Button>
+                                    <Button variant="outline" size="sm" onclick={() => revokeSuperuser(item.uuid)} disabled={item.uuid == $user.user?.uuid}>Remove Superuser</Button>
                                 {/if}
                             </div>
                         </div>

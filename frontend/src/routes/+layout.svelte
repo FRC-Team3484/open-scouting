@@ -2,6 +2,7 @@
 	import "../app.css";
 	import { onMount } from 'svelte';
 	import { pwaInfo } from 'virtual:pwa-info'; // gives you the manifest link tag
+	import { env } from "$env/dynamic/public";
 
 	import { main } from "$lib/utils/main"
 	import favicon from '$lib/assets/favicon.svg';
@@ -12,16 +13,22 @@
 
 	import "$lib/utils/sync";
 	import Changelog from "$lib/components/generic/changelog/Changelog.svelte";
+	import type { LayoutProps } from "./$types";
+	import { authenticate } from "$lib/utils/auth";
 
-	let { children } = $props();
+	let { data, children }: LayoutProps = $props();
 
 	// put the <link rel="manifest"> into the head
 	let webManifest = pwaInfo ? pwaInfo.webManifest.linkTag : '';
 
+	/**
+	 * Register the service worker
+	 */
 	onMount(async () => {
+		authenticate();
 		main();
 
-		if (!pwaInfo) return; // plugin not active, skip
+		if (!pwaInfo || env.PUBLIC_MODE == "dev") return; // plugin not active, skip
 			try {
 			// dynamic import so this only runs in the browser (no SSR trouble)
 			const { registerSW } = await import('virtual:pwa-register');
@@ -46,6 +53,7 @@
 </svelte:head>
 
 <div class="min-h-screen flex flex-col">
+	<!-- Universal components -->
 	<NavBar />
 	<ModeWatcher />
 	<Toaster position="top-right" closeButton />

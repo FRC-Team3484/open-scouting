@@ -1,24 +1,50 @@
+<!-- 
+@component
+The pit status card on the pit scouting page
+
+Shows every loaded pit, and how completed each one is. Clicking on a team number jumps to that team's location in the list.ArrowDown
+Also shows the number of loaded pits, and a key to the status icons.
+
+Props:
+    - `pits` (`PitScoutingData[]`) - The loaded pits
+    - `pit_questions` (`SeasonPitScoutingQuestion[]`) - The loaded pit questions
+    - `scrollToTeam` (`(team_number: number | "addPit") => void`) - A function to scroll to a team
+-->
 <script lang="ts">
-	import { onMount } from "svelte";
+	import { ArrowDownIcon, CheckCircleIcon, DotsThreeCircleIcon, RewindCircleIcon, XCircleIcon } from "phosphor-svelte";
+
     import * as Card from "$lib/components/ui/card/index.js";
 	import Button from "../ui/button/button.svelte";
-	import { ArrowDown, CheckCircle, DotsThreeCircle, RewindCircle, XCircle } from "phosphor-svelte";
 
-    let { pits, pit_questions } = $props();
+	import type { PitScoutingData, SeasonPitScoutingQuestion } from "$lib/utils/db";
 
-    let pitStatus = $derived.by(() => {
+
+    interface Props {
+        pits: PitScoutingData[];
+        pit_questions: SeasonPitScoutingQuestion[];
+        scrollToTeam: (team_number: number | "addPit") => void;
+    }
+    let { pits, pit_questions, scrollToTeam }: Props = $props();
+
+    let pitStatus: { team_number: number, status: "done" | "incomplete" | "none"}[] = $derived.by(() => {
         if (!pits || !pit_questions?.length) return [];
 
         return pits.map(pit => {
-            const answeredCount = pit_questions.filter(q =>
+            const answeredCount = pit_questions.filter(q => q.required).filter(q =>
+                pit.answers?.some(a => a.field_uuid === q.uuid)
+            ).length;
+
+            const answeredOptionalCount = pit_questions.filter(q => !q.required).filter(q =>
                 pit.answers?.some(a => a.field_uuid === q.uuid)
             ).length;
 
             let status: "done" | "incomplete" | "none" = "none";
 
-            if (answeredCount === pit_questions.length) {
+            if (answeredCount === pit_questions.filter(q => q.required).length) {
                 status = "done";
             } else if (answeredCount > 0) {
+                status = "incomplete";
+            } else if (answeredOptionalCount > 0) {
                 status = "incomplete";
             }
 
@@ -28,13 +54,6 @@
             };
         });
     });
-
-    function scrollToTeam(team_number: number | "addPit") {
-        const element = document.querySelector(`[data-teamNumber="${team_number}"]`);
-        if (element) {
-            element.scrollIntoView({ behavior: "smooth" });
-        }
-    }
 </script>
 
 <Card.Root class="w-auto min-w-64">
@@ -47,32 +66,32 @@
                 {#each pitStatus as pit}
                     {#if pit.status === "done"}
                         <Button variant="ghost" size="sm" class="text-green-300" onclick={() => scrollToTeam(pit.team_number)}>
-                            <CheckCircle weight="bold" />
+                            <CheckCircleIcon weight="bold" />
                             <p>{pit.team_number}</p>
                         </Button>
                     {:else if pit.status === "incomplete"}
                         <Button variant="ghost" size="sm" class="text-orange-400" onclick={() => scrollToTeam(pit.team_number)}>
-                            <DotsThreeCircle weight="bold" />
+                            <DotsThreeCircleIcon weight="bold" />
                             <p>{pit.team_number}</p>
                         </Button>
                     {:else}
                         <Button variant="ghost" size="sm" class="text-red-400" onclick={() => scrollToTeam(pit.team_number)}>
-                            <XCircle weight="bold" />
+                            <XCircleIcon weight="bold" />
                             <p>{pit.team_number}</p>
                         </Button>
                     {/if}
                 {/each}
             </div>
 
-            <Button variant="outline" onclick={() => scrollToTeam("addPit")}><ArrowDown weight="bold" /> Add Missing Pit</Button>
+            <Button variant="outline" onclick={() => scrollToTeam("addPit")}><ArrowDownIcon weight="bold" /> Add Missing Pit</Button>
             
             <p>Loaded {pitStatus.length} pits - {pitStatus.filter(pit => pit.status === "done").length}/{pitStatus.length} ({Math.round(pitStatus.filter(pit => pit.status === "done").length / pitStatus.length * 100)}%) completed</p>
             <div class="flex flex-row gap-0.5 flex-wrap text-sm text-muted-foreground items-center">
-                <CheckCircle weight="bold" />
+                <CheckCircleIcon weight="bold" />
                 <p class="mr-1">All answered</p>
-                <DotsThreeCircle weight="bold" />
+                <DotsThreeCircleIcon weight="bold" />
                 <p class="mr-1">Some answered</p>
-                <XCircle weight="bold" />
+                <XCircleIcon weight="bold" />
                 <p class="mr-1">No answers</p>
             </div>
         </div>

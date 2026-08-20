@@ -1,18 +1,37 @@
+<!-- 
+@component
+Component for the user to enter the match number, team number, and event type when scouting
+
+If possible from the event, team numbers will be auto filled, and incremented when a report is submitted.
+
+Also handles showing what robot position to watch.
+
+Props:
+    `event_data` (`Event`) - The data for the event
+-->
 <script lang="ts">
+	import { InfoIcon } from "phosphor-svelte";
+	import { onMount } from "svelte";
+	import { slide } from "svelte/transition";
+
     import * as Card from "$lib/components/ui/card/index.js";
 	import Input from "../ui/input/input.svelte";
 	import Label from "../ui/label/label.svelte";
     import * as Select from "$lib/components/ui/select/index.js";
 	import Separator from "../ui/separator/separator.svelte";
     import * as Dialog from "$lib/components/ui/dialog/index.js";
-	import { Info, Warning } from "phosphor-svelte";
 	import Button from "../ui/button/button.svelte";
     import * as Alert from "$lib/components/ui/alert/index.js";
-	import { theBlueAllianceApiFetch } from "$lib/utils/api";
-	import { onMount } from "svelte";
-	import { fade, slide } from "svelte/transition";
 
-    let { event_data } = $props();
+	import { theBlueAllianceApiFetch } from "$lib/utils/api";
+	import { matchScoutingMatchNumber, matchScoutingTeamNumber, matchScoutingTeamPosition } from "$lib/stores/match_scouting";
+	import type { Event } from "$lib/utils/db";
+
+
+    interface Props {
+        event_data: Event
+    }
+    let { event_data }: Props = $props();
 
     let team_number = $state();
     let match_number = $state();
@@ -24,12 +43,13 @@
         { value: "practise", label: "Practise Match" },
         { value: "other", label: "Other Match" },
     ]
-    let selected_match_type = $state("");
-    const selected_match_type_label = $derived(
+    let selected_match_type: string = $state("");
+    const selected_match_type_label: string = $derived(
         match_types.find((mt) => mt.value === selected_match_type)?.label ?? "Select Match Type"
     )
 
     const positions = [
+        { value: null, label: "None" },
         { value: "red1", label: "Red 1" },
         { value: "red2", label: "Red 2" },
         { value: "red3", label: "Red 3" },
@@ -37,8 +57,8 @@
         { value: "blue2", label: "Blue 2" },
         { value: "blue3", label: "Blue 3" },
     ]
-    let selected_position = $state("");
-    const selected_position_label = $derived(
+    let selected_position: string | null = $state(null);
+    const selected_position_label: string = $derived(
         positions.find((p) => p.value === selected_position)?.label ?? "Select Position"
     )
 
@@ -56,7 +76,7 @@
      * Based on the selected match type, match number, and position, sets the team number
      */
     function getTeamInfo() {
-        if (selected_match_type === "qualification" || selected_match_type === "semifinals" || selected_match_type === "finals") {
+        if (selected_position != null && (selected_match_type === "qualification" || selected_match_type === "semifinals" || selected_match_type === "finals")) {
             get_info_error = false;
             if (match_number == null) {
                 match_number = 1;
@@ -98,9 +118,9 @@
      * Called by MatchScoutingFields, increments the match number 
      *    and sets the match type and position to what it was before the form was submitted
      * 
-     * @param old_match_number
-     * @param old_match_type
-     * @param old_position
+     * @param old_match_number The previous match number
+     * @param old_match_type The previous match type
+     * @param old_position The previous position to watch
      */
     export function increment_match_number(old_match_number: number, old_match_type: string, old_position: string) {
         match_number = old_match_number + 1
@@ -112,10 +132,21 @@
     onMount(async () => {
         await getMatchList();
         getTeamInfo();
-    })
+    });
+    
+    /**
+     * When any of the information changes, populate it into the stores.
+     * 
+     * These stores are used by the match info in the nav bar.
+    */
+    $effect(() => {
+        matchScoutingTeamNumber.set(team_number);
+        matchScoutingMatchNumber.set(match_number);
+        matchScoutingTeamPosition.set(selected_position);
+    });
 </script>
 
-<Card.Root class="w-auto min-w-64 md:min-w-128">
+<Card.Root class="w-auto min-w-64 md:min-w-lg">
     <Card.Content>
         <div class="flex flex-col gap-4 items-start">
             <p class="text-lg font-bold">Match Information</p>
@@ -143,63 +174,68 @@
                 </Select.Root>
             </div>
 
-            {#if matches.length > 0}
-                {#if selected_match_type === "qualification" || selected_match_type === "semifinals" || selected_match_type === "finals"}
-                    <Separator orientation="horizontal" />
 
-                    <div class="flex flex-row gap-2 justify-between items-center">
-                        <p class="text-lg font-bold">Robot to Watch</p>
-                        <Dialog.Root>
-                            <Dialog.Trigger>
-                                <Button variant="ghost" size="icon"><Info weight="bold" /></Button>
-                            </Dialog.Trigger>
+            <Separator orientation="horizontal" />
 
-                            <Dialog.Content>
-                                <Dialog.Title>Robot to Watch</Dialog.Title>
-                                <Dialog.Description>
-                                    Each scout can be assigned a robot position to watch. Each position is based on the driver station order or team numbers on the screen. (Usually left to right)
-                                    Once a robot position is selected, Open Scouting will automatically fill in the team and match numbers while you scout.
-                                </Dialog.Description>
+            <div class="flex flex-row gap-2 justify-between items-center">
+                <p class="text-lg font-bold">Robot to Watch</p>
+        
+                <Dialog.Root>
+                    <Dialog.Trigger>
+                        <Button variant="ghost" size="icon"><InfoIcon weight="bold" /></Button>
+                    </Dialog.Trigger>
+                    
+                    <Dialog.Content>
+                        <Dialog.Title>Robot to Watch</Dialog.Title>
+                        <Dialog.Description>
+                            <ul class="list-disc list-inside">
+                                <li>Each scout can be assigned a robot position to watch. Each position is based on the driver station order or team numbers on the screen. (Usually left to right)</li>
+                                <li>Once a robot position is selected, Open Scouting will automatically fill in the team and match numbers while you scout.</li>
+                                <li>If no match data is avaliable, scouts can still use the "position" menu to remember what robot they should be watching.</li>
+                            </ul>                            
+                        </Dialog.Description>
+                        
+                        <Dialog.Footer>
+                            <Dialog.Close>
+                                <Button variant="outline">Close</Button>
+                            </Dialog.Close>
+                        </Dialog.Footer>
+                    </Dialog.Content>
+                </Dialog.Root>
+            </div>
 
-                                <Dialog.Footer>
-                                    <Dialog.Close>
-                                        <Button variant="outline">Close</Button>
-                                    </Dialog.Close>
-                                </Dialog.Footer>
-                            </Dialog.Content>
-                        </Dialog.Root>
-                    </div>
-
-                    <div class="flex flex-col items-start gap-2">
-                        <Label for="match_type">Position</Label>
-                        <Select.Root type="single" bind:value={selected_position} name="position" onValueChange={getTeamInfo}>
-                            <Select.Trigger>{selected_position_label}</Select.Trigger>
-                            <Select.Content>
-                                <Select.Label>Match Types</Select.Label>
-                                    {#each positions as position}
-                                        <Select.Item value={position.value} label={position.label} />
-                                    {/each}
-                            </Select.Content>
-                        </Select.Root>
-                    </div>
-
-                    {#if get_info_error}
-                        <div transition:slide>
-                            <Alert.Root class="items-left text-left" variant="destructive">
-                                <Info weight="bold" />
-                                <Alert.Title>Unable to autofill team number</Alert.Title>
-                                <Alert.Description>The provided information is incomplete or invalid</Alert.Description>
-                            </Alert.Root>
-                        </div>
-                    {/if}
-                {/if}
-            {:else}
-                <Alert.Root class="items-left text-left">
-                    <Info weight="bold" />
-                    <Alert.Title>No match data avaliable for this event</Alert.Title>
-                    <Alert.Description>Team numbers are not able to be autofilled</Alert.Description>
-                </Alert.Root>
+            {#if matches.length == 0}
+                <div transition:slide>
+                    <Alert.Root class="items-left text-left">
+                        <InfoIcon weight="bold" />
+                        <Alert.Title>No match data avaliable for this event</Alert.Title>
+                        <Alert.Description>Team numbers are not able to be autofilled</Alert.Description>
+                    </Alert.Root>
+                </div>
             {/if}
+
+            {#if (selected_position == null || get_info_error) && !(matches.length == 0)}
+                <div transition:slide>
+                    <Alert.Root class="items-left text-left" variant="destructive">
+                        <InfoIcon weight="bold" />
+                        <Alert.Title>Unable to autofill team number</Alert.Title>
+                        <Alert.Description>The provided information is incomplete or invalid</Alert.Description>
+                    </Alert.Root>
+                </div>
+            {/if}
+
+            <div class="flex flex-col items-start gap-2">
+                <Label for="match_type">Position</Label>
+                <Select.Root type="single" bind:value={selected_position} name="position" onValueChange={getTeamInfo}>
+                    <Select.Trigger>{selected_position_label}</Select.Trigger>
+                    <Select.Content>
+                        <Select.Label>Position</Select.Label>
+                            {#each positions as position}
+                                <Select.Item value={position.value} label={position.label} />
+                            {/each}
+                    </Select.Content>
+                </Select.Root>
+            </div>
         </div>
     </Card.Content>
 </Card.Root>

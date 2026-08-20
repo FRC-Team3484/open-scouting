@@ -6,10 +6,6 @@
     <p>This release fixes issues with match scouting presets and game piece creation</p>
 {/snippet}
 
-{#snippet features()}
-
-{/snippet}
-
 {#snippet details()}    
     <ul class="list-disc list-inside ml-4">
         <li>Switched to use tortoise-orm's own migration system instead of aerich</li>
@@ -18,4 +14,4 @@
     </ul>
 {/snippet}
 
-<Generic summary={summary} features={features} details={details} />
+<Generic summary={summary} details={details} />

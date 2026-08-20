@@ -2,12 +2,41 @@ import tailwindcss from '@tailwindcss/vite';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { SvelteKitPWA } from '@vite-pwa/sveltekit';
 import { defineConfig } from 'vite';
+import { sveltePhosphorOptimize } from 'phosphor-svelte/vite';
+
+function restartOnChangelogChange() {
+	return {
+		name: "restart-on-changelog-change",
+
+		configureServer(server) {
+			const logsPath =
+				"src/lib/components/generic/changelog/logs/";
+
+			server.watcher.on("add", async file => {
+				if (file.includes(logsPath)) {
+					console.log("A new changelog file was created. Restarting server.");
+					await server.restart();
+				}
+			});
+
+			server.watcher.on("unlink", async file => {
+				if (file.includes(logsPath)) {
+					console.log("A new changelog file was deleted. Restarting server.");
+					await server.restart();
+				}
+			});
+		}
+	};
+}
 
 export default defineConfig({
 	plugins: [
 		tailwindcss(),
 		sveltekit(),
+		sveltePhosphorOptimize(),
+		restartOnChangelogChange(),
 		SvelteKitPWA({
+			strategies: 'injectManifest',
 			registerType: 'autoUpdate',
 			devOptions: { enabled: false, type: 'module' },
 			includeAssets: [
@@ -31,6 +60,12 @@ export default defineConfig({
 					sizes: '512x512',
 					type: 'image/png'
 				}
+				]
+			},
+			workbox: { 
+				globPatterns: [
+					'client/**/*.{js,css,ico,png,svg,webp,webmanifest}', 
+					'prerendered/**/*.{html,json}'
 				]
 			}
 		})

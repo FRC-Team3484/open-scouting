@@ -4,6 +4,7 @@ WORKDIR /app
 ENV NODE_OPTIONS=--max-old-space-size=4096
 
 COPY package*.json ./
+
 RUN npm ci
 COPY . .
 RUN npm run build

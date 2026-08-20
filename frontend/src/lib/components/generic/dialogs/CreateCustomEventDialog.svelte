@@ -1,3 +1,10 @@
+<!-- 
+@component
+Dialog component for creating custom events from the event list
+
+Props:
+	- `open` (`boolean`) - If the dialog is open or not
+-->
 <script lang="ts">
 	import { onMount } from "svelte";
 	import { superForm } from "sveltekit-superforms";
@@ -11,18 +18,18 @@
 	import Label from "$lib/components/ui/label/label.svelte";
 	import Separator from "$lib/components/ui/separator/separator.svelte";
 	
+	import { db, type SeasonStored } from "$lib/utils/db";
 	import { CreateCustomEventEventCustomSeasonUuidCreatePostBody } from "$lib/zod/events/events";
-	import { getSeasonsSeasonsGet } from "$lib/api/seasons/seasons";
-	import type { SeasonResponse } from "$lib/api/model";
 	import { createCustomEventEventCustomSeasonUuidCreatePost } from "$lib/api/events/events";
-
-	import { createCustomEventDialogOpen } from "$lib/stores/dialog";
 	import BaseDialog from "./BaseDialog.svelte";
-	import { db } from "$lib/utils/db";
 
-	let { getEvents } = $props();
 
-	let seasons: SeasonResponse[] = $state([]);
+	interface Props {
+		open: boolean
+	}
+	let { open = $bindable(false) }: Props = $props();
+
+	let seasons: SeasonStored[] = $state([]);
 	let selectedSeasonLabel: string = $derived(
 		seasons.find((s) => s.uuid === $formData.season_uuid)?.name ?? "Select Season"
 	)
@@ -70,11 +77,11 @@
 							start_date: form.data.event_start_date,
 							end_date: form.data.event_end_date,
 							custom: true,
+							week: null,
 							fetch_time: new Date()
 						});
 
-						createCustomEventDialogOpen.set(false);
-						getEvents();
+						open = false;
 						toast.success("Custom event created", { duration: 5000 });
 					}
 				})
@@ -84,14 +91,18 @@
 
 	const { form: formData, enhance } = form
 
+	/**
+	 * Gets all the years from the local database, then sets the current one to the active season
+	 */
 	async function getYears() {
-		const response = (await getSeasonsSeasonsGet()).data
+		await db.season_data.toArray().then((seasons) => {
+			seasons = seasons.sort((a, b) => b.year - a.year);
 
-        seasons = response;
-        const active_year = seasons.find(year => year.active);
-        if (active_year) {
-            $formData.season_uuid = active_year.uuid;
-        }
+			const active_season = seasons.find(season => season.active);
+			if (active_season) {
+				$formData.season_uuid = active_season.uuid;
+			}
+		});
 	}
 
 	onMount(async () => {
@@ -99,7 +110,7 @@
 	})
 </script>
 
-<BaseDialog title={"Create Custom Event"} description={"Create a custom event when an event is missing on The Blue Alliance"} bind:open={$createCustomEventDialogOpen}>
+<BaseDialog title={"Create Custom Event"} description={"Create a custom event when an event is missing on The Blue Alliance"} bind:open={open}>
 	<form method="post" use:enhance class="flex flex-col gap-4">
 		<Form.Field {form} name="season_uuid">
 			<Form.Control>

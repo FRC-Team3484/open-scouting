@@ -48,7 +48,7 @@ Alternatively, use the `Start Postgres DB Server` task in VSCode
 
 Once the DB has been fully pulled and started, initialize the database:
 ```bash
-aerich init-db
+tortoise init
 ```
 
 Start the backend:
@@ -62,9 +62,19 @@ Now that the frontend and backend is running, configure your superuser account.
 
 1. Navigate to the [authentication page](http://localhost:5173/authentication)
 2. Create your account
-3. Navigate to the [FastAPI docs](http://localhost:8000/docs)
-4. Click `Authorize` in the top right, and enter the username and password for the account you just created. Ignore `client_id` and `client_secret`
-5. Find the `/users/md/set_superuser` route in the list, expand the dropdown, and click `Try it out`
-6. Finally, click `Execute`
+3. The first user account on the server is automatically a superuser
+4. The server is ready for use!
 
 You'll probably want to set up some seasons, fields, and game pieces in the [admin dashboard](http://localhost:5173/admin).
+
+## Running a production build locally
+In some cases you may need to run a production build locally, for things like testing the service worker:
+
+```bash
+cd frontend
+
+npm run build
+
+cd ..
+PORT=5137 node --env-file.env frontend/build
+```

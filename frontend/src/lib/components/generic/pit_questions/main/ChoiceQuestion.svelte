@@ -1,18 +1,40 @@
+<!-- 
+@component
+The pit scouting question for a single choice
+
+Props:
+    - `pit` (`PitScoutingData`) - The parent pit for this question
+    - `question` (`SeasonPitScoutingQuestion`) - The question
+    - `answers` (`PitScoutingAnswer[]`) - Any answers for this question
+    - `user` (`UserResponse | null`) - The user from the parent
+-->
 <script lang="ts">
 	import Button from "$lib/components/ui/button/button.svelte";
     import * as Select from "$lib/components/ui/select/index.js";
-	import { db } from "$lib/utils/db";
+    
+	import { db, type PitScoutingAnswer, type PitScoutingData, type SeasonPitScoutingQuestion } from "$lib/utils/db";
 	import BaseQuestion from "./BaseQuestion.svelte";
+	import { type UserResponse } from "$lib/api/model";
 
-    let { pit, question, answers, user } = $props();
+    
+    interface Props {
+        pit: PitScoutingData
+        question: SeasonPitScoutingQuestion
+        answers: PitScoutingAnswer[]
+        user: UserResponse | null
+    }
+    let { pit, question, answers, user }: Props = $props();
 
     let value = $state("na");
     const selectedOptionLabel = $derived(
         question.options.choices.find((o) => o.id === value) ?? { id: "na", name: "N/A" }
     )
 
-    let resetBase;
+    let baseQuestion: ReturnType<typeof BaseQuestion>;
 
+    /**
+     * Add the typed answer to this question
+     */
     async function addAnswer() {
         const newAnswer = { uuid: crypto.randomUUID(), value: selectedOptionLabel.name, username: user?.username ?? "guest", field_uuid: question.uuid, created_at: new Date().toISOString() }
         await db.pit_scouting.update(pit.uuid, {
@@ -21,11 +43,11 @@
         });
 
         value = "na";
-        resetBase();
+        baseQuestion.reset();
     }
 </script>
 
-<BaseQuestion question={question} answers={answers} bind:reset={resetBase}>
+<BaseQuestion question={question} answers={answers} bind:this={baseQuestion}>
     <div class="flex flex-row gap-2 items-center">
 
         <Select.Root type="single" name={question.uuid} required={question.required} bind:value>

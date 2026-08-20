@@ -1,19 +1,30 @@
+<!-- 
+@component
+The changelog drawer
+
+Includes all changelogs from .svelte files in a directory.
+Then, each changelog's github release equivalent can be opened.
+Users are also able to see the list of all changelogs.
+-->
 <script lang="ts">
-	import { changelogDialogOpen, changelogDialogVersion } from "$lib/stores/dialog";
-	import BaseDialog from "../dialogs/BaseDialog.svelte";
+	import { onMount, type Component } from "svelte";
+	import { GithubLogoIcon, ListIcon, XCircleIcon } from "phosphor-svelte";
+
 	import Button from "$lib/components/ui/button/button.svelte";
 	import Checkbox from "$lib/components/ui/checkbox/checkbox.svelte";
 	import Label from "$lib/components/ui/label/label.svelte";
-	import { GithubLogo, List, XCircle } from "phosphor-svelte";
 	import Separator from "$lib/components/ui/separator/separator.svelte";
-	import { onMount, tick } from "svelte";
 
-    let Changelog = $state(null);
-    let showAllChangelogs = $state(false);
+	import { changelogDialogOpen, changelogDialogVersion } from "$lib/stores/dialog";
+	import BaseDialog from "../dialogs/BaseDialog.svelte";
 
-    let neverShow = $state(false);
+    
+    let Changelog: Component | null = $state(null);
+    let showAllChangelogs: boolean = $state(false);
 
-    const changelogModules = import.meta.glob(
+    let neverShow: boolean = $state(false);
+
+    let changelogModules = import.meta.glob(
         "$lib/components/generic/changelog/logs/*.svelte",
         { eager: true }
     );
@@ -30,7 +41,10 @@
             .reverse()
     );
 
-    function close() {
+    /**
+     * Close the dialog
+     */
+    function close(): void {
         if (neverShow) {
             localStorage.setItem("showChangelogs", "false");
         } else {
@@ -40,6 +54,9 @@
         changelogDialogOpen.set(false);
     }
 
+    /**
+     * Load the changelog from the file when the selected version updates
+    */
     $effect(async () => {
         if (!$changelogDialogVersion) {
             Changelog = null;
@@ -56,8 +73,7 @@
 
     onMount(async () => {
         neverShow = localStorage.getItem("showChangelogs") === "false";
-    })
-
+    });
 </script>
 
 <BaseDialog title="Changelog" description={`Changes in Open Scouting ${$changelogDialogVersion}`} bind:open={$changelogDialogOpen}>
@@ -73,12 +89,12 @@
 
     <div class="flex flex-col gap-2">
         <div class="flex flex-row gap-2">
-            <Button class="flex-1" variant="outline" href={`https://github.com/FRC-Team3484/open-scouting/releases/tag/${$changelogDialogVersion}`} target="_blank" rel="noopener noreferrer"><GithubLogo weight="bold" /> Full Release Notes</Button>
-            <Button class="flex-1" variant="outline" onclick={() => showAllChangelogs = true}><List weight="bold" /> All Changelogs</Button>
+            <Button class="flex-1" variant="outline" href={`https://github.com/FRC-Team3484/open-scouting/releases/tag/${$changelogDialogVersion}`} target="_blank" rel="noopener noreferrer"><GithubLogoIcon weight="bold" /> Full Release Notes</Button>
+            <Button class="flex-1" variant="outline" onclick={() => showAllChangelogs = true}><ListIcon weight="bold" /> All Changelogs</Button>
         </div>
         
         <div class="flex flex-row gap-2 items-center">
-            <Button class="flex-2" onclick={close}><XCircle weight="bold" /> Close</Button>
+            <Button class="flex-2" onclick={close}><XCircleIcon weight="bold" /> Close</Button>
             <Checkbox bind:checked={neverShow} />
             <Label>Never show again</Label>
         </div>
@@ -93,8 +109,8 @@
             <Separator class="my-2"/>
 
             <div class="flex flex-row gap-2">
-                <Button variant="outline" class="flex-1" href="https://github.com/FRC-Team3484/open-scouting/releases" target="_blank" rel="noopener noreferrer"><GithubLogo weight="bold" /> All Release Notes</Button>
-                <Button class="flex-1" onclick={() => showAllChangelogs = false}><XCircle weight="bold" /> Cancel</Button>
+                <Button variant="outline" class="flex-1" href="https://github.com/FRC-Team3484/open-scouting/releases" target="_blank" rel="noopener noreferrer"><GithubLogoIcon weight="bold" /> All Release Notes</Button>
+                <Button class="flex-1" onclick={() => showAllChangelogs = false}><XCircleIcon weight="bold" /> Cancel</Button>
             </div>
         </BaseDialog>
     {/if}

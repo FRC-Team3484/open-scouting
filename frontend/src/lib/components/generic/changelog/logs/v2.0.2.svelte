@@ -6,10 +6,6 @@
     <p>This release fixes various bugs and issues</p>
 {/snippet}
 
-{#snippet features()}
-
-{/snippet}
-
 {#snippet details()}    
     <ul class="list-disc list-inside ml-4">
         <li>Fixed an issue where the server would try to generate pits from TBA for custom events</li>
@@ -20,4 +16,4 @@
     </ul>
 {/snippet}
 
-<Generic summary={summary} features={features} details={details} />
+<Generic summary={summary} details={details} />

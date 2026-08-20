@@ -2,8 +2,8 @@ version: "3.8"
 services:
   postgres:
     image: postgres:16
-    ports:
-      - "5432:5432"
+    expose:
+      - "5432"
     environment:
       POSTGRES_DB: app
       POSTGRES_USER: app
@@ -47,6 +47,26 @@ services:
     depends_on:
       - frontend
       - backend
+
+  backup:
+    image: prodrigestivill/postgres-backup-local
+    restart: always
+    volumes:
+        - /var/opt/pgbackups:/backups
+    depends_on:
+        - postgres
+    environment:
+        - POSTGRES_HOST=postgres
+        - POSTGRES_DB=app
+        - POSTGRES_USER=app
+        - POSTGRES_PASSWORD=app
+        - POSTGRES_EXTRA_OPTS=-Z1 --schema=public --blobs
+        - SCHEDULE=@daily
+        - BACKUP_ON_START=TRUE
+        - BACKUP_KEEP_DAYS=7
+        - BACKUP_KEEP_WEEKS=4
+        - BACKUP_KEEP_MONTHS=3
+        - HEALTHCHECK_PORT=8080
 
 volumes:
   caddy_data:

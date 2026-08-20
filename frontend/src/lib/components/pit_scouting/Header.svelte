@@ -1,21 +1,37 @@
+<!-- 
+@component
+The header for the pit scouting page
+
+Loads event data from the URL, and exposes it as bindable for sibling components.
+
+Props:
+    - `event_data` (`Event`) - The bindable event data
+-->
 <script lang="ts">
-    import * as Card from "$lib/components/ui/card/index.js";
 	import { onMount } from "svelte";
-	import Logo from "../generic/Logo.svelte";
-    import { validateTokenOnline } from "$lib/utils/user";
-    import * as Dialog from "$lib/components/ui/dialog/index.js";
-	import { CloudSlash } from "phosphor-svelte";
-	import Button from "../ui/button/button.svelte";
 	import { toast } from "svelte-sonner";
+	import { CloudSlashIcon } from "phosphor-svelte";
+
+    import * as Card from "$lib/components/ui/card/index.js";
+    import * as Dialog from "$lib/components/ui/dialog/index.js";
+	import Button from "../ui/button/button.svelte";
+
 	import { fetchSeasonData } from "$lib/utils/sync";
-	import { db } from "$lib/utils/db";
+	import { db, type Event } from "$lib/utils/db";
+	import Logo from "../generic/Logo.svelte";
+	import { user } from "$lib/utils/auth";
 
-    let { event_data } = $props();
 
-    let user = null;
+    interface Props {
+        event_data: Event | null
+    }
+    let { event_data = $bindable() }: Props = $props();
 
     let username = $state("");
 
+    /**
+     * Get the event data from the URL, and load the event from the database
+     */
     async function get_info() {
         const get_event = new URL(window.location.href).searchParams.get("event");
         const get_year = new URL(window.location.href).searchParams.get("year");
@@ -24,11 +40,13 @@
         
         if (get_username && get_team_number) {
             username = get_username;
-        } else if (user) {
-            username = user.username;
+        } else if ($user.user) {
+            username = $user.user.username;
         } else {
             username = "";
         }
+
+        if (!get_event || !get_year) return;
 
         await db.event
             .where("event_code")
@@ -37,23 +55,27 @@
             .first().then((event) => 
         {   
             if (event) {
-                event_data.year = event.year;
-                event_data.event_code = event.event_code;
-                event_data.event_name = event.name;
-                event_data.event_type = event.type;
-                event_data.event_city = event.city;
-                event_data.event_country = event.country;
-                event_data.event_start_date = event.start_date;
-                event_data.event_end_date = event.end_date;
-                event_data.event_custom = event.custom;
+                event_data = event;
             }
         });
-
     }
 
-    onMount(async () => {
-        user = await validateTokenOnline();
+    /**
+     * Rebuild the season data cache
+     */
+    async function fetch_season_data() {
+        await fetchSeasonData().then(() => {
+            toast.success("Season data cache rebuilt!");
+            window.location.reload();
+        }).catch((error) => {
+            toast.error("Failed to fetch season data", error)
+        });
+    }
 
+    /**
+     * Get the user data and event data from the URL
+     */
+    onMount(async () => {
         await get_info();
     })
 </script>
@@ -66,7 +88,7 @@
                 <p class="text-2xl font-bold">Pit Scouting</p>
                 <Dialog.Root>
                     <Dialog.Trigger>
-                        <Button variant="outline" size="icon"><CloudSlash weight="bold" /></Button>
+                        <Button variant="outline" size="icon"><CloudSlashIcon weight="bold" /></Button>
                     </Dialog.Trigger>
                     <Dialog.Content>
                         <Dialog.Title>Using Offline Data</Dialog.Title>
@@ -75,13 +97,15 @@
                         <Dialog.Footer>
                             <Dialog.Close>
                                 <Button variant="outline">Cancel</Button>
-                                <Button onclick={async () => {await fetchSeasonData(); await toast.success("Season data cache rebuilt"); window.location.reload();}}>Rebuild Season Data Cache</Button>
+                                <Button onclick={fetch_season_data}>Rebuild Season Data Cache</Button>
                             </Dialog.Close>
                         </Dialog.Footer>
                     </Dialog.Content>
                 </Dialog.Root>
             </div>
-            <p>Pit scouting teams at <span class="font-bold font-mono">{event_data.event_name}</span> in <span class="font-bold">{event_data.year}</span> as <span class="font-bold">{username}</span></p>
+            {#if event_data}
+                <p>Pit scouting teams at <span class="font-bold font-mono">{event_data.name}</span> in <span class="font-bold">{event_data.year}</span> as <span class="font-bold">{username}</span></p>
+            {/if}
         </div>
     </div>
 </Card.Root>

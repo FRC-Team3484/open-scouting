@@ -5,7 +5,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException
 from tortoise.exceptions import IntegrityError
 
-from ..dependencies import require_superuser
+from ..dependencies import Identity, get_identity, require_superuser
 from ..schemas.generic import MessageResponse
 from ..models import Event, MatchScoutingAnswer, MatchScoutingField, MatchScoutingSubmission, Season, User
 from ..schemas.match_scouting import MatchScoutingRequest, MatchScoutingResponse, SubmissionResponse
@@ -19,7 +19,8 @@ router: APIRouter = APIRouter(
 
 @router.post("/scouting/submit", response_model=MatchScoutingResponse)
 async def submit_match_scouting(
-    data: MatchScoutingRequest
+    data: MatchScoutingRequest,
+    identity: Identity = Depends(get_identity)
 ) -> MatchScoutingResponse:
     """
     Submit a match scouting form
@@ -45,7 +46,7 @@ async def submit_match_scouting(
 
     season: Season = await get_season(year=data.year)
 
-    event, _ = await Event.get_or_create(
+    event, created = await Event.get_or_create(
         season=season,
         event_code=data.event_code,
         name=data.event_name,
@@ -56,14 +57,18 @@ async def submit_match_scouting(
         end_date=data.event_end_date
     )
 
+    if created:
+        event.created_by = identity.session
+        await event.save()
+
     try:
         submission: MatchScoutingSubmission = await MatchScoutingSubmission.create(
             uuid=data.submission_uuid,
-            user=user,
             event=event,
             team_number=data.team_number,
             match_number=data.match_number,
-            match_type=data.match_type
+            match_type=data.match_type,
+            created_by=identity.session
         )
     except IntegrityError:
         raise HTTPException(status_code=200, detail="Submission already exists")
@@ -76,12 +81,13 @@ async def submit_match_scouting(
         _ = await MatchScoutingAnswer.create(
             field=field,
             value=json.dumps(value),
-            submission=submission
+            submission=submission,
+            created_by=identity.session
         )
 
     return MatchScoutingResponse(
         uuid=submission.uuid,
-        user=submission.user.uuid if submission.user else None,
+        user=identity.user.uuid,
         event=submission.event.uuid,
         team_number=submission.team_number,
         match_number=submission.match_number,
@@ -90,7 +96,7 @@ async def submit_match_scouting(
     )
 
 @router.get("/scouting/submissions", response_model=list[SubmissionResponse])
-async def get_match_scouting_submissions(superuser = Depends(require_superuser)) -> list[SubmissionResponse]:
+async def get_match_scouting_submissions(identity: Identity = Depends(require_superuser)) -> list[SubmissionResponse]:
     """
     Get all match scouting submissions
 
@@ -109,8 +115,8 @@ async def get_match_scouting_submissions(superuser = Depends(require_superuser))
     return [
         SubmissionResponse(
             uuid=submission.uuid,
-            event_name=submission.event.name,
-            event_code=submission.event.event_code,
+            event_name=getattr(submission.event, "name", "N/A"),
+            event_code=getattr(submission.event, "event_code", "N/A"),
             team_number=submission.team_number,
             match_number=submission.match_number,
             match_type=submission.match_type,
@@ -120,7 +126,7 @@ async def get_match_scouting_submissions(superuser = Depends(require_superuser))
     ]
 
 @router.delete("/scouting/submissions/delete/{submission_uuid}", response_model=MessageResponse)
-async def delete_match_scouting_submission(submission_uuid: UUID, superuser = Depends(require_superuser)) -> MessageResponse:
+async def delete_match_scouting_submission(submission_uuid: UUID, identity: Identity = Depends(require_superuser)) -> MessageResponse:
     """
     Delete a match scouting submission
 

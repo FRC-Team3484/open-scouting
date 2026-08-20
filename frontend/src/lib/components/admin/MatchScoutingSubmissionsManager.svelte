@@ -1,16 +1,28 @@
+<!-- 
+@component
+The match scouting submission manager section on the admin page
+
+Allows for deleting one or a selected amount of match scouting submissions
+-->
 <script lang="ts">
-	import type { SubmissionResponse } from "$lib/api/model";
-    import * as Card from "$lib/components/ui/card";
 	import { onMount } from "svelte";
+	import { toast } from "svelte-sonner";
+
+    import * as Card from "$lib/components/ui/card";
 	import Button from "../ui/button/button.svelte";
 	import Separator from "../ui/separator/separator.svelte";
     import * as AlertDialog from "$lib/components/ui/alert-dialog";
-	import { toast } from "svelte-sonner";
+
+	import type { SubmissionResponse } from "$lib/api/model";
 	import { deleteMatchScoutingSubmissionScoutingSubmissionsDeleteSubmissionUuidDelete, getMatchScoutingSubmissionsScoutingSubmissionsGet } from "$lib/api/match-scouting/match-scouting";
+
 
     let submissions: SubmissionResponse[] = $state([]);
     let selected: string[] = $state([]);
 
+    /**
+     * Get all match scouting submissions from the server
+     */
     async function getSubmissions() {
         selected = [];
 
@@ -25,10 +37,16 @@
         })
     }
 
+    /**
+     * Delete one match scouting submission from the server
+     * 
+     * @param uuid The uuid of the submission to delete
+     * @param once If false, log messages about the deletion state will be handled elsewhere
+     */
     async function deleteSubmission(uuid: string, once: boolean = true) {
         await deleteMatchScoutingSubmissionScoutingSubmissionsDeleteSubmissionUuidDelete(uuid).then((res) => {
             if (res.status !== 200) {
-                console.error(res)
+                console.error(res);
                 toast.error("Failed to delete submission", { duration: 5000 });
                 return
             } else {
@@ -37,6 +55,9 @@
         })
     }
 
+    /**
+     * Delete all selected events from the server
+     */
     async function deleteSelected() {
         for (const uuid of selected) {
             await deleteSubmission(uuid, false);
@@ -48,7 +69,7 @@
 
     onMount(async () => {
         await getSubmissions();
-    })
+    });
 </script>
 
 <div class="flex flex-col gap-4">

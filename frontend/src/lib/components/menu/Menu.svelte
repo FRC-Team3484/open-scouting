@@ -1,26 +1,30 @@
+<!-- 
+@component
+The universal menu component, which appears on every page. Handles some navigation, syncing status, and theme switching.
+
+Also allows for viewing old changelogs, managing local db data, and viewing the about drawer.
+-->
 <script lang="ts">
 	import { fade, slide } from "svelte/transition";
 	import { toggleMode, mode } from "mode-watcher";
+	import { online } from "svelte/reactivity/window";
+	import { toast } from "svelte-sonner";
+    import { ArchiveIcon, ArrowRightIcon, BugIcon, CheckCircleIcon, CircleNotchIcon, DiscordLogoIcon, GithubLogoIcon, HouseIcon, ListIcon, MoonIcon, NotepadIcon, RocketIcon, SunIcon, WarningIcon, XCircleIcon } from "phosphor-svelte";
 
 	import Button from "../ui/button/button.svelte";
 	import Separator from "../ui/separator/separator.svelte";
-    import { Archive, ArrowRight, Article, Bug, CheckCircle, CircleNotch, Clock, DiscordLogo, FloppyDisk, GithubLogo, House, List, Moon, Notepad, Sun, Warning, X } from "phosphor-svelte";
+    import * as Sheet from "$lib/components/ui/sheet";
 
 	import AboutDrawer from "./AboutDrawer.svelte";
 	import ManageDataDrawer from "./ManageDataDrawer.svelte";
-    import * as Sheet from "$lib/components/ui/sheet";
-
 	import { menuState } from "$lib/stores/menu";
 	import User from "../generic/User.svelte";
-	import { online } from "svelte/reactivity/window";
-	import { toast } from "svelte-sonner";
 	import { changelogDialogOpen } from "$lib/stores/dialog";
-	import { db } from "$lib/utils/db";
+	import SyncingToggleDrawer from "./SyncingToggleDrawer.svelte";
 
-    let user = null;
 
     let menu_open: boolean = $state(false);
-    let wasOnline = $state(online.current)
+    let wasOnline = $state(online.current);
 
     menuState.subscribe((value) => {
         if (value.close) {
@@ -56,11 +60,11 @@
         {#key $menuState.state}
             <div transition:fade|local={{ duration: 150 }}>
                 {#if $menuState.state === "ready"}
-                    <List weight="bold" class="md:!w-8 md:!h-8 !w-6 !h-6" />
+                    <ListIcon weight="bold" class="md:w-8! md:h-8! w-6! h-6!" />
                 {:else if $menuState.state === "loading"}
-                    <CircleNotch weight="bold" class="animate-spin md:!w-6 md:!h-6 !w-4 !h-4" />
+                    <CircleNotchIcon weight="bold" class="animate-spin md:w-6! md:h-6! w-4! h-4!" />
                 {:else if $menuState.state === "warning"}
-                    <Warning weight="bold" class="animate-pulse md:!w-6 md:!h-6 !w-4 !h-4" />
+                    <WarningIcon weight="bold" class="animate-pulse md:w-6! md:h-6! w-4! h-4!" />
                 {/if}
             </div>
         {/key}
@@ -69,7 +73,7 @@
 
 
 <Sheet.Root bind:open={menu_open}>
-    <Sheet.Content class="max-h-[80vh] overflow-y-scroll lg:mx-64 2xl:mx-128 border-1 p-4 rounded-t-lg" side="bottom">
+    <Sheet.Content class="max-h-[80vh] overflow-y-scroll lg:mx-64 2xl:mx-128 border p-4 rounded-t-lg" side="bottom">
         <div class="flex flex-col gap-4 mt-4 overflow-y-scroll pr-2">
             <div class="flex flex-row gap-4 justify-between items-center">
                 <div class="flex flex-row gap-2 items-center">
@@ -78,51 +82,55 @@
             </div>
 
             {#if $menuState.status}
-                <div class="flex flex-row gap-2 items-center" transition:slide>
-                    {#if $menuState.state === "ready"}
-                        <CheckCircle weight="bold"/>
-                    {:else if $menuState.state === "loading"}
-                        <CircleNotch weight="bold" class="animate-spin"/>
-                    {:else if $menuState.state === "warning"}
-                        <Warning weight="bold"/>
-                    {/if}
-                    <p>{$menuState.status}</p>
+                <div class="flex flex-row gap-2 items-center justify-between flex-wrap" transition:slide>
+                    <div class="flex flex-row gap-2 items-center">
+                        {#if $menuState.state === "ready"}
+                            <CheckCircleIcon weight="bold"/>
+                        {:else if $menuState.state === "loading"}
+                            <CircleNotchIcon weight="bold" class="animate-spin"/>
+                        {:else if $menuState.state === "warning"}
+                            <WarningIcon weight="bold"/>
+                        {/if}
+                        <p>{$menuState.status}</p>
+                    </div>
+                    <Button variant="outline" size="sm" onclick={() => menuState.set({state: "ready", status: "", close: true})}><XCircleIcon weight="bold" /> Hide</Button>
                 </div>
             {/if}
 
             <Separator orientation="horizontal" />
 
-            <div class="flex flex-row gap-4 flex-wrap">
+            <div class="flex flex-row gap-2 flex-wrap">
                 <Button variant="outline" onclick={toggleMode}>
                     {#if mode.current === "dark"}
-                        <Sun class="h-[1.2rem] w-[1.2rem]"/>
+                        <SunIcon class="h-[1.2rem] w-[1.2rem]"/>
                         <span>Light Mode</span>
                     {:else}
-                        <Moon class="h-[1.2rem] w-[1.2rem]"/>
+                        <MoonIcon class="h-[1.2rem] w-[1.2rem]"/>
                         <span>Dark Mode</span>
                     {/if}
                 </Button>
+
+                <SyncingToggleDrawer />
             </div>
 
             <Separator orientation="horizontal" />
 
             <div class="flex flex-row gap-2 flex-wrap">
-                <Sheet.Close><Button href="/start"><ArrowRight weight="bold" /> Start</Button></Sheet.Close>
-                <Sheet.Close><Button variant="outline" href="/"><House weight="bold" /> Home</Button></Sheet.Close>
+                <Sheet.Close><Button href="/start"><ArrowRightIcon weight="bold" /> Start</Button></Sheet.Close>
+                <Sheet.Close><Button variant="outline" href="/"><HouseIcon weight="bold" /> Home</Button></Sheet.Close>
             </div>
 
             <div class="flex flex-row gap-2 flex-wrap">
-                <Button variant="outline" href="https://discord.gg/M3wESZUP35"><DiscordLogo weight="bold" /> Discord</Button>
-                <Button variant="outline" href="https://github.com/FRC-Team3484/open-scouting"><GithubLogo weight="bold" /> Source Code</Button>
-                <Button variant="outline" href="https://github.com/FRC-Team3484/open-scouting/issues"><Bug weight="bold" /> Issues</Button>
-                <Button variant="outline" href="https://github.com/FRC-Team3484/open-scouting/releases"><Article weight="bold" /> Releases</Button>
-                <Button variant="outline" href="https://open-scouting-legacy.nfoert.dev"><Archive weight="bold" /> Legacy v1</Button>
+                <Button variant="outline" href="https://discord.gg/M3wESZUP35"><DiscordLogoIcon weight="bold" /> Discord</Button>
+                <Button variant="outline" href="https://github.com/FRC-Team3484/open-scouting"><GithubLogoIcon weight="bold" /> Source Code</Button>
+                <Button variant="outline" href="https://github.com/FRC-Team3484/open-scouting/issues"><BugIcon weight="bold" /> Issues</Button>
+                <Button variant="outline" href="https://github.com/FRC-Team3484/open-scouting/releases"><RocketIcon weight="bold" /> Releases</Button>
             </div>
 
             <Separator orientation="horizontal" />
 
             <div class="flex flex-col gap-4 mb-12">
-                <Button variant="outline" onclick={() => {$changelogDialogOpen = true; menu_open = false}}><Notepad weight="bold" /> Changelog</Button>
+                <Button variant="outline" onclick={() => {$changelogDialogOpen = true; menu_open = false}}><NotepadIcon weight="bold" /> Changelog</Button>
                 <ManageDataDrawer/>
                 <AboutDrawer />
             </div>

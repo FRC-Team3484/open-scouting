@@ -2,12 +2,13 @@ from collections import defaultdict
 import json
 from statistics import mean
 from typing import Annotated
+import uuid
 
 from fastapi import APIRouter, Query
 
-from ..utils import IS_DEV
-from ..models import MatchScoutingAnswer, MatchScoutingField, MatchScoutingSubmission, Season, TeamPit
-from ..utils import get_season
+from ..utils import IS_DEV, get_season
+from ..models import Event, MatchScoutingAnswer, MatchScoutingField, MatchScoutingSubmission, Season, TeamPit
+from ..schemas.data import DataFiltersResponse, DataTeamResponse
 
 
 router: APIRouter = APIRouter(
@@ -15,13 +16,29 @@ router: APIRouter = APIRouter(
     include_in_schema=IS_DEV
 )
 
-# TODO: This needs a proper response_model
-@router.get("/data/filters")
+
+def _is_valid_uuid(value) -> bool:
+    """ 
+    Check if a string is a valid UUID
+
+    Paramaters:
+        - value: The string to check
+
+    Returns:
+        - bool: True if the string is a valid UUID, False otherwise
+    """
+    try:
+        uuid.UUID(str(value))
+        return True
+    except ValueError:
+        return False
+
+@router.get("/data/filters", response_model=DataFiltersResponse)
 async def get_data_filters(
         year: int,
         event_codes: Annotated[str | None, Query()] = None,
         team_numbers: Annotated[str | None, Query()] = None
-    ):
+    ) -> DataFiltersResponse:
     """
     For a year, list of event codes, and list of team numbers, return a JSON object 
         containing the available filters that can additionally be applied
@@ -71,13 +88,12 @@ async def get_data_filters(
         "teams": teams,
     }
 
-# TODO: This needs a proper response_model
-@router.get("/data/get")
+@router.get("/data/get", response_model=list[DataTeamResponse])
 async def get_data(
         year: int,
         event_codes: Annotated[str | None, Query()] = None,
         team_numbers: Annotated[str | None, Query()] = None
-    ):
+    ) -> list[DataTeamResponse]:
     """
     Given a year, event codes, and team numbers, return the data that matches those filters
 
@@ -164,7 +180,7 @@ async def get_data(
     if event_codes:
         event_codes = [
             n.strip() for n in event_codes.split(",")
-            if n.strip().isalpha()
+            if n.strip().isalpha() or _is_valid_uuid(n.strip())
         ]
 
     if team_numbers:
@@ -240,11 +256,15 @@ async def get_data(
 
         teams[team_number]["team_number"] = team_number
         teams[team_number]["nickname"] = team_names.get(team_number)
-
         key = (team_number, field.uuid)
+
+        value = ""
+        if ans.value != None:
+            value = json.loads(ans.value)
+
         field_values[key].append({
             "match_number": ans.submission.match_number,
-            "value": json.loads(ans.value),
+            "value": value,
         })
         field_values[key] = sorted(field_values[key], key=lambda x: x["match_number"])
 
@@ -395,7 +415,7 @@ async def get_data(
         teams[team_number]["summary"] = summary_items
 
     # Convert defaultdicts to lists
-    result = []
+    result: list[DataTeamResponse] = []
     for team in teams.values():
         team["teleop"] = dict(team["teleop"])
         team["auton"] = dict(team["auton"])

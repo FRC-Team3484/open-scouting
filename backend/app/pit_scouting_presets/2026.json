@@ -1,0 +1,168 @@
+[
+    {
+        "uuid": "f4885910-d39a-4464-9a42-fb154638ff47",
+        "season": "676adf2a-ce83-48ae-b18b-71b9df85d5dd",
+        "name": "Can your robot climb?",
+        "description": "",
+        "required": true,
+        "field_type": "boolean",
+        "options": {
+            "choices": []
+        },
+        "order": 0,
+        "organization": null,
+        "created_at": "2026-03-09T18:58:06.668326Z"
+    },
+    {
+        "uuid": "75ee8c37-17e9-436d-9b7d-a5ca6402bac4",
+        "season": "676adf2a-ce83-48ae-b18b-71b9df85d5dd",
+        "name": "If so, do you plan to climb in auto?",
+        "description": "Skip this question if they can't climb",
+        "required": false,
+        "field_type": "boolean",
+        "options": {
+            "choices": []
+        },
+        "order": 1,
+        "organization": null,
+        "created_at": "2026-03-09T18:58:06.683212Z"
+    },
+    {
+        "uuid": "43536c37-af6c-44d5-b342-abb286ae4412",
+        "season": "676adf2a-ce83-48ae-b18b-71b9df85d5dd",
+        "name": "How can you move on the field?",
+        "description": "Bump vs Trench",
+        "required": true,
+        "field_type": "choice",
+        "options": {
+            "choices": [
+                {
+                    "id": "86adc598-ce6b-4ef6-a13d-0612ac9ad85b",
+                    "name": "Bump"
+                },
+                {
+                    "id": "4f0462e9-fde6-4940-9bdc-d1cddb15198d",
+                    "name": "Trench"
+                },
+                {
+                    "id": "02ad5b42-6a36-41a9-9e00-cf45783d2d4e",
+                    "name": "Both"
+                }
+            ]
+        },
+        "order": 2,
+        "organization": null,
+        "created_at": "2026-03-09T18:58:06.697554Z"
+    },
+    {
+        "uuid": "85c99441-f486-4b16-8dcb-7fee27d87333",
+        "season": "676adf2a-ce83-48ae-b18b-71b9df85d5dd",
+        "name": "What's your main playstyle?",
+        "description": "Do they pick up and move to their alliance to fire, or do they feed pieces, or are they a defence bot?",
+        "required": true,
+        "field_type": "text",
+        "options": {
+            "choices": []
+        },
+        "order": 3,
+        "organization": null,
+        "created_at": "2026-03-09T18:58:06.717358Z"
+    },
+    {
+        "uuid": "d2480164-9a9c-415a-8f43-fb89fbb802a8",
+        "season": "676adf2a-ce83-48ae-b18b-71b9df85d5dd",
+        "name": "How much fuel can you fit in your hopper?",
+        "description": "",
+        "required": true,
+        "field_type": "number",
+        "options": {
+            "choices": []
+        },
+        "order": 4,
+        "organization": null,
+        "created_at": "2026-03-09T18:58:06.730598Z"
+    },
+    {
+        "uuid": "7fc9805e-3b33-4795-9ff7-e1bf94bf078b",
+        "season": "676adf2a-ce83-48ae-b18b-71b9df85d5dd",
+        "name": "Can you interact with the outpost? (Feeder station)",
+        "description": "Do they supply pieces or intake from it?",
+        "required": true,
+        "field_type": "choice",
+        "options": {
+            "choices": [
+                {
+                    "id": "9a8145a2-251b-49b1-95e6-6dfc642fd8b3",
+                    "name": "Supply"
+                },
+                {
+                    "id": "97083f1e-9362-4f9a-80f5-0bb412db4b61",
+                    "name": "Intake"
+                },
+                {
+                    "id": "dee8abc4-92bb-4b07-905c-70c094174539",
+                    "name": "Both"
+                }
+            ]
+        },
+        "order": 5,
+        "organization": null,
+        "created_at": "2026-03-09T18:58:06.746844Z"
+    },
+    {
+        "uuid": "36ec208a-5aa5-403a-bc57-18fbeb1982a2",
+        "season": "676adf2a-ce83-48ae-b18b-71b9df85d5dd",
+        "name": "Do you have autos?",
+        "description": "",
+        "required": true,
+        "field_type": "boolean",
+        "options": {
+            "choices": []
+        },
+        "order": 6,
+        "organization": null,
+        "created_at": "2026-03-09T18:58:06.760738Z"
+    },
+    {
+        "uuid": "b13cf879-e11e-436c-8c0a-d396680f2142",
+        "season": "676adf2a-ce83-48ae-b18b-71b9df85d5dd",
+        "name": "If so, what can you do in auto?",
+        "description": "Do they score, pick up pieces, or move to the neutral zone?",
+        "required": false,
+        "field_type": "text",
+        "options": {
+            "choices": []
+        },
+        "order": 7,
+        "organization": null,
+        "created_at": "2026-03-09T18:58:06.771407Z"
+    },
+    {
+        "uuid": "1eae0e29-82ab-43fc-a154-107ceb4127f9",
+        "season": "676adf2a-ce83-48ae-b18b-71b9df85d5dd",
+        "name": "Additional Notes",
+        "description": "",
+        "required": false,
+        "field_type": "text",
+        "options": {
+            "choices": []
+        },
+        "order": 8,
+        "organization": null,
+        "created_at": "2026-03-09T18:58:06.782305Z"
+    },
+    {
+        "uuid": "4c67e36a-2297-4b8a-a17d-c1eec562b687",
+        "season": "676adf2a-ce83-48ae-b18b-71b9df85d5dd",
+        "name": "Robot image upload",
+        "description": "",
+        "required": false,
+        "field_type": "image",
+        "options": {
+            "choices": []
+        },
+        "order": 9,
+        "organization": null,
+        "created_at": "2026-03-09T18:58:06.792703Z"
+    }
+]
