@@ -434,7 +434,6 @@ class TeamPit(Model):
         uuid (UUID): The unique identifier for the team pit
         team_number (int): The team number of the team pit
         nickname (str): The nickname of the team pit
-        created_at (datetime): The date and time the team pit was created
         season (Season): The season the team pit is associated with
         event (Event): The event the team pit is associated with
         created_at (datetime): The date and time the team pit was created
@@ -443,7 +442,6 @@ class TeamPit(Model):
     uuid: Field[UUID] = fields.UUIDField(pk=True)
     team_number: Field[int] = fields.IntField()
     nickname: Field[str] = fields.CharField(max_length=255)
-    created_at: Field[datetime] = fields.DatetimeField(auto_now_add=True)
     season: ForeignKeyNullableRelation["Season"] = fields.ForeignKeyField("models.Season", related_name="team_pits", null=True, on_delete=fields.SET_NULL)
     event: ForeignKeyNullableRelation["Event"] = fields.ForeignKeyField("models.Event", related_name="team_pits", null=True, on_delete=fields.SET_NULL)
 
