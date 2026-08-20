@@ -110,11 +110,6 @@ class ChangeEmailRequest(BaseModel):
     verification_code_uuid: UUID | None = None
     passkey_uuid: UUID | None = None
 
-class PasskeyResponse(BaseModel):
-    uuid: UUID
-    label: str | None
-    created_at: datetime
-
 class DeleteAccountRequest(BaseModel):
     delete_data: bool
     verification_code_uuid: UUID | None = None

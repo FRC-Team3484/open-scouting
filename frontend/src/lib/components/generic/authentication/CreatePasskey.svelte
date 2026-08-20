@@ -20,7 +20,6 @@ Props:
     import * as Alert from "$lib/components/ui/alert/index";
     import * as Kbd from "$lib/components/ui/kbd/index";
 
-    import { createPasskeyAuthPasskeysRegisterCreatePost, verifyPasskeyAuthPasskeysRegisterVerifyPost } from "$lib/api/auth/auth";
 	import { ArrowRightIcon, CheckCircleIcon, CircleNotchIcon, InfoIcon, KeyIcon, KeyReturnIcon, WarningIcon, XCircleIcon } from "phosphor-svelte";
 	import { env } from "$env/dynamic/public";
 	import Input from "$lib/components/ui/input/input.svelte";
@@ -28,6 +27,7 @@ Props:
 	import AuthenticationPage from "./AuthenticationPage.svelte";
 	import type { VerifyUserStatus } from "./VerifyUser.svelte";
 	import VerifyUser from "./VerifyUser.svelte";
+	import { createPasskeyPasskeysRegisterCreatePost, verifyPasskeyPasskeysRegisterVerifyPost } from "$lib/api/passkeys/passkeys";
 
 
     interface Props {
@@ -77,7 +77,7 @@ Props:
                 }
             }
 
-            const options = await createPasskeyAuthPasskeysRegisterCreatePost(params).then((response) => {
+            const options = await createPasskeyPasskeysRegisterCreatePost(params).then((response) => {
                 if (response.status != 200) {
                     message = response.data.detail;
                     throw new Error(message);
@@ -90,7 +90,7 @@ Props:
                 optionsJSON: options.data,
             });
                         
-            await verifyPasskeyAuthPasskeysRegisterVerifyPost(registrationResponse, {challenge_uuid: options.data.challenge_uuid, label}).then((response) => {
+            await verifyPasskeyPasskeysRegisterVerifyPost(registrationResponse, {challenge_uuid: options.data.challenge_uuid, label}).then((response) => {
                 if (response.status == 200) {
                     page = "success";
                 } else {
