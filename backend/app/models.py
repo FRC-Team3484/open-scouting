@@ -21,6 +21,7 @@ class User(Model):
         email (str): The email address of the user
         hashed_password (str): The hashed password of the user
         is_superuser (bool): Whether the user is a superuser
+        email_verified (bool): Whether the user's email has been verified
         created_at (datetime): The date and time the user was created
         created_by (Session): The session that created the user
     """
@@ -115,6 +116,7 @@ class Settings(Model):
         user (User): The user the settings are associated with
         created_at (datetime): The date and time the settings were created
         created_by (Session): The session that created the settings
+
         favorite_events (list): The list of favorite events for the user
     """
     uuid: Field[UUID] = fields.UUIDField(pk=True)
@@ -180,6 +182,7 @@ class Passkey(Model):
     Attributes:
         uuid (UUID): The unique identifier for the passkey
         user (User): The user the passkey is associated with
+        label (str): The label of the passkey
         credential_id (bytes): The credential id of the passkey
         public_key (bytes): The public key of the passkey
         sign_count (int): The sign count of the passkey
@@ -490,7 +493,7 @@ class Report(Model):
     type: Field[str] = fields.CharField(max_length=255) # match_scouting_submission, match_scouting_answer, team_pit, pit_scouting_answer, event
     content_uuid: Field[UUID] = fields.UUIDField()
     report_reason: Field[str] = fields.CharField(max_length=255) # spam, inaccurate, inappropriate, offensive, duplicate, other
-    report_details: Field[str | None] = fields.TextField(null=True)
+    report_details: Field[str] = fields.TextField(null=True)
 
     created_at: Field[datetime] = fields.DatetimeField(auto_now_add=True)
     created_by: ForeignKeyNullableRelation["Session"] = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
