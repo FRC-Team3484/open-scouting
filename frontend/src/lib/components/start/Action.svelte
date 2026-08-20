@@ -9,7 +9,7 @@ Props:
 -->
 <script lang="ts">
 	import { toast } from "svelte-sonner";
-	import { BinocularsIcon, DatabaseIcon, LinkIcon, ListNumbersIcon } from "phosphor-svelte";
+	import { BinocularsIcon, DatabaseIcon, LinkIcon, ListNumbersIcon, MonitorIcon } from "phosphor-svelte";
     
     import * as Card from "$lib/components/ui/card/index.js";
     import * as Select from "$lib/components/ui/select/index.js";
@@ -96,6 +96,9 @@ Props:
                 </Select.Root>
             </div>
             <Label for="match">Copy the link to this event</Label>
+
+            <Button variant="outline" id="pit_display" href={`/pit_display?year=${year}&event_code=${event.event_code}`}><MonitorIcon weight="bold" /> Pit Display</Button>
+            <Label for="pit_display" class="mb-2">View the pit display for this event</Label>
         </div>
     </Card.Content>
 </Card.Card>
