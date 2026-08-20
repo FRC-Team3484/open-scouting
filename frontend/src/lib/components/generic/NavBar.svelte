@@ -51,7 +51,7 @@ Displays information provided in MatchScoutingMatchInfo on the match scouting pa
         {/if}
 {/snippet}
 
-<div class="hidden md:flex fixed top-0 left-0 right-0 w-full h-24 flex-row justify-between items-center border-1 bg-card/50 border-accent rounded-b-lg backdrop-blur-lg p-2 z-10">
+<div class="hidden md:flex fixed top-0 left-0 right-0 w-full h-24 flex-row justify-between items-center border-1 bg-card/50 border-accent rounded-b-lg backdrop-blur-lg p-2 z-10 print:hidden">
     <div class="flex flex-row gap-4 items-center">
         <Logo text={true} style="tiny" href="/" />
         <ExperimentalWarning />
@@ -77,7 +77,7 @@ Displays information provided in MatchScoutingMatchInfo on the match scouting pa
     </div>
 </div>
 
-<div class="flex md:hidden fixed top-0 left-0 right-0 w-full h-16 flex-row justify-between items-center border-1 bg-background/50 border-accent rounded-b-lg backdrop-blur-lg p-2 z-10">
+<div class="flex md:hidden fixed top-0 left-0 right-0 w-full h-16 flex-row justify-between items-center border-1 bg-background/50 border-accent rounded-b-lg backdrop-blur-lg p-2 z-10 print:hidden">
     <div class="flex flex-row gap-2 items-center">
         <Sheet.Root>
             <Sheet.Trigger class="p-2 text-md border-1 border-border rounded-md bg-input/30">
