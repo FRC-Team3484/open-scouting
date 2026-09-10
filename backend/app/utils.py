@@ -37,7 +37,7 @@ async def get_season(season_uuid: UUID | None = None, year: int | None = None) -
         raise HTTPException(status_code=404, detail="Season not found")
     return season
 
-async def get_event(event_code: str) -> Event | None:
+async def get_event(event_code: str) -> tuple[Event | None, bool]:
     """
     Given an event code, returns the event from the database. 
     
@@ -47,9 +47,10 @@ async def get_event(event_code: str) -> Event | None:
         event_code (`str`): The event code to look up
 
     Returns:
-        `Event`: The event from the database
+        tuple[Event | None, bool]: The event from the database, and whether it was created or not
     """
-    event = await Event.get_or_none(event_code=event_code)
+    event: Event | None = await Event.get_or_none(event_code=event_code)
+    created: bool = False
 
     if event is None and TBA_API_KEY != "" and TBA_API_KEY is not None:
         async with httpx.AsyncClient(timeout=10) as client:
@@ -65,7 +66,7 @@ async def get_event(event_code: str) -> Event | None:
             if season is None:
                 raise HTTPException(status_code=404, detail="Season not found")
 
-            event, _ = await Event.get_or_create(
+            event, created = await Event.get_or_create(
                 season=season,
                 event_code=event_code,
                 name=data["name"],
@@ -79,10 +80,10 @@ async def get_event(event_code: str) -> Event | None:
             )
         else:
             print(f"Failed to get event ({event_code}) from TBA: {response.status_code}")
-            return None
+            return None, False
 
     elif event is None:
         print(f"Failed to get event ({event_code}) from database")
-        return None
+        return None, False
 
-    return event
+    return event, created
