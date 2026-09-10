@@ -10,12 +10,6 @@ export interface SubmitPitFieldAnswerRequest {
   season_uuid: string;
   team_number: number;
   event_code: string;
-  event_name: string;
-  event_type: string;
-  event_city: string;
-  event_country: string;
-  event_start_date: string;
-  event_end_date: string;
   answers: unknown[];
   nickname: string;
 }
