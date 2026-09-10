@@ -1,17 +1,74 @@
+<script lang="ts" module>
+    export interface Widget {
+        id: string
+        enabled: boolean
+        showDate?: boolean
+        showTime?: boolean
+        showTimeSeconds?: boolean
+        showMatchScoutingCount?: boolean
+        showPitScoutingCount?: boolean
+        showTeamCount?: boolean
+        showDataQr?: boolean
+        showMatchScoutingQr?: boolean
+    }
+</script>
+
 <script lang="ts">
-	import Logo from "$lib/components/generic/Logo.svelte";
-	import PageContainer from "$lib/components/layout/PageContainer.svelte";
-	import Separator from "$lib/components/ui/separator/separator.svelte";
-	import { db } from "$lib/utils/db";
-	import type Dexie from "dexie";
     import QR from '@svelte-put/qr/svg/QR.svelte';
 	import { onMount } from "svelte";
-	import { CalendarBlank, MapPin } from "phosphor-svelte";
+	import { CalendarBlankIcon, MapPinIcon } from "phosphor-svelte";
+
+	import Separator from "$lib/components/ui/separator/separator.svelte";
+
+	import { db, type Event } from "$lib/utils/db";
+	import Logo from "$lib/components/generic/Logo.svelte";
+	import PageContainer from "$lib/components/layout/PageContainer.svelte";
+	import BaseDialog from '$lib/components/generic/dialogs/BaseDialog.svelte';
+	import PitDisplaySettings from '$lib/components/pit_display/PitDisplaySettings.svelte';
+
 
     let year: string = $state("");
     let event_code: string = $state("");
 
-    let event: null | Dexie.Table = $state(null);
+    let event: Event | null = $state(null);
+
+    let widgets: Widget[] = [
+        {
+            id: "logo",
+            enabled: true
+        },
+        {
+            id: "event_info",
+            enabled: true
+        },
+        {
+            id: "clock",
+            enabled: false,
+            showDate: true,
+            showTime: true,
+            showTimeSeconds: false
+        },
+        {
+            id: "event_stats",
+            enabled: true,
+            showMatchScoutingCount: true,
+            showPitScoutingCount: true,
+            showTeamCount: false
+        },
+        {
+            id: "broadcast",
+            enabled: false
+        },
+        {
+            id: "qr",
+            enabled: true,
+            showDataQr: true,
+            showMatchScoutingQr: true
+        }
+    ]
+    let topWidgets = ["clock", "logo", "event_info"];
+    let bottomWidgets = ["event_stats", "broadcast", "qr"];
+
 
     async function getUrlInfo() {
         let url = new URL(window.location.href);
@@ -51,11 +108,11 @@
             <div class="flex flex-col gap-4 text-left items-left w-[50vw] p-8">
                 <p class="text-4xl font-bold">{event.name}</p>
                 <div class="flex flex-row gap-2 items-center">
-                    <MapPin weight="bold" /> 
+                    <MapPinIcon weight="bold" /> 
                     <p>{event.type} - {event.city}, {event.country}</p>
                 </div>
                 <div class="flex flex-row gap-2 items-center">
-                    <CalendarBlank weight="bold" />
+                    <CalendarBlankIcon weight="bold" />
                     <p> {event.start_date} - {event.end_date}</p>
                 </div>
 
@@ -76,4 +133,6 @@
             <p>No event found</p>
         {/if}
     </div>
+
+    <PitDisplaySettings bind:widgets={widgets} />
 </PageContainer>
