@@ -14,12 +14,6 @@ class MatchScoutingRequest(BaseModel):
     match_number: int
     match_type: str
     event_code: str
-    event_name: str
-    event_type: str
-    event_city: str
-    event_country: str
-    event_start_date: str
-    event_end_date: str
 
 class MatchScoutingResponse(BaseModel):
     uuid: UUID

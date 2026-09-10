@@ -37,29 +37,11 @@ class PitFieldRequest(BaseModel):
 class DeletePitFieldRequest(BaseModel):
     field_uuid: UUID
 
-class GetPitsForSeasonRequest(BaseModel):
-    season_uuid: UUID
-    event_code: str
-    event_name: str
-    event_type: str
-    event_city: str
-    event_country: str
-    event_start_date: str
-    event_end_date: str
-    event_custom: bool
-
 class SubmitPitFieldAnswerRequest(BaseModel):
     uuid: UUID
     season_uuid: UUID
     team_number: int
-    
     event_code: str
-    event_name: str
-    event_type: str
-    event_city: str
-    event_country: str
-    event_start_date: str
-    event_end_date: str
 
     answers: list[Any]
     nickname: str

@@ -10,10 +10,10 @@ import httpx
 from fastapi import APIRouter, Depends, HTTPException
 
 from ..dependencies import Identity, Identity, get_identity, require_superuser
-from ..models import Event, Organization, PitScoutingAnswer, PitScoutingField, Season, TeamPit, User
+from ..models import Organization, PitScoutingAnswer, PitScoutingField, Season, TeamPit, User
 from ..schemas.generic import MessageResponse
-from ..schemas.pit_scouting import AdminPitResponse, GetPitsResponse, PitAnswerResponse, PitFieldResponse, PitFieldRequest, GetPitsForSeasonRequest, PitScoutingPresetResponse, ReorderPitFieldsRequest, SubmitPitFieldAnswerRequest
-from ..utils import get_season, IS_DEV
+from ..schemas.pit_scouting import AdminPitResponse, GetPitsResponse, PitAnswerResponse, PitFieldResponse, PitFieldRequest, PitScoutingPresetResponse, ReorderPitFieldsRequest, SubmitPitFieldAnswerRequest
+from ..utils import get_event, get_season, IS_DEV
 
 router: APIRouter = APIRouter(
     tags=["Pit Scouting"],
@@ -279,14 +279,14 @@ async def delete_pit_field(
 
     return MessageResponse(message="Field deleted")
 
-@router.post("/pits/get/{season_uuid}", response_model=list[GetPitsResponse])
+@router.post("/pits/get/{season_uuid}/{event_code}", response_model=list[GetPitsResponse])
 async def get_pits(
         season_uuid: UUID,
-        data: GetPitsForSeasonRequest,
+        event_code: str,
         identity: Identity = Depends(get_identity)
     )-> list[GetPitsResponse]:
     """
-    Get all pits for a season
+    Get all pits for a season and event
 
     Parameters:
         season_uuid (`UUID`): The UUID of the season to get pits for
@@ -297,25 +297,18 @@ async def get_pits(
     """
     season: Season = await get_season(season_uuid)
 
-    event, created = await Event.get_or_create(
-        season=season,
-        event_code=data.event_code,
-        name=data.event_name,
-        type=data.event_type,
-        city=data.event_city,
-        country=data.event_country,
-        start_date=to_date_string(data.event_start_date),
-        end_date=to_date_string(data.event_end_date),
-        custom=data.event_custom
-    )
+    event, created = await get_event(event_code)
 
-    if created:
+    if not event:
+        raise HTTPException(status_code=404, detail="Event not found")
+
+    if created and identity.session is not None:
         event.created_by = identity.session
         await event.save()
 
     # If pits have not been generated yet, get teams from TBA and create TeamPits
     if not event.pits_generated and TBA_API_KEY != "" and TBA_API_KEY is not None and event.custom == False:
-        event_key = str(season.year) + data.event_code
+        event_key = str(season.year) + event_code
         async with httpx.AsyncClient(timeout=10.0) as client:
             response = await client.get(
                 f"https://www.thebluealliance.com/api/v3/event/{event_key}/teams",
@@ -383,7 +376,7 @@ async def submit_pit(
     
     season: Season = await get_season(season_uuid)
 
-    event = await Event.get_or_none(event_code=data.event_code, season=season).first()
+    event, _ = await get_event(data.event_code)
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
 
