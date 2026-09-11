@@ -5,7 +5,7 @@ The header for the pit scouting page
 Loads event data from the URL, and exposes it as bindable for sibling components.
 
 Props:
-    - `event_data` (`Event`) - The bindable event data
+    - `event` (`Event`) - The bindable event data
 -->
 <script lang="ts">
 	import { onMount } from "svelte";
@@ -23,9 +23,9 @@ Props:
 
 
     interface Props {
-        event_data: Event | null
+        event: Event | null
     }
-    let { event_data = $bindable() }: Props = $props();
+    let { event = $bindable() }: Props = $props();
 
     let username = $state("");
 
@@ -52,10 +52,11 @@ Props:
             .where("event_code")
             .equals(get_event)
             .and(ev => ev.year === parseInt(get_year))
-            .first().then((event) => 
-        {   
-            if (event) {
-                event_data = event;
+            .first().then((loadedEvent) => {   
+            if (loadedEvent) {
+                event = loadedEvent;
+            } else {
+                event = null;
             }
         });
     }
@@ -103,8 +104,8 @@ Props:
                     </Dialog.Content>
                 </Dialog.Root>
             </div>
-            {#if event_data}
-                <p>Pit scouting teams at <span class="font-bold font-mono">{event_data.name}</span> in <span class="font-bold">{event_data.year}</span> as <span class="font-bold">{username}</span></p>
+            {#if event}
+                <p>Pit scouting teams at <span class="font-bold font-mono">{event.name}</span> in <span class="font-bold">{event.year}</span> as <span class="font-bold">{username}</span></p>
             {/if}
         </div>
     </div>
