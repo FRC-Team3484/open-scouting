@@ -7,9 +7,9 @@ from tortoise.exceptions import IntegrityError
 
 from ..dependencies import Identity, get_identity, require_superuser
 from ..schemas.generic import MessageResponse
-from ..models import Event, MatchScoutingAnswer, MatchScoutingField, MatchScoutingSubmission, Season, User
+from ..models import MatchScoutingAnswer, MatchScoutingField, MatchScoutingSubmission, User
 from ..schemas.match_scouting import MatchScoutingRequest, MatchScoutingResponse, SubmissionResponse
-from ..utils import get_season, IS_DEV
+from ..utils import get_event, IS_DEV
 
 
 router: APIRouter = APIRouter(
@@ -44,18 +44,10 @@ async def submit_match_scouting(
     else:
         user = None
 
-    season: Season = await get_season(year=data.year)
+    event, created = await get_event(data.year, data.event_code)
 
-    event, created = await Event.get_or_create(
-        season=season,
-        event_code=data.event_code,
-        name=data.event_name,
-        type=data.event_type,
-        city=data.event_city,
-        country=data.event_country,
-        start_date=data.event_start_date,
-        end_date=data.event_end_date
-    )
+    if not event:
+        raise HTTPException(status_code=404, detail="Event not found")
 
     if created:
         event.created_by = identity.session

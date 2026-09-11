@@ -38,10 +38,8 @@ Allows for editing profile details, changing password, and updating settings
             return null;
         }
 
-        settings = $userData.settings;
-
-        if (settings) {
-            return parseSettings(settings);
+        if ($userData.settings) {
+            return parseSettings($userData.settings);
         } else {
             return null;
         }

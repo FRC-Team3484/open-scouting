@@ -40,10 +40,4 @@
 ## Contributing
 Contributions are always welcome! Please see the [issues](https://github.com/FRC-Team3484/open-scouting/issues) page and the [milestones](https://github.com/FRC-Team3484/open-scouting/milestones) for the next things that need worked on.
 
-Additionally, there's a document explaining how to use several systems provided in the client that may be needed while adding new features [here](/docs/client-systems.md).
-
-When contributing, please fork this repository (ensure you uncheck the "Copy the `main` branch only" check box, this gives you access to any of the upcoming version branches with the latest changes.)
-
-Next, create a new branch and implement your changes. You can install this project locally for testing by following the steps in [Development Installation](#development-installation). Once you've made your changes, please open a pull request into the next version branch, and your changes will be reviewed and merged
-
-Eventually, that version branch will be merged into `main` and your changes will be released into production with a new release. Thanks for your contribution!
+See [CONTRIBUTING.md](/CONTRIBUTING.md) for more contributing information.

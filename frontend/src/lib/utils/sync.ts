@@ -2,7 +2,7 @@ import { compare } from "semver-ts";
 import { get } from "svelte/store";
 import { browser } from "$app/environment";
 
-import { db } from "./db";
+import { db, type Event } from "./db";
 import { theBlueAllianceApiFetch } from "./api";
 import { VERSION } from "./constants";
 import { menuState } from "$lib/stores/menu";
@@ -13,7 +13,7 @@ import type { SeasonResponse, GamepieceResponse, PitFieldResponse, EventResponse
 import { getSeasonsSeasonsGet } from "$lib/api/seasons/seasons";
 import { getSeasonFieldsFieldsSeasonSeasonUuidGet } from "$lib/api/match-scouting-fields/match-scouting-fields"
 import { getSeasonGamepiecesGamepiecesSeasonSeasonUuidGet } from "$lib/api/gamepieces/gamepieces"
-import { getPitFieldsPitsFieldsSeasonUuidGet, submitPitPitsSubmitSeasonUuidTeamNumberPost, getPitsPitsGetSeasonUuidPost } from "$lib/api/pit-scouting/pit-scouting"
+import { getPitFieldsPitsFieldsSeasonUuidGet, submitPitPitsSubmitSeasonUuidTeamNumberPost, getPitsPitsGetSeasonUuidEventCodePost } from "$lib/api/pit-scouting/pit-scouting"
 import { getCustomEventsEventCustomSeasonUuidGet } from "$lib/api/events/events"
 import { submitMatchScoutingScoutingSubmitPost } from "$lib/api/match-scouting/match-scouting";
 import { getServerStatusStatusGet } from "$lib/api/generic/generic";
@@ -194,13 +194,7 @@ async function pushMatchScoutingData() {
                 team_number: match.team_number,
                 match_number: match.match_number,
                 match_type: match.match_type,
-                event_code: match.event_code,
-                event_name: match.event_name,
-                event_type: match.event_type,
-                event_city: match.event_city,
-                event_country: match.event_country,
-                event_start_date: match.event_start_date,
-                event_end_date: match.event_end_date
+                event_code: match.event_code
             }
 
             await submitMatchScoutingScoutingSubmitPost(body).then((data) => {
@@ -247,12 +241,6 @@ async function pushPitScoutingData(event_data, season_uuid) {
                 season_uuid: season_uuid,
                 team_number: pit.team_number,
                 event_code: event_data.event_code,
-                event_name: event_data.name,
-                event_type: event_data.type,
-                event_city: event_data.city,
-                event_country: event_data.country,
-                event_start_date: event_data.start_date,
-                event_end_date: event_data.end_date,
                 answers: pit.answers || [],
                 nickname: pit.nickname || ""
             }
@@ -277,6 +265,9 @@ async function pushPitScoutingData(event_data, season_uuid) {
     }
 }
 
+/**
+ * Pushes unsynced pit scouting data to the server
+ */
 async function pushUnsyncedPitScoutingData() {
     if (!isSyncingEnabled) return;
 
@@ -302,12 +293,6 @@ async function pushUnsyncedPitScoutingData() {
                 season_uuid: season.uuid,
                 team_number: pit.team_number,
                 event_code: pit.event_code,
-                event_name: pit.name,
-                event_type: pit.type,
-                event_city: pit.city,
-                event_country: pit.country,
-                event_start_date: pit.start_date,
-                event_end_date: pit.end_date,
                 answers: pit.answers || [],
                 nickname: pit.nickname || ""
             }
@@ -334,25 +319,13 @@ async function pushUnsyncedPitScoutingData() {
 /**
  * Gets pit scouting data from the backend and stores it locally, based on the event
  * 
- * @param event_data The event data
+ * @param event The event data
  * @param season_uuid The season uuid
  */
-async function fetchPitScoutingData(event_data, season_uuid) {
+async function fetchPitScoutingData(event: Event, season_uuid: string)  {
     if (!isSyncingEnabled()) return;
 
-    const body: GetPitsForSeasonRequest = {
-        season_uuid: season_uuid,
-        event_code: event_data.event_code,
-        event_name: event_data.name,
-        event_type: event_data.type,
-        event_city: event_data.city,
-        event_country: event_data.country,
-        event_start_date: event_data.start_date,
-        event_end_date: event_data.end_date,
-        event_custom: event_data.custom
-    }
-
-    await getPitsPitsGetSeasonUuidPost(season_uuid, body).then(async (response) => {
+    await getPitsPitsGetSeasonUuidEventCodePost(season_uuid, event.event_code).then(async (response) => {
         if (response.status === 200) {
             for (const pit of response.data) {
                 const pit_in_db = await db.pit_scouting.get(pit.uuid);
@@ -364,14 +337,8 @@ async function fetchPitScoutingData(event_data, season_uuid) {
                         answers: pit.answers,
                         nickname: pit.nickname,
                         team_number: pit.team_number,
-                        year: event_data.year,
-                        event_code: event_data.event_code,
-                        event_name: event_data.event_name,
-                        event_type: event_data.event_type,
-                        event_city: event_data.event_city,
-                        event_country: event_data.event_country,
-                        event_start_date: event_data.event_start_date,
-                        event_end_date: event_data.event_end_date,
+                        year: event.year,
+                        event_code: event.event_code,
                         synced: true
                     });
                 } else {

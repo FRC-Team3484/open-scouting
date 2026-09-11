@@ -12,12 +12,6 @@ export interface MatchScoutingData {
     match_number: number
     match_type: string
     event_code: string
-    event_name: string
-    event_type: string
-    event_city: string
-    event_country: string
-    event_start_date: string
-    event_end_date: string
     synced: boolean
 }
 export interface SeasonMatchScoutingField {
@@ -107,12 +101,6 @@ export interface PitScoutingData {
     team_number: number
     year: number
     event_code: string
-    event_name: string
-    event_type: string
-    event_city: string
-    event_country: string
-    event_start_date: string
-    event_end_date: string
     synced: boolean
 }
 export interface File {
@@ -157,6 +145,31 @@ export class OpenScoutingDB extends Dexie {
         this.version(5).stores({
             season_data: "&uuid, year, name, fields, game_pieces, pit_scouting_questions, active, fetch_time"
         });
+
+        // v2.3.0
+        // Remove event data from match_scouting and pit_scouting, to be replaced with event_code
+        // The server will load event data itself as needed
+        this.version(6).stores({
+            match_scouting: "&uuid, data, user_uuid, year, team_number, match_number, match_type, event_code, synced",
+            pit_scouting: "&uuid, answers, nickname, team_number, year, event_code, synced"
+        }).upgrade(async (transaction) => {
+            await transaction.table("match_scouting").toCollection().modify(item => {
+                delete item.event_name;
+                delete item.event_type;
+                delete item.event_city;
+                delete item.event_country;
+                delete item.event_start_date;
+                delete item.event_end_date;
+            });
+            await transaction.table("pit_scouting").toCollection().modify(item => {
+                delete item.event_name;
+                delete item.event_type;
+                delete item.event_city;
+                delete item.event_country;
+                delete item.event_start_date;
+                delete item.event_end_date;
+            });
+        })
 
         this.match_scouting = this.table('match_scouting');
         this.season_data = this.table('season_data');

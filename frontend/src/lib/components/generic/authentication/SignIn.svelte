@@ -13,7 +13,7 @@ Props:
 	import Input from "$lib/components/ui/input/input.svelte";
     import * as Kbd from "$lib/components/ui/kbd/index";
 
-	import { createLoginPasskeyAuthPasskeysLoginCreatePost, loginAuthLoginPost, meAuthMeGet, verifyLoginPasskeyAuthPasskeysLoginVerifyPost } from "$lib/api/auth/auth";
+	import { loginAuthLoginPost, meAuthMeGet } from "$lib/api/auth/auth";
 	import type { UserResponse } from "$lib/api/model";
 	import SignInConfirmation from "./SignInConfirmation.svelte";
 	import Switch from "$lib/components/ui/switch/switch.svelte";
@@ -21,6 +21,7 @@ Props:
 	import { startAuthentication } from "@simplewebauthn/browser";
 	import AuthenticationMessage from "./AuthenticationMessage.svelte";
 	import AuthenticationPage from "./AuthenticationPage.svelte";
+	import { createLoginPasskeyPasskeysLoginCreatePost, verifyLoginPasskeyPasskeysLoginVerifyPost } from "$lib/api/passkeys/passkeys";
 
 
     interface Props {
@@ -66,13 +67,13 @@ Props:
      */
     async function loginWithPasskey() {
         try {
-            const options = await createLoginPasskeyAuthPasskeysLoginCreatePost();
+            const options = await createLoginPasskeyPasskeysLoginCreatePost();
 
             const authenticationResponse = await startAuthentication({
                 optionsJSON: options.data,
             });
 
-            await verifyLoginPasskeyAuthPasskeysLoginVerifyPost(authenticationResponse, {challenge_uuid: options.data.challenge_uuid}).then(async (response) => {
+            await verifyLoginPasskeyPasskeysLoginVerifyPost(authenticationResponse, {challenge_uuid: options.data.challenge_uuid}).then(async (response) => {
                 if (response.status == 200) {
                     await meAuthMeGet().then((response) => {
                         if (response.status == 200) {
