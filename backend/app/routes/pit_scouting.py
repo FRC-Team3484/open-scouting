@@ -297,7 +297,7 @@ async def get_pits(
     """
     season: Season = await get_season(season_uuid)
 
-    event, created = await get_event(event_code)
+    event, created = await get_event(season.year, event_code)
 
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
@@ -376,7 +376,7 @@ async def submit_pit(
     
     season: Season = await get_season(season_uuid)
 
-    event, _ = await get_event(data.event_code)
+    event, _ = await get_event(season.year, data.event_code)
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
 

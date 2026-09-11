@@ -37,18 +37,21 @@ async def get_season(season_uuid: UUID | None = None, year: int | None = None) -
         raise HTTPException(status_code=404, detail="Season not found")
     return season
 
-async def get_event(event_code: str) -> tuple[Event | None, bool]:
+async def get_event(year: int | str, event_code: str) -> tuple[Event | None, bool]:
     """
     Given an event code, returns the event from the database. 
     
     If it cannot be found, look up event information from TBA, and create it in the database.
 
     Parameters:
+        year (`int`): The year of the event
         event_code (`str`): The event code to look up
 
     Returns:
         tuple[Event | None, bool]: The event from the database, and whether it was created or not
     """
+    event_code: str = str(year) + event_code
+
     event: Event | None = await Event.get_or_none(event_code=event_code)
     created: bool = False
 

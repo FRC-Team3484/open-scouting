@@ -44,7 +44,7 @@ async def submit_match_scouting(
     else:
         user = None
 
-    event, created = await get_event(data.event_code)
+    event, created = await get_event(data.year, data.event_code)
 
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")

@@ -483,7 +483,10 @@ async def repair_match_scouting_submission(data_uuid: UUID, event_code: str, dat
         repair_type (`Literal["missing_event"]`): The type of repair to perform
     """
     match_scouting_submission = await MatchScoutingSubmission.get_or_none(uuid=data_uuid)
-    event, _ = await get_event(event_code)
+
+    # Event code is from the client as the TBA event key (yyyyCODE)
+    # This assumes that years are 4 digits long. This will break in around 8000 years.
+    event, _ = await get_event(event_code[:4], event_code[4:])
 
     if match_scouting_submission is None:
         raise HTTPException(status_code=404, detail="Match scouting submission not found")
@@ -565,7 +568,7 @@ async def repair_team_pit(data_uuid: UUID, content_uuid: UUID | None, data_type:
             raise HTTPException(status_code=404, detail="Season not found")
         team_pit.season = season
     elif repair_type == "missing_event":
-        event, _ = await get_event(event_code)
+        event, _ = await get_event(content_uuid[:4], content_uuid[4:])
         if event is None:
             raise HTTPException(status_code=404, detail="Event not found")
         team_pit.event = event
