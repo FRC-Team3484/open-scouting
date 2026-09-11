@@ -27,13 +27,7 @@ export const SubmitMatchScoutingScoutingSubmitPostBody = zod.object({
   "team_number": zod.int(),
   "match_number": zod.int(),
   "match_type": zod.string(),
-  "event_code": zod.string(),
-  "event_name": zod.string(),
-  "event_type": zod.string(),
-  "event_city": zod.string(),
-  "event_country": zod.string(),
-  "event_start_date": zod.string(),
-  "event_end_date": zod.string()
+  "event_code": zod.string()
 })
 
 export const SubmitMatchScoutingScoutingSubmitPostResponse = zod.object({

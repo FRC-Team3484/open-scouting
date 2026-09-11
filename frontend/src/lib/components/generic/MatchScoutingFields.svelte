@@ -172,12 +172,6 @@ Props:
             match_number: parseInt(formData.get("match_number")),
             match_type: formData.get("match_type"),
             event_code: event_data.event_code,
-            event_name: event_data.name,
-            event_type: event_data.type,
-            event_city: event_data.city,
-            event_country: event_data.country,
-            event_start_date: event_data.start_date,
-            event_end_date: event_data.end_date,
             synced: false
         });
 

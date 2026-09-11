@@ -23,7 +23,7 @@ Allows for creating new pits, and includes a section for viewing the progress of
     let season_uuid: string = $state("");
     let year: string | null = $state(null);
 
-    let event_data: Event | null = $state(null);
+    let event: Event | null = $state(null);
 
     let pit_questions: SeasonPitScoutingQuestion[] = $state([]);
 
@@ -32,7 +32,7 @@ Allows for creating new pits, and includes a section for viewing the progress of
     let scrolledFromUrlTeam: number | null = $state(null);
 
     let pits: Observable<PitScoutingData[]> = $derived.by(() => {
-        if (!event_data) {
+        if (!event) {
             return liveQuery(() => Promise.resolve([]));
         }
 
@@ -40,8 +40,8 @@ Allows for creating new pits, and includes a section for viewing the progress of
             db.pit_scouting
                 .filter(
                     pit =>
-                        pit.year === event_data.year &&
-                        pit.event_code === event_data.event_code
+                        pit.year === event.year &&
+                        pit.event_code === event.event_code
                 )
                 .sortBy("team_number")
         );
@@ -129,8 +129,8 @@ Allows for creating new pits, and includes a section for viewing the progress of
 </script>
 
 <PageContainer disableSleep>
-    <Header bind:event_data={event_data}/>
-    {#if year && season_uuid && event_data && event_data.year !== 0}
+    <Header bind:event={event}/>
+    {#if year && season_uuid && event && event.year !== 0}
         <div class="flex flex-col gap-4 items-center">
             <PitStatus pits={$pits} pit_questions={pit_questions} scrollToTeam={scrollToTeam} />
 
@@ -142,10 +142,10 @@ Allows for creating new pits, and includes a section for viewing the progress of
                 <p>No pits found</p>
             {/if}
 
-            <AddPit event_data={event_data} />
+            <AddPit event={event} />
         </div>
 
-        <SyncManager eventData={event_data} seasonUuid={season_uuid} />
+        <SyncManager event={event} seasonUuid={season_uuid} />
     {:else}
         <CircleNotchIcon weight="bold" class="animate-spin md:w-6! md:h-6! w-4! h-4!" />
     {/if}

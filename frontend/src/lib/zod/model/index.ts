@@ -53,7 +53,6 @@ export * from './gamepieceRequest';
 export * from './gamepieceResponse';
 export * from './getDataDataGetGetParams';
 export * from './getDataFiltersDataFiltersGetParams';
-export * from './getPitsForSeasonRequest';
 export * from './getPitsResponse';
 export * from './hTTPValidationError';
 export * from './matchScoutingAnswerRepair';

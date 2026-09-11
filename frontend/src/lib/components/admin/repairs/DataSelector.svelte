@@ -260,11 +260,11 @@ Props:
 
                 <AlertDialog.Root bind:open={eventConfirmOpen}>
                     <AlertDialog.Content>
-                        <AlertDialog.Title>Select event "{selectedEvents[0].name}"?</AlertDialog.Title>
+                        <AlertDialog.Title>Select event "{selectedEvents[0]?.name}"?</AlertDialog.Title>
                         <AlertDialog.Description>Are you sure you want to select this event for this data? This action cannot be undone.</AlertDialog.Description>
                         <AlertDialog.Footer>
                             <AlertDialog.Cancel type="button">Cancel</AlertDialog.Cancel>
-                            <AlertDialog.Action type="button" onclick={() => selectData(selectedEvents[0].uuid)}>Select</AlertDialog.Action>
+                            <AlertDialog.Action type="button" onclick={() => selectData(selectedEvents[0]?.uuid)}>Select</AlertDialog.Action>
                         </AlertDialog.Footer>
                     </AlertDialog.Content>
                 </AlertDialog.Root>

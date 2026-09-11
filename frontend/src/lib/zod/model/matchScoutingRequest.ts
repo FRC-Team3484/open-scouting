@@ -15,10 +15,4 @@ export interface MatchScoutingRequest {
   match_number: number;
   match_type: string;
   event_code: string;
-  event_name: string;
-  event_type: string;
-  event_city: string;
-  event_country: string;
-  event_start_date: string;
-  event_end_date: string;
 }
