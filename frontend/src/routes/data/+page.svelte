@@ -27,6 +27,12 @@ Page should be loaded like
 <script lang="ts">
 	import { onMount, tick, untrack } from "svelte";
 	import { replaceState } from "$app/navigation";
+	import { online } from "svelte/reactivity/window";
+	import { navigating } from "$app/state";
+	import { CircleNotchIcon, HouseIcon, WifiSlashIcon } from "phosphor-svelte";
+
+    import * as Card from "$lib/components/ui/card/index.js";
+	import Button from "$lib/components/ui/button/button.svelte";
 
 	import CompareViewFilters from "$lib/components/data/compare_view/CompareFilters.svelte";
 	import CompareManager from "$lib/components/data/compare_view/CompareManager.svelte";
@@ -206,21 +212,37 @@ Page should be loaded like
 
 <PageContainer>
     <Header bind:mode />
-    {#if mode === "all"}
-        <div class="lg:flex lg:flex-col lg:overflow-y-scroll">
-            <div class="flex flex-col lg:flex-row lg:gap-4 lg:items-start">
-                <DataViewFilters bind:filters={filters} />
+    {#if navigating.to}
+        <CircleNotchIcon weight="bold" class="animate-spin" size={32} />
+    {:else if !online.current}
+        <Card.Root class="mt-4">
+            <Card.Content>
+                <div class="flex flex-col gap-2 items-center">
+                    <WifiSlashIcon size={32} weight="bold" />
+                    <p class="text-xl font-bold">You're Offline</p>
+                    <p class="text-md">You're offline, so you won't be able to fetch match scouting data from the server.</p>
+                    <p class="text-md">Check your internet connection and try again.</p>
+                    <Button variant="default" href="/"><HouseIcon weight="bold" /> Home</Button>
+                </div>
+            </Card.Content>
+        </Card.Root>
+    {:else}
+        {#if mode === "all"}
+            <div class="lg:flex lg:flex-col lg:overflow-y-scroll">
+                <div class="flex flex-col lg:flex-row lg:gap-4 lg:items-start">
+                    <DataViewFilters bind:filters={filters} />
 
-                <DataManager filters={filters} />
+                    <DataManager filters={filters} />
+                </div>
             </div>
-        </div>
-    {:else if mode === "compare"}
-        <div class="lg:flex lg:flex-col lg:overflow-y-scroll">
-            <div class="flex flex-col lg:flex-row lg:gap-4 lg:items-start">
-                <CompareViewFilters bind:filters={compareFilters} fields={fields} />
+        {:else if mode === "compare"}
+            <div class="lg:flex lg:flex-col lg:overflow-y-scroll">
+                <div class="flex flex-col lg:flex-row lg:gap-4 lg:items-start">
+                    <CompareViewFilters bind:filters={compareFilters} fields={fields} />
 
-                <CompareManager filters={compareFilters} bind:fields={fields} />
+                    <CompareManager filters={compareFilters} bind:fields={fields} />
+                </div>
             </div>
-        </div>
+        {/if}
     {/if}
 </PageContainer>
