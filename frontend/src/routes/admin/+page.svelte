@@ -100,6 +100,8 @@ Presents a warning dialog to the user when in production.
      * If they're not a superuser, redirect them back to the index page.
      */
     onMount(async () => {
+        // Allow user state to be set before checking the auth status
+        setTimeout(async () => {
         if (!$user.authenticated || !$user.user?.is_superuser) {
             await goto("/");
         } else {
@@ -108,6 +110,7 @@ Presents a warning dialog to the user when in production.
     
             page = getPageFromUrl();
         }
+        }, 500);
     });
 
     $effect(() => {
