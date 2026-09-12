@@ -8,7 +8,7 @@ Presents a warning dialog to the user when in production.
 	import { onMount, tick } from "svelte";
     import { env } from "$env/dynamic/public";
     import { overrideItemIdKeyNameBeforeInitialisingDndZones } from "svelte-dnd-action";
-    import { CircleNotchIcon } from "phosphor-svelte";
+    import { CircleNotchIcon, HouseIcon, WifiSlashIcon } from "phosphor-svelte";
 	import { goto, pushState } from "$app/navigation";
 	import { online } from "svelte/reactivity/window";
 	import { navigating } from "$app/state";
