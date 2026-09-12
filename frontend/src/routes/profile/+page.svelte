@@ -7,7 +7,8 @@ Allows for editing profile details, changing password, and updating settings
 	import { onMount } from "svelte";
 	import { goto } from "$app/navigation";
 	import { toast } from "svelte-sonner";
-	import { DatabaseIcon, GearIcon, ListIcon, SignOutIcon, UserIcon } from "phosphor-svelte";
+	import { CircleNotchIcon, DatabaseIcon, GearIcon, ListIcon, SignOutIcon, UserIcon } from "phosphor-svelte";
+	import { navigating } from "$app/state";
     
     import * as Card from "$lib/components/ui/card/index.js";
     import Button from "$lib/components/ui/button/button.svelte";
@@ -26,6 +27,8 @@ Allows for editing profile details, changing password, and updating settings
 	import Authentication from "$lib/components/generic/authentication/Authentication.svelte";
 	import DataSection from "$lib/components/profile/pages/DataSection.svelte";
 	import { user as userData } from "$lib/utils/auth";
+	import { online } from "svelte/reactivity/window";
+	import OfflineWarning from "$lib/components/generic/OfflineWarning.svelte";
 
 
     let section: "profile" | "settings" | "data" = $state("profile");
@@ -126,46 +129,52 @@ Allows for editing profile details, changing password, and updating settings
 {/snippet}
 
 <PageContainer>
-    <div class="flex flex-col lg:flex-row gap-4 h-auto lg:h-[75vh] w-[90vw] lg:w-[75vw]">
-        <div class="flex flex-col gap-4">
-            <Card.Root>
-                <Card.Content>
-                    <div class="flex flex-row gap-4 items-center">
-                        <Sheet.Root>
-                            <Sheet.Trigger class="flex lg:hidden">
-                                <Button variant="outline" size="icon-sm"><ListIcon weight="bold" /></Button>
-                            </Sheet.Trigger>
+    {#if navigating.to}
+        <CircleNotchIcon weight="bold" class="animate-spin" size={32} />
+    {:else if !online.current}
+        <OfflineWarning text="You're offline, so you won't be able to make changes to your profile." />
+    {:else}
+        <div class="flex flex-col lg:flex-row gap-4 h-auto lg:h-[75vh] w-[90vw] lg:w-[75vw]">
+            <div class="flex flex-col gap-4">
+                <Card.Root>
+                    <Card.Content>
+                        <div class="flex flex-row gap-4 items-center">
+                            <Sheet.Root>
+                                <Sheet.Trigger class="flex lg:hidden">
+                                    <Button variant="outline" size="icon-sm"><ListIcon weight="bold" /></Button>
+                                </Sheet.Trigger>
 
-                            <Sheet.Content side="left" class="p-4 pt-12">
-                                {@render sidebarContents()}
-                            </Sheet.Content>
-                        </Sheet.Root>
+                                <Sheet.Content side="left" class="p-4 pt-12">
+                                    {@render sidebarContents()}
+                                </Sheet.Content>
+                            </Sheet.Root>
 
-                        <Logo text={false} style="tiny" href="/" />
-                        <p class="font-bold text-md sm:text-lg text-left">Profile <br>Management</p>
-                    </div>
-                </Card.Content>
-            </Card.Root>
+                            <Logo text={false} style="tiny" href="/" />
+                            <p class="font-bold text-md sm:text-lg text-left">Profile <br>Management</p>
+                        </div>
+                    </Card.Content>
+                </Card.Root>
 
-            <Card.Root class="flex-2 hidden lg:flex">
-                <Card.Content>
-                    {@render sidebarContents()}
+                <Card.Root class="flex-2 hidden lg:flex">
+                    <Card.Content>
+                        {@render sidebarContents()}
+                    </Card.Content>
+                </Card.Root>
+            </div>
+
+            <Card.Root class="flex-2 items-start">
+                <Card.Content class="text-left w-full h-full">
+                    {#if section == "profile" && user}
+                        <ProfileSection user={user} getNewUserData={getNewUserData} />
+
+                    {:else if section == "settings"}
+                        <SettingsSection settings={settings} getNewSettings={getNewSettings} />
+
+                    {:else if section == "data"}
+                        <DataSection />
+                    {/if}
                 </Card.Content>
             </Card.Root>
         </div>
-
-        <Card.Root class="flex-2 items-start">
-            <Card.Content class="text-left w-full h-full">
-                {#if section == "profile" && user}
-                    <ProfileSection user={user} getNewUserData={getNewUserData} />
-
-                {:else if section == "settings"}
-                    <SettingsSection settings={settings} getNewSettings={getNewSettings} />
-
-                {:else if section == "data"}
-                    <DataSection />
-                {/if}
-            </Card.Content>
-        </Card.Root>
-    </div>
+    {/if}
 </PageContainer>
