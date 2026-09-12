@@ -8,8 +8,10 @@ Presents a warning dialog to the user when in production.
 	import { onMount, tick } from "svelte";
     import { env } from "$env/dynamic/public";
     import { overrideItemIdKeyNameBeforeInitialisingDndZones } from "svelte-dnd-action";
-    import { CircleNotchIcon } from "phosphor-svelte";
+    import { CircleNotchIcon, HouseIcon, WifiSlashIcon } from "phosphor-svelte";
 	import { goto, pushState } from "$app/navigation";
+	import { online } from "svelte/reactivity/window";
+	import { navigating } from "$app/state";
 
     import * as Card from "$lib/components/ui/card/index.js";
 	import Button from "$lib/components/ui/button/button.svelte";
@@ -102,14 +104,14 @@ Presents a warning dialog to the user when in production.
     onMount(async () => {
         // Allow user state to be set before checking the auth status
         setTimeout(async () => {
-        if (!$user.authenticated || !$user.user?.is_superuser) {
-            await goto("/");
-        } else {
-            getReportCount();
-            getRepairCount();
-    
-            page = getPageFromUrl();
-        }
+            if (!$user.authenticated || !$user.user?.is_superuser) {
+                await goto("/");
+            } else {
+                getReportCount();
+                getRepairCount();
+        
+                page = getPageFromUrl();
+            }
         }, 500);
     });
 
@@ -119,7 +121,21 @@ Presents a warning dialog to the user when in production.
 </script>
 
 <PageContainer>
-    {#if $user.authenticated && $user.user?.is_superuser}
+    {#if navigating.to || !$user.authenticated && !$user.user?.is_superuser}
+        <CircleNotchIcon weight="bold" class="animate-spin" size={32} />
+    {:else if !online.current}
+        <Card.Root class="mt-4">
+            <Card.Content>
+                <div class="flex flex-col gap-2 items-center">
+                    <WifiSlashIcon size={32} weight="bold" />
+                    <p class="text-xl font-bold">You're Offline</p>
+                    <p class="text-md">You're offline, so you won't be able to make administrator changes.</p>
+                    <p class="text-md">Check your internet connection and try again.</p>
+                    <Button variant="default" href="/"><HouseIcon weight="bold" /> Home</Button>
+                </div>
+            </Card.Content>
+        </Card.Root>
+    {:else}
         {#if page === "start"}
             <Card.Root class="w-auto min-w-64">
                 <Card.Header>
@@ -202,8 +218,6 @@ Presents a warning dialog to the user when in production.
             <RepairsManager />
 
         {/if}
-    {:else}
-        <CircleNotchIcon weight="bold" class="animate-spin" size={32} />
     {/if}
 </PageContainer>
 
