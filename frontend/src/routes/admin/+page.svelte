@@ -121,8 +121,8 @@ Presents a warning dialog to the user when in production.
     })
 </script>
 
-<PageContainer>
-    {#if navigating.to || !$user.authenticated && !$user.user?.is_superuser}
+<PageContainer showLoading>
+    {#if !$user.authenticated && !$user.user?.is_superuser}
         <CircleNotchIcon weight="bold" class="animate-spin" size={32} />
     {:else if !online.current}
         <OfflineWarning text="You're offline, so you won't be able to make administrator changes to the server." />

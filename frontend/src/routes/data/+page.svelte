@@ -208,11 +208,9 @@ Page should be loaded like
     });
 </script>
 
-<PageContainer>
+<PageContainer showLoading>
     <Header bind:mode />
-    {#if navigating.to}
-        <CircleNotchIcon weight="bold" class="animate-spin" size={32} />
-    {:else if !online.current}
+    {#if !online.current}
         <OfflineWarning text="You're offline, so you won't be able to fetch match scouting data from the server." />
     {:else}
         {#if mode === "all"}

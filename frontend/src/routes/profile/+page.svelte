@@ -128,10 +128,8 @@ Allows for editing profile details, changing password, and updating settings
     </div>
 {/snippet}
 
-<PageContainer>
-    {#if navigating.to}
-        <CircleNotchIcon weight="bold" class="animate-spin" size={32} />
-    {:else if !online.current}
+<PageContainer showLoading>
+    {#if !online.current}
         <OfflineWarning text="You're offline, so you won't be able to make changes to your profile." />
     {:else}
         <div class="flex flex-col lg:flex-row gap-4 h-auto lg:h-[75vh] w-[90vw] lg:w-[75vw]">
