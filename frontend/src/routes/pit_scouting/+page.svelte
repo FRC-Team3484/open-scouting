@@ -18,6 +18,8 @@ Allows for creating new pits, and includes a section for viewing the progress of
 	import SyncManager from "$lib/components/pit_scouting/SyncManager.svelte";
 	import PitStatus from "$lib/components/pit_scouting/PitStatus.svelte";
 	import { user } from "$lib/utils/auth";
+	import { online } from "svelte/reactivity/window";
+	import OfflineWarning from "$lib/components/generic/OfflineWarning.svelte";
 
 
     let season_uuid: string = $state("");
@@ -128,9 +130,16 @@ Allows for creating new pits, and includes a section for viewing the progress of
     });
 </script>
 
-<PageContainer disableSleep>
+<PageContainer disableSleep showLoading>
     <Header bind:event={event}/>
+    
     {#if year && season_uuid && event && event.year !== 0}
+        {#if !online.current}
+            <div class="mb-4">
+                <OfflineWarning text="You're offline, so you won't be able to use live pit scouting. You'll still be able to create and scout pits, but they won't be synced with the server until you're online." showHome={false} />
+            </div>
+        {/if}
+
         <div class="flex flex-col gap-4 items-center">
             <PitStatus pits={$pits} pit_questions={pit_questions} scrollToTeam={scrollToTeam} />
 
