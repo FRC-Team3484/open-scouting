@@ -97,7 +97,7 @@ export interface PitScoutingAnswer {
 export interface PitScoutingData {
     uuid: string
     answers: PitScoutingAnswer[]
-    nickname: string
+    nickname: string | null
     team_number: number
     year: number
     event_code: string
