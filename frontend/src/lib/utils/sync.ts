@@ -18,6 +18,7 @@ import { getCustomEventsEventCustomSeasonUuidGet } from "$lib/api/events/events"
 import { submitMatchScoutingScoutingSubmitPost } from "$lib/api/match-scouting/match-scouting";
 import { getServerStatusStatusGet } from "$lib/api/generic/generic";
 import { uploadImageUploadImagePost } from "$lib/api/uploads/uploads";
+import { online } from "svelte/reactivity/window";
 
 /**
  * Checks if syncing is enabled by the user
@@ -382,11 +383,11 @@ async function pushFiles() {
  * 
  * Show the changelog dialog, based on if the version has changed and the user's settings.
  */
-async function getServerStatus() {
-    if (!browser) return;
-    if (!isSyncingEnabled()) return;
+async function getServerStatus(): Promise<boolean> {
+    if (!browser) return false;
+    if (!isSyncingEnabled()) return false;
 
-    await getServerStatusStatusGet().then((response) => {
+    return await getServerStatusStatusGet().then((response) => {
         if (response.data) {
             const server_version: string | null = response.data.version;
 
@@ -421,8 +422,9 @@ async function getServerStatus() {
             }
 
             return true;
+        } else {
+            return false;
         }
-        
     }).catch((error) => {
         console.error(error);
         return false;
@@ -434,10 +436,17 @@ async function getServerStatus() {
  */
 async function main() {
     if (!isSyncingEnabled()) return;
+    if (!online.current) {
+        console.log("Offline, skipping sync");
+        return;
+    };
 
-    setTimeout(() => {
-        getServerStatus();
-    }, 500);
+    getServerStatus().then((response) => {
+        if (response === false) {
+            console.error("Failed to get server status, skipping sync");
+            return;
+        }
+    });
 
     // Check if data is old
     if (await isOldData()) {
