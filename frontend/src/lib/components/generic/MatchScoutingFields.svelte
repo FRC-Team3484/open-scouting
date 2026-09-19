@@ -14,6 +14,7 @@ Props:
 -->
 <script lang="ts">
 	import { onMount } from "svelte";
+	import { online } from "svelte/reactivity/window";
 	import { flip } from "svelte/animate";
 	import { toast } from "svelte-sonner";
 	import { dragHandleZone } from "svelte-dnd-action";
@@ -175,7 +176,6 @@ Props:
             synced: false
         });
 
-        toast.success("Match scouting data saved locally", { duration: 5000 });
         form.reset();
 
         // Delay 100ms while form is resetting
@@ -185,10 +185,17 @@ Props:
             scrollTo({ top: 0, behavior: "smooth" });
         }, 100);
 
-        await pushMatchScoutingData().catch((error) => {
-            console.warn("Failed to upload match scouting data", error);
-            toast.error("Failed to upload match scouting data to the server");
-        });
+        if (online.current) {
+            await pushMatchScoutingData().catch((error) => {
+                console.warn("Failed to upload match scouting data", error);
+                toast.warning("Match scouting data saved", { description: "Data wasn't able to be synced to the server. It will be tried again later." });
+            }).then(() => {
+                toast.info("Match scouting data saved and uploaded");
+            });
+        } else {
+            toast.warning("Match scouting data saved", { description: "You're offline, so it was saved locally. Your data will upload when you go back online." })
+        }
+        
     }
 
     /**

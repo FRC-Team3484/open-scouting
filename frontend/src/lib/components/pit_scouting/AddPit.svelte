@@ -28,14 +28,6 @@ Props:
     let teamNumber = $state("");
 
     /**
-     * Get the team's nickname from the The Blue Alliance API
-     */
-    async function getNickname() {
-        const response = await theBlueAllianceApiFetch(`/team/frc${teamNumber}`);
-        return response.nickname;
-    }
-
-    /**
      * Add the pit to the local database
      */
     async function addPit() {
@@ -51,7 +43,7 @@ Props:
             await db.pit_scouting.add({
                 uuid: crypto.randomUUID(),
                 answers: [],
-                nickname: await getNickname(),
+                nickname: null,
                 team_number: parseInt(teamNumber),
                 year: event.year,
                 event_code: event.event_code,

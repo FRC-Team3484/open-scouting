@@ -7,6 +7,7 @@ Allows for the user to sign into their account, or create a new account.
 	import { onMount } from "svelte";
 	import { goto } from "$app/navigation";
 	import { slide } from "svelte/transition";
+	import { online } from "svelte/reactivity/window";
 	import { ArrowRightIcon, CircleNotchIcon, QuestionMarkIcon } from "phosphor-svelte";
 
 	import Button from "$lib/components/ui/button/button.svelte";
@@ -16,6 +17,7 @@ Allows for the user to sign into their account, or create a new account.
 	import Authentication from "$lib/components/generic/authentication/Authentication.svelte";
 	import type { ForgotPasswordStatus } from "$lib/components/generic/authentication/ForgotPassword.svelte";
 	import { user } from "$lib/utils/auth";
+	import OfflineWarning from "$lib/components/generic/OfflineWarning.svelte";
 
 
     let page: "signin" | "signup" | "forgot_password" = $state("signin");
@@ -31,9 +33,11 @@ Allows for the user to sign into their account, or create a new account.
             ref = params.get("ref") || "/";
         }
 
-        if ($user.authenticated && !$user.loading) {
-            await goto(ref);
-        }
+        setTimeout(async () => {
+            if ($user.authenticated && !$user.loading && online.current) {
+                await goto(ref || "/");
+            }
+        }, 100);
     });
 
     $effect(() => {
@@ -44,7 +48,10 @@ Allows for the user to sign into their account, or create a new account.
 </script>
 
 <PageContainer>
-    {#if !$user.authenticated}
+    {#if !online.current}
+        <OfflineWarning text="You're offline, so you won't be able to log in or create an account." showHome={true} />
+
+    {:else if !$user.authenticated}
         <div class="flex flex-col w-full md:w-1/2 items-center gap-4">
             <Logo text={false} href="/" />
             <p class="text-2xl font-bold">Authentication</p>

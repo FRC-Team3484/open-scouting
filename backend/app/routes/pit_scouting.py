@@ -390,6 +390,19 @@ async def submit_pit(
 
     if created:
         pit.created_by = identity.session
+
+        # Pit was created on client, attempt to fetch nickname
+        if not data.nickname:
+            if TBA_API_KEY != "" and TBA_API_KEY is not None and event.custom == False:
+                async with httpx.AsyncClient(timeout=10.0) as client:
+                    response = await client.get(
+                        f"https://www.thebluealliance.com/api/v3/team/frc{team_number}",
+                        headers={"X-TBA-Auth-Key": TBA_API_KEY},
+                    )
+
+                if response.status_code == 200:
+                    pit.nickname = response.json()["nickname"]
+
         await pit.save()
         print("Created pit", pit.uuid, "for team", team_number, "and event", event.uuid)
 

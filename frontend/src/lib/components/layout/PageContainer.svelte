@@ -7,18 +7,22 @@ Also can be asked to disable device sleeping on a certain page, after it's been 
 Props:
 	- `centered` (`boolean`) - If the page should be centered
 	- `disableSleep` (`boolean`) - If device sleep should be disabled
+	- `showLoading` (`boolean`) - If the loading spinner should be shown
 	- `children` (`Snippet`) - The content of the page
 -->
 <script lang="ts">
+	import { navigating } from '$app/state';
+	import { CircleNotchIcon } from 'phosphor-svelte';
 	import { onMount, type Snippet } from 'svelte';
 
 
 	interface Props {
 		centered?: boolean
 		disableSleep?: boolean
+		showLoading?: boolean
 		children?: Snippet
 	}
-	let { centered = true, disableSleep = false, children }: Props = $props();
+	let { centered = true, disableSleep = false, showLoading = false, children }: Props = $props();
 
 	let page: HTMLDivElement;
 	let noSleep: any;
@@ -45,7 +49,11 @@ Props:
 	`}
 	bind:this={page}
 >
-	{#if children}
-		{@render children()}
+	{#if showLoading && (navigating.to || navigating.from)}
+		<CircleNotchIcon weight="bold" class="animate-spin" size={32} />
+	{:else}
+		{#if children}
+			{@render children()}
+		{/if}
 	{/if}
 </div>

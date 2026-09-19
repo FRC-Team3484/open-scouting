@@ -7,6 +7,7 @@ Props:
 -->
 <script lang="ts">
 	import { dev } from "$app/environment";
+	import { online } from "svelte/reactivity/window";
 	import { BookIcon, SignOutIcon, UserCircleIcon, WrenchIcon } from "phosphor-svelte";
 
     import Skeleton from "../ui/skeleton/skeleton.svelte";
@@ -53,7 +54,7 @@ Props:
                     {/if}
                 </DropdownMenu.Group>
                 <DropdownMenu.Separator />
-                <DropdownMenu.Item onclick={async () => {await signOut()}}>
+                <DropdownMenu.Item onclick={async () => {await signOut()}} disabled={!online.current}>
                     <SignOutIcon weight="bold" /> Log out
                 </DropdownMenu.Item>
             </DropdownMenu.Content>

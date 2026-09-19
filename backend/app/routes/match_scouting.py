@@ -37,6 +37,7 @@ async def submit_match_scouting(
 
     user: User | None
 
+    # TODO: Remove for .created_by
     if data.user_uuid != "":
         user = await User.get_or_none(uuid=data.user_uuid)
         if not user:

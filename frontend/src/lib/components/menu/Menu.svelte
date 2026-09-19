@@ -9,7 +9,7 @@ Also allows for viewing old changelogs, managing local db data, and viewing the 
 	import { toggleMode, mode } from "mode-watcher";
 	import { online } from "svelte/reactivity/window";
 	import { toast } from "svelte-sonner";
-    import { ArchiveIcon, ArrowRightIcon, BugIcon, CheckCircleIcon, CircleNotchIcon, DiscordLogoIcon, GithubLogoIcon, HouseIcon, ListIcon, MoonIcon, NotepadIcon, RocketIcon, SunIcon, WarningIcon, XCircleIcon } from "phosphor-svelte";
+    import { ArchiveIcon, ArrowRightIcon, BugIcon, CheckCircleIcon, CircleNotchIcon, DiscordLogoIcon, GithubLogoIcon, HouseIcon, ListIcon, MoonIcon, NotepadIcon, RocketIcon, SunIcon, WarningIcon, WifiSlashIcon, XCircleIcon } from "phosphor-svelte";
 
 	import Button from "../ui/button/button.svelte";
 	import Separator from "../ui/separator/separator.svelte";
@@ -21,6 +21,7 @@ Also allows for viewing old changelogs, managing local db data, and viewing the 
 	import User from "../generic/User.svelte";
 	import { changelogDialogOpen } from "$lib/stores/dialog";
 	import SyncingToggleDrawer from "./SyncingToggleDrawer.svelte";
+	import Badge from "../ui/badge/badge.svelte";
 
 
     let menu_open: boolean = $state(false);
@@ -59,12 +60,14 @@ Also allows for viewing old changelogs, managing local db data, and viewing the 
     >
         {#key $menuState.state}
             <div transition:fade|local={{ duration: 150 }}>
-                {#if $menuState.state === "ready"}
+                {#if $menuState.state === "ready" && online.current}
                     <ListIcon weight="bold" class="md:w-8! md:h-8! w-6! h-6!" />
                 {:else if $menuState.state === "loading"}
                     <CircleNotchIcon weight="bold" class="animate-spin md:w-6! md:h-6! w-4! h-4!" />
                 {:else if $menuState.state === "warning"}
                     <WarningIcon weight="bold" class="animate-pulse md:w-6! md:h-6! w-4! h-4!" />
+                {:else if !online.current}
+                    <WifiSlashIcon weight="bold" class="md:w-6! md:h-6! w-4! h-4! animate-pulse" />
                 {/if}
             </div>
         {/key}
@@ -78,6 +81,9 @@ Also allows for viewing old changelogs, managing local db data, and viewing the 
             <div class="flex flex-row gap-4 justify-between items-center">
                 <div class="flex flex-row gap-2 items-center">
                     <User show_text={true} />
+                    {#if !online.current}
+                        <Badge variant="destructive"><WifiSlashIcon weight="bold" /> Offline</Badge>
+                    {/if}
                 </div>
             </div>
 

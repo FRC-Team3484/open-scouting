@@ -44,7 +44,7 @@ class SubmitPitFieldAnswerRequest(BaseModel):
     event_code: str
 
     answers: list[Any]
-    nickname: str
+    nickname: str | None
 
 class ReorderPitField(BaseModel):
     uuid: UUID

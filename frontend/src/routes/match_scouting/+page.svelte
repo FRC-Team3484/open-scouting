@@ -5,12 +5,14 @@ TODO: Fetch season uuid from the local database instead
 -->
 <script lang="ts">
 	import { onMount } from "svelte";
+	import { online } from "svelte/reactivity/window";
 	import { CircleNotchIcon } from "phosphor-svelte";
 
 	import { db, type Event } from "$lib/utils/db";
 	import MatchScoutingFields from "$lib/components/generic/MatchScoutingFields.svelte";
 	import PageContainer from "$lib/components/layout/PageContainer.svelte";
 	import Header from "$lib/components/match_scouting/Header.svelte";
+	import OfflineWarning from "$lib/components/generic/OfflineWarning.svelte";
 
 
     let season_uuid: string = $state("");
@@ -51,6 +53,12 @@ TODO: Fetch season uuid from the local database instead
 <PageContainer disableSleep>
     <Header bind:event_data={event_data}/>
     {#if year && season_uuid && event_data && event_data.year !== 0}
+        {#if !online.current}
+            <div class="mb-4">
+                <OfflineWarning text="You will still be able to scout matches, but they won't be synced with the server until you're back online. You will also not be able to autofill team numbers." showHome={false} />
+            </div>
+        {/if}
+
         <MatchScoutingFields season_uuid={season_uuid} year={parseInt(year)} event_data={event_data} editable={false} />
     {:else}
         <CircleNotchIcon weight="bold" class="animate-spin md:w-6! md:h-6! w-4! h-4!" />

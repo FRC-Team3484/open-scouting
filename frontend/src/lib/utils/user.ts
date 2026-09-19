@@ -15,6 +15,9 @@ async function signOut() {
             toast.error("Failed to log out.");
             console.error(response);
         }
+    }).catch((error) => {
+        toast.error("Failed to log out.");
+        console.error(error);
     });
 }
 

@@ -67,12 +67,16 @@ Props:
         setTimeout(() => {        
             if (online.current) {
                 sync();
+            } else {
+                status = "offline";
             }
         }, 100);
 
         const interval = setInterval(async () => {
             if (online.current) {
                 sync();
+            } else {
+                status = "offline";
             }
         }, 10000);
 
@@ -111,7 +115,7 @@ Props:
 
                 {#if $unsyncedQuery > 0}
                     <div transition:slide>
-                        <Badge variant="destructive">{$unsyncedQuery} Unsynced Pit</Badge>
+                        <Badge variant="destructive">{$unsyncedQuery} Unsynced Pit{$unsyncedQuery > 1 ? "s" : ""}</Badge>
                     </div>
                 {/if}
             </div>
