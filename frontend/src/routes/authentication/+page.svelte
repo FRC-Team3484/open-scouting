@@ -31,9 +31,11 @@ Allows for the user to sign into their account, or create a new account.
             ref = params.get("ref") || "/";
         }
 
-        if ($user.authenticated && !$user.loading) {
-            await goto(ref);
-        }
+        setTimeout(async () => {
+            if ($user.authenticated && !$user.loading) {
+                await goto(ref || "/");
+            }
+        }, 100);
     });
 
     $effect(() => {
