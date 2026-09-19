@@ -23,7 +23,7 @@ Props:
 
 	import Section from "./BaseSection.svelte";
 	import type { PasskeyResponse, UserResponse } from "$lib/api/model";
-	import { deletePasskeyAuthPasskeysDeleteUuidDelete, getPasskeysAuthPasskeysGetGet, setDisplayNameUsersMeSetDisplayNamePost, setTeamNumberUsersMeSetTeamNumberPost } from "$lib/api/auth/auth";
+	import { setDisplayNameUsersMeSetDisplayNamePost, setTeamNumberUsersMeSetTeamNumberPost } from "$lib/api/auth/auth";
 	import BaseDialog from "$lib/components/generic/dialogs/BaseDialog.svelte";
 	import { uploadProfilePictureUploadProfilePictureMePost } from "$lib/api/uploads/uploads";
 	import Authentication from "$lib/components/generic/authentication/Authentication.svelte";
@@ -32,6 +32,7 @@ Props:
 	import type { ChangeEmailStatus } from "$lib/components/generic/authentication/ChangeEmail.svelte";
 	import type { CreatePasskeyStatus } from "$lib/components/generic/authentication/CreatePasskey.svelte";
 	import DeleteAccount, { type DeleteAccountStatus } from "$lib/components/generic/authentication/DeleteAccount.svelte";
+	import { deletePasskeyPasskeysDeleteUuidDelete, getPasskeysPasskeysGetGet } from "$lib/api/passkeys/passkeys";
 
 
     interface Props {
@@ -125,7 +126,7 @@ Props:
      * Get the user's passkeys
      */
     async function getPasskeys() {
-        await getPasskeysAuthPasskeysGetGet().then((response) => {
+        await getPasskeysPasskeysGetGet().then((response) => {
             if (response.status === 200) {
                 passkeys = response.data;
             }
@@ -137,7 +138,7 @@ Props:
      * @param uuid The uuid of the passkey to delete
      */
     async function deletePasskey(uuid: string) {
-        await deletePasskeyAuthPasskeysDeleteUuidDelete(uuid).then((response) => {
+        await deletePasskeyPasskeysDeleteUuidDelete(uuid).then((response) => {
             if (response.status === 200) {
                 getPasskeys();
                 toast.success("Passkey deleted");

@@ -7,7 +7,7 @@ TODO: Make the 100ms delay to ensure seasonUuid has loaded more reliable
 TODO: Make the pit scouting sync frequency configurable
 
 Props:
-    - `eventData` (`Event`) - The event data
+    - `event` (`Event`) - The event data
     - `seasonUuid` (`string`) - The season uuid
 -->
 <script lang="ts">
@@ -27,24 +27,24 @@ Props:
 
 
     interface Props {
-        eventData: Event
+        event: Event
         seasonUuid: string
     }
-    let { eventData, seasonUuid }: Props = $props();
+    let { event, seasonUuid }: Props = $props();
 
     type Status = "ready" | "fetching" | "pushing" | "warning" | "offline";
     let status: Status = $state("ready");
 
-    let unsyncedQuery = liveQuery(() => db.pit_scouting.filter(p => p.synced === false && p.event_code === eventData.event_code && p.year === eventData.year).count());
+    let unsyncedQuery = liveQuery(() => db.pit_scouting.filter(p => p.synced === false && p.event_code === event.event_code && p.year === event.year).count());
 
     /**
      * Sync the pit scouting data
      */
     async function sync() {
         status = "pushing";
-        await pushPitScoutingData(eventData, seasonUuid).then(async () => {
+        await pushPitScoutingData(event, seasonUuid).then(async () => {
             status = "fetching";
-            await fetchPitScoutingData(eventData, seasonUuid).then(() => {
+            await fetchPitScoutingData(event, seasonUuid).then(() => {
                 status = "ready";
             }).catch((error) => {
                 console.warn("Failed to fetch pit scouting data", error);
@@ -67,12 +67,16 @@ Props:
         setTimeout(() => {        
             if (online.current) {
                 sync();
+            } else {
+                status = "offline";
             }
         }, 100);
 
         const interval = setInterval(async () => {
             if (online.current) {
                 sync();
+            } else {
+                status = "offline";
             }
         }, 10000);
 
@@ -111,7 +115,7 @@ Props:
 
                 {#if $unsyncedQuery > 0}
                     <div transition:slide>
-                        <Badge variant="destructive">{$unsyncedQuery} Unsynced Pit</Badge>
+                        <Badge variant="destructive">{$unsyncedQuery} Unsynced Pit{$unsyncedQuery > 1 ? "s" : ""}</Badge>
                     </div>
                 {/if}
             </div>

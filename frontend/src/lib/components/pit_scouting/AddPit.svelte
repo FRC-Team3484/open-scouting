@@ -5,7 +5,7 @@ Component for adding a custom pit for an event
 TODO: Use the db interface for Event
 
 Props:
-    - `event_data` (`Event`) - The event
+    - `event` (`Event`) - The event
 -->
 <script lang="ts">
 	import { toast } from "svelte-sonner";
@@ -21,27 +21,19 @@ Props:
 
 
     interface Props {
-        event_data: any
+        event: any
     }
-    let { event_data }: Props = $props();
+    let { event }: Props = $props();
 
     let teamNumber = $state("");
-
-    /**
-     * Get the team's nickname from the The Blue Alliance API
-     */
-    async function getNickname() {
-        const response = await theBlueAllianceApiFetch(`/team/frc${teamNumber}`);
-        return response.nickname;
-    }
 
     /**
      * Add the pit to the local database
      */
     async function addPit() {
         const pitExists = await db.pit_scouting.filter(
-            pit => pit.year === event_data.year && 
-            pit.event_code === event_data.event_code &&
+            pit => pit.year === event.year && 
+            pit.event_code === event.event_code &&
             pit.team_number === parseInt(teamNumber)
         ).toArray()
 
@@ -51,16 +43,10 @@ Props:
             await db.pit_scouting.add({
                 uuid: crypto.randomUUID(),
                 answers: [],
-                nickname: await getNickname(),
+                nickname: null,
                 team_number: parseInt(teamNumber),
-                year: event_data.year,
-                event_code: event_data.event_code,
-                event_name: event_data.event_name,
-                event_type: event_data.event_type,
-                event_city: event_data.event_city,
-                event_country: event_data.event_country,
-                event_start_date: event_data.event_start_date,
-                event_end_date: event_data.event_end_date,
+                year: event.year,
+                event_code: event.event_code,
                 synced: false
             });
 

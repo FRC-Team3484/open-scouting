@@ -1,8 +1,12 @@
 from typing import Any, override
-from uuid import uuid5
+from uuid import UUID
+from datetime import datetime
 
 from tortoise import fields
 from tortoise.models import Model
+from tortoise.fields.relational import ForeignKeyRelation
+from tortoise.fields.relational import ForeignKeyNullableRelation
+from tortoise.fields import Field
 
 from .setting_fields import ArraySetting, BooleanSetting, JSONSetting, NumberSetting, StringSetting
 
@@ -17,18 +21,19 @@ class User(Model):
         email (str): The email address of the user
         hashed_password (str): The hashed password of the user
         is_superuser (bool): Whether the user is a superuser
+        email_verified (bool): Whether the user's email has been verified
         created_at (datetime): The date and time the user was created
         created_by (Session): The session that created the user
     """
-    uuid = fields.UUIDField(pk=True)
-    username = fields.CharField(max_length=255, unique=True)
-    email = fields.CharField(max_length=255, unique=True)
-    hashed_password = fields.CharField(max_length=255)
-    is_superuser = fields.BooleanField(default=False)
-    email_verified = fields.BooleanField(default=False, db_default=False)
+    uuid: Field[UUID] = fields.UUIDField(pk=True)
+    username: Field[str] = fields.CharField(max_length=255, unique=True)
+    email: Field[str] = fields.CharField(max_length=255, unique=True)
+    hashed_password: Field[str] = fields.CharField(max_length=255)
+    is_superuser: Field[bool] = fields.BooleanField(default=False)
+    email_verified: Field[bool] = fields.BooleanField(default=False, db_default=False)
 
-    created_at = fields.DatetimeField(auto_now_add=True)
-    created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
+    created_at: Field[datetime] = fields.DatetimeField(auto_now_add=True)
+    created_by: fields.ForeignKeyNullableRelation["Session"] = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
 
     @override
     def __str__(self) -> str:
@@ -47,14 +52,14 @@ class Profile(Model):
         created_at (datetime): The date and time the profile was created
         created_by (Session): The session that created the profile
     """
-    uuid = fields.UUIDField(pk=True)
-    user = fields.ForeignKeyField("models.User", related_name="profiles", on_delete=fields.CASCADE)
-    display_name = fields.CharField(max_length=255)
-    team_number = fields.IntField(null=True)
-    profile_picture_url = fields.CharField(max_length=255, null=True, default=None)
+    uuid: Field[UUID] = fields.UUIDField(pk=True)
+    user: ForeignKeyRelation["User"] = fields.ForeignKeyField("models.User", related_name="profiles", on_delete=fields.CASCADE)
+    display_name: Field[str] = fields.CharField(max_length=255)
+    team_number: Field[int | None] = fields.IntField(null=True)
+    profile_picture_url: Field[str | None] = fields.CharField(max_length=255, null=True, default=None)
 
-    created_at = fields.DatetimeField(auto_now_add=True, null=True)
-    created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
+    created_at: Field[datetime | None] = fields.DatetimeField(auto_now_add=True, null=True)
+    created_by: ForeignKeyNullableRelation["Session"] = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
 
     @override
     def __str__(self) -> str:
@@ -72,12 +77,12 @@ class Organization(Model):
         created_at (datetime): The date and time the organization was created
         created_by (Session): The session that created the organization
     """
-    uuid = fields.UUIDField(pk=True)
-    name = fields.CharField(max_length=255)
-    description = fields.TextField(null=True)
+    uuid: Field[UUID] = fields.UUIDField(pk=True)
+    name: Field[str] = fields.CharField(max_length=255)
+    description: Field[str] = fields.TextField(null=True)
 
-    created_at = fields.DatetimeField(auto_now_add=True)
-    created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
+    created_at: Field[datetime] = fields.DatetimeField(auto_now_add=True)
+    created_by: ForeignKeyNullableRelation["Session"] = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
 
 class OrganizationMember(Model):
     """
@@ -91,13 +96,13 @@ class OrganizationMember(Model):
         created_at (datetime): The date and time the organization member was created
         created_by (Session): The session that created the organization member
     """
-    uuid = fields.UUIDField(pk=True)
-    organization = fields.ForeignKeyField("models.Organization", related_name="members", on_delete=fields.CASCADE)
-    user = fields.ForeignKeyField("models.User", related_name="organizations", on_delete=fields.CASCADE)
-    role = fields.CharField(max_length=255) # member, admin
+    uuid: Field[UUID] = fields.UUIDField(pk=True)
+    organization: ForeignKeyRelation["Organization"] = fields.ForeignKeyField("models.Organization", related_name="members", on_delete=fields.CASCADE)
+    user: ForeignKeyRelation["User"] = fields.ForeignKeyField("models.User", related_name="organizations", on_delete=fields.CASCADE)
+    role: Field[str] = fields.CharField(max_length=255) # member, admin
 
-    created_at = fields.DatetimeField(auto_now_add=True)
-    created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
+    created_at: Field[datetime] = fields.DatetimeField(auto_now_add=True)
+    created_by: ForeignKeyNullableRelation["Session"] = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
 
 class Settings(Model):
     """
@@ -111,16 +116,17 @@ class Settings(Model):
         user (User): The user the settings are associated with
         created_at (datetime): The date and time the settings were created
         created_by (Session): The session that created the settings
+
         favorite_events (list): The list of favorite events for the user
     """
-    uuid = fields.UUIDField(pk=True)
-    user = fields.ForeignKeyField("models.User", related_name="settings", on_delete=fields.CASCADE)
+    uuid: Field[UUID] = fields.UUIDField(pk=True)
+    user: ForeignKeyRelation["User"] = fields.ForeignKeyField("models.User", related_name="settings", on_delete=fields.CASCADE)
 
-    created_at = fields.DatetimeField(auto_now_add=True, null=True) # This field was not added until v2.2.0, so it may be null in prod
-    created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
+    created_at: Field[datetime] = fields.DatetimeField(auto_now_add=True, null=True) # This field was not added until v2.2.0, so it may be null in prod
+    created_by: ForeignKeyNullableRelation["Session"] = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
 
     # Settings:
-    favorite_events = ArraySetting(null=True, default=list, display_name="Favorite Events", setting_description="Your favorite events, which appear at the top of the event list", section="General", visible=True)
+    favorite_events: Field[dict[Any, Any]] = ArraySetting(null=True, default=list, display_name="Favorite Events", setting_description="Your favorite events, which appear at the top of the event list", section="General", visible=True)
 
 class Session(Model):
     """
@@ -135,12 +141,12 @@ class Session(Model):
         last_seen (datetime): The date and time the session was last seen
         user (User): The user the session is associated with
     """
-    uuid = fields.UUIDField(pk=True)
+    uuid: Field[UUID] = fields.UUIDField(pk=True)
 
-    created_at = fields.DatetimeField(auto_now_add=True)
-    last_seen = fields.DatetimeField(auto_now=True)
+    created_at: Field[datetime] = fields.DatetimeField(auto_now_add=True)
+    last_seen: Field[datetime] = fields.DatetimeField(auto_now=True)
 
-    user = fields.ForeignKeyField(
+    user: ForeignKeyNullableRelation["User"] = fields.ForeignKeyField(
         "models.User", 
         related_name="sessions",
         null=True,
@@ -160,14 +166,14 @@ class VerificationCode(Model):
         created_at (datetime): The date and time the verification code was created
         created_by (Session): The session that created the verification code
     """
-    uuid = fields.UUIDField(pk=True)
-    user = fields.ForeignKeyField("models.User", related_name="verification_codes", null=True, on_delete=fields.CASCADE)
-    code = fields.CharField(max_length=6)
-    email = fields.CharField(max_length=255)
-    verified = fields.BooleanField(default=False)
+    uuid: Field[UUID] = fields.UUIDField(pk=True)
+    user: ForeignKeyNullableRelation["User"] = fields.ForeignKeyField("models.User", related_name="verification_codes", null=True, on_delete=fields.CASCADE)
+    code: Field[str] = fields.CharField(max_length=6)
+    email: Field[str] = fields.CharField(max_length=255)
+    verified: Field[bool] = fields.BooleanField(default=False)
 
-    created_at = fields.DatetimeField(auto_now_add=True)
-    created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
+    created_at: Field[datetime] = fields.DatetimeField(auto_now_add=True)
+    created_by: ForeignKeyNullableRelation["Session"] = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
 
 class Passkey(Model):
     """
@@ -176,6 +182,7 @@ class Passkey(Model):
     Attributes:
         uuid (UUID): The unique identifier for the passkey
         user (User): The user the passkey is associated with
+        label (str): The label of the passkey
         credential_id (bytes): The credential id of the passkey
         public_key (bytes): The public key of the passkey
         sign_count (int): The sign count of the passkey
@@ -183,21 +190,21 @@ class Passkey(Model):
         created_at (datetime): The date and time the passkey was created
         created_by (Session): The session that created the passkey
     """
-    uuid = fields.UUIDField(pk=True)
-    user = fields.ForeignKeyField(
+    uuid: Field[UUID] = fields.UUIDField(pk=True)
+    user: ForeignKeyRelation["User"] = fields.ForeignKeyField(
         "models.User",
         related_name="passkeys",
         on_delete=fields.CASCADE
     )
-    label = fields.CharField(max_length=255, null=True)
+    label: Field[str | None] = fields.CharField(max_length=255, null=True)
 
-    credential_id = fields.BinaryField()
-    public_key = fields.BinaryField()
-    sign_count = fields.BigIntField(default=0)
-    transports = fields.JSONField(null=True)
+    credential_id: Field[bytes] = fields.BinaryField()
+    public_key: Field[bytes] = fields.BinaryField()
+    sign_count: Field[int] = fields.BigIntField(default=0)
+    transports: Field[dict[Any, Any] | None] = fields.JSONField(null=True)
 
-    created_at = fields.DatetimeField(auto_now_add=True)
-    created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
+    created_at: Field[datetime] = fields.DatetimeField(auto_now_add=True)
+    created_by: ForeignKeyNullableRelation["Session"] = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
 
 class WebAuthnChallenge(Model):
     """
@@ -211,18 +218,18 @@ class WebAuthnChallenge(Model):
         created_at (datetime): The date and time the challenge was created
         created_by (Session): The session that created the challenge
     """
-    uuid = fields.UUIDField(pk=True)
-    challenge = fields.BinaryField(null=True)
-    user = fields.ForeignKeyField(
+    uuid: Field[UUID] = fields.UUIDField(pk=True)
+    challenge: Field[bytes] = fields.BinaryField(null=True)
+    user: ForeignKeyNullableRelation["User"] = fields.ForeignKeyField(
         "models.User",
         related_name="webauthn_challenges",
         null=True,
         on_delete=fields.CASCADE
     )
-    expires_at = fields.DatetimeField()
+    expires_at: Field[datetime] = fields.DatetimeField()
 
-    created_at = fields.DatetimeField(auto_now_add=True, null=True) # This field was not added until v2.2.0, so it may be null in prod
-    created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
+    created_at: Field[datetime | None] = fields.DatetimeField(auto_now_add=True, null=True) # This field was not added until v2.2.0, so it may be null in prod
+    created_by: ForeignKeyNullableRelation["Session"] = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
 
 # Main
 class Season(Model):
@@ -237,13 +244,13 @@ class Season(Model):
         created_at (datetime): The date and time the season was created
         created_by (Session): The session that created the season
     """
-    uuid = fields.UUIDField(pk=True)
-    year = fields.IntField()
-    name = fields.CharField(max_length=255)
-    active = fields.BooleanField(default=True)
+    uuid: Field[UUID] = fields.UUIDField(pk=True)
+    year: Field[int] = fields.IntField()
+    name: Field[str] = fields.CharField(max_length=255)
+    active: Field[bool] = fields.BooleanField(default=True)
 
-    created_at = fields.DatetimeField(auto_now_add=True)
-    created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
+    created_at: Field[datetime] = fields.DatetimeField(auto_now_add=True)
+    created_by: ForeignKeyNullableRelation["Session"] = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
 
     # Deactivate all other seasons if this one is saved as active
     @override
@@ -264,12 +271,12 @@ class GamePiece(Model):
         created_at (datetime): The date and time the game piece was created
         created_by (Session): The session that created the game piece
     """
-    uuid = fields.UUIDField(pk=True)
-    season = fields.ForeignKeyField("models.Season", related_name="game_pieces", null=True, on_delete=fields.SET_NULL)
-    name = fields.CharField(max_length=255)
+    uuid: Field[UUID] = fields.UUIDField(pk=True)
+    season: ForeignKeyNullableRelation["Season"] = fields.ForeignKeyField("models.Season", related_name="game_pieces", null=True, on_delete=fields.SET_NULL)
+    name: Field[str] = fields.CharField(max_length=255)
 
-    created_at = fields.DatetimeField(auto_now_add=True)
-    created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
+    created_at: Field[datetime] = fields.DatetimeField(auto_now_add=True)
+    created_by: ForeignKeyNullableRelation["Session"] = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
 
 class MatchScoutingField(Model):
     """
@@ -292,22 +299,22 @@ class MatchScoutingField(Model):
         created_at (datetime): The date and time the match scouting field was created
         created_by (Session): The session that created the match scouting field
     """
-    uuid = fields.UUIDField(pk=True)
-    parent = fields.ForeignKeyField("models.MatchScoutingField", related_name="children", null=True, on_delete=fields.SET_NULL)
-    season = fields.ForeignKeyField("models.Season", related_name="fields", null=True, on_delete=fields.SET_NULL)
-    name = fields.CharField(max_length=255)
-    description = fields.TextField(null=True)
-    field_type = fields.CharField(max_length=255) # section, string, large_number, small_number, boolean, choice, multiple_choice
-    stat_type = fields.CharField(max_length=255) # section, auton_score, auton_miss, teleop_score, teleop_miss, capability, other, ignore
-    game_piece = fields.ForeignKeyField("models.GamePiece", related_name="fields", null=True, on_delete=fields.SET_NULL) # needed if stat_type is score or miss
-    required = fields.BooleanField(default=False)
-    options = fields.JSONField(null=True, default=dict) # For integer maximum and minimums, choices, etc.
-    order = fields.IntField(default=0) # The order the field should appear in the frontend or section
-    organization = fields.ForeignKeyField("models.Organization", related_name="scouting_fields", null=True, on_delete=fields.CASCADE) # Optional, used if the field is specific to an organization
-    archived= fields.BooleanField(default=False)
+    uuid: Field[UUID] = fields.UUIDField(pk=True)
+    parent: ForeignKeyNullableRelation["MatchScoutingField"] = fields.ForeignKeyField("models.MatchScoutingField", related_name="children", null=True, on_delete=fields.SET_NULL)
+    season: ForeignKeyNullableRelation["Season"] = fields.ForeignKeyField("models.Season", related_name="fields", null=True, on_delete=fields.SET_NULL)
+    name: Field[str] = fields.CharField(max_length=255)
+    description: Field[str] = fields.TextField(null=True)
+    field_type: Field[str] = fields.CharField(max_length=255) # section, string, large_number, small_number, boolean, choice, multiple_choice
+    stat_type: Field[str] = fields.CharField(max_length=255) # section, auton_score, auton_miss, teleop_score, teleop_miss, capability, other, ignore
+    game_piece: ForeignKeyNullableRelation["GamePiece"] = fields.ForeignKeyField("models.GamePiece", related_name="fields", null=True, on_delete=fields.SET_NULL) # needed if stat_type is score or miss
+    required: Field[bool] = fields.BooleanField(default=False)
+    options: Field[dict[Any, Any] | None] = fields.JSONField(null=True, default=dict) # For integer maximum and minimums, choices, etc.
+    order: Field[int] = fields.IntField(default=0) # The order the field should appear in the frontend or section
+    organization: ForeignKeyNullableRelation["Organization"] = fields.ForeignKeyField("models.Organization", related_name="scouting_fields", null=True, on_delete=fields.CASCADE) # Optional, used if the field is specific to an organization
+    archived: Field[bool] = fields.BooleanField(default=False)
 
-    created_at = fields.DatetimeField(auto_now_add=True)
-    created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
+    created_at: Field[datetime] = fields.DatetimeField(auto_now_add=True)
+    created_by: ForeignKeyNullableRelation["Session"] = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
 
 class Event(Model):
     """
@@ -331,20 +338,20 @@ class Event(Model):
         created_at (datetime): The date and time the event was created
         created_by (Session): The session that created the event
     """
-    uuid = fields.UUIDField(pk=True)
-    season = fields.ForeignKeyField("models.Season", related_name="events", null=True, on_delete=fields.SET_NULL)
-    event_code = fields.CharField(max_length=255)
-    name = fields.CharField(max_length=255)
-    type = fields.CharField(max_length=255)
-    city = fields.CharField(max_length=255)
-    country = fields.CharField(max_length=255)
-    start_date = fields.DateField(null=True)
-    end_date = fields.DateField(null=True)
-    pits_generated = fields.BooleanField(default=False)
-    custom = fields.BooleanField(default=False)
+    uuid: Field[UUID] = fields.UUIDField(pk=True)
+    season: ForeignKeyNullableRelation["Season"] = fields.ForeignKeyField("models.Season", related_name="events", null=True, on_delete=fields.SET_NULL)
+    event_code: Field[str] = fields.CharField(max_length=255)
+    name: Field[str] = fields.CharField(max_length=255)
+    type: Field[str] = fields.CharField(max_length=255)
+    city: Field[str] = fields.CharField(max_length=255)
+    country: Field[str] = fields.CharField(max_length=255)
+    start_date: Field[datetime | None] = fields.DateField(null=True)
+    end_date: Field[datetime | None] = fields.DateField(null=True)
+    pits_generated: Field[bool] = fields.BooleanField(default=False)
+    custom: Field[bool] = fields.BooleanField(default=False)
 
-    created_at = fields.DatetimeField(auto_now_add=True)
-    created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
+    created_at: Field[datetime] = fields.DatetimeField(auto_now_add=True)
+    created_by: ForeignKeyNullableRelation["Session"] = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
 
 class MatchScoutingSubmission(Model):
     """
@@ -360,14 +367,14 @@ class MatchScoutingSubmission(Model):
         created_at (datetime): The date and time the match scouting submission was created
         created_by (Session): The session that created the match scouting submission
     """
-    uuid = fields.UUIDField(pk=True)
-    event = fields.ForeignKeyField("models.Event", related_name="answers", null=True, on_delete=fields.SET_NULL)
-    team_number = fields.IntField(default=0)
-    match_number = fields.IntField(default=0)
-    match_type = fields.CharField(max_length=255, default="")
+    uuid: Field[UUID] = fields.UUIDField(pk=True)
+    event: ForeignKeyNullableRelation["Event"] = fields.ForeignKeyField("models.Event", related_name="answers", null=True, on_delete=fields.SET_NULL)
+    team_number: Field[int] = fields.IntField(default=0)
+    match_number: Field[int] = fields.IntField(default=0)
+    match_type: Field[str] = fields.CharField(max_length=255, default="")
 
-    created_at = fields.DatetimeField(auto_now_add=True)
-    created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
+    created_at: Field[datetime] = fields.DatetimeField(auto_now_add=True)
+    created_by: ForeignKeyNullableRelation["Session"] = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
 
 class MatchScoutingAnswer(Model):
     """
@@ -381,13 +388,13 @@ class MatchScoutingAnswer(Model):
         created_at (datetime): The date and time the match scouting answer was created
         created_by (Session): The session that created the match scouting answer
     """
-    uuid = fields.UUIDField(pk=True)
-    field = fields.ForeignKeyField("models.MatchScoutingField", related_name="answers", null=True, on_delete=fields.SET_NULL)
-    value = fields.CharField(max_length=255, null=True)
-    submission = fields.ForeignKeyField("models.MatchScoutingSubmission", related_name="answers", null=True, on_delete=fields.SET_NULL)
+    uuid: Field[UUID] = fields.UUIDField(pk=True)
+    field: ForeignKeyNullableRelation["MatchScoutingField"] = fields.ForeignKeyField("models.MatchScoutingField", related_name="answers", null=True, on_delete=fields.SET_NULL)
+    value: Field[str | None] = fields.CharField(max_length=255, null=True)
+    submission: ForeignKeyNullableRelation["MatchScoutingSubmission"] = fields.ForeignKeyField("models.MatchScoutingSubmission", related_name="answers", null=True, on_delete=fields.SET_NULL)
 
-    created_at = fields.DatetimeField(auto_now_add=True, null=True) # This field was not added until v2.2.0, so it may be null in prod
-    created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
+    created_at: Field[datetime] = fields.DatetimeField(auto_now_add=True, null=True) # This field was not added until v2.2.0, so it may be null in prod
+    created_by: ForeignKeyNullableRelation["Session"] = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
 
 #    Pit Scouting
 class PitScoutingField(Model):
@@ -408,19 +415,19 @@ class PitScoutingField(Model):
         created_at (datetime): The date and time the pit scouting field was created
         created_by (Session): The session that created the pit scouting field
     """
-    uuid = fields.UUIDField(pk=True)
-    season = fields.ForeignKeyField("models.Season", related_name="pit_fields", null=True, on_delete=fields.SET_NULL)
-    name = fields.CharField(max_length=255)
-    description = fields.TextField(null=True)
-    required = fields.BooleanField(default=False)
-    field_type = fields.CharField(max_length=255) # text, number, boolean, choice
-    options = fields.JSONField(null=True, default=list) # For field_type=choice
-    order = fields.IntField(default=0) # The order the field should appear in the frontend or section
-    organization = fields.ForeignKeyField("models.Organization", related_name="pit_fields", null=True, on_delete=fields.CASCADE) # Optional, used if the field is specific to an organization
-    archived= fields.BooleanField(default=False)
+    uuid: Field[UUID] = fields.UUIDField(pk=True)
+    season: ForeignKeyNullableRelation["Season"] = fields.ForeignKeyField("models.Season", related_name="pit_fields", null=True, on_delete=fields.SET_NULL)
+    name: Field[str] = fields.CharField(max_length=255)
+    description: Field[str] = fields.TextField(null=True)
+    required: Field[bool] = fields.BooleanField(default=False)
+    field_type: Field[str] = fields.CharField(max_length=255) # text, number, boolean, choice
+    options: Field[dict[Any, Any] | None] = fields.JSONField(null=True, default=list) # For field_type=choice
+    order: Field[int] = fields.IntField(default=0) # The order the field should appear in the frontend or section
+    organization: ForeignKeyNullableRelation["Organization"] = fields.ForeignKeyField("models.Organization", related_name="pit_fields", null=True, on_delete=fields.CASCADE) # Optional, used if the field is specific to an organization
+    archived: Field[bool] = fields.BooleanField(default=False)
 
-    created_at = fields.DatetimeField(auto_now_add=True)
-    created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
+    created_at: Field[datetime] = fields.DatetimeField(auto_now_add=True)
+    created_by: ForeignKeyNullableRelation["Session"] = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
 
 class TeamPit(Model):
     """
@@ -430,21 +437,19 @@ class TeamPit(Model):
         uuid (UUID): The unique identifier for the team pit
         team_number (int): The team number of the team pit
         nickname (str): The nickname of the team pit
-        created_at (datetime): The date and time the team pit was created
         season (Season): The season the team pit is associated with
         event (Event): The event the team pit is associated with
         created_at (datetime): The date and time the team pit was created
         created_by (Session): The session that created the team pit
     """
-    uuid = fields.UUIDField(pk=True)
-    team_number = fields.IntField()
-    nickname = fields.CharField(max_length=255)
-    created_at = fields.DatetimeField(auto_now_add=True)
-    season = fields.ForeignKeyField("models.Season", related_name="team_pits", null=True, on_delete=fields.SET_NULL)
-    event = fields.ForeignKeyField("models.Event", related_name="team_pits", null=True, on_delete=fields.SET_NULL)
+    uuid: Field[UUID] = fields.UUIDField(pk=True)
+    team_number: Field[int] = fields.IntField()
+    nickname: Field[str] = fields.CharField(max_length=255)
+    season: ForeignKeyNullableRelation["Season"] = fields.ForeignKeyField("models.Season", related_name="team_pits", null=True, on_delete=fields.SET_NULL)
+    event: ForeignKeyNullableRelation["Event"] = fields.ForeignKeyField("models.Event", related_name="team_pits", null=True, on_delete=fields.SET_NULL)
 
-    created_at = fields.DatetimeField(auto_now_add=True)
-    created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
+    created_at: Field[datetime] = fields.DatetimeField(auto_now_add=True)
+    created_by: ForeignKeyNullableRelation["Session"] = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
 
 class PitScoutingAnswer(Model):
     """
@@ -459,14 +464,14 @@ class PitScoutingAnswer(Model):
         created_at (datetime): The date and time the pit scouting answer was created
         created_by (Session): The session that created the pit scouting answer
     """
-    uuid = fields.UUIDField(pk=True)
-    field = fields.ForeignKeyField("models.PitScoutingField", related_name="answers", null=True, on_delete=fields.SET_NULL)
-    value = fields.CharField(max_length=255, null=True)
-    team = fields.ForeignKeyField("models.TeamPit", related_name="answers", null=True, on_delete=fields.SET_NULL)
-    username = fields.CharField(max_length=255, null=True) # TODO: Remove in favor of created_by
+    uuid: Field[UUID] = fields.UUIDField(pk=True)
+    field: ForeignKeyNullableRelation["PitScoutingField"] = fields.ForeignKeyField("models.PitScoutingField", related_name="answers", null=True, on_delete=fields.SET_NULL)
+    value: Field[str | None] = fields.CharField(max_length=255, null=True)
+    team: ForeignKeyNullableRelation["TeamPit"] = fields.ForeignKeyField("models.TeamPit", related_name="answers", null=True, on_delete=fields.SET_NULL)
+    username: Field[str | None] = fields.CharField(max_length=255, null=True) # TODO: Remove in favor of created_by
 
-    created_at = fields.DatetimeField(auto_now_add=True)
-    created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
+    created_at: Field[datetime] = fields.DatetimeField(auto_now_add=True)
+    created_by: ForeignKeyNullableRelation["Session"] = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
 
 # Reports
 class Report(Model):
@@ -484,11 +489,11 @@ class Report(Model):
         created_at (datetime): The date and time the report was created
         created_by (Session): The session that created the report
     """
-    uuid = fields.UUIDField(pk=True)
-    type = fields.CharField(max_length=255) # match_scouting_submission, match_scouting_answer, team_pit, pit_scouting_answer, event
-    content_uuid = fields.UUIDField()
-    report_reason = fields.CharField(max_length=255) # spam, inaccurate, inappropriate, offensive, duplicate, other
-    report_details = fields.TextField(null=True)
+    uuid: Field[UUID] = fields.UUIDField(pk=True)
+    type: Field[str] = fields.CharField(max_length=255) # match_scouting_submission, match_scouting_answer, team_pit, pit_scouting_answer, event
+    content_uuid: Field[UUID] = fields.UUIDField()
+    report_reason: Field[str] = fields.CharField(max_length=255) # spam, inaccurate, inappropriate, offensive, duplicate, other
+    report_details: Field[str] = fields.TextField(null=True)
 
-    created_at = fields.DatetimeField(auto_now_add=True)
-    created_by = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
+    created_at: Field[datetime] = fields.DatetimeField(auto_now_add=True)
+    created_by: ForeignKeyNullableRelation["Session"] = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)

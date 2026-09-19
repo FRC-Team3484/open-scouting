@@ -8,8 +8,10 @@ Presents a warning dialog to the user when in production.
 	import { onMount, tick } from "svelte";
     import { env } from "$env/dynamic/public";
     import { overrideItemIdKeyNameBeforeInitialisingDndZones } from "svelte-dnd-action";
-    import { CircleNotchIcon } from "phosphor-svelte";
+    import { CircleNotchIcon, HouseIcon, WifiSlashIcon } from "phosphor-svelte";
 	import { goto, pushState } from "$app/navigation";
+	import { online } from "svelte/reactivity/window";
+	import { navigating } from "$app/state";
 
     import * as Card from "$lib/components/ui/card/index.js";
 	import Button from "$lib/components/ui/button/button.svelte";
@@ -31,6 +33,7 @@ Presents a warning dialog to the user when in production.
 	import { getRepairCountRepairsGetCountGet } from "$lib/api/repairs/repairs";
 	import RepairsManager from "$lib/components/admin/RepairsManager.svelte";
 	import { user } from "$lib/utils/auth";
+	import OfflineWarning from "$lib/components/generic/OfflineWarning.svelte";
 
 
     type Page = "start" | "seasons" | "match_fields" | "pit_scouting_questions" | "users" | "events" | "match_scouting" | "pit_scouting" | "reports" | "repairs";
@@ -100,14 +103,17 @@ Presents a warning dialog to the user when in production.
      * If they're not a superuser, redirect them back to the index page.
      */
     onMount(async () => {
-        if (!$user.authenticated || !$user.user?.is_superuser) {
-            await goto("/");
-        } else {
-            getReportCount();
-            getRepairCount();
-    
-            page = getPageFromUrl();
-        }
+        // Allow user state to be set before checking the auth status
+        setTimeout(async () => {
+            if (!$user.authenticated || !$user.user?.is_superuser) {
+                await goto("/");
+            } else {
+                getReportCount();
+                getRepairCount();
+        
+                page = getPageFromUrl();
+            }
+        }, 500);
     });
 
     $effect(() => {
@@ -115,8 +121,12 @@ Presents a warning dialog to the user when in production.
     })
 </script>
 
-<PageContainer>
-    {#if $user.authenticated && $user.user?.is_superuser}
+<PageContainer showLoading>
+    {#if !$user.authenticated && !$user.user?.is_superuser}
+        <CircleNotchIcon weight="bold" class="animate-spin" size={32} />
+    {:else if !online.current}
+        <OfflineWarning text="You're offline, so you won't be able to make administrator changes to the server." />
+    {:else}
         {#if page === "start"}
             <Card.Root class="w-auto min-w-64">
                 <Card.Header>
@@ -199,8 +209,6 @@ Presents a warning dialog to the user when in production.
             <RepairsManager />
 
         {/if}
-    {:else}
-        <CircleNotchIcon weight="bold" class="animate-spin" size={32} />
     {/if}
 </PageContainer>
 
