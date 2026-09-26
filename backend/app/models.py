@@ -1,12 +1,14 @@
+from enum import Enum
 from typing import Any, override
 from uuid import UUID
 from datetime import datetime
 
 from tortoise import fields
+from tortoise.exceptions import ValidationError
 from tortoise.models import Model
 from tortoise.fields.relational import ForeignKeyRelation
 from tortoise.fields.relational import ForeignKeyNullableRelation
-from tortoise.fields import Field
+from tortoise.fields import Field, ManyToManyRelation
 
 from .setting_fields import ArraySetting, BooleanSetting, JSONSetting, NumberSetting, StringSetting
 
@@ -497,3 +499,196 @@ class Report(Model):
 
     created_at: Field[datetime] = fields.DatetimeField(auto_now_add=True)
     created_by: ForeignKeyNullableRelation["Session"] = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
+
+# Fields
+class ScoutingType(str, Enum):
+    MATCH = "match"
+    PIT = "pit"
+
+class FieldType(str, Enum):
+    SECTION = "section" # for scouting_type=match
+    STRING = "string" # for scouting_type=match, pit
+    LARGE_NUMBER = "large_number" # for scouting_type=match
+    SMALL_NUMBER = "small_number" # for scouting_type=match
+    COARSE_SMALL_NUMBER = "coarse_small_number" # for scouting_type=match
+    BOOLEAN = "boolean" # for scouting_type=match, pit
+    CHOICE = "choice" # for scouting_type=match, pit
+    MULTIPLE_CHOICE = "multiple_choice" # for scouting_type=match
+    NUMBER = "number" # for scouting_type=pit
+    IMAGE = "image" # for scouting_type=pit
+
+class StatType(str, Enum):
+    # Only for scouting_type=match
+    # Should be section for field_type=section
+    # Should be auton_score, auton_miss, teleop_score, teleop_miss for field_type=large_number,small_number,coarse_small_number
+    # Should be capability for field_type=choice,multiple_choice,boolean
+    SECTION = "section"
+    AUTON_SCORE = "auton_score"
+    AUTON_MISS = "auton_miss"
+    TELEOP_SCORE = "teleop_score"
+    TELEOP_MISS = "teleop_miss"
+    CAPABILITY = "capability"
+    OTHER = "other"
+    IGNORE = "ignore"
+
+MATCH_FIELD_TYPES = {
+    FieldType.SECTION,
+    FieldType.STRING,
+    FieldType.LARGE_NUMBER,
+    FieldType.SMALL_NUMBER,
+    FieldType.COARSE_SMALL_NUMBER,
+    FieldType.BOOLEAN,
+    FieldType.CHOICE,
+    FieldType.MULTIPLE_CHOICE
+}
+
+PIT_FIELD_TYPES = {
+    FieldType.STRING,
+    FieldType.BOOLEAN,
+    FieldType.CHOICE,
+    FieldType.NUMBER,
+    FieldType.IMAGE
+}
+
+class FieldChoice(Model):
+    """
+    A model for choices in fields
+
+    Attributes:
+        uuid (UUID): The unique identifier for the field choice
+        name (str): The name of the field choice
+        simple_name (str): The simple name of the field choice
+        created_at (datetime): The date and time the field choice was created
+        created_by (Session): The session that created the field choice
+    """
+    uuid: Field[UUID] = fields.UUIDField(pk=True)
+    name: Field[str] = fields.CharField(max_length=255)
+    simple_name: Field[str] = fields.CharField(max_length=255)
+
+    created_at: Field[datetime] = fields.DatetimeField(auto_now_add=True)
+    created_by: ForeignKeyNullableRelation["Session"] = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
+
+class FieldOptions(Model):
+    """
+    A model for options in fields
+
+    Attributes:
+        uuid (UUID): The unique identifier for the field option
+
+        choices (List[FieldChoice]): The choices for the field option
+
+        default (int): The default value for the field option
+        minimum (int): The minimum value for the field option
+        maximum (int): The maximum value for the field option
+
+        created_at (datetime): The date and time the field option was created
+        created_by (Session): The session that created the field option
+    """
+    uuid: Field[UUID] = fields.UUIDField(pk=True)
+
+    # Only for field_type=choice, multiple_choice
+    choices: ManyToManyRelation["FieldChoice"] = fields.ManyToManyField("models.FieldChoice", related_name="field_options", null=True, on_delete=fields.SET_NULL)
+
+    # Only for field_type=small_number,coarse_small_number,number
+    default: Field[int | None] = fields.IntField(null=True)
+    minimum: Field[int | None] = fields.IntField(null=True)
+    maximum: Field[int | None] = fields.IntField(null=True)
+
+    created_at: Field[datetime] = fields.DatetimeField(auto_now_add=True)
+    created_by: ForeignKeyNullableRelation["Session"] = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
+
+class ScoutingField(Model):
+    """
+    Generic model for both match and pit scouting fields
+
+    Attributes:
+        uuid (UUID): The unique identifier for the scouting field
+        season (Season): The season the scouting field is associated with
+        organization (Organization): The organization the scouting field is associated with
+        parent (ScoutingField): The parent scouting field
+
+        name (str): The name of the scouting field
+        description (str): The description of the scouting field
+
+        scouting_type (ScoutingType): The scouting type of the scouting field
+        field_type (FieldType): The field type of the scouting field
+        stat_type (StatType): The stat type of the scouting field
+        game_piece (GamePiece): The game piece associated with the scouting field
+
+        required (bool): Whether the scouting field is required or not
+        options (FieldOptions): The options for the scouting field
+        order (int): The order of the scouting field
+
+        archived (bool): Whether the scouting field is archived or not
+
+        created_at (datetime): The date and time the scouting field was created
+        created_by (Session): The session that created the scouting field
+    """
+    uuid: Field[UUID] = fields.UUIDField(pk=True)
+    # If a season is null, this field will need repaired
+    season: ForeignKeyNullableRelation["Season"] = fields.ForeignKeyField("models.Season", related_name="scouting_fields", null=True, on_delete=fields.SET_NULL)
+    # Organization is null for global scouting fields
+    organization: ForeignKeyNullableRelation["Organization"] = fields.ForeignKeyField("models.Organization", related_name="fields", null=True, on_delete=fields.CASCADE)
+    # Parents are only used for scouting_type=match
+    parent: ForeignKeyNullableRelation["ScoutingField"] = fields.ForeignKeyField("models.ScoutingField", related_name="children", null=True, on_delete=fields.SET_NULL)
+
+    name: Field[str] = fields.CharField(max_length=255)
+    description: Field[str | None] = fields.CharField(max_length=255, null=True)
+
+    scouting_type: ScoutingType = fields.CharEnumField(ScoutingType)
+    field_type: FieldType = fields.CharEnumField(FieldType)
+    stat_type: StatType | None = fields.CharEnumField(StatType, null=True)
+    # Game piece is permitted if stat_type=auton_score, auton_miss, teleop_score, teleop_miss
+    game_piece: ForeignKeyNullableRelation["GamePiece"] = fields.ForeignKeyField("models.GamePiece", related_name="scouting_fields", null=True, on_delete=fields.SET_NULL)
+
+    required: Field[bool] = fields.BooleanField(default=False)
+    options: ForeignKeyNullableRelation["FieldOptions"] = fields.ForeignKeyField("models.FieldOptions", related_name="scouting_fields", null=True, on_delete=fields.SET_NULL)
+    order: Field[int] = fields.IntField(default=0)
+    
+    archived: Field[bool] = fields.BooleanField(default=False)
+
+    created_at: Field[datetime] = fields.DatetimeField(auto_now_add=True)
+    created_by: ForeignKeyNullableRelation["Session"] = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
+
+    # TODO: Should stat_type be validated?
+    # TODO: Validate game piece
+    async def save(self, *args, **kwargs):
+        # Validate scouting field and types
+        if self.scouting_type == "pit" and self.parent:
+            raise ValidationError("Parent fields are only supported for match scouting fields")
+        
+        allowed_types = (
+            MATCH_FIELD_TYPES if self.scouting_type == "match" else PIT_FIELD_TYPES
+        )
+
+        if self.field_type not in allowed_types:
+            raise ValidationError(f"Field type {self.field_type} is not allowed for scouting type {self.scouting_type}")
+
+        # Validate stat_type
+        if self.stat_type and not self.scouting_type == "match":
+            raise ValidationError("Stat types are only supported for match scouting fields")       
+
+        # Validate game piece
+        if self.game_piece and not self.scouting_type == "match":
+            raise ValidationError("Game pieces are only supported for match scouting fields")
+        
+        if self.game_piece and self.stat_type not in ["auton_score", "auton_miss", "teleop_score", "teleop_miss"]:
+            raise ValidationError("Game pieces are only supported for auton_score, auton_miss, teleop_score, and teleop_miss stat types")
+
+        # Validate options
+        if self.options and self.field_type in ["small_number", "coarse_small_number", "number"]:
+            if self.options.default is None or self.options.minimum is None or self.options.maximum is None:
+                raise ValidationError("options.default, options.minimum, and options.maximum are required for scouting fields of type small_number, coarse_small_number, and number")
+        else:
+            raise ValidationError("small_number, coarse_small_number, and number scouting fields must have options set")
+
+        if self.options and self.field_type in ["choice", "multiple_choice"]:
+            if not await self.options.choices.all().exists():
+                raise ValidationError("options.choices are required for scouting fields of type choice and multiple_choice")
+        else:
+            raise ValidationError("choice and multiple_choice scouting fields must have options set")
+
+        if self.options and self.field_type in ["section", "string", "large_number", "boolean", "number"]:
+            raise ValidationError("Options are not allowed for scouting fields of type section, string, large_number, boolean, and number")
+
+        return await super().save(*args, **kwargs)
