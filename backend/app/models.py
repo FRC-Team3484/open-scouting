@@ -384,14 +384,14 @@ class MatchScoutingAnswer(Model):
 
     Attributes:
         uuid (UUID): The unique identifier for the match scouting answer
-        field (MatchScoutingField): The field the match scouting answer is associated with
+        field (ScoutingField): The field the match scouting answer is associated with
         value (str): The value of the match scouting answer
         submission (MatchScoutingSubmission): The match scouting submission the match scouting answer is associated with
         created_at (datetime): The date and time the match scouting answer was created
         created_by (Session): The session that created the match scouting answer
     """
     uuid: Field[UUID] = fields.UUIDField(pk=True)
-    field: ForeignKeyNullableRelation["MatchScoutingField"] = fields.ForeignKeyField("models.MatchScoutingField", related_name="answers", null=True, on_delete=fields.SET_NULL)
+    field: ForeignKeyNullableRelation["ScoutingField"] = fields.ForeignKeyField("models.ScoutingField", related_name="match_scouting_answers", null=True, on_delete=fields.SET_NULL)
     value: Field[str | None] = fields.CharField(max_length=255, null=True)
     submission: ForeignKeyNullableRelation["MatchScoutingSubmission"] = fields.ForeignKeyField("models.MatchScoutingSubmission", related_name="answers", null=True, on_delete=fields.SET_NULL)
 
@@ -459,7 +459,7 @@ class PitScoutingAnswer(Model):
 
     Attributes:
         uuid (UUID): The unique identifier for the pit scouting answer
-        field (PitScoutingField): The field the pit scouting answer is associated with
+        field (ScoutingField): The field the pit scouting answer is associated with
         value (str): The value of the pit scouting answer
         team (TeamPit): The team the pit scouting answer is associated with
         username (str): The username of the user who submitted the pit scouting answer
@@ -467,7 +467,7 @@ class PitScoutingAnswer(Model):
         created_by (Session): The session that created the pit scouting answer
     """
     uuid: Field[UUID] = fields.UUIDField(pk=True)
-    field: ForeignKeyNullableRelation["PitScoutingField"] = fields.ForeignKeyField("models.PitScoutingField", related_name="answers", null=True, on_delete=fields.SET_NULL)
+    field: ForeignKeyNullableRelation["ScoutingField"] = fields.ForeignKeyField("models.ScoutingField", related_name="pit_scouting_answers", null=True, on_delete=fields.SET_NULL)
     value: Field[str | None] = fields.CharField(max_length=255, null=True)
     team: ForeignKeyNullableRelation["TeamPit"] = fields.ForeignKeyField("models.TeamPit", related_name="answers", null=True, on_delete=fields.SET_NULL)
     username: Field[str | None] = fields.CharField(max_length=255, null=True) # TODO: Remove in favor of created_by
