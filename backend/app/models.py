@@ -280,44 +280,6 @@ class GamePiece(Model):
     created_at: Field[datetime] = fields.DatetimeField(auto_now_add=True)
     created_by: ForeignKeyNullableRelation["Session"] = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
 
-class MatchScoutingField(Model):
-    """
-    Defines a single question that should be asked when match scouting for a season
-
-    Attributes:
-        uuid (UUID): The unique identifier for the match scouting field
-        parent (MatchScoutingField): The parent of the match scouting field
-        season (Season): The season the match scouting field is associated with
-        name (str): The name of the match scouting field
-        description (str): The description of the match scouting field
-        field_type (str): The type of the match scouting field
-        stat_type (str): The stat type of the match scouting field
-        game_piece (GamePiece): The game piece used in the match scouting field
-        required (bool): Whether the match scouting field is required or not
-        options (list): The options for the match scouting field
-        order (int): The order of the match scouting field
-        organization (Organization): The organization the match scouting field is associated with
-        archived (bool): Whether the match scouting field is archived or not
-        created_at (datetime): The date and time the match scouting field was created
-        created_by (Session): The session that created the match scouting field
-    """
-    uuid: Field[UUID] = fields.UUIDField(pk=True)
-    parent: ForeignKeyNullableRelation["MatchScoutingField"] = fields.ForeignKeyField("models.MatchScoutingField", related_name="children", null=True, on_delete=fields.SET_NULL)
-    season: ForeignKeyNullableRelation["Season"] = fields.ForeignKeyField("models.Season", related_name="fields", null=True, on_delete=fields.SET_NULL)
-    name: Field[str] = fields.CharField(max_length=255)
-    description: Field[str] = fields.TextField(null=True)
-    field_type: Field[str] = fields.CharField(max_length=255) # section, string, large_number, small_number, boolean, choice, multiple_choice
-    stat_type: Field[str] = fields.CharField(max_length=255) # section, auton_score, auton_miss, teleop_score, teleop_miss, capability, other, ignore
-    game_piece: ForeignKeyNullableRelation["GamePiece"] = fields.ForeignKeyField("models.GamePiece", related_name="fields", null=True, on_delete=fields.SET_NULL) # needed if stat_type is score or miss
-    required: Field[bool] = fields.BooleanField(default=False)
-    options: Field[dict[Any, Any] | None] = fields.JSONField(null=True, default=dict) # For integer maximum and minimums, choices, etc.
-    order: Field[int] = fields.IntField(default=0) # The order the field should appear in the frontend or section
-    organization: ForeignKeyNullableRelation["Organization"] = fields.ForeignKeyField("models.Organization", related_name="scouting_fields", null=True, on_delete=fields.CASCADE) # Optional, used if the field is specific to an organization
-    archived: Field[bool] = fields.BooleanField(default=False)
-
-    created_at: Field[datetime] = fields.DatetimeField(auto_now_add=True)
-    created_by: ForeignKeyNullableRelation["Session"] = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
-
 class Event(Model):
     """
     Defines a single event on the server
@@ -399,38 +361,6 @@ class MatchScoutingAnswer(Model):
     created_by: ForeignKeyNullableRelation["Session"] = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
 
 #    Pit Scouting
-class PitScoutingField(Model):
-    """
-    Defines a single question that should be asked when pit scouting for a season
-
-    Attributes:
-        uuid (UUID): The unique identifier for the pit scouting field
-        season (Season): The season the pit scouting field is associated with
-        name (str): The name of the pit scouting field
-        description (str): The description of the pit scouting field
-        required (bool): Whether the pit scouting field is required or not
-        field_type (str): The type of the pit scouting field
-        options (list): The options for the pit scouting field
-        order (int): The order of the pit scouting field
-        organization (Organization): The organization the pit scouting field is associated with
-        archived (bool): Whether the pit scouting field is archived or not
-        created_at (datetime): The date and time the pit scouting field was created
-        created_by (Session): The session that created the pit scouting field
-    """
-    uuid: Field[UUID] = fields.UUIDField(pk=True)
-    season: ForeignKeyNullableRelation["Season"] = fields.ForeignKeyField("models.Season", related_name="pit_fields", null=True, on_delete=fields.SET_NULL)
-    name: Field[str] = fields.CharField(max_length=255)
-    description: Field[str] = fields.TextField(null=True)
-    required: Field[bool] = fields.BooleanField(default=False)
-    field_type: Field[str] = fields.CharField(max_length=255) # text, number, boolean, choice
-    options: Field[dict[Any, Any] | None] = fields.JSONField(null=True, default=list) # For field_type=choice
-    order: Field[int] = fields.IntField(default=0) # The order the field should appear in the frontend or section
-    organization: ForeignKeyNullableRelation["Organization"] = fields.ForeignKeyField("models.Organization", related_name="pit_fields", null=True, on_delete=fields.CASCADE) # Optional, used if the field is specific to an organization
-    archived: Field[bool] = fields.BooleanField(default=False)
-
-    created_at: Field[datetime] = fields.DatetimeField(auto_now_add=True)
-    created_by: ForeignKeyNullableRelation["Session"] = fields.ForeignKeyField("models.Session", related_name=False, null=True, on_delete=fields.SET_NULL)
-
 class TeamPit(Model):
     """
     Defines a pit for a single team, per event per season
