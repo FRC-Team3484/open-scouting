@@ -1,72 +1,68 @@
-from typing import Any, Iterator, Optional
+from datetime import datetime
+from typing import Literal
 from uuid import UUID
 
-from pydantic import BaseModel, Field, RootModel
+from pydantic import BaseModel, JsonValue
 
-class MatchScoutingFieldOptions(BaseModel):
-    choices: list[Any]
-    default: float
-    minimum: float
-    maximum: float
+from backend.app.models import FieldType, ScoutingType, StatType
 
 
-class MatchScoutingFieldResponse(BaseModel):
-    uuid: UUID | None = None
-    name: str
-    description: str | None
-    field_type: str
-    stat_type: str
-    game_piece_uuid: UUID | None = None
-    required: bool
-    options: MatchScoutingFieldOptions
-    choices: list[Any] = Field(default_factory=list)
-    order: int
-    organization_id: UUID | None = None
-
-class MatchScoutingFieldRequest(BaseModel):
-    uuid: UUID | None = None
-    name: str
-    description: str | None
-    season_uuid: UUID
-    field_type: str
-    stat_type: str
-    required: bool
-    order: int
-    organization_uuid: UUID | None = None
-    parent_uuid: UUID | None = None
-    
-    options: MatchScoutingFieldOptions
-    choices: list[Any] = Field(default_factory=list)
-    game_piece_uuid: UUID | None = None
-
-class MatchScoutingFieldRequestUUID(MatchScoutingFieldRequest):
-    field_uuid: UUID
-
-class ReorderMatchScoutingField(BaseModel):
+class FieldChoiceResponse(BaseModel):
     uuid: UUID
-    order: int
+    name: str
+    simple_name: str
+    created_at: datetime
+
+class FieldOptionsResponse(BaseModel):
+    uuid: UUID
+    choices: list[FieldChoiceResponse] | None
+    default: int | None
+    minimum: int | None
+    maximum: int | None
+    created_at: datetime
+
+class MatchScoutingField(BaseModel):
+    uuid: UUID
+    season_uuid: UUID | None
+    organization_uuid: UUID | None
     parent_uuid: UUID | None
-
-class ReorderMatchScoutingFieldsRequest(RootModel[list[ReorderMatchScoutingField]]):
-    root: list[ReorderMatchScoutingField]
-
-    def __iter__(self) -> Iterator[ReorderMatchScoutingField]:
-        return iter(self.root)
-
-# For /fields/season/{season_uuid}
-class MatchScoutingSeasonFieldsResponse(BaseModel):
-    uuid: UUID
     name: str
     description: str | None
-    field_type: str
-    stat_type: str
-    game_piece_uuid: UUID | None = None
+    scouting_type: Literal[ScoutingType.MATCH]
+    field_type: FieldType
+    stat_type: StatType | None
+    game_piece_uuid: UUID | None
     required: bool
-    options: MatchScoutingFieldOptions | None
+    options: FieldOptionsResponse | None
     order: int
-    organization_id: UUID | None
-    fields: list["MatchScoutingSeasonFieldsResponse"] = Field(default_factory=list)
+    archived: bool
+    created_at: datetime
 
-class MatchScoutingPresetResponse(BaseModel):
+class MatchScoutingFieldResponse(MatchScoutingField):
+    created_at: datetime
+
+class MatchScoutingFieldRequest(MatchScoutingField):
+    pass
+
+class PitScoutingField(BaseModel):
+    uuid: UUID
+    season_uuid: UUID | None
+    organization_uuid: UUID | None
     name: str
-    preset: dict[Any, Any]
+    description: str | None
+    scouting_type: Literal[ScoutingType.PIT]
+    field_type: FieldType
+    required: bool
+    options: FieldOptionsResponse | None
+    order: int
+    archived: bool
+
+class PitScoutingFieldResponse(PitScoutingField):
+    created_at: datetime
+
+class PitScoutingFieldRequest(PitScoutingField):
+    pass
+
+class ScoutingFieldPresetResponse(BaseModel):
+    name: str
+    preset: JsonValue

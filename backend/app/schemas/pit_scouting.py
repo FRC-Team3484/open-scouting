@@ -1,41 +1,9 @@
 from datetime import datetime
-from typing import Any, Iterator
+from typing import Any
 from uuid import UUID
 
-from pydantic import BaseModel, RootModel
+from pydantic import BaseModel
 
-
-class PitFieldsRequest(BaseModel):
-    season_uuid: UUID
-
-class PitFieldOptions(BaseModel):
-    choices: list[Any]
-
-class PitFieldResponse(BaseModel):
-    uuid: UUID
-    season: UUID
-    name: str
-    description: str | None
-    required: bool
-    field_type: str
-    options: PitFieldOptions | None
-    order: int
-    organization: UUID | None
-    created_at: datetime
-
-class PitFieldRequest(BaseModel):
-    uuid: UUID | None = None
-    season_uuid: UUID
-    name: str
-    description: str | None
-    required: bool
-    field_type: str
-    options: PitFieldOptions
-    order: int
-    organization_uuid: UUID | None = None
-
-class DeletePitFieldRequest(BaseModel):
-    field_uuid: UUID
 
 class SubmitPitFieldAnswerRequest(BaseModel):
     uuid: UUID
@@ -46,16 +14,6 @@ class SubmitPitFieldAnswerRequest(BaseModel):
     answers: list[Any]
     nickname: str | None
 
-class ReorderPitField(BaseModel):
-    uuid: UUID
-    order: int
-
-class ReorderPitFieldsRequest(RootModel[list[ReorderPitField]]):
-    root: list[ReorderPitField]
-
-    def __iter__(self) -> Iterator[ReorderPitField]:
-        return iter(self.root)
-
 class AdminPitResponse(BaseModel):
     uuid: UUID
     event_name: str
@@ -63,10 +21,6 @@ class AdminPitResponse(BaseModel):
     team_number: int
     answers: int
     created_at: datetime
-
-class PitScoutingPresetResponse(BaseModel):
-    name: str
-    preset: dict[Any, Any]
 
 class PitAnswerResponse(BaseModel):
     uuid: UUID
