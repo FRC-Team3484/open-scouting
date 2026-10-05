@@ -11,5 +11,5 @@ export interface SubmitPitFieldAnswerRequest {
   team_number: number;
   event_code: string;
   answers: unknown[];
-  nickname: string;
+  nickname: string | null;
 }

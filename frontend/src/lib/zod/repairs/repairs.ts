@@ -15,12 +15,11 @@ import * as zod from 'zod';
  * The following repairs are able to be returned here:
  *     - `Event` is missing a `season`
  *     - `GamePiece` is mising a `season`
- *     - `MatchScoutingField` is missing a `season`
- *     - `MatchScoutingField` is missing a `game_piece` if `stat_type` is `auton_score`, `auton_miss`, `teleop_score` or `teleop_miss`
+ *     - `ScoutingField` is missing a `season`
+ *     - `ScoutingField` is missing a `game_piece` if `stat_type` is `auton_score`, `auton_miss`, `teleop_score` or `teleop_miss`
  *     - `MatchScoutingSubmission` is missing an `event`
  *     - `MatchScoutingAnswer` is missing a `field`
  *     - `MatchScoutingAnswer` is missing a `submission`
- *     - `PitScoutingField` is missing a `season`
  *     - `TeamPit` is missing a `season`
  *     - `TeamPit` is missing an `event`
  *     - `PitScoutingAnswer` is missing a `field`
@@ -43,7 +42,7 @@ export const GetRepairsRepairsGetGetResponseItem = zod.union([zod.object({
   "name": zod.string(),
   "data_uuid": zod.uuid(),
   "data_created_at": zod.iso.datetime({"offset":true}),
-  "data_type": zod.enum(['match_scouting_field']),
+  "data_type": zod.enum(['scouting_field']),
   "repair_type": zod.enum(['missing_season', 'missing_game_piece'])
 }),zod.object({
   "name": zod.string(),
@@ -57,12 +56,6 @@ export const GetRepairsRepairsGetGetResponseItem = zod.union([zod.object({
   "data_created_at": zod.iso.datetime({"offset":true}),
   "data_type": zod.enum(['match_scouting_answer']),
   "repair_type": zod.enum(['missing_field', 'missing_submission'])
-}),zod.object({
-  "name": zod.string(),
-  "data_uuid": zod.uuid(),
-  "data_created_at": zod.iso.datetime({"offset":true}),
-  "data_type": zod.enum(['pit_scouting_field']),
-  "repair_type": zod.literal("missing_season")
 }),zod.object({
   "name": zod.string(),
   "data_uuid": zod.uuid(),
@@ -90,20 +83,15 @@ export const GetRepairsRepairsGetGetResponse = zod.array(GetRepairsRepairsGetGet
 export const GetRepairCountRepairsGetCountGetResponse = zod.int()
 
 /**
- * @summary Create Repairs For Testing
- */
-export const CreateRepairsForTestingRepairsCreatePostResponse = zod.unknown()
-
-/**
- * Get all match scouting fields. Used on the admin repair page when setting the match scouting field on a piece of data.
+ * Get all scouting fields. Used on the admin repair page when setting the scouting field on a piece of data.
  *
  * Requires superuser access
  *
  * Returns:
- *     list[MatchScoutingFieldRepairResponse]: A list of all match scouting fields
- * @summary Get All Match Scouting Fields
+ *     list[ScoutingFieldRepairResponse]: A list of all scouting fields
+ * @summary Get All Scouting Fields
  */
-export const GetAllMatchScoutingFieldsRepairsGetMatchScoutingFieldsGetResponseItem = zod.object({
+export const GetAllScoutingFieldsRepairsGetScoutingFieldsGetResponseItem = zod.object({
   "uuid": zod.uuid(),
   "name": zod.string(),
   "season_year": zod.union([zod.int(),zod.null()]),
@@ -111,25 +99,7 @@ export const GetAllMatchScoutingFieldsRepairsGetMatchScoutingFieldsGetResponseIt
   "archived": zod.boolean(),
   "created_at": zod.iso.datetime({"offset":true})
 })
-export const GetAllMatchScoutingFieldsRepairsGetMatchScoutingFieldsGetResponse = zod.array(GetAllMatchScoutingFieldsRepairsGetMatchScoutingFieldsGetResponseItem)
-
-/**
- * Get all pit scouting fields. Used on the admin repair page when setting the pit scouting field on a piece of data.
- *
- * Requires superuser access
- *
- * Returns:
- *     list[PitScoutingFieldRepairResponse]: A list of all pit scouting fields
- * @summary Get All Pit Scouting Fields
- */
-export const GetAllPitScoutingFieldsRepairsGetPitScoutingFieldsGetResponseItem = zod.object({
-  "uuid": zod.uuid(),
-  "name": zod.string(),
-  "season_year": zod.union([zod.int(),zod.null()]),
-  "archived": zod.boolean(),
-  "created_at": zod.iso.datetime({"offset":true})
-})
-export const GetAllPitScoutingFieldsRepairsGetPitScoutingFieldsGetResponse = zod.array(GetAllPitScoutingFieldsRepairsGetPitScoutingFieldsGetResponseItem)
+export const GetAllScoutingFieldsRepairsGetScoutingFieldsGetResponse = zod.array(GetAllScoutingFieldsRepairsGetScoutingFieldsGetResponseItem)
 
 /**
  * Fix a repair
@@ -156,7 +126,7 @@ export const FixRepairRepairsFixPostBody = zod.union([zod.object({
 }),zod.object({
   "data_uuid": zod.uuid(),
   "content_uuid": zod.union([zod.uuid(),zod.null()]).optional(),
-  "data_type": zod.literal("match_scouting_field"),
+  "data_type": zod.literal("scouting_field"),
   "repair_type": zod.enum(['missing_season', 'missing_game_piece'])
 }),zod.object({
   "data_uuid": zod.uuid(),
@@ -169,11 +139,6 @@ export const FixRepairRepairsFixPostBody = zod.union([zod.object({
   "content_uuid": zod.union([zod.uuid(),zod.null()]).optional(),
   "data_type": zod.literal("match_scouting_answer"),
   "repair_type": zod.enum(['missing_field', 'missing_submission'])
-}),zod.object({
-  "data_uuid": zod.uuid(),
-  "content_uuid": zod.union([zod.uuid(),zod.null()]).optional(),
-  "data_type": zod.literal("pit_scouting_field"),
-  "repair_type": zod.literal("missing_season")
 }),zod.object({
   "data_uuid": zod.uuid(),
   "content_uuid": zod.union([zod.uuid(),zod.null()]).optional(),
@@ -202,7 +167,7 @@ export const FixRepairRepairsFixPostResponse = zod.object({
  * @summary Delete Repair Data
  */
 export const DeleteRepairDataRepairsDeleteDataTypeDataUuidDeleteParams = zod.object({
-  "data_type": zod.enum(['event', 'game_piece', 'match_scouting_field', 'match_scouting_submission', 'match_scouting_answer', 'pit_scouting_field', 'team_pit', 'pit_scouting_answer']),
+  "data_type": zod.enum(['event', 'game_piece', 'scouting_field', 'match_scouting_submission', 'match_scouting_answer', 'team_pit', 'pit_scouting_answer']),
   "data_uuid": zod.uuid()
 })
 

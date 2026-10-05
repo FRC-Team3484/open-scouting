@@ -6,19 +6,15 @@
  */
 import type { FieldOptionsResponse } from './fieldOptionsResponse';
 import type { FieldType } from './fieldType';
-import type { StatType } from './statType';
 
-export interface MatchScoutingFieldResponse {
+export interface PitScoutingFieldResponse {
   uuid: string;
   season_uuid: string | null;
   organization_uuid: string | null;
-  parent_uuid: string | null;
   name: string;
   description: string | null;
-  scouting_type: 'match';
+  scouting_type: 'pit';
   field_type: FieldType;
-  stat_type: StatType | null;
-  game_piece_uuid: string | null;
   required: boolean;
   options: FieldOptionsResponse | null;
   order: number;
