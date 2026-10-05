@@ -7,7 +7,7 @@ import uuid
 from fastapi import APIRouter, Query
 
 from ..utils import IS_DEV, get_season
-from ..models import Event, MatchScoutingAnswer, MatchScoutingField, MatchScoutingSubmission, Season, TeamPit
+from ..models import Event, MatchScoutingAnswer, MatchScoutingSubmission, ScoutingField, Season, TeamPit
 from ..schemas.data import DataFiltersResponse, DataTeamResponse
 
 
@@ -271,7 +271,7 @@ async def get_data(
     # ------------------------
     # Process fields
     # ------------------------
-    fields = await MatchScoutingField.filter(
+    fields = await ScoutingField.filter(
         season=season,
         stat_type__not="ignore"
     ).select_related("game_piece")
