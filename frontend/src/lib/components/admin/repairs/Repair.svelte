@@ -139,13 +139,13 @@ Props:
                         <Button size="sm" onclick={() => {openDataDialog("event")}}>Choose Event</Button>
 
                     {:else if repair.repair_type == "missing_field" && repair.data_type == "match_scouting_answer"}
-                        <Button size="sm" onclick={() => {openDataDialog("match_scouting_field")}}>Choose Match Scouting Field</Button>
+                        <Button size="sm" onclick={() => {openDataDialog("scouting_field")}}>Choose Scouting Field</Button>
 
                     {:else if repair.repair_type == "missing_submission"}
                         <Button size="sm" onclick={() => {openDataDialog("match_scouting_submission")}}>Choose Match Scouting Submission</Button>
 
                     {:else if repair.repair_type == "missing_field" && repair.data_type == "pit_scouting_answer"}
-                        <Button size="sm" onclick={() => {openDataDialog("pit_scouting_field")}}>Choose Pit Scouting Field</Button>
+                        <Button size="sm" onclick={() => {openDataDialog("scouting_field")}}>Choose Scouting Field</Button>
 
                     {:else if repair.repair_type == "missing_team"}
                         <Button size="sm" onclick={() => {openDataDialog("team")}}>Choose Team</Button>

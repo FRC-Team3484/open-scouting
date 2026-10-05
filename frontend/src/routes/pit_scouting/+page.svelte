@@ -55,7 +55,7 @@ Allows for creating new pits, and includes a section for viewing the progress of
      * @param year The year to get the season uuid for
      */
     async function get_season_uuid(year: string) {
-        await db.season_data.toArray().then((seasons) => {
+        await db.season.toArray().then((seasons) => {
             const season = seasons.find((season) => season.year.toString() == year);
             if (season) {
                 season_uuid = season.uuid;
@@ -69,8 +69,13 @@ Allows for creating new pits, and includes a section for viewing the progress of
      * Get pit questions for the season from the local database
      */
     async function get_pit_questions(): Promise<void> {
-        const season = await db.season_data.get(season_uuid);
-        pit_questions = season?.pit_scouting_questions.sort((a, b) => a.order - b.order) ?? [];
+        pit_questions = (
+            await db.fields
+                .where("season_uuid")
+                .equals(season_uuid)
+                .and(field => field.scouting_type === "pit")
+                .toArray()
+        ).sort((a, b) => a.order - b.order);
     }
 
     /**

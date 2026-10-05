@@ -7,10 +7,9 @@
 import type { EventRepair } from './eventRepair';
 import type { GamePieceRepair } from './gamePieceRepair';
 import type { MatchScoutingAnswerRepair } from './matchScoutingAnswerRepair';
-import type { MatchScoutingFieldRepair } from './matchScoutingFieldRepair';
 import type { MatchScoutingSubmissionRepair } from './matchScoutingSubmissionRepair';
 import type { PitScoutingAnswerRepair } from './pitScoutingAnswerRepair';
-import type { PitScoutingFieldRepair } from './pitScoutingFieldRepair';
+import type { ScoutingFieldRepair } from './scoutingFieldRepair';
 import type { TeamPitRepair } from './teamPitRepair';
 
-export type RepairResponse = EventRepair | GamePieceRepair | MatchScoutingFieldRepair | MatchScoutingSubmissionRepair | MatchScoutingAnswerRepair | PitScoutingFieldRepair | TeamPitRepair | PitScoutingAnswerRepair;
+export type RepairResponse = EventRepair | GamePieceRepair | ScoutingFieldRepair | MatchScoutingSubmissionRepair | MatchScoutingAnswerRepair | TeamPitRepair | PitScoutingAnswerRepair;

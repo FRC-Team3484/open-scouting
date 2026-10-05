@@ -9,14 +9,12 @@ import type {
   GamePieceRepairRequest,
   HTTPValidationError,
   MatchScoutingAnswerRepairRequest,
-  MatchScoutingFieldRepairRequest,
-  MatchScoutingFieldRepairResponse,
   MatchScoutingSubmissionRepairRequest,
   MessageResponse,
   PitScoutingAnswerRepairRequest,
-  PitScoutingFieldRepairRequest,
-  PitScoutingFieldRepairResponse,
   RepairResponse,
+  ScoutingFieldRepairRequest,
+  ScoutingFieldRepairResponse,
   TeamPitRepairRequest
 } from '../model';
 
@@ -50,12 +48,11 @@ export const getGetRepairsRepairsGetGetUrl = () => {
  * The following repairs are able to be returned here:
  *     - `Event` is missing a `season`
  *     - `GamePiece` is mising a `season`
- *     - `MatchScoutingField` is missing a `season`
- *     - `MatchScoutingField` is missing a `game_piece` if `stat_type` is `auton_score`, `auton_miss`, `teleop_score` or `teleop_miss`
+ *     - `ScoutingField` is missing a `season`
+ *     - `ScoutingField` is missing a `game_piece` if `stat_type` is `auton_score`, `auton_miss`, `teleop_score` or `teleop_miss`
  *     - `MatchScoutingSubmission` is missing an `event`
  *     - `MatchScoutingAnswer` is missing a `field`
  *     - `MatchScoutingAnswer` is missing a `submission`
- *     - `PitScoutingField` is missing a `season`
  *     - `TeamPit` is missing a `season`
  *     - `TeamPit` is missing an `event`
  *     - `PitScoutingAnswer` is missing a `field`
@@ -115,114 +112,38 @@ export const getRepairCountRepairsGetCountGet = async ( options?: Parameters<typ
 );}
 
 
-export type createRepairsForTestingRepairsCreatePostResponse200 = {
-  data: unknown
+export type getAllScoutingFieldsRepairsGetScoutingFieldsGetResponse200 = {
+  data: ScoutingFieldRepairResponse[]
   status: 200
 }
 
-export type createRepairsForTestingRepairsCreatePostResponseSuccess = (createRepairsForTestingRepairsCreatePostResponse200) & {
+export type getAllScoutingFieldsRepairsGetScoutingFieldsGetResponseSuccess = (getAllScoutingFieldsRepairsGetScoutingFieldsGetResponse200) & {
   headers: Headers;
 };
 ;
 
-export type createRepairsForTestingRepairsCreatePostResponse = (createRepairsForTestingRepairsCreatePostResponseSuccess)
+export type getAllScoutingFieldsRepairsGetScoutingFieldsGetResponse = (getAllScoutingFieldsRepairsGetScoutingFieldsGetResponseSuccess)
 
-export const getCreateRepairsForTestingRepairsCreatePostUrl = () => {
-
-
+export const getGetAllScoutingFieldsRepairsGetScoutingFieldsGetUrl = () => {
 
 
-  return `/repairs/create`
+
+
+  return `/repairs/get/scouting_fields`
 }
 
 /**
- * @summary Create Repairs For Testing
- */
-export const createRepairsForTestingRepairsCreatePost = async ( options?: Parameters<typeof customInstance>[1]): Promise<createRepairsForTestingRepairsCreatePostResponse> => {
-
-  return customInstance<createRepairsForTestingRepairsCreatePostResponse>(getCreateRepairsForTestingRepairsCreatePostUrl(),
-  {
-    ...options,
-    method: 'POST'
-
-
-  }
-);}
-
-
-export type getAllMatchScoutingFieldsRepairsGetMatchScoutingFieldsGetResponse200 = {
-  data: MatchScoutingFieldRepairResponse[]
-  status: 200
-}
-
-export type getAllMatchScoutingFieldsRepairsGetMatchScoutingFieldsGetResponseSuccess = (getAllMatchScoutingFieldsRepairsGetMatchScoutingFieldsGetResponse200) & {
-  headers: Headers;
-};
-;
-
-export type getAllMatchScoutingFieldsRepairsGetMatchScoutingFieldsGetResponse = (getAllMatchScoutingFieldsRepairsGetMatchScoutingFieldsGetResponseSuccess)
-
-export const getGetAllMatchScoutingFieldsRepairsGetMatchScoutingFieldsGetUrl = () => {
-
-
-
-
-  return `/repairs/get/match_scouting_fields`
-}
-
-/**
- * Get all match scouting fields. Used on the admin repair page when setting the match scouting field on a piece of data.
+ * Get all scouting fields. Used on the admin repair page when setting the scouting field on a piece of data.
  *
  * Requires superuser access
  *
  * Returns:
- *     list[MatchScoutingFieldRepairResponse]: A list of all match scouting fields
- * @summary Get All Match Scouting Fields
+ *     list[ScoutingFieldRepairResponse]: A list of all scouting fields
+ * @summary Get All Scouting Fields
  */
-export const getAllMatchScoutingFieldsRepairsGetMatchScoutingFieldsGet = async ( options?: Parameters<typeof customInstance>[1]): Promise<getAllMatchScoutingFieldsRepairsGetMatchScoutingFieldsGetResponse> => {
+export const getAllScoutingFieldsRepairsGetScoutingFieldsGet = async ( options?: Parameters<typeof customInstance>[1]): Promise<getAllScoutingFieldsRepairsGetScoutingFieldsGetResponse> => {
 
-  return customInstance<getAllMatchScoutingFieldsRepairsGetMatchScoutingFieldsGetResponse>(getGetAllMatchScoutingFieldsRepairsGetMatchScoutingFieldsGetUrl(),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-export type getAllPitScoutingFieldsRepairsGetPitScoutingFieldsGetResponse200 = {
-  data: PitScoutingFieldRepairResponse[]
-  status: 200
-}
-
-export type getAllPitScoutingFieldsRepairsGetPitScoutingFieldsGetResponseSuccess = (getAllPitScoutingFieldsRepairsGetPitScoutingFieldsGetResponse200) & {
-  headers: Headers;
-};
-;
-
-export type getAllPitScoutingFieldsRepairsGetPitScoutingFieldsGetResponse = (getAllPitScoutingFieldsRepairsGetPitScoutingFieldsGetResponseSuccess)
-
-export const getGetAllPitScoutingFieldsRepairsGetPitScoutingFieldsGetUrl = () => {
-
-
-
-
-  return `/repairs/get/pit_scouting_fields`
-}
-
-/**
- * Get all pit scouting fields. Used on the admin repair page when setting the pit scouting field on a piece of data.
- *
- * Requires superuser access
- *
- * Returns:
- *     list[PitScoutingFieldRepairResponse]: A list of all pit scouting fields
- * @summary Get All Pit Scouting Fields
- */
-export const getAllPitScoutingFieldsRepairsGetPitScoutingFieldsGet = async ( options?: Parameters<typeof customInstance>[1]): Promise<getAllPitScoutingFieldsRepairsGetPitScoutingFieldsGetResponse> => {
-
-  return customInstance<getAllPitScoutingFieldsRepairsGetPitScoutingFieldsGetResponse>(getGetAllPitScoutingFieldsRepairsGetPitScoutingFieldsGetUrl(),
+  return customInstance<getAllScoutingFieldsRepairsGetScoutingFieldsGetResponse>(getGetAllScoutingFieldsRepairsGetScoutingFieldsGetUrl(),
   {
     ...options,
     method: 'GET'
@@ -271,14 +192,14 @@ export const getFixRepairRepairsFixPostUrl = () => {
  *     `MessageResponse`: A message indicating that the repair was fixed (or failed to fix)
  * @summary Fix Repair
  */
-export const fixRepairRepairsFixPost = async (eventRepairRequestGamePieceRepairRequestMatchScoutingFieldRepairRequestMatchScoutingSubmissionRepairRequestMatchScoutingAnswerRepairRequestPitScoutingFieldRepairRequestTeamPitRepairRequestPitScoutingAnswerRepairRequest: EventRepairRequest | GamePieceRepairRequest | MatchScoutingFieldRepairRequest | MatchScoutingSubmissionRepairRequest | MatchScoutingAnswerRepairRequest | PitScoutingFieldRepairRequest | TeamPitRepairRequest | PitScoutingAnswerRepairRequest, options?: Parameters<typeof customInstance>[1]): Promise<fixRepairRepairsFixPostResponse> => {
+export const fixRepairRepairsFixPost = async (eventRepairRequestGamePieceRepairRequestScoutingFieldRepairRequestMatchScoutingSubmissionRepairRequestMatchScoutingAnswerRepairRequestTeamPitRepairRequestPitScoutingAnswerRepairRequest: EventRepairRequest | GamePieceRepairRequest | ScoutingFieldRepairRequest | MatchScoutingSubmissionRepairRequest | MatchScoutingAnswerRepairRequest | TeamPitRepairRequest | PitScoutingAnswerRepairRequest, options?: Parameters<typeof customInstance>[1]): Promise<fixRepairRepairsFixPostResponse> => {
 
   return customInstance<fixRepairRepairsFixPostResponse>(getFixRepairRepairsFixPostUrl(),
   {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(eventRepairRequestGamePieceRepairRequestMatchScoutingFieldRepairRequestMatchScoutingSubmissionRepairRequestMatchScoutingAnswerRepairRequestPitScoutingFieldRepairRequestTeamPitRepairRequestPitScoutingAnswerRepairRequest)
+    body: JSON.stringify(eventRepairRequestGamePieceRepairRequestScoutingFieldRepairRequestMatchScoutingSubmissionRepairRequestMatchScoutingAnswerRepairRequestTeamPitRepairRequestPitScoutingAnswerRepairRequest)
   }
 );}
 
@@ -302,7 +223,7 @@ export type deleteRepairDataRepairsDeleteDataTypeDataUuidDeleteResponseError = (
 
 export type deleteRepairDataRepairsDeleteDataTypeDataUuidDeleteResponse = (deleteRepairDataRepairsDeleteDataTypeDataUuidDeleteResponseSuccess | deleteRepairDataRepairsDeleteDataTypeDataUuidDeleteResponseError)
 
-export const getDeleteRepairDataRepairsDeleteDataTypeDataUuidDeleteUrl = (dataType: 'event' | 'game_piece' | 'match_scouting_field' | 'match_scouting_submission' | 'match_scouting_answer' | 'pit_scouting_field' | 'team_pit' | 'pit_scouting_answer',
+export const getDeleteRepairDataRepairsDeleteDataTypeDataUuidDeleteUrl = (dataType: 'event' | 'game_piece' | 'scouting_field' | 'match_scouting_submission' | 'match_scouting_answer' | 'team_pit' | 'pit_scouting_answer',
     dataUuid: string,) => {
 
 
@@ -321,7 +242,7 @@ export const getDeleteRepairDataRepairsDeleteDataTypeDataUuidDeleteUrl = (dataTy
  *     data_uuid (`UUID`): The uuid of the data to delete
  * @summary Delete Repair Data
  */
-export const deleteRepairDataRepairsDeleteDataTypeDataUuidDelete = async (dataType: 'event' | 'game_piece' | 'match_scouting_field' | 'match_scouting_submission' | 'match_scouting_answer' | 'pit_scouting_field' | 'team_pit' | 'pit_scouting_answer',
+export const deleteRepairDataRepairsDeleteDataTypeDataUuidDelete = async (dataType: 'event' | 'game_piece' | 'scouting_field' | 'match_scouting_submission' | 'match_scouting_answer' | 'team_pit' | 'pit_scouting_answer',
     dataUuid: string, options?: Parameters<typeof customInstance>[1]): Promise<deleteRepairDataRepairsDeleteDataTypeDataUuidDeleteResponse> => {
 
   return customInstance<deleteRepairDataRepairsDeleteDataTypeDataUuidDeleteResponse>(getDeleteRepairDataRepairsDeleteDataTypeDataUuidDeleteUrl(dataType,dataUuid),

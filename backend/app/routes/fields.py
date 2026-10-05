@@ -1,347 +1,358 @@
-from typing import Any
-import json
-from pathlib import Path
 from uuid import UUID
+from typing import Literal
+import json
+from collections import defaultdict
+from pathlib import Path
 
+from tortoise.transactions import in_transaction
 from fastapi import APIRouter, Depends, HTTPException
 
 from ..dependencies import Identity, require_superuser
-from ..models import GamePiece, MatchScoutingField, Organization, Season, User
+from ..models import ScoutingField, ScoutingType, Season
 from ..schemas.generic import MessageResponse
-from ..schemas.fields import MatchScoutingFieldRequest, MatchScoutingFieldResponse, MatchScoutingPresetResponse, MatchScoutingSeasonFieldsResponse, ReorderMatchScoutingFieldsRequest
+from ..schemas.fields import FieldChoiceResponse, FieldOptionsResponse, MatchScoutingFieldRequest, MatchScoutingFieldResponse, PitScoutingFieldRequest, PitScoutingFieldResponse, ScoutingFieldPresetResponse
 from ..utils import get_season, IS_DEV
 
 
 router: APIRouter = APIRouter(
-    tags=["Match Scouting Fields"],
+    tags=["Scouting Fields"],
     include_in_schema=IS_DEV
 )
 
-@router.get("/fields/season/{season_uuid}", response_model=list[MatchScoutingSeasonFieldsResponse])
-async def get_season_fields(season_uuid: UUID) -> list[MatchScoutingSeasonFieldsResponse]:
+# Helper Functions
+def construct_options_from_field(field: ScoutingField) -> FieldOptionsResponse | None:
     """
-    Get all match scouting fields for a season
+    Construct a FieldOptionsResponse from a MatchScoutingField or PitScoutingField
+
+    Parameters:
+        field (`ScoutingField`): The field to construct the options from
+
+    Returns:
+        `FieldOptionsResponse | None`: The constructed options, or None if the field has no options
+    """
+    if not field.options:
+        return None
+
+    choices: list[FieldChoiceResponse] | None = None
+
+    if field.options.choices:
+        choices = [
+            FieldChoiceResponse(
+                uuid=choice.uuid,
+                name=choice.name,
+                simple_name=choice.simple_name,
+                created_at=choice.created_at
+            ) for choice in field.options.choices
+        ]
+
+    return FieldOptionsResponse(
+        uuid=field.options.uuid,
+        default=field.options.default,
+        minimum=field.options.minimum,
+        maximum=field.options.maximum,
+        choices=choices,
+        created_at=field.options.created_at
+    )
+
+def construct_field_response(field: ScoutingField) -> MatchScoutingFieldResponse | PitScoutingFieldResponse:
+    """
+    Construct a MatchScoutingFieldResponse or PitScoutingFieldResponse from a ScoutingField
+
+    Parameters:
+        field (`ScoutingField`): The field to construct the response from
+
+    Returns:
+        `MatchScoutingFieldResponse | PitScoutingFieldResponse`: The constructed response
+    """
+    match field.scouting_type:
+        case ScoutingType.MATCH:
+            return MatchScoutingFieldResponse(
+                uuid=field.uuid,
+                season_uuid=field.season.uuid if field.season else None,
+                organization_uuid=field.organization.uuid if field.organization else None,
+                parent_uuid=field.parent.uuid if field.parent else None,
+                name=field.name,
+                description=field.description,
+                scouting_type=ScoutingType.MATCH,
+                field_type=field.field_type,
+                stat_type=field.stat_type,
+                game_piece_uuid=field.game_piece.uuid if field.game_piece else None,
+                required=field.required,
+                options=construct_options_from_field(field),
+                order=field.order,
+                archived=field.archived,
+                created_at=field.created_at
+            )
+
+        case ScoutingType.PIT:
+            return PitScoutingFieldResponse(
+                uuid=field.uuid,
+                season_uuid=field.season.uuid if field.season else None,
+                organization_uuid=field.organization.uuid if field.organization else None,
+                name=field.name,
+                description=field.description,
+                scouting_type=ScoutingType.PIT,
+                field_type=field.field_type,
+                required=field.required,
+                options=construct_options_from_field(field),
+                order=field.order,
+                archived=field.archived,
+                created_at=field.created_at
+            )
+
+# Routes
+@router.get("/fields/season/{season_uuid}/{scouting_type}", response_model=list[MatchScoutingFieldResponse | PitScoutingFieldResponse])
+async def get_season_fields(season_uuid: UUID, scouting_type: ScoutingType) -> list[MatchScoutingFieldResponse | PitScoutingFieldResponse]:
+    """
+    Get all scouting fields for a season. Takes season uuid and the field type.
 
     Parameters:
         season_uuid (`UUID`): The UUID of the season to get fields for
+        scouting_type (`ScoutingType`): The scouting type to get fields for
 
     Returns:
-        `list[MatchScoutingField]`: A list of all match scouting fields for the season
+        list[MatchScoutingFieldResponse | PitScoutingFieldResponse]: A list of all scouting fields for the season
     """
-    # Find the season
     season: Season = await get_season(season_uuid)
+    
+    fields: list[ScoutingField] = await ScoutingField.filter(season=season, archived=False, scouting_type=scouting_type)
 
-    # Fetch all fields for the season including their children
-    fields: list[MatchScoutingField] = await MatchScoutingField.filter(season=season, archived=False).prefetch_related("children")
+    returned_fields: list[MatchScoutingFieldResponse | PitScoutingFieldResponse] = []
+    
+    for field in fields:
+        returned_fields.append(construct_field_response(field))
 
-    # Convert queryset to list of dicts
-    field_list: list[MatchScoutingField] = [f for f in fields]
+    return returned_fields
 
-    # Build lookup dict for fast parent-child linking
-    field_map = {f.uuid: f for f in field_list}
 
-    # Prepare the tree structure
-    tree: list[MatchScoutingSeasonFieldsResponse] = []
-
-    # Attach children recursively
-    for field in field_list:
-
-        # Fix options that were set to [] as default
-        options = field.options
-        if field.options == []:
-            options = None
-
-        # Convert model instance to dict
-        field_data = {
-            "uuid": str(field.uuid),
-            "name": field.name,
-            "description": field.description,
-            "field_type": field.field_type,
-            "stat_type": field.stat_type,
-            "game_piece_uuid": str(field.game_piece_id) if field.game_piece_id else None,
-            "required": field.required,
-            "options": options,
-            "order": field.order,
-            "organization_id": str(field.organization_id) if field.organization_id else None,
-            "fields": []  # for children
-        }
-
-        # If field has a parent, attach it to parent's "fields" list
-        if field.parent_id:
-            parent = field_map.get(field.parent_id)
-            if not hasattr(parent, "_tree_fields"):
-                parent._tree_fields = []
-            parent._tree_fields.append(field_data)
-        else:
-            # Top-level field (no parent)
-            tree.append(field_data)
-
-        # Store the built dict for later child assignment
-        field._tree_data = field_data
-
-    # Now attach children properly to their parents' dicts
-    for field in field_list:
-        if hasattr(field, "_tree_fields"):
-            field._tree_data["fields"] = field._tree_fields
-
-    # Sort recursively by `order`
-    def sort_fields(fields):
-        fields.sort(key=lambda f: f["order"])
-        for f in fields:
-            sort_fields(f["fields"])
-
-    sort_fields(tree)
-
-    return tree
-
-@router.delete("/fields/season/{season_uuid}/clear", response_model=MessageResponse)
-async def clear_season_fields(season_uuid: UUID, identity: Identity = Depends(require_superuser)) -> dict[str, str]:
+@router.delete("/fields/season/{season_uuid}/{scouting_type}/archive", response_model=MessageResponse)
+async def archive_season_fields(season_uuid: UUID, scouting_type: ScoutingType, identity: Identity = Depends(require_superuser)) -> MessageResponse:
     """
-    Clear all match scouting fields for a season
+    Archive all scouting fields for a season
 
     Requires superuser access
 
     Parameters:
-        season_uuid (`UUID`): The UUID of the season to clear fields for
+        season_uuid (`UUID`): The UUID of the season to archive fields for
+        scouting_type (`ScoutingType`): The scouting type to archive fields for
 
     Returns:
-        `MessageResponse`: A message indicating that the fields were cleared
+        `MessageResponse`: A message indicating that the fields were archived
     """
     season: Season = await get_season(season_uuid)
 
-    await MatchScoutingField.filter(season=season).update(archived=True)
-    return {"message": "Fields archived"}
+    _ = await ScoutingField.filter(season=season, scouting_type=scouting_type).update(archived=True)
+    return MessageResponse(message="Fields archived")
 
-@router.post("/fields/season/{season_uuid}/create", response_model=MatchScoutingFieldResponse)
-async def create_season_field(
-        season_uuid: UUID,
-        data: MatchScoutingFieldRequest,
-        identity: Identity = Depends(require_superuser)
-    ) -> MatchScoutingFieldResponse:
+@router.post("/fields/create", response_model=MatchScoutingFieldResponse | PitScoutingFieldResponse)
+async def create_field(data: MatchScoutingFieldRequest | PitScoutingFieldRequest, identity: Identity = Depends(require_superuser)) -> MatchScoutingFieldResponse | PitScoutingFieldResponse:
     """
-    Create a new match scouting field
-
-    Requires superuser access
+    Create a new scouting field
 
     Parameters:
-        season_uuid (`UUID`): The UUID of the season to create the field for
-        data (MatchScoutingFieldRequest): The data to create the field
+        data (`MatchScoutingFieldRequest | PitScoutingFieldRequest`): The data to create the field with
 
     Returns:
-        `MatchScoutingField`: The created field
+        `MatchScoutingFieldResponse | PitScoutingFieldResponse`: The created field
+
+    TODO: Allow non-superusers to create organization fields
     """
-    season: Season = await get_season(season_uuid)
+    season: Season = await get_season(data.season_uuid)
 
-    if data.stat_type == "auton_score" or data.stat_type == "auton_miss" or data.stat_type == "teleop_score" or data.stat_type == "teleop_miss":
-        game_piece = await GamePiece.get_or_none(uuid=data.game_piece_uuid)
-
-    else:
-        game_piece = None
-
-    if data.organization_uuid != "" and data.organization_uuid is not None:
-        organization = await Organization.get_or_none(uuid=data.organization_uuid)
-        if not organization:
-            raise HTTPException(status_code=404, detail="Organization not found")
-    else:
-        organization = None
-
-    if data.parent_uuid != "" and data.parent_uuid is not None:
-        parent = await MatchScoutingField.get_or_none(uuid=data.parent_uuid)
-        if not parent:
-            print("section not found", data.parent_uuid)
-            raise HTTPException(status_code=404, detail="Section not found")
-    else:
-        parent = None        
-
-    # When importing from a preset, uuid is provided
-    if data.uuid != "" and data.uuid is not None:
-        # Check if an existing archived field exists
-        existing_field = await MatchScoutingField.filter(
-            uuid=data.uuid,
-            archived=True
-        ).first()
-
-        # If an existing archived field exists, edit it with the given data and unarchive it
-        if existing_field:
-            existing_field.parent = parent
-            existing_field.season = season
-            existing_field.name = data.name
-            existing_field.description = data.description if data.description is not None else ""
-            existing_field.field_type = data.field_type
-            existing_field.stat_type = data.stat_type
-            existing_field.game_piece = game_piece
-            existing_field.required = data.required
-            existing_field.options = data.options
-            existing_field.order = data.order
-            existing_field.organization = organization
-            existing_field.archived = False
-            await existing_field.save()
-
-            field = existing_field
-        
-        # Otherwise, create a new one
-        else:
-            field = await MatchScoutingField.create(
-                uuid=data.uuid,
-                parent=parent,
-                season=season, 
-                name=data.name, 
-                description=data.description,
-                field_type=data.field_type, 
-                stat_type=data.stat_type, 
-                game_piece=game_piece, 
-                required=data.required, 
-                options=data.options, 
-                order=data.order, 
-                organization=organization,
-                created_by=identity.session
-            )
-    else:
-        field = await MatchScoutingField.create(
-            parent=parent,
-            season=season, 
-            name=data.name, 
-            description=data.description,
-            field_type=data.field_type, 
-            stat_type=data.stat_type, 
-            game_piece=game_piece, 
-            required=data.required, 
-            options=data.options, 
-            order=data.order, 
-            organization=organization,
-            created_by=identity.session
-        )
-
-    return MatchScoutingFieldResponse(
-        uuid=field.uuid,
-        season=field.season.uuid,
-        name=field.name,
-        description=field.description,
-        field_type=field.field_type,
-        stat_type=field.stat_type,
-        game_piece_uuid=field.game_piece.uuid if field.game_piece else None,
-        required=field.required,
-        options=field.options,
-        order=field.order,
-        organization_uuid=field.organization.uuid if field.organization else None,
+    field: ScoutingField = await ScoutingField.create(
+        uuid=data.uuid,
+        season=season,
+        organization=data.organization_uuid,
+        name=data.name,
+        description=data.description,
+        scouting_type=data.scouting_type,
+        field_type=data.field_type,
+        required=data.required,
+        options=data.options,
+        order=data.order,
+        archived=data.archived,
+        created_by=identity.session
     )
 
-@router.post("/fields/season/{season_uuid}/edit/{field_uuid}", response_model=MatchScoutingFieldResponse)
-async def edit_season_field(
-        season_uuid: UUID,
-        field_uuid: UUID,
-        data: MatchScoutingFieldRequest,
-        identity: Identity = Depends(require_superuser)
-    ) -> MatchScoutingField:
-    """
-    Edit a match scouting field
+    match data.scouting_type:
+        case ScoutingType.MATCH:
+            field.parent_id = data.parent_uuid
+            field.stat_type = data.stat_type
+            field.game_piece_id = data.game_piece_uuid
+            await field.save()
 
-    Requires superuser access
+            return construct_field_response(field)
+        case ScoutingType.PIT:
+            return construct_field_response(field)
+
+@router.patch("/fields/edit", response_model=MatchScoutingFieldResponse | PitScoutingFieldResponse)
+async def edit_field(data: MatchScoutingFieldRequest | PitScoutingFieldRequest) -> MatchScoutingFieldResponse | PitScoutingFieldResponse:
+    """
+    Edit a scouting field
 
     Parameters:
-        season_uuid (`UUID`): The UUID of the season to edit the field for
-        field_uuid (`UUID`): The UUID of the field to edit
-        data (MatchScoutingFieldRequest): The data to edit the field
+        data (`MatchScoutingFieldRequest | PitScoutingFieldRequest`): The data to edit the field
 
     Returns:
-        `MatchScoutingField`: The edited field
+        `MatchScoutingFieldResponse | PitScoutingFieldResponse`: The edited field
     """
+    field: ScoutingField | None = await ScoutingField.get_or_none(uuid=data.uuid)
 
-    field = await MatchScoutingField.get_or_none(uuid=field_uuid)
     if not field:
         raise HTTPException(status_code=404, detail="Field not found")
-        
-    season: Season = await get_season(season_uuid)
 
-    if data.stat_type == "auton_score" or data.stat_type == "auton_miss" or data.stat_type == "teleop_score" or data.stat_type == "teleop_miss":
-        game_piece = await GamePiece.get_or_none(uuid=data.game_piece_uuid)
-        if not game_piece:
-            raise HTTPException(status_code=404, detail="Game piece not found")
-    else:
-        game_piece = None
-
-    if data.organization_uuid != "" and data.organization_uuid is not None:
-        organization = await Organization.get_or_none(uuid=data.organization_uuid)
-        if not organization:
-            raise HTTPException(status_code=404, detail="Organization not found")
-    else:
-        organization = None
-
-    field.name = data.name
-    field.description = data.description
-    field.field_type = data.field_type
-    field.stat_type = data.stat_type
-    field.game_piece = game_piece
-    field.required = data.required
-    field.options = data.options
-    field.order = data.order
-    field.organization = organization
+    field.update_from_dict(data.model_dump(exclude_unset=True))
+    
     await field.save()
-    return field
 
-@router.patch("/fields/{season_uuid}/reorder", response_model=MessageResponse)
-async def move_match_scouting_fields(
-        season_uuid: UUID,
-        data: ReorderMatchScoutingFieldsRequest,
-) -> MessageResponse:
+    return construct_field_response(field)
+
+@router.get("/fields/presets/{scouting_type}", response_model=list[ScoutingFieldPresetResponse])
+async def get_field_presets(scouting_type: ScoutingType) -> list[ScoutingFieldPresetResponse]:
     """
-    Reorder match scouting fields for a season
+    Get all scouting field presets
 
     Parameters:
-        season_uuid (`UUID`): The UUID of the season to reorder fields for
-        data (`ReorderMatchScoutingFieldsRequest`): The data to reorder the fields
+        scouting_type (`ScoutingType`): The scouting type to get presets for
 
     Returns:
-        `MessageResponse`: A message indicating that the fields were reordered
+        `list[ScoutingFieldPresetResponse]`: A list of all scouting field presets
     """
-    season: Season = await get_season(season_uuid)
+    presets: list[ScoutingFieldPresetResponse] = []
 
-    for field in data:
-        if field.parent_uuid:
-            parent = await MatchScoutingField.get_or_none(uuid=field.parent_uuid)
-            await MatchScoutingField.filter(uuid=field.uuid, season=season).update(order=field.order, parent=parent)
-        else:
-            await MatchScoutingField.filter(uuid=field.uuid, season=season).update(order=field.order, parent_id=None)
-
-    return MessageResponse(message="Fields reordered")
-
-@router.get("/fields/get_presets", response_model=list[MatchScoutingPresetResponse])
-async def get_match_scouting_field_presets(identity: Identity = Depends(require_superuser)) -> list[MatchScoutingPresetResponse]:    
-    """
-    Get all JSON match scouting field presets
-
-    Requires superuser access
-
-    Returns:
-        `list[MatchScoutingPresetResponse]`: A list of all match scouting field presets
-    """
-    path = Path("./app/match_scouting_presets")
-    presets: list[Any] = []
+    match scouting_type:
+        case ScoutingType.MATCH:
+            path = Path("./app/match_scouting_presets")
+        case ScoutingType.PIT:
+            path = Path("./app/pit_scouting_presets")
 
     for file in path.iterdir():
         with open(file, "r") as f:
-            presets.append({ "name": file.stem, "preset": json.load(f) })
+            presets.append(ScoutingFieldPresetResponse(
+                name=file.stem,
+                preset=json.load(f)
+            ))
 
     return presets
 
-@router.delete("/fields/delete/{field_uuid}", response_model=MessageResponse)
-async def delete_field(field_uuid: UUID, identity: Identity = Depends(require_superuser)) -> dict[str, str]:
+@router.delete("/fields/archive/{field_uuid}", response_model=MessageResponse)
+async def archive_field(field_uuid: UUID, identity: Identity = Depends(require_superuser)):
     """
-    Delete a match scouting field
+    Archive a scouting field
 
     Requires superuser access
 
     Parameters:
-        field_uuid (`UUID`): The UUID of the field to delete
+        field_uuid (`UUID`): The UUID of the field to archive
 
     Returns:
-        `MessageResponse`: A message indicating that the field was deleted
+        `MessageResponse`: A message indicating that the field was archived
+
+    TODO: Allow non-superusers to archive organization fields that belong to their organization
     """
-    field: MatchScoutingField | None = await MatchScoutingField.get_or_none(uuid=field_uuid)
+    field: ScoutingField | None = await ScoutingField.get_or_none(uuid=field_uuid)
+
     if not field:
         raise HTTPException(status_code=404, detail="Field not found")
-    
-    field.archived = True
-    await field.save()
 
-    return {"message": "Field archived"}
+    await field.delete()
+    return MessageResponse(message="Field archived")
+
+@router.patch("/fields/reorder", response_model=list[MatchScoutingFieldResponse | PitScoutingFieldResponse])
+async def reorder_fields(data: list[MatchScoutingFieldRequest] | list[PitScoutingFieldRequest], identity: Identity = Depends(require_superuser)) -> list[MatchScoutingFieldResponse | PitScoutingFieldResponse]:
+    """
+    Reorder scouting fields
+
+    Based on the order of the fields in the request, the fields will be reordered to that order.
+    It is assumed that all fields in this request are meant to be reordered together. Only pass fields to this request that you want to reorder.
+    If fields have parents, the parents must be in the request as well. Order children on a different "level" than their parents, but in the order they appear in the list.
+
+    Parameters:
+        data (`list[MatchScoutingFieldRequest] | list[PitScoutingFieldRequest]`): The data to reorder the fields
+
+    Returns:
+        `list[MatchScoutingFieldResponse | PitScoutingFieldResponse]`: A list of all fields in the new order
+
+    TODO: Allow non-superusers to reorder organization fields that belong to their organization
+    """
+    # Ensure all fields have the same scouting type
+    scouting_type: Literal[ScoutingType.MATCH, ScoutingType.PIT] = data[0].scouting_type
+
+    if any(field.scouting_type != scouting_type for field in data):
+        raise HTTPException(
+            status_code=400,
+            detail="All fields in a reorder request must have the same scouting type.",
+        )
+
+    # Ensure UUIDs are unique
+    field_uuids: list[UUID] = [field.uuid for field in data]
+    if len(field_uuids) != len(set(field_uuids)):
+        raise HTTPException(
+            status_code=400,
+            detail="A field may only appear once in a reorder request.",
+        )
+
+    fields: list[ScoutingField] = await ScoutingField.filter(
+        uuid__in=field_uuids,
+        scouting_type=scouting_type,
+    ).prefetch_related(
+        "parent",
+        "season",
+        "organization",
+        "game_piece",
+        "options",
+    )
+
+    # Ensure all fields were found on the server
+    fields_by_uuid: dict[UUID, ScoutingField] = {field.uuid: field for field in fields}
+    missing: list[UUID] = [
+        uuid
+        for uuid in field_uuids
+        if uuid not in fields_by_uuid
+    ]
+
+    if missing:
+        raise HTTPException(
+            status_code=404,
+            detail=f"One or more fields were not found: {missing}",
+        )
+
+    # Ensure all parents are in the request
+    requested_uuids: set[UUID] = set[UUID](field_uuids)
+    for field in fields:
+        if field.parent_id is not None and field.parent_id not in requested_uuids:
+            raise HTTPException(
+                status_code=400,
+                detail=(
+                    f"Field {field.uuid} has parent {field.parent_id}, "
+                    "but that parent was not included in the reorder request."
+                ),
+            )
+
+    # Calculate the new order for each field
+    next_order: defaultdict[object, int] = defaultdict[object, int](int)
+
+    for request_field in data:
+        field: ScoutingField = fields_by_uuid[request_field.uuid]
+
+        parent_id = field.parent_id
+
+        field.order = next_order[parent_id]
+        next_order[parent_id] += 1
+
+    # Update fields
+    async with in_transaction():
+        _ = await ScoutingField.bulk_update(
+            fields,
+            fields=["order"],
+        )
+
+    ordered_fields = [
+        fields_by_uuid[uuid]
+        for uuid in field_uuids
+    ]
+
+    return [
+        construct_field_response(field)
+        for field in ordered_fields
+    ]

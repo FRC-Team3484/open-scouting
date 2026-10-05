@@ -17,16 +17,16 @@ Props:
 	import Button from "$lib/components/ui/button/button.svelte";
 	import Badge from "$lib/components/ui/badge/badge.svelte";
 
-	import type { AdminPitResponse, GamepieceResponse, MatchScoutingFieldRepairResponse, PitScoutingFieldRepairResponse, SeasonResponse, SubmissionResponse } from "$lib/api/model";
+	import type { AdminPitResponse, GamepieceResponse, ScoutingFieldRepairResponse, SeasonResponse, SubmissionResponse } from "$lib/api/model";
 	import { getSeasonsSeasonsGet } from "$lib/api/seasons/seasons";
 	import BaseDialog from "$lib/components/generic/dialogs/BaseDialog.svelte";
 	import { getGamepiecesGamepiecesGet } from "$lib/api/gamepieces/gamepieces";
-	import { getAllMatchScoutingFieldsRepairsGetMatchScoutingFieldsGet, getAllPitScoutingFieldsRepairsGetPitScoutingFieldsGet } from "$lib/api/repairs/repairs";
 	import { getMatchScoutingSubmissionsScoutingSubmissionsGet } from "$lib/api/match-scouting/match-scouting";
 	import { getAllPitsPitsGetGet } from "$lib/api/pit-scouting/pit-scouting";
 	import type { ChooseDataDialogType } from "../RepairsManager.svelte";
 	import EventList from "$lib/components/generic/event_list/EventList.svelte";
     import type { Event as EventType } from "$lib/utils/db";
+	import { getAllScoutingFieldsRepairsGetScoutingFieldsGet } from "$lib/api/repairs/repairs";
 
 
     interface Props {
@@ -36,7 +36,7 @@ Props:
     }
     let { open = $bindable(false), type, contentUuid = $bindable(null) }: Props = $props();
 
-    let data: null | SeasonResponse[] | GamepieceResponse[] | MatchScoutingFieldRepairResponse[] | PitScoutingFieldRepairResponse[] | SubmissionResponse[] | AdminPitResponse[] = $state(null);
+    let data: null | SeasonResponse[] | GamepieceResponse[] | ScoutingFieldRepairResponse[] | SubmissionResponse[] | AdminPitResponse[] = $state(null);
     let title = $derived.by(() => {
         if (type) {
             return "Select " + type.replaceAll("_", " ");
@@ -90,14 +90,14 @@ Props:
     /**
      * Get match scouting fields from the server
      * 
-     * @returns {Promise<MatchScoutingFieldRepairResponse[] | null>}
+     * @returns {Promise<ScoutingFieldRepairResponse[] | null>}
      */
-    async function get_match_scouting_fields(): Promise<MatchScoutingFieldRepairResponse[] | null> {
-        return await getAllMatchScoutingFieldsRepairsGetMatchScoutingFieldsGet().then((response) => {
+    async function get_scouting_fields(): Promise<ScoutingFieldRepairResponse[] | null> {
+        return await getAllScoutingFieldsRepairsGetScoutingFieldsGet().then((response) => {
             if (response.status === 200) {
                 return response.data;
             } else {
-                toast.error("Failed to get match scouting fields", { duration: 5000 });
+                toast.error("Failed to get scouting fields", { duration: 5000 });
                 return null;
             }
         });
@@ -114,22 +114,6 @@ Props:
                 return response.data;
             } else {
                 toast.error("Failed to get match scouting submissions", { duration: 5000 });
-                return null;
-            }
-        });
-    }
-
-    /**
-     * Get pit scouting fields from the server
-     * 
-     * @returns {Promise<PitScoutingFieldRepairResponse[] | null>}
-     */
-    async function get_pit_scouting_fields(): Promise<PitScoutingFieldRepairResponse[] | null> {
-        return await getAllPitScoutingFieldsRepairsGetPitScoutingFieldsGet().then((response) => {
-            if (response.status === 200) {
-                return response.data;
-            } else {
-                toast.error("Failed to get pit scouting fields", { duration: 5000 });
                 return null;
             }
         });
@@ -159,12 +143,10 @@ Props:
             data = await get_seasons();
         } else if (type == "game_piece") {
             data = await get_game_pieces();
-        } else if (type == "match_scouting_field") {
-            data = await get_match_scouting_fields();
+        } else if (type == "scouting_field") {
+            data = await get_scouting_fields();
         } else if (type == "match_scouting_submission") {
             data = await get_match_scouting_submissions();
-        } else if (type == "pit_scouting_field") {
-            data = await get_pit_scouting_fields();
         } else if (type == "team") {
             data = await get_teams();
         }
@@ -269,8 +251,8 @@ Props:
                     </AlertDialog.Content>
                 </AlertDialog.Root>
 
-            {:else if type == "match_scouting_field"}
-                {@const matchScoutingFieldData = data as MatchScoutingFieldRepairResponse[]}
+            {:else if type == "scouting_field"}
+                {@const matchScoutingFieldData = data as ScoutingFieldRepairResponse[]}
 
                 {#each matchScoutingFieldData as field}
                     <Card.Root>
@@ -290,8 +272,8 @@ Props:
                                         <Button size="sm">Select</Button>
                                     </AlertDialog.Trigger>                                    
                                     <AlertDialog.Content>
-                                        <AlertDialog.Title>Select match scouting field "{field.name}"?</AlertDialog.Title>
-                                        <AlertDialog.Description>Are you sure you want to select this match scouting field for this data? This action cannot be undone.</AlertDialog.Description>
+                                        <AlertDialog.Title>Select scouting field "{field.name}"?</AlertDialog.Title>
+                                        <AlertDialog.Description>Are you sure you want to select this scouting field for this data? This action cannot be undone.</AlertDialog.Description>
                                         <AlertDialog.Footer>
                                             <AlertDialog.Cancel type="button">Cancel</AlertDialog.Cancel>
                                             <AlertDialog.Action type="button" onclick={() => selectData(field.uuid)}>Select</AlertDialog.Action>
@@ -322,39 +304,6 @@ Props:
                                         <AlertDialog.Footer>
                                             <AlertDialog.Cancel type="button">Cancel</AlertDialog.Cancel>
                                             <AlertDialog.Action type="button" onclick={() => selectData(submission.uuid)}>Select</AlertDialog.Action>
-                                        </AlertDialog.Footer>
-                                    </AlertDialog.Content>
-                                </AlertDialog.Root>
-                            </div>
-                        </Card.Content>
-                    </Card.Root>
-                {/each}
-
-            {:else if type == "pit_scouting_field"}
-                {@const pitScoutingFieldData = data as PitScoutingFieldRepairResponse[]}
-
-                {#each pitScoutingFieldData as field}
-                    <Card.Root>
-                        <Card.Content>
-                            <div class="flex flex-row gap-2 justify-between items-center">
-                                <div class="flex flex-row gap-2 items-center flex-wrap">
-                                    <p class="font-bold">{field.name}</p>
-                                    <p>Year: {field.season_year || "Unknown"}</p>
-                                    {#if field.archived}
-                                        <Badge>Archived</Badge>
-                                    {/if}
-                                </div>
-
-                                <AlertDialog.Root>
-                                    <AlertDialog.Trigger>
-                                        <Button size="sm">Select</Button>
-                                    </AlertDialog.Trigger>
-                                    <AlertDialog.Content>
-                                        <AlertDialog.Title>Select pit scouting field "{field.name}"?</AlertDialog.Title>
-                                        <AlertDialog.Description>Are you sure you want to select this pit scouting field for this data? This action cannot be undone.</AlertDialog.Description>
-                                        <AlertDialog.Footer>
-                                            <AlertDialog.Cancel type="button">Cancel</AlertDialog.Cancel>
-                                            <AlertDialog.Action type="button" onclick={() => selectData(field.uuid)}>Select</AlertDialog.Action>
                                         </AlertDialog.Footer>
                                     </AlertDialog.Content>
                                 </AlertDialog.Root>

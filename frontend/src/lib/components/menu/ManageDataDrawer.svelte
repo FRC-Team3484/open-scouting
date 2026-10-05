@@ -5,6 +5,7 @@ The manage local data drawer for the menu
 Allows for viewing the current space used by IndexedDB, delete data, and sync some data.
 
 TODO: Further refactor this component, as it's long and hard to read through
+TODO: Add field data rebuild button
 -->
 <script lang="ts">
 
@@ -22,14 +23,16 @@ TODO: Further refactor this component, as it's long and hard to read through
 
 	import { db } from "$lib/utils/db";
     import DrawerHeader from "$lib/components/generic/drawers/DrawerHeader.svelte";
-	import { fetchEventData, fetchSeasonData, pushFiles, pushMatchScoutingData, pushUnsyncedPitScoutingData } from "$lib/utils/sync";
+	import { fetchEventData, fetchGamePieceData, fetchSeasonData, pushFiles, pushMatchScoutingData, pushUnsyncedPitScoutingData } from "$lib/utils/sync";
 
 
     let totalSpace = $state(0);
     let usedSpace = $state(0);
 
+    let seasons = $state(0);
+    let fields = $state(0);
+    let gamePieces = $state(0);
     let events = $state(0);
-    let seasonData = $state(0);
     let matchScoutingData = $state(0);
     let matchScoutingDataUnsynced = $state(0);
     let pitScoutingData = $state(0);
@@ -52,8 +55,10 @@ TODO: Further refactor this component, as it's long and hard to read through
      * Get the amount of each kind of data
      */
     async function getAmount() {
+        seasons = await db.season.count();
+        fields = await db.fields.count();
+        gamePieces = await db.game_piece.count();
         events = await db.event.count();
-        seasonData = await db.season_data.count();
         matchScoutingData = await db.match_scouting.count();
         matchScoutingDataUnsynced = await db.match_scouting.filter(m => m.synced === false).count();
         pitScoutingData = await db.pit_scouting.count();
@@ -123,10 +128,10 @@ TODO: Further refactor this component, as it's long and hard to read through
     </Sheet.Trigger>
 
     <Sheet.Content class="max-h-[80vh] overflow-y-scroll lg:mx-64 2xl:mx-128 border-1 p-4 rounded-t-lg" side="bottom">
-        <div class="overflow-y-scroll pr-2">
+        <div class="flex flex-col overflow-y-scroll pr-2 gap-4">
             <DrawerHeader title="Manage Local Data" description="View and manage data stored locally on your device" />
             <Separator orientation="horizontal" />
-            <div class="flex flex-col gap-4 my-6">
+            <div class="flex flex-col gap-4">
                 <div class="flex flex-row gap-2 items-center">
                     <p>Used</p>
                     <p class="font-bold">~{usedSpace} MB</p>
@@ -138,8 +143,133 @@ TODO: Further refactor this component, as it's long and hard to read through
                 <p class="text-sm text-muted-foreground">The total space allocated for Open Scouting's storage by your browser. If your device is low on storage, the avaliable space may be very low, and your browser may delete some of Open Scouting's data to save on space.</p>
                 <p class="text-sm text-muted-foreground">Database changes may not be fully reflected until the page is reloaded.</p>
             </div>
+
             <Separator orientation="horizontal" />
-            <div class="flex flex-col gap-4 my-6">
+
+            <div class="flex flex-col gap-2">
+                <div class="flex flex-row gap-2 items-center flex-wrap">
+                    <p class="font-bold">{seasons} Seasons</p>
+                    <Dialog.Root>
+                        <Dialog.Trigger>
+                            <Button variant="outline">Delete</Button>
+                        </Dialog.Trigger>
+                        <Dialog.Content>
+                            <Dialog.Title>Are you sure?</Dialog.Title>
+                            <Dialog.Description>Are you sure you want to delete all seasons? This cannot be undone.</Dialog.Description>
+                            <Dialog.Footer>
+                                <Dialog.Close>
+                                    <Button variant="outline">Cancel</Button>
+                                </Dialog.Close>
+                                <Dialog.Close>
+                                    <Button type="submit" onclick={() => deleteTable(db.season, "season")}>Delete</Button>
+                                </Dialog.Close>
+                            </Dialog.Footer>
+                        </Dialog.Content>
+                    </Dialog.Root>
+                    <Dialog.Root>
+                        <Dialog.Trigger>
+                            <Button variant="outline">Rebuild</Button>
+                        </Dialog.Trigger>
+                        <Dialog.Content>
+                            <Dialog.Title>Are you sure?</Dialog.Title>
+                            <Dialog.Description>Are you sure you want to rebuild the season data cache?</Dialog.Description>
+                            <Dialog.Footer>
+                                <Dialog.Close>
+                                    <Button variant="outline">Cancel</Button>
+                                </Dialog.Close>
+                                <Dialog.Close>
+                                    <Button type="submit" onclick={() => runFunction(fetchSeasonData, "Successfully fetched season data", "Failed to fetch season data")}>Rebuild</Button>
+                                </Dialog.Close>
+                            </Dialog.Footer>
+                        </Dialog.Content>
+                    </Dialog.Root>
+                </div>
+                <p class="text-sm text-muted-foreground">The season data for each year</p>
+            </div>
+
+            <div class="flex flex-col gap-2">
+                <div class="flex flex-row gap-2 items-center flex-wrap">
+                    <p class="font-bold">{fields} Fields</p>
+                    <Dialog.Root>
+                        <Dialog.Trigger>
+                            <Button variant="outline">Delete</Button>
+                        </Dialog.Trigger>
+                        <Dialog.Content>
+                            <Dialog.Title>Are you sure?</Dialog.Title>
+                            <Dialog.Description>Are you sure you want to delete all fields? This cannot be undone.</Dialog.Description>
+                            <Dialog.Footer>
+                                <Dialog.Close>
+                                    <Button variant="outline">Cancel</Button>
+                                </Dialog.Close>
+                                <Dialog.Close>
+                                    <Button type="submit" onclick={() => deleteTable(db.fields, "fields")}>Delete</Button>
+                                </Dialog.Close>
+                            </Dialog.Footer>
+                        </Dialog.Content>
+                    </Dialog.Root>
+                    <!-- <Dialog.Root>
+                        <Dialog.Trigger>
+                            <Button variant="outline">Rebuild</Button>
+                        </Dialog.Trigger>
+                        <Dialog.Content>
+                            <Dialog.Title>Are you sure?</Dialog.Title>
+                            <Dialog.Description>Are you sure you want to rebuild the field data cache?</Dialog.Description>
+                            <Dialog.Footer>
+                                <Dialog.Close>
+                                    <Button variant="outline">Cancel</Button>
+                                </Dialog.Close>
+                                <Dialog.Close>
+                                    <Button type="submit" onclick={() => runFunction(() => {}, "Successfully fetched field data", "Failed to fetch field data")}>Rebuild</Button>
+                                </Dialog.Close>
+                            </Dialog.Footer>
+                        </Dialog.Content>
+                    </Dialog.Root> -->
+                </div>
+                <p class="text-sm text-muted-foreground">The scouting field data</p>
+            </div>
+
+            <div class="flex flex-col gap-2">
+                <div class="flex flex-row gap-2 items-center flex-wrap">
+                    <p class="font-bold">{gamePieces} Game Pieces</p>
+                    <Dialog.Root>
+                        <Dialog.Trigger>
+                            <Button variant="outline">Delete</Button>
+                        </Dialog.Trigger>
+                        <Dialog.Content>
+                            <Dialog.Title>Are you sure?</Dialog.Title>
+                            <Dialog.Description>Are you sure you want to delete all game pieces? This cannot be undone.</Dialog.Description>
+                            <Dialog.Footer>
+                                <Dialog.Close>
+                                    <Button variant="outline">Cancel</Button>
+                                </Dialog.Close>
+                                <Dialog.Close>
+                                    <Button type="submit" onclick={() => deleteTable(db.game_piece, "game_piece")}>Delete</Button>
+                                </Dialog.Close>
+                            </Dialog.Footer>
+                        </Dialog.Content>
+                    </Dialog.Root>
+                    <Dialog.Root>
+                        <Dialog.Trigger>
+                            <Button variant="outline">Rebuild</Button>
+                        </Dialog.Trigger>
+                        <Dialog.Content>
+                            <Dialog.Title>Are you sure?</Dialog.Title>
+                            <Dialog.Description>Are you sure you want to rebuild the game piece cache?</Dialog.Description>
+                            <Dialog.Footer>
+                                <Dialog.Close>
+                                    <Button variant="outline">Cancel</Button>
+                                </Dialog.Close>
+                                <Dialog.Close>
+                                    <Button type="submit" onclick={() => runFunction(fetchGamePieceData, "Successfully fetched game piece data", "Failed to fetch game piece data")}>Rebuild</Button>
+                                </Dialog.Close>
+                            </Dialog.Footer>
+                        </Dialog.Content>
+                    </Dialog.Root>
+                </div>
+                <p class="text-sm text-muted-foreground">Game piece data, for all years</p>
+            </div>
+
+            <div class="flex flex-col gap-4">
                 <div class="flex flex-col gap-2">
                     <div class="flex flex-row gap-2 items-center flex-wrap">
                         <p class="font-bold">{events} Event(s)</p>
@@ -180,46 +310,7 @@ TODO: Further refactor this component, as it's long and hard to read through
                     </div>
                     <p class="text-sm text-muted-foreground">The TBA events for all years, stored locally for offline use and faster loading</p>
                 </div>
-                <div class="flex flex-col gap-2">
-                    <div class="flex flex-row gap-2 items-center flex-wrap">
-                        <p class="font-bold">{seasonData} Season Data</p>
-                        <Dialog.Root>
-                            <Dialog.Trigger>
-                                <Button variant="outline">Delete</Button>
-                            </Dialog.Trigger>
-                            <Dialog.Content>
-                                <Dialog.Title>Are you sure?</Dialog.Title>
-                                <Dialog.Description>Are you sure you want to delete all season data? This cannot be undone.</Dialog.Description>
-                                <Dialog.Footer>
-                                    <Dialog.Close>
-                                        <Button variant="outline">Cancel</Button>
-                                    </Dialog.Close>
-                                    <Dialog.Close>
-                                        <Button type="submit" onclick={() => deleteTable(db.season_data, "season")}>Delete</Button>
-                                    </Dialog.Close>
-                                </Dialog.Footer>
-                            </Dialog.Content>
-                        </Dialog.Root>
-                        <Dialog.Root>
-                            <Dialog.Trigger>
-                                <Button variant="outline">Rebuild</Button>
-                            </Dialog.Trigger>
-                            <Dialog.Content>
-                                <Dialog.Title>Are you sure?</Dialog.Title>
-                                <Dialog.Description>Are you sure you want to rebuild the season data cache?</Dialog.Description>
-                                <Dialog.Footer>
-                                    <Dialog.Close>
-                                        <Button variant="outline">Cancel</Button>
-                                    </Dialog.Close>
-                                    <Dialog.Close>
-                                        <Button type="submit" onclick={() => runFunction(fetchSeasonData, "Successfully fetched season data", "Failed to fetch season data")}>Rebuild</Button>
-                                    </Dialog.Close>
-                                </Dialog.Footer>
-                            </Dialog.Content>
-                        </Dialog.Root>
-                    </div>
-                    <p class="text-sm text-muted-foreground">The season data for each year, including the fields and game pieces for that year</p>
-                </div>
+
                 <div class="flex flex-col gap-2">
                     <div class="flex flex-row gap-2 items-center flex-wrap">
                         <p class="font-bold">{matchScoutingData} Match Scouting Submissions</p>
@@ -264,6 +355,7 @@ TODO: Further refactor this component, as it's long and hard to read through
                     </div>
                     <p class="text-sm text-muted-foreground">Match scouting data stored locally, in case of poor connection requiring reports to be submitted later</p>
                 </div>
+
                 <div class="flex flex-col gap-2">
                     <div class="flex flex-row gap-2 items-center flex-wrap">
                         <p class="font-bold">{pitScoutingData} Team Pits</p>

@@ -1,78 +1,68 @@
 import Dexie from 'dexie';
 
 // Interfaces for tables
-export interface MatchScoutingData {
-    uuid: string
-    data: { 
-        [key: string]: string 
-    }
-    user_uuid: string
-    year: number
-    team_number: number
-    match_number: number
-    match_type: string
-    event_code: string
-    synced: boolean
-}
-export interface SeasonMatchScoutingField {
-    uuid: string
-    name: string
-    description: string
-    field_type: string
-    stat_type: string
-    game_piece_uuid: string | null
-    required: boolean
-    options: {
-        choices: {
-            id: string
-            name: string
-        }[]        
-        default: number
-        maximum: number
-        minimum: number
-    }
-    order: number
-    organization_id: string
-    fields: SeasonMatchScoutingField[]
-}
-export interface SeasonGamePiece {
-    uuid: string
-    season: string // uuid
-    name: string
-    created_at: Date
-}
-export interface SeasonPitScoutingQuestion {
-    uuid: string
-    season: string // uuid
-    name: string
-    description: string
-    required: boolean
-    field_type: string
-    options: {
-        choices: {
-            id: string
-            name: string
-        }[]
-    }
-    order: number
-    organization: string | null // uuid
-    created_at: Date
-}
+//     Season table
 export interface Season {
     uuid: string
     year: number
     name: string
-    fields: SeasonMatchScoutingField[]
-    game_pieces: SeasonGamePiece[]
-    pit_scouting_questions: SeasonPitScoutingQuestion[]
     active: boolean
     fetch_time: Date
 }
-// Create a version of Season without recursive fields to keep dexie from being unhappy
-export interface SeasonStored
-    extends Omit<Season, "fields"> {
-    fields: any[];
+
+//     Fields table
+export interface ScoutingFieldChoice {
+    uuid: string
+    name: string
+    simple_name: string
 }
+export interface ScoutingFieldOptions {
+    uuid: string
+    choices: ScoutingFieldChoice[] | null
+    default: number | null
+    minimum: number | null
+    maximum: number | null
+}
+export interface MatchScoutingField {
+    uuid: string
+    season_uuid: string | null
+    organization_uuid: string | null
+    parent_uuid: string | null
+    name: string
+    description: string
+    scouting_type: "match"
+    field_type: "section" | "string" | "large_number" | "small_number" | "coarse_small_number" | "boolean" | "choice" | "multiple_choice"
+    stat_type: "section" | "auton_score" | "auton_miss" | "teleop_score" | "teleop_miss" | "capability" | "other" | "ignore"
+    game_piece_uuid: string | null
+    required: boolean
+    options: ScoutingFieldOptions | null
+    order: number
+    archived: boolean
+}
+export interface PitScoutingField {
+    uuid: string
+    season_uuid: string | null
+    organization_uuid: string | null
+    name: string
+    description: string
+    scouting_type: "pit"
+    field_type: "string" | "boolean" | "choice" | "number" | "image"
+    required: boolean
+    options: ScoutingFieldOptions | null
+    order: number
+    archived: boolean
+}
+export type ScoutingField = MatchScoutingField | PitScoutingField
+
+//     Game Pieces table
+export interface GamePiece {
+    uuid: string
+    season_uuid: string
+    name: string
+    fetch_time: Date
+}
+
+//     Events table
 export interface Event {
     uuid: string
     year: number
@@ -87,6 +77,23 @@ export interface Event {
     custom: boolean
     fetch_time: Date
 }
+
+//     Match Scouting table
+export interface MatchScoutingData {
+    uuid: string
+    data: { 
+        [key: string]: string 
+    }
+    user_uuid: string
+    year: number
+    team_number: number
+    match_number: number
+    match_type: string
+    event_code: string
+    synced: boolean
+}
+
+//     Pit Scouting table
 export interface PitScoutingAnswer {
     uuid: string
     field_uuid: string
@@ -103,6 +110,8 @@ export interface PitScoutingData {
     event_code: string
     synced: boolean
 }
+
+//     Files table
 export interface File {
     uuid: string
     data: File
@@ -112,9 +121,11 @@ export interface File {
 
 // Create DB
 export class OpenScoutingDB extends Dexie {
-    match_scouting!: Dexie.Table<MatchScoutingData>;
-    season_data!: Dexie.Table<SeasonStored>;
+    season!: Dexie.Table<Season>;
+    fields!: Dexie.Table<ScoutingField>;
+    game_piece!: Dexie.Table<GamePiece>;
     event!: Dexie.Table<Event>;
+    match_scouting!: Dexie.Table<MatchScoutingData>;
     pit_scouting!: Dexie.Table<PitScoutingData>;
     files!: Dexie.Table<File>;
 
@@ -169,12 +180,25 @@ export class OpenScoutingDB extends Dexie {
                 delete item.event_start_date;
                 delete item.event_end_date;
             });
-        })
+        });
 
-        this.match_scouting = this.table('match_scouting');
-        this.season_data = this.table('season_data');
+        // v2.3.0
+        // Remove season_data
+        // Add season and fields
+        this.version(7).stores({
+            season_data: null,
+            season: "&uuid, year, name, active, fetch_time",
+            fields: "&uuid, season_uuid, organization_uuid, parent_uuid, name, description, scouting_type, field_type, stat_type, game_piece_uuid, required, options, order, archived",
+            game_piece: "&uuid, season_uuid, name, fetch_time"
+        });
+
+        this.season = this.table('season');
+        this.fields = this.table('fields');
+        this.game_piece = this.table('game_piece');
         this.event = this.table('event');
+        this.match_scouting = this.table('match_scouting');
         this.pit_scouting = this.table('pit_scouting');
+        this.files = this.table('files');
     }
 }
 

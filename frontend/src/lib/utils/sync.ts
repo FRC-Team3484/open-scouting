@@ -2,23 +2,22 @@ import { compare } from "semver-ts";
 import { get } from "svelte/store";
 import { browser } from "$app/environment";
 
-import { db, type Event } from "./db";
+import { db, type Event, type Season } from "./db";
 import { theBlueAllianceApiFetch } from "./api";
 import { VERSION } from "./constants";
 import { menuState } from "$lib/stores/menu";
 import { syncStatus } from "$lib/stores/sync";
 import { changelogDialogOpen, changelogDialogVersion } from "$lib/stores/dialog"
 
-import type { SeasonResponse, GamepieceResponse, PitFieldResponse, EventResponse, MatchScoutingRequest, SubmitPitFieldAnswerRequest, GetPitsForSeasonRequest, BodyUploadImageUploadImagePost, UploadImageUploadImagePostParams } from "$lib/api/model";
+import type { SeasonResponse, EventResponse, MatchScoutingRequest, SubmitPitFieldAnswerRequest, BodyUploadImageUploadImagePost, UploadImageUploadImagePostParams } from "$lib/api/model";
 import { getSeasonsSeasonsGet } from "$lib/api/seasons/seasons";
-import { getSeasonFieldsFieldsSeasonSeasonUuidGet } from "$lib/api/match-scouting-fields/match-scouting-fields"
-import { getSeasonGamepiecesGamepiecesSeasonSeasonUuidGet } from "$lib/api/gamepieces/gamepieces"
-import { getPitFieldsPitsFieldsSeasonUuidGet, submitPitPitsSubmitSeasonUuidTeamNumberPost, getPitsPitsGetSeasonUuidEventCodePost } from "$lib/api/pit-scouting/pit-scouting"
+import { submitPitPitsSubmitSeasonUuidTeamNumberPost, getPitsPitsGetSeasonUuidEventCodePost } from "$lib/api/pit-scouting/pit-scouting"
 import { getCustomEventsEventCustomSeasonUuidGet } from "$lib/api/events/events"
 import { submitMatchScoutingScoutingSubmitPost } from "$lib/api/match-scouting/match-scouting";
 import { getServerStatusStatusGet } from "$lib/api/generic/generic";
 import { uploadImageUploadImagePost } from "$lib/api/uploads/uploads";
 import { online } from "svelte/reactivity/window";
+import { getGamepiecesGamepiecesGet } from "$lib/api/gamepieces/gamepieces";
 
 /**
  * Checks if syncing is enabled by the user
@@ -46,27 +45,10 @@ async function fetchSeasonData() {
     const seasonsResponse: Array<SeasonResponse> = (await getSeasonsSeasonsGet()).data;
 
     for (const season of seasonsResponse) {
-        const fieldData = (await getSeasonFieldsFieldsSeasonSeasonUuidGet(season.uuid)).data;
-        let gamePieceData: Array<GamepieceResponse> = [];
-        let pitData: Array<PitFieldResponse> = [];
-
-        const gamePieceRequest = await getSeasonGamepiecesGamepiecesSeasonSeasonUuidGet(season.uuid);
-        if (gamePieceRequest.status !== 422) {
-            gamePieceData = gamePieceRequest.data;
-        }
-
-        const pitRequest = await getPitFieldsPitsFieldsSeasonUuidGet(season.uuid);
-        if (pitRequest.status !== 422) {
-            pitData = pitRequest.data;
-        }
-
-        await db.season_data.put({
+        await db.season.put({
             uuid: season.uuid,
             year: season.year,
             name: season.name,
-            fields: fieldData,
-            game_pieces: gamePieceData,
-            pit_scouting_questions: pitData,
             active: season.active,
             fetch_time: new Date()
         });
@@ -130,6 +112,26 @@ async function fetchEventData() {
 }
 
 /**
+ * Fetches game piece data and stores it locally
+ */
+async function fetchGamePieceData() {
+    if (!isSyncingEnabled()) return;
+
+    await getGamepiecesGamepiecesGet().then(async (response) => {
+        if (response.status === 200) {
+            for (const gamePiece of response.data) {
+                await db.game_piece.put({
+                    uuid: gamePiece.uuid,
+                    name: gamePiece.name,
+                    season_uuid: gamePiece.season,
+                    fetch_time: new Date()
+                });
+            }
+        }
+    })
+}
+
+/**
  * Checks if the data stored locally is out of date
  * 
  * If there's no data for either season or event data, return true
@@ -139,22 +141,23 @@ async function fetchEventData() {
  * @returns boolean
  */
 async function isOldData() {
-    if (db.table("season_data") && db.table("event")) {
-        const seasonData = await db.season_data.toArray();
+    if (db.table("season") && db.table("event") && db.table("game_piece")) {
+        const seasonData = await db.season.toArray();
         const eventData = await db.event.toArray();
+        const gamePieceData = await db.game_piece.toArray();
 
-        if (seasonData.length === 0 || eventData.length === 0) {
+        if (seasonData.length === 0 || eventData.length === 0 || gamePieceData.length === 0) {
             return true;
         }
 
         const now = new Date();
         const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
 
-        if (!seasonData[0] || !eventData[0]) {
+        if (!seasonData[0] || !eventData[0] || !gamePieceData[0]) {
             return true;
         }
 
-        return seasonData[0].fetch_time < threeDaysAgo || eventData[0].fetch_time < threeDaysAgo;
+        return seasonData[0].fetch_time < threeDaysAgo || eventData[0].fetch_time < threeDaysAgo || gamePieceData[0].fetch_time < threeDaysAgo;
     } else {
         return true;
     }
@@ -276,7 +279,7 @@ async function pushUnsyncedPitScoutingData() {
         p => p.synced === false
     ).toArray();
 
-    const seasons = await db.season_data.toArray();
+    const seasons: Season[] = await db.season.toArray();
 
     if (unsyncedPits.length > 0) {
         menuState.set({
@@ -286,8 +289,8 @@ async function pushUnsyncedPitScoutingData() {
         });
 
         for (const pit of unsyncedPits) {
-            const season: Object | null = seasons.filter(s => s.year === pit.year)[0];
-            if (season === null) continue;
+            const season: Season | undefined = seasons.filter(s => s.year === pit.year)[0];
+            if (season === null || season === undefined) continue;
 
             const body: SubmitPitFieldAnswerRequest = {
                 uuid: pit.uuid,
@@ -469,40 +472,55 @@ async function main() {
             // Fetch event data
             await fetchEventData().then(async () => {
                 console.log("Fetched event data");
+                menuState.set({
+                    state: "loading",
+                    status: "Fetching game piece data...",
+                    close: false
+                });
 
-                if (await isUnsyncedFiles()) {
-                    menuState.set({
-                        state: "loading",
-                        status: "Syncing files...",
-                        close: false
-                    });
+                await fetchGamePieceData().then(async () => {
+                    console.log("Fetched game piece data");
 
-                    // Push files to the server
-                    await pushFiles().then(() => {
-                        console.log("Synced files");
+                    if (await isUnsyncedFiles()) {
+                        menuState.set({
+                            state: "loading",
+                            status: "Syncing files...",
+                            close: false
+                        });
+    
+                        // Push files to the server
+                        await pushFiles().then(() => {
+                            console.log("Synced files");
+                            menuState.set({
+                                state: "ready",
+                                status: "Data is up to date!",
+                                close: true
+                            });
+                        })
+                        // File sync failed
+                        .catch((error) => {
+                            console.log("Failed to sync files", error);
+                            menuState.set({
+                                state: "warning",
+                                status: "Failed to sync files",
+                                close: false
+                            });
+                        });
+                    } else {
                         menuState.set({
                             state: "ready",
                             status: "Data is up to date!",
                             close: true
                         });
-                    })
-                    // File sync failed
-                    .catch((error) => {
-                        console.log("Failed to sync files", error);
-                        menuState.set({
-                            state: "warning",
-                            status: "Failed to sync files",
-                            close: false
-                        });
-                    });
-                } else {
+                    }
+                }).catch((error) => {
+                    console.warn("Failed to get game piece data", error)
                     menuState.set({
-                        state: "ready",
-                        status: "Data is up to date!",
-                        close: true
+                        state: "warning",
+                        status: "Failed to get game piece data",
+                        close: false
                     });
-                }
-
+                });
             })
             // Event data fetch failed
             .catch((error) => {
@@ -530,4 +548,4 @@ async function main() {
 
 main().catch((error) => console.error(error));
 
-export { fetchSeasonData, fetchEventData, isOldData, pushMatchScoutingData, pushPitScoutingData, pushUnsyncedPitScoutingData, fetchPitScoutingData, pushFiles }
+export { fetchSeasonData, fetchEventData, fetchGamePieceData, isOldData, pushMatchScoutingData, pushPitScoutingData, pushUnsyncedPitScoutingData, fetchPitScoutingData, pushFiles }

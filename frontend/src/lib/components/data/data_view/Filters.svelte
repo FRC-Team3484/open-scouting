@@ -15,7 +15,7 @@ Props:
     import * as AlertDialog from "$lib/components/ui/alert-dialog/index.js";
 	import Button from "$lib/components/ui/button/button.svelte";
 
-	import { db, type Event, type SeasonStored } from "$lib/utils/db";
+	import { db, type Event, type Season } from "$lib/utils/db";
 	import type { Filters as EventListFilters } from "$lib/components/generic/event_list/EventList.svelte";
 	import type { DataFiltersEvent, DataFiltersTeam, GetDataFiltersDataFiltersGetParams } from "$lib/api/model";
 	import { getDataFiltersDataFiltersGet } from "$lib/api/data/data";
@@ -30,7 +30,7 @@ Props:
     }
     let { filters = $bindable() }: Props = $props();
 
-    let seasons: SeasonStored[] = $state([]);
+    let seasons: Season[] = $state([]);
     let seasons_label: string = $derived(seasons.find((s) => s.year === filters.year)?.name ?? "Select Year");
     let events: DataFiltersEvent[] = $state([]);
     let teams: DataFiltersTeam[] = $state([]);
@@ -44,7 +44,7 @@ Props:
      * Load all seasons from the local database
      */
     async function loadSeasons(): Promise<void> {
-        await db.season_data.toArray().then((data) => {
+        await db.season.toArray().then((data) => {
             seasons = data.sort((a, b) => b.year - a.year);
 
             if (!filters.year && seasons.length > 0) {
