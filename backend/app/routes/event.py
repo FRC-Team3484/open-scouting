@@ -4,7 +4,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends
 
 from ..schemas.generic import MessageResponse
-from ..models import Event, MatchScoutingAnswer, MatchScoutingSubmission, PitScoutingAnswer, PitScoutingField, Season, TeamPit
+from ..models import Event, MatchScoutingAnswer, MatchScoutingSubmission, PitScoutingAnswer, ScoutingField, ScoutingType, Season, TeamPit
 from ..schemas.event import AdminEventResponse, EventInfoResponse, EventResponse, CustomEventRequest
 from ..utils import get_season, IS_DEV
 from ..dependencies import Identity, get_identity, require_superuser
@@ -220,7 +220,7 @@ async def get_event_info(year: int, event_code: str) -> EventInfoResponse:
 
     pit_answers: list[PitScoutingAnswer] = await PitScoutingAnswer.filter(team__event=event)
 
-    pit_fields: list[PitScoutingField] = await PitScoutingField.filter(season=season, archived=False)
+    pit_fields: list[ScoutingField] = await ScoutingField.filter(season=season, archived=False, scouting_type=ScoutingType.PIT)
     required_fields = [f.uuid for f in pit_fields if f.required]
 
     answers = await PitScoutingAnswer.filter(team_id__in=pit_ids).values(
