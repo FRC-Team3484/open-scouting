@@ -10,7 +10,7 @@ Props:
 	import { onMount } from "svelte";
 	import { BuildingsIcon, CalendarIcon, FadersIcon, InfoIcon, PlusCircleIcon, SelectionIcon, UsersIcon, XIcon } from "phosphor-svelte";
 	import { toast } from "svelte-sonner";
-    import { db, type Event, type SeasonStored } from "$lib/utils/db";
+    import { db, type Event, type Season } from "$lib/utils/db";
 
     import * as Card from "$lib/components/ui/card/index.js";
     import * as Select from "$lib/components/ui/select/index.js";
@@ -34,7 +34,7 @@ Props:
     }
     let { filters = $bindable(), fields }: Props = $props();
 
-    let seasons: SeasonStored[] = $state([]);
+    let seasons: Season[] = $state([]);
     let seasons_label: string = $derived(seasons.find((s) => s.year === filters.year)?.name ?? "Select Year");
     let events: DataFiltersEvent[] = $state([]);
     let teams: DataFiltersTeam[] = $state([]);
@@ -50,7 +50,7 @@ Props:
      * Load all seasons
      */
     async function loadSeasons(): Promise<void> {
-        await db.season_data.toArray().then((data) => {
+        await db.season.toArray().then((data) => {
             seasons = data.sort((a, b) => b.year - a.year);
 
             if (!filters.year && seasons.length > 0) {

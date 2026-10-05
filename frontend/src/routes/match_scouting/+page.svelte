@@ -26,7 +26,7 @@ TODO: Fetch season uuid from the local database instead
      * @param year The year to get the season uuid for
      */
     async function get_season_uuid(year: string) {
-        await db.season_data.toArray().then((seasons) => {
+        await db.season.toArray().then((seasons) => {
             const season = seasons.find((season) => season.year.toString() == year);
             if (season) {
                 season_uuid = season.uuid;

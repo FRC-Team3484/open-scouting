@@ -17,7 +17,7 @@ Props:
 	import Label from "../ui/label/label.svelte";
 	import Button from "../ui/button/button.svelte";
 
-    import { db, type SeasonStored } from "$lib/utils/db";
+    import { db, type Season } from "$lib/utils/db";
 
 
     interface Props {
@@ -26,14 +26,14 @@ Props:
     }
     let { handleNavigate, setYear }: Props = $props();
 
-    let years: SeasonStored[] = $state([]);
+    let years: Season[] = $state([]);
     let selected_year: {year: number, name: string, uuid: string} | null = $state(null);
 
     /**
      * Get all years from the local database
      */
     onMount(async () => {
-        await db.season_data.toArray().then((seasons) => {
+        await db.season.toArray().then((seasons) => {
             years = seasons.sort((a, b) => b.year - a.year);
 
             const active_season = seasons.find(season => season.active);

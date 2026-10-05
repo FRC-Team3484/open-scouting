@@ -18,7 +18,7 @@ Props:
 	import Label from "$lib/components/ui/label/label.svelte";
 	import Separator from "$lib/components/ui/separator/separator.svelte";
 	
-	import { db, type SeasonStored } from "$lib/utils/db";
+	import { db, type Season } from "$lib/utils/db";
 	import { CreateCustomEventEventCustomSeasonUuidCreatePostBody } from "$lib/zod/events/events";
 	import { createCustomEventEventCustomSeasonUuidCreatePost } from "$lib/api/events/events";
 	import BaseDialog from "./BaseDialog.svelte";
@@ -29,7 +29,7 @@ Props:
 	}
 	let { open = $bindable(false) }: Props = $props();
 
-	let seasons: SeasonStored[] = $state([]);
+	let seasons: Season[] = $state([]);
 	let selectedSeasonLabel: string = $derived(
 		seasons.find((s) => s.uuid === $formData.season_uuid)?.name ?? "Select Season"
 	)
@@ -95,7 +95,7 @@ Props:
 	 * Gets all the years from the local database, then sets the current one to the active season
 	 */
 	async function getYears() {
-		await db.season_data.toArray().then((seasons) => {
+		await db.season.toArray().then((seasons) => {
 			seasons = seasons.sort((a, b) => b.year - a.year);
 
 			const active_season = seasons.find(season => season.active);
