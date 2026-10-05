@@ -6,7 +6,7 @@ import httpx
 from fastapi import APIRouter, Depends, HTTPException
 
 from ..dependencies import Identity, get_identity, require_superuser
-from ..models import PitScoutingAnswer, Season, TeamPit
+from ..models import PitScoutingAnswer, ScoutingField, Season, TeamPit
 from ..schemas.generic import MessageResponse
 from ..schemas.pit_scouting import AdminPitResponse, GetPitsResponse, PitAnswerResponse, SubmitPitFieldAnswerRequest
 from ..utils import get_event, get_season, IS_DEV
@@ -147,7 +147,7 @@ async def submit_pit(
         print("Created pit", pit.uuid, "for team", team_number, "and event", event.uuid)
 
     for answer in data.answers:
-        field = await PitScoutingField.get_or_none(uuid=answer["field_uuid"])
+        field = await ScoutingField.get_or_none(uuid=answer["field_uuid"])
 
         if not field:
             raise HTTPException(status_code=404, detail="Field not found")

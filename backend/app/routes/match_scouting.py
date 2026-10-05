@@ -7,7 +7,7 @@ from tortoise.exceptions import IntegrityError
 
 from ..dependencies import Identity, get_identity, require_superuser
 from ..schemas.generic import MessageResponse
-from ..models import MatchScoutingAnswer, MatchScoutingField, MatchScoutingSubmission, User
+from ..models import MatchScoutingAnswer, MatchScoutingSubmission, ScoutingField, User
 from ..schemas.match_scouting import MatchScoutingRequest, MatchScoutingResponse, SubmissionResponse
 from ..utils import get_event, IS_DEV
 
@@ -67,7 +67,7 @@ async def submit_match_scouting(
         raise HTTPException(status_code=200, detail="Submission already exists")
 
     for key, value in fields.items():
-        field: MatchScoutingField | None = await MatchScoutingField.get_or_none(uuid=key)
+        field: ScoutingField | None = await ScoutingField.get_or_none(uuid=key)
         if not field:
             raise HTTPException(status_code=404, detail="Field not found")
 
