@@ -22,15 +22,22 @@ async def get_gamepieces() -> list[GamepieceResponse]:
         list[GamepieceResponse]: A list of all game pieces
     """
     gamepieces: list[GamePiece] = await GamePiece.all()
-    return [
-        GamepieceResponse(
-            uuid=gp.uuid,
-            season=gp.season.uuid,
-            name=gp.name,
-            created_at=gp.created_at,
+    response: list[GamepieceResponse] = []
+
+    for gamepiece in gamepieces:
+        if not gamepiece.season_id:
+            continue
+
+        response.append(
+            GamepieceResponse(
+                uuid=gamepiece.uuid,
+                season=gamepiece.season_id,
+                name=gamepiece.name,
+                created_at=gamepiece.created_at
+            )
         )
-        for gp in gamepieces
-    ]
+
+    return response
 
 @router.post("/gamepieces/create", response_model=GamepieceResponse)
 async def create_gamepiece(data: GamepieceRequest, identity: Identity = Depends(require_superuser)) -> GamepieceResponse:
