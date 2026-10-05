@@ -4,7 +4,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, JsonValue
 
-from backend.app.models import FieldType, ScoutingType, StatType
+from ..models import FieldType, ScoutingType, StatType
 
 
 class FieldChoiceResponse(BaseModel):
