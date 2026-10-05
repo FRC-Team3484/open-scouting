@@ -54,6 +54,14 @@ export interface PitScoutingField {
 }
 export type ScoutingField = MatchScoutingField | PitScoutingField
 
+//     Game Pieces table
+export interface GamePiece {
+    uuid: string
+    season_uuid: string
+    name: string
+    fetch_time: Date
+}
+
 //     Events table
 export interface Event {
     uuid: string
@@ -115,6 +123,7 @@ export interface File {
 export class OpenScoutingDB extends Dexie {
     season!: Dexie.Table<Season>;
     fields!: Dexie.Table<ScoutingField>;
+    game_piece!: Dexie.Table<GamePiece>;
     event!: Dexie.Table<Event>;
     match_scouting!: Dexie.Table<MatchScoutingData>;
     pit_scouting!: Dexie.Table<PitScoutingData>;
@@ -179,11 +188,13 @@ export class OpenScoutingDB extends Dexie {
         this.version(7).stores({
             season_data: null,
             season: "&uuid, year, name, active, fetch_time",
-            fields: "&uuid, season_uuid, organization_uuid, parent_uuid, name, description, scouting_type, field_type, stat_type, game_piece_uuid, required, options, order, archived"
+            fields: "&uuid, season_uuid, organization_uuid, parent_uuid, name, description, scouting_type, field_type, stat_type, game_piece_uuid, required, options, order, archived",
+            game_piece: "&uuid, season_uuid, name, fetch_time"
         });
 
         this.season = this.table('season');
         this.fields = this.table('fields');
+        this.game_piece = this.table('game_piece');
         this.event = this.table('event');
         this.match_scouting = this.table('match_scouting');
         this.pit_scouting = this.table('pit_scouting');
