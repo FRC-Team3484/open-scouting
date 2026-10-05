@@ -3,7 +3,7 @@
 Management page for repairs on the admin page
 -->
 <script lang="ts" module>
-    export type ChooseDataDialogType = null | "season" | "game_piece" | "event" | "match_scouting_field" | "match_scouting_submission" | "pit_scouting_field" | "team"
+    export type ChooseDataDialogType = null | "season" | "game_piece" | "event" | "scouting_field" | "match_scouting_submission" | "team"
     export type ChooseDataDialogRepairType = null | "missing_season" | "missing_game_piece" | "missing_event" | "missing_field" | "missing_submission" | "missing_team"
 
     export interface ChooseDataDialog {
@@ -37,10 +37,9 @@ Management page for repairs on the admin page
     let selectedRepairTypes: string[] = $state([
         "event",
         "game_piece",
-        "match_scouting_field",
+        "scouting_field",
         "match_scouting_submission",
         "match_scouting_answer",
-        "pit_scouting_field",
         "team_pit",
         "pit_scouting_answer",
     ]);
@@ -48,10 +47,9 @@ Management page for repairs on the admin page
     let repairTypes = [
         { name: "Event", value: "event" },
         { name: "Game Piece", value: "game_piece" },
-        { name: "Match Scouting Field", value: "match_scouting_field" },
+        { name: "Scouting Field", value: "scouting_field" },
         { name: "Match Scouting Submission", value: "match_scouting_submission" },
         { name: "Match Scouting Answer", value: "match_scouting_answer" },
-        { name: "Pit Scouting Field", value: "pit_scouting_field" },
         { name: "Team Pit", value: "team_pit" },
         { name: "Pit Scouting Answer", value: "pit_scouting_answer" }
     ]

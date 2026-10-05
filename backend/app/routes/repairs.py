@@ -308,6 +308,8 @@ async def get_all_scouting_fields(identity: Identity = Depends(require_superuser
 
     Returns:
         list[ScoutingFieldRepairResponse]: A list of all scouting fields
+
+    TODO: This should not allow pit scouting fields to be selected for a match scouting submission
     """
     fields = await ScoutingField.all().prefetch_related("season", "game_piece")
 
