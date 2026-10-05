@@ -2,18 +2,16 @@ import { compare } from "semver-ts";
 import { get } from "svelte/store";
 import { browser } from "$app/environment";
 
-import { db, type Event } from "./db";
+import { db, type Event, type Season } from "./db";
 import { theBlueAllianceApiFetch } from "./api";
 import { VERSION } from "./constants";
 import { menuState } from "$lib/stores/menu";
 import { syncStatus } from "$lib/stores/sync";
 import { changelogDialogOpen, changelogDialogVersion } from "$lib/stores/dialog"
 
-import type { SeasonResponse, GamepieceResponse, PitFieldResponse, EventResponse, MatchScoutingRequest, SubmitPitFieldAnswerRequest, GetPitsForSeasonRequest, BodyUploadImageUploadImagePost, UploadImageUploadImagePostParams } from "$lib/api/model";
+import type { SeasonResponse, EventResponse, MatchScoutingRequest, SubmitPitFieldAnswerRequest, BodyUploadImageUploadImagePost, UploadImageUploadImagePostParams } from "$lib/api/model";
 import { getSeasonsSeasonsGet } from "$lib/api/seasons/seasons";
-import { getSeasonFieldsFieldsSeasonSeasonUuidGet } from "$lib/api/match-scouting-fields/match-scouting-fields"
-import { getSeasonGamepiecesGamepiecesSeasonSeasonUuidGet } from "$lib/api/gamepieces/gamepieces"
-import { getPitFieldsPitsFieldsSeasonUuidGet, submitPitPitsSubmitSeasonUuidTeamNumberPost, getPitsPitsGetSeasonUuidEventCodePost } from "$lib/api/pit-scouting/pit-scouting"
+import { submitPitPitsSubmitSeasonUuidTeamNumberPost, getPitsPitsGetSeasonUuidEventCodePost } from "$lib/api/pit-scouting/pit-scouting"
 import { getCustomEventsEventCustomSeasonUuidGet } from "$lib/api/events/events"
 import { submitMatchScoutingScoutingSubmitPost } from "$lib/api/match-scouting/match-scouting";
 import { getServerStatusStatusGet } from "$lib/api/generic/generic";
@@ -46,27 +44,10 @@ async function fetchSeasonData() {
     const seasonsResponse: Array<SeasonResponse> = (await getSeasonsSeasonsGet()).data;
 
     for (const season of seasonsResponse) {
-        const fieldData = (await getSeasonFieldsFieldsSeasonSeasonUuidGet(season.uuid)).data;
-        let gamePieceData: Array<GamepieceResponse> = [];
-        let pitData: Array<PitFieldResponse> = [];
-
-        const gamePieceRequest = await getSeasonGamepiecesGamepiecesSeasonSeasonUuidGet(season.uuid);
-        if (gamePieceRequest.status !== 422) {
-            gamePieceData = gamePieceRequest.data;
-        }
-
-        const pitRequest = await getPitFieldsPitsFieldsSeasonUuidGet(season.uuid);
-        if (pitRequest.status !== 422) {
-            pitData = pitRequest.data;
-        }
-
-        await db.season_data.put({
+        await db.season.put({
             uuid: season.uuid,
             year: season.year,
             name: season.name,
-            fields: fieldData,
-            game_pieces: gamePieceData,
-            pit_scouting_questions: pitData,
             active: season.active,
             fetch_time: new Date()
         });
@@ -139,8 +120,8 @@ async function fetchEventData() {
  * @returns boolean
  */
 async function isOldData() {
-    if (db.table("season_data") && db.table("event")) {
-        const seasonData = await db.season_data.toArray();
+    if (db.table("season") && db.table("event")) {
+        const seasonData = await db.season.toArray();
         const eventData = await db.event.toArray();
 
         if (seasonData.length === 0 || eventData.length === 0) {
@@ -276,7 +257,7 @@ async function pushUnsyncedPitScoutingData() {
         p => p.synced === false
     ).toArray();
 
-    const seasons = await db.season_data.toArray();
+    const seasons: Season[] = await db.season.toArray();
 
     if (unsyncedPits.length > 0) {
         menuState.set({
@@ -286,8 +267,8 @@ async function pushUnsyncedPitScoutingData() {
         });
 
         for (const pit of unsyncedPits) {
-            const season: Object | null = seasons.filter(s => s.year === pit.year)[0];
-            if (season === null) continue;
+            const season: Season | undefined = seasons.filter(s => s.year === pit.year)[0];
+            if (season === null || season === undefined) continue;
 
             const body: SubmitPitFieldAnswerRequest = {
                 uuid: pit.uuid,
