@@ -18,9 +18,9 @@ class GamePieceRepair(BaseRepair):
     data_type: Literal["game_piece"]
     repair_type: Literal["missing_season"]
 
-class MatchScoutingFieldRepair(BaseRepair):
-    data_type: Literal["match_scouting_field"]
-    repair_type: Literal["missing_season", "missing_game_piece"]
+class ScoutingFieldRepair(BaseRepair):
+    data_type: Literal["scouting_field"]
+    repair_type: Literal["missing_season", "missing_game_piece", "missing_season"]
 
 class MatchScoutingSubmissionRepair(BaseRepair):
     data_type: Literal["match_scouting_submission"]
@@ -29,10 +29,6 @@ class MatchScoutingSubmissionRepair(BaseRepair):
 class MatchScoutingAnswerRepair(BaseRepair):
     data_type: Literal["match_scouting_answer"]
     repair_type: Literal["missing_field","missing_submission"]
-
-class PitScoutingFieldRepair(BaseRepair):
-    data_type: Literal["pit_scouting_field"]
-    repair_type: Literal["missing_season"]
 
 class TeamPitRepair(BaseRepair):
     data_type: Literal["team_pit"]
@@ -45,10 +41,9 @@ class PitScoutingAnswerRepair(BaseRepair):
 Repair = Annotated[
     EventRepair | 
     GamePieceRepair | 
-    MatchScoutingFieldRepair | 
+    ScoutingFieldRepair | 
     MatchScoutingSubmissionRepair | 
     MatchScoutingAnswerRepair | 
-    PitScoutingFieldRepair | 
     TeamPitRepair | 
     PitScoutingAnswerRepair,
     Field(discriminator="data_type")
@@ -58,7 +53,7 @@ class RepairResponse(RootModel[Repair]):
     pass
 
 # Avaliable data that can be used for repairs
-class MatchScoutingFieldRepairResponse(BaseModel):
+class ScoutingFieldRepairResponse(BaseModel):
     uuid: UUID
     name: str
     season_year: int | None
@@ -86,8 +81,8 @@ class GamePieceRepairRequest(BaseRepairRequest):
     data_type: Literal["game_piece"]
     repair_type: Literal["missing_season"]
 
-class MatchScoutingFieldRepairRequest(BaseRepairRequest):
-    data_type: Literal["match_scouting_field"]
+class ScoutingFieldRepairRequest(BaseRepairRequest):
+    data_type: Literal["scouting_field"]
     repair_type: Literal["missing_season", "missing_game_piece"]
 
 class MatchScoutingSubmissionRepairRequest(BaseRepairRequest):
@@ -98,10 +93,6 @@ class MatchScoutingSubmissionRepairRequest(BaseRepairRequest):
 class MatchScoutingAnswerRepairRequest(BaseRepairRequest):
     data_type: Literal["match_scouting_answer"]
     repair_type: Literal["missing_field","missing_submission"]
-
-class PitScoutingFieldRepairRequest(BaseRepairRequest):
-    data_type: Literal["pit_scouting_field"]
-    repair_type: Literal["missing_season"]
 
 class TeamPitRepairRequest(BaseRepairRequest):
     data_type: Literal["team_pit"]
@@ -115,10 +106,9 @@ class PitScoutingAnswerRepairRequest(BaseRepairRequest):
 RepairRequest = Annotated[
     EventRepairRequest | 
     GamePieceRepairRequest | 
-    MatchScoutingFieldRepairRequest | 
+    ScoutingFieldRepairRequest | 
     MatchScoutingSubmissionRepairRequest | 
     MatchScoutingAnswerRepairRequest | 
-    PitScoutingFieldRepairRequest | 
     TeamPitRepairRequest | 
     PitScoutingAnswerRepairRequest,
     Field(discriminator="data_type")

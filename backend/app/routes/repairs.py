@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import Literal
 from uuid import UUID
 
@@ -6,8 +5,8 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from ..dependencies import Identity, require_superuser
 from ..schemas.generic import MessageResponse
-from ..schemas.repairs import EventRepair, GamePieceRepair, MatchScoutingAnswerRepair, MatchScoutingFieldRepair, MatchScoutingFieldRepairResponse, MatchScoutingSubmissionRepair, PitScoutingAnswerRepair, PitScoutingFieldRepair, PitScoutingFieldRepairResponse, RepairRequest, RepairResponse, TeamPitRepair
-from ..models import Event, GamePiece, MatchScoutingAnswer, MatchScoutingField, MatchScoutingSubmission, PitScoutingAnswer, PitScoutingField, Season, TeamPit
+from ..schemas.repairs import EventRepair, GamePieceRepair, MatchScoutingAnswerRepair, MatchScoutingSubmissionRepair, PitScoutingAnswerRepair, RepairRequest, RepairResponse, ScoutingFieldRepair, ScoutingFieldRepairResponse, TeamPitRepair
+from ..models import Event, GamePiece, MatchScoutingAnswer, MatchScoutingSubmission, PitScoutingAnswer, ScoutingField, Season, TeamPit
 from ..utils import IS_DEV, get_event
 
 
@@ -64,37 +63,37 @@ async def get_repairable_game_pieces() -> list[GamePieceRepair]:
 
     return repairs
 
-async def get_repairable_match_scouting_fields() -> list[MatchScoutingFieldRepair]:
+async def get_repairable_scouting_fields() -> list[ScoutingFieldRepair]:
     """
-    Get all repairable match scouting fields
+    Get all repairable scouting fields
 
     This supports the following repairs:
-        - `MatchScoutingField` is missing a `season`
-        - `MatchScoutingField` is missing a `game_piece` if `stat_type` is `auton_score`, `auton_miss`, `teleop_score` or `teleop_miss`
+        - `ScoutingField` is missing a `season`
+        - `ScoutingField` is missing a `game_piece`
     """
-    fields_without_season = await MatchScoutingField.filter(season=None).all()
-    fields_without_game_piece = await MatchScoutingField.filter(game_piece=None).filter(stat_type__in=["auton_score", "auton_miss", "teleop_score", "teleop_miss"]).all()
+    fields_without_season: list[ScoutingField] = await ScoutingField.filter(season=None).all()
+    fields_without_game_piece: list[ScoutingField] = await ScoutingField.filter(game_piece=None, stat_type__in=["auton_score", "auton_miss", "teleop_score", "teleop_miss"]).all()
 
-    repairs: list[MatchScoutingFieldRepair] = []
+    repairs: list[ScoutingFieldRepair] = []
 
     for field in fields_without_season:
         repairs.append(
-            MatchScoutingFieldRepair(
-                name=f"Match scouting field {field.name} is missing a season",
+            ScoutingFieldRepair(
+                name=f"Scouting field {field.name} is missing a season",
                 data_uuid=field.uuid,
                 data_created_at=field.created_at,
-                data_type="match_scouting_field",
+                data_type="scouting_field",
                 repair_type="missing_season"
             )
         )
 
     for field in fields_without_game_piece:
         repairs.append(
-            MatchScoutingFieldRepair(
-                name=f"Match scouting field {field.name} is missing a game piece",
+            ScoutingFieldRepair(
+                name=f"Scouting field {field.name} is missing a game piece",
                 data_uuid=field.uuid,
                 data_created_at=field.created_at,
-                data_type="match_scouting_field",
+                data_type="scouting_field",
                 repair_type="missing_game_piece"
             )
         )
@@ -157,30 +156,6 @@ async def get_repairable_match_scouting_answers() -> list[MatchScoutingAnswerRep
                 data_created_at=answer.created_at,
                 data_type="match_scouting_answer",
                 repair_type="missing_submission"
-            )
-        )
-
-    return repairs
-
-async def get_repairable_pit_scouting_fields() -> list[PitScoutingFieldRepair]:
-    """
-    Get all repairable pit scouting fields
-
-    This supports the following repairs:
-        - `PitScoutingField` is missing a `season`
-    """
-    fields_without_season = await PitScoutingField.filter(season=None).all()
-
-    repairs: list[PitScoutingFieldRepair] = []
-
-    for field in fields_without_season:
-        repairs.append(
-            PitScoutingFieldRepair(
-                name=f"Pit scouting field {field.name} is missing a season",
-                data_uuid=field.uuid,
-                data_created_at=field.created_at,
-                data_type="pit_scouting_field",
-                repair_type="missing_season"
             )
         )
 
@@ -270,12 +245,11 @@ async def get_repairs(identity: Identity = Depends(require_superuser)):
     The following repairs are able to be returned here:
         - `Event` is missing a `season`
         - `GamePiece` is mising a `season`
-        - `MatchScoutingField` is missing a `season`
-        - `MatchScoutingField` is missing a `game_piece` if `stat_type` is `auton_score`, `auton_miss`, `teleop_score` or `teleop_miss`
+        - `ScoutingField` is missing a `season`
+        - `ScoutingField` is missing a `game_piece` if `stat_type` is `auton_score`, `auton_miss`, `teleop_score` or `teleop_miss`
         - `MatchScoutingSubmission` is missing an `event`
         - `MatchScoutingAnswer` is missing a `field`
         - `MatchScoutingAnswer` is missing a `submission`
-        - `PitScoutingField` is missing a `season`
         - `TeamPit` is missing a `season`
         - `TeamPit` is missing an `event`
         - `PitScoutingAnswer` is missing a `field`
@@ -285,10 +259,9 @@ async def get_repairs(identity: Identity = Depends(require_superuser)):
     functions = [
         get_repairable_events,
         get_repairable_game_pieces,
-        get_repairable_match_scouting_fields,
+        get_repairable_scouting_fields,
         get_repairable_match_scouting_submissions,
         get_repairable_match_scouting_answers,
-        get_repairable_pit_scouting_fields,
         get_repairable_team_pits,
         get_repairable_pit_scouting_answers
     ]
@@ -312,12 +285,11 @@ async def get_repair_count(identity: Identity = Depends(require_superuser)):
     repairs: list[int] = [
         await Event.filter(season=None).count(),
         await GamePiece.filter(season=None).count(),
-        await MatchScoutingField.filter(season=None).count(),
-        await MatchScoutingField.filter(game_piece=None).filter(stat_type__in=["auton_score", "auton_miss", "teleop_score", "teleop_miss"]).count(),
+        await ScoutingField.filter(season=None).count(),
+        await ScoutingField.filter(game_piece=None).filter(stat_type__in=["auton_score", "auton_miss", "teleop_score", "teleop_miss"]).count(),
         await MatchScoutingSubmission.filter(event=None).count(),
         await MatchScoutingAnswer.filter(field=None).count(),
         await MatchScoutingAnswer.filter(submission=None).count(),
-        await PitScoutingField.filter(season=None).count(),
         await TeamPit.filter(season=None).count(),
         await TeamPit.filter(event=None).count(),
         await PitScoutingAnswer.filter(field=None).count(),
@@ -326,73 +298,25 @@ async def get_repair_count(identity: Identity = Depends(require_superuser)):
 
     return sum(repairs)
 
-# TODO: Remove
-@router.post("/repairs/create")
-async def create_repairs_for_testing(identity: Identity = Depends(require_superuser)):
-    event = await Event.create(season=None, event_code="test_event_code", name="test_event_name", type="test_event_type", city="test_event_city", country="test_event_country", start_date=datetime.now(), end_date=datetime.now(), custom=False)
-
-    piece = await GamePiece.create(season=None, name="test_game_piece_name")
-
-    await MatchScoutingField.create(season=None, name="test_match_scouting_field_name", field_type="section", stat_type="section", game_piece=piece)
-    field = await MatchScoutingField.create(season=None, name="test_match_scouting_field_name", field_type="section", stat_type="section", game_piece=None)
-
-    submission = await MatchScoutingSubmission.create(event=None)
-
-    await MatchScoutingAnswer.create(field=field, submission=None)
-    await MatchScoutingAnswer.create(field=None, submission=submission)
-
-    pit_field = await PitScoutingField.create(season=None, name="test_pit_scouting_field_name", field_type="text")
-
-    team = await TeamPit.create(season=None, event=event, team_number=1, nickname="test_team_name")
-    await TeamPit.create(season=None, event=None, team_number=1, nickname="test_team_name")
-
-    await PitScoutingAnswer.create(field=None, team=team)
-    await PitScoutingAnswer.create(field=pit_field, team=None)
-
-    return "Repairs created"
-
 # Get data that can be used for repairs
-@router.get("/repairs/get/match_scouting_fields", response_model=list[MatchScoutingFieldRepairResponse])
-async def get_all_match_scouting_fields(identity: Identity = Depends(require_superuser)):
+@router.get("/repairs/get/scouting_fields", response_model=list[ScoutingFieldRepairResponse])
+async def get_all_scouting_fields(identity: Identity = Depends(require_superuser)):
     """
-    Get all match scouting fields. Used on the admin repair page when setting the match scouting field on a piece of data.
+    Get all scouting fields. Used on the admin repair page when setting the scouting field on a piece of data.
 
     Requires superuser access
 
     Returns:
-        list[MatchScoutingFieldRepairResponse]: A list of all match scouting fields
+        list[ScoutingFieldRepairResponse]: A list of all scouting fields
     """
-    fields = await MatchScoutingField.all().prefetch_related("season", "game_piece")
+    fields = await ScoutingField.all().prefetch_related("season", "game_piece")
 
     return [
-        MatchScoutingFieldRepairResponse(
+        ScoutingFieldRepairResponse(
             uuid=field.uuid,
             name=field.name,
             season_year=getattr(field.season, "year", None),
             game_piece_name=getattr(field.game_piece, "name", None),
-            archived=field.archived,
-            created_at=field.created_at
-        )
-        for field in fields
-    ]
-
-@router.get("/repairs/get/pit_scouting_fields", response_model=list[PitScoutingFieldRepairResponse])
-async def get_all_pit_scouting_fields(identity: Identity = Depends(require_superuser)):
-    """
-    Get all pit scouting fields. Used on the admin repair page when setting the pit scouting field on a piece of data.
-
-    Requires superuser access
-
-    Returns:
-        list[PitScoutingFieldRepairResponse]: A list of all pit scouting fields
-    """
-    fields = await PitScoutingField.all().prefetch_related("season")
-
-    return [
-        PitScoutingFieldRepairResponse(
-            uuid=field.uuid,
-            name=field.name,
-            season_year=getattr(field.season, "year", None),
             archived=field.archived,
             created_at=field.created_at
         )
@@ -444,7 +368,7 @@ async def repair_game_piece(data_uuid: UUID, content_uuid: UUID, data_type: Lite
 
     await game_piece.save()
 
-async def repair_match_scouting_field(data_uuid: UUID, content_uuid: UUID, data_type: Literal["match_scouting_field"], repair_type: Literal["missing_season", "missing_game_piece"]):
+async def repair_scouting_field(data_uuid: UUID, content_uuid: UUID, data_type: Literal["scouting_field"], repair_type: Literal["missing_season", "missing_game_piece"]):
     """
     Repair a match scouting field
 
@@ -454,23 +378,23 @@ async def repair_match_scouting_field(data_uuid: UUID, content_uuid: UUID, data_
         data_type (`Literal["match_scouting_field"]`): The type of data to repair
         repair_type (`Literal["missing_season", "missing_game_piece"]`): The type of repair to perform
     """
-    match_scouting_field = await MatchScoutingField.get_or_none(uuid=data_uuid)
+    field = await ScoutingField.get_or_none(uuid=data_uuid)
 
-    if match_scouting_field is None:
+    if field is None:
         raise HTTPException(status_code=404, detail="Match scouting field not found")
 
     if repair_type == "missing_season":
         season = await Season.get_or_none(uuid=content_uuid)
         if season is None:
             raise HTTPException(status_code=404, detail="Season not found")
-        match_scouting_field.season = season
+        field.season = season
     elif repair_type == "missing_game_piece":
         game_piece = await GamePiece.get_or_none(uuid=content_uuid)
         if game_piece is None:
             raise HTTPException(status_code=404, detail="Game piece not found")
-        match_scouting_field.game_piece = game_piece
+        field.game_piece = game_piece
 
-    await match_scouting_field.save()
+    await field.save()
 
 async def repair_match_scouting_submission(data_uuid: UUID, event_code: str, data_type: Literal["match_scouting_submission"], repair_type: Literal["missing_event"]):
     """
@@ -513,7 +437,7 @@ async def repair_match_scouting_answer(data_uuid: UUID, content_uuid: UUID, data
         raise HTTPException(status_code=404, detail="Match scouting answer not found")
 
     if repair_type == "missing_field":
-        match_scouting_field = await MatchScoutingField.get_or_none(uuid=content_uuid)
+        match_scouting_field = await ScoutingField.get_or_none(uuid=content_uuid)
         if match_scouting_field is None:
             raise HTTPException(status_code=404, detail="Match scouting field not found")
         match_scouting_answer.field = match_scouting_field
@@ -524,28 +448,6 @@ async def repair_match_scouting_answer(data_uuid: UUID, content_uuid: UUID, data
         match_scouting_answer.submission = match_scouting_submission
 
     await match_scouting_answer.save()
-
-async def repair_pit_scouting_field(data_uuid: UUID, content_uuid: UUID, data_type: Literal["pit_scouting_field"], repair_type: Literal["missing_season"]):
-    """
-    Repair a pit scouting field
-
-    Parameters:
-        data_uuid (`UUID`): The uuid of the pit scouting field to repair
-        content_uuid (`UUID`): The uuid of the season or game piece to repair the pit scouting field with
-        data_type (`Literal["pit_scouting_field"]`): The type of data to repair
-        repair_type (`Literal["missing_season"]`): The type of repair to perform
-    """
-    pit_scouting_field = await PitScoutingField.get_or_none(uuid=data_uuid)
-    season = await Season.get_or_none(uuid=content_uuid)
-
-    if pit_scouting_field is None:
-        raise HTTPException(status_code=404, detail="Pit scouting field not found")
-    if season is None:
-        raise HTTPException(status_code=404, detail="Season not found")
-
-    pit_scouting_field.season = season
-
-    await pit_scouting_field.save()
 
 async def repair_team_pit(data_uuid: UUID, content_uuid: UUID | None, data_type: Literal["team_pit"], repair_type: Literal["missing_season", "missing_event"], event_code: str | None):
     """
@@ -591,7 +493,7 @@ async def repair_pit_scouting_answer(data_uuid: UUID, content_uuid: UUID, data_t
         raise HTTPException(status_code=404, detail="Pit scouting answer not found")
 
     if repair_type == "missing_field":
-        pit_scouting_field = await PitScoutingField.get_or_none(uuid=content_uuid)
+        pit_scouting_field = await ScoutingField.get_or_none(uuid=content_uuid)
         if pit_scouting_field is None:
             raise HTTPException(status_code=404, detail="Pit scouting field not found")
         pit_scouting_answer.field = pit_scouting_field
@@ -620,14 +522,12 @@ async def fix_repair(data: RepairRequest, identity: Identity = Depends(require_s
         await repair_event(data.data_uuid, data.content_uuid, data.data_type, data.repair_type)
     elif data.data_type == "game_piece":
         await repair_game_piece(data.data_uuid, data.content_uuid, data.data_type, data.repair_type)
-    elif data.data_type == "match_scouting_field":
-        await repair_match_scouting_field(data.data_uuid, data.content_uuid, data.data_type, data.repair_type)
+    elif data.data_type == "scouting_field":
+        await repair_scouting_field(data.data_uuid, data.content_uuid, data.data_type, data.repair_type)
     elif data.data_type == "match_scouting_submission":
         await repair_match_scouting_submission(data.data_uuid, data.event_code, data.data_type, data.repair_type)
     elif data.data_type == "match_scouting_answer":
         await repair_match_scouting_answer(data.data_uuid, data.content_uuid, data.data_type, data.repair_type)
-    elif data.data_type == "pit_scouting_field":
-        await repair_pit_scouting_field(data.data_uuid, data.content_uuid, data.data_type, data.repair_type)
     elif data.data_type == "team_pit":
         await repair_team_pit(data.data_uuid, data.content_uuid, data.data_type, data.repair_type, data.event_code)
     elif data.data_type == "pit_scouting_answer":
@@ -637,7 +537,7 @@ async def fix_repair(data: RepairRequest, identity: Identity = Depends(require_s
 
 @router.delete("/repairs/delete/{data_type}/{data_uuid}", response_model=MessageResponse)
 async def delete_repair_data(
-    data_type: Literal["event", "game_piece", "match_scouting_field", "match_scouting_submission", "match_scouting_answer", "pit_scouting_field", "team_pit", "pit_scouting_answer"], 
+    data_type: Literal["event", "game_piece", "scouting_field", "match_scouting_submission", "match_scouting_answer", "team_pit", "pit_scouting_answer"], 
     data_uuid: UUID, 
     identity: Identity = Depends(require_superuser)
 ):
@@ -654,14 +554,12 @@ async def delete_repair_data(
         _ = await Event.filter(uuid=data_uuid).delete()
     elif data_type == "game_piece":
         _ = await GamePiece.filter(uuid=data_uuid).delete()
-    elif data_type == "match_scouting_field":
-        _ = await MatchScoutingField.filter(uuid=data_uuid).delete()
+    elif data_type == "scouting_field":
+        _ = await ScoutingField.filter(uuid=data_uuid).delete()
     elif data_type == "match_scouting_submission":
         _ = await MatchScoutingSubmission.filter(uuid=data_uuid).delete()
     elif data_type == "match_scouting_answer":
         _ = await MatchScoutingAnswer.filter(uuid=data_uuid).delete()
-    elif data_type == "pit_scouting_field":
-        _ = await PitScoutingField.filter(uuid=data_uuid).delete()
     elif data_type == "team_pit":
         _ = await TeamPit.filter(uuid=data_uuid).delete()
     elif data_type == "pit_scouting_answer":
